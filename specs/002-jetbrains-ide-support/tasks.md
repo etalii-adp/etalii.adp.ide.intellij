@@ -164,48 +164,48 @@ Test files: `freemind/src/test/java/etalii/adp/freemind/FreeMindSnifferTest.java
 
 **Wave 1 — independent (different files):**
 
-- [ ] **T050** [P] [US1] Sniffer: BOM, XML declaration, comments, `<map version=…>` accepted; Objective-C++ source, empty, unreadable, `<map>` without version, content beyond 4 KB rejected · `freemind/src/test/java/etalii/adp/freemind/FreeMindSnifferTest.java`
-- [ ] **T051** [P] [US1] Port `RegistrationTest`: every example opens with editor type `etalii.adp.freemind.editor` in preview layout; a non-FreeMind `.mm` is not offered the designer; the text layout shows the same `Document` (FR-002, FR-003) · `freemind/src/test/java/etalii/adp/freemind/ui/RegistrationTest.java`
-- [ ] **T052** [P] [US1] Port `LayoutTest`: root centred, sides, `HGAP`/`VGAP`/`VSHIFT`, folded branches hidden · `freemind/src/test/java/etalii/adp/freemind/ui/LayoutTest.java`
-- [ ] **T053** [P] [US1] Port `NodeDetailsTest`: icons, colours, fonts, arrow links, link and note indicators, note tooltip, URL and relative-path links opened through `BrowserUtil` and `FileEditorManager` · `freemind/src/test/java/etalii/adp/freemind/ui/NodeDetailsTest.java`
-- [ ] **T054** [P] [US1] Port `ViewerInteractionTest`: click and multi-select, keyboard focus, pan, zoom steps and limits, Select All · `freemind/src/test/java/etalii/adp/freemind/ui/ViewerInteractionTest.java`
-- [ ] **T055** [P] [US1] Port `FormatProblemTest`: malformed XML, no `<map>`, zero or two top nodes, DOCTYPE each open as text with message, line and column, and the file bytes are unchanged (FR-009, AS-4) · `freemind/src/test/java/etalii/adp/freemind/ui/FormatProblemTest.java`
-- [ ] **T056** [P] [US1] Port `TextVisualSyncTest`: a typed change in the text layout updates the designer; breaking the XML shows the problem panel, fixing it restores the map with selection kept · `freemind/src/test/java/etalii/adp/freemind/ui/TextVisualSyncTest.java`
-- [ ] **T057** [P] [US1] Port `TwoEditorsTest`: two editors on one file (split) stay in step · `freemind/src/test/java/etalii/adp/freemind/ui/TwoEditorsTest.java`
-- [ ] **T058** [P] [US1] Themes and scale: under Darcula every default colour has at least 3:1 contrast, a low-contrast file colour gets a plate, sizes follow `JBUI.scale` at 1.0 and 2.0 (FR-016, AS-5) · `freemind/src/test/java/etalii/adp/freemind/ui/ThemeTest.java`
-- [ ] **T059** [P] [US1] Port the open half of `PerformanceTest`: a generated 1,000-node map opens and lays out within 2 s (SC-004) · `freemind/src/test/java/etalii/adp/freemind/ui/OpenPerformanceTest.java`
-- [ ] **T060** [P] [US1] **Proving test (R12)**, Starter + Driver, parameterised over IntelliJ IDEA (without and, where the environment has one, with an Ultimate trial, else skipped with a reason), Rider, WebStorm, PyCharm 2026.2: install the built zip, open a project with one example map and one Objective-C++ `.mm`, assert the map opens in the designer and the other does not (FR-001, SC-001 automated part) · `src/integrationTest/java/etalii/adp/it/OpenMapIntegrationTest.java`
+- [x] **T050** [P] [US1] Sniffer: BOM, XML declaration, comments, `<map version=…>` accepted; Objective-C++ source, empty, unreadable, `<map>` without version, content beyond 4 KB rejected · `freemind/src/test/java/etalii/adp/freemind/FreeMindSnifferTest.java`
+- [x] **T051** [P] [US1] Port `RegistrationTest`: every example opens with editor type `etalii.adp.freemind.editor` in preview layout; a non-FreeMind `.mm` is not offered the designer; the text layout shows the same `Document` (FR-002, FR-003) · `freemind/src/test/java/etalii/adp/freemind/ui/RegistrationTest.java`
+- [x] **T052** [P] [US1] Port `LayoutTest`: root centred, sides, `HGAP`/`VGAP`/`VSHIFT`, folded branches hidden · `freemind/src/test/java/etalii/adp/freemind/ui/LayoutTest.java`
+- [x] **T053** [P] [US1] Port `NodeDetailsTest`: icons, colours, fonts, arrow links, link and note indicators, note tooltip, URL and relative-path links opened through `BrowserUtil` and `FileEditorManager` · `freemind/src/test/java/etalii/adp/freemind/ui/NodeDetailsTest.java`
+- [x] **T054** [P] [US1] Port `ViewerInteractionTest`: click and multi-select, keyboard focus, pan, zoom steps and limits, Select All · `freemind/src/test/java/etalii/adp/freemind/ui/ViewerInteractionTest.java`
+- [x] **T055** [P] [US1] Port `FormatProblemTest`: malformed XML, no `<map>`, zero or two top nodes, DOCTYPE each open as text with message, line and column, and the file bytes are unchanged (FR-009, AS-4) · `freemind/src/test/java/etalii/adp/freemind/ui/FormatProblemTest.java`
+- [x] **T056** [P] [US1] Port `TextVisualSyncTest`: a typed change in the text layout updates the designer; breaking the XML shows the problem panel, fixing it restores the map with selection kept · `freemind/src/test/java/etalii/adp/freemind/ui/TextVisualSyncTest.java`
+- [x] **T057** [P] [US1] Port `TwoEditorsTest`: two editors on one file (split) stay in step · `freemind/src/test/java/etalii/adp/freemind/ui/TwoEditorsTest.java`
+- [x] **T058** [P] [US1] Themes and scale: under Darcula every default colour has at least 3:1 contrast, a low-contrast file colour gets a plate, sizes follow `JBUI.scale` at 1.0 and 2.0 (FR-016, AS-5) · `freemind/src/test/java/etalii/adp/freemind/ui/ThemeTest.java`
+- [x] **T059** [P] [US1] Port the open half of `PerformanceTest`: a generated 1,000-node map opens and lays out within 2 s (SC-004) · `freemind/src/test/java/etalii/adp/freemind/ui/OpenPerformanceTest.java`
+- [x] **T060** [P] [US1] **Proving test (R12)**, Starter + Driver, parameterised over IntelliJ IDEA (without and, where the environment has one, with an Ultimate trial, else skipped with a reason), Rider, WebStorm, PyCharm 2026.2: install the built zip, open a project with one example map and one Objective-C++ `.mm`, assert the map opens in the designer and the other does not (FR-001, SC-001 automated part) · `src/integrationTest/java/etalii/adp/it/OpenMapIntegrationTest.java`
 
 ### Implementation
 
 **⟶ Wait for Wave 1 to finish, then Wave 2 — independent (different files):**
 
-- [ ] **T061** [P] [US1] Content sniffer per contracts/plugin-contributions.md, never throws · `freemind/src/main/java/etalii/adp/freemind/FreeMindSniffer.java`
-- [ ] **T062** [P] [US1] "FreeMind Mind Map" file type, default extension `mm`, not bound to the extension · `freemind/src/main/java/etalii/adp/freemind/FreeMindFileType.java`
-- [ ] **T063** [P] [US1] Port `MindMapLayout` to produce `NodeView` boxes, sizes through `JBUI.scale` · `freemind/src/main/java/etalii/adp/freemind/ui/MindMapLayout.java`
-- [ ] **T064** [P] [US1] Paint a `NodeView`: box, text, file or theme colours with the 3:1 contrast plate, `FontSpec` or `JBFont`, icon glyphs, indicators, connectors, arrow links as cubic curves with arrowheads, selection and focus using `JBColor` · `freemind/src/main/java/etalii/adp/freemind/ui/NodePainter.java`
-- [ ] **T065** [P] [US1] Port `LinkOpener`: URLs through `BrowserUtil.browse`, relative paths through `FileEditorManager.openFile` · `freemind/src/main/java/etalii/adp/freemind/ui/LinkOpener.java`
+- [x] **T061** [P] [US1] Content sniffer per contracts/plugin-contributions.md, never throws · `freemind/src/main/java/etalii/adp/freemind/FreeMindSniffer.java`
+- [x] **T062** [P] [US1] "FreeMind Mind Map" file type, default extension `mm`, not bound to the extension · `freemind/src/main/java/etalii/adp/freemind/FreeMindFileType.java`
+- [x] **T063** [P] [US1] Port `MindMapLayout` to produce `NodeView` boxes, sizes through `JBUI.scale` · `freemind/src/main/java/etalii/adp/freemind/ui/MindMapLayout.java`
+- [x] **T064** [P] [US1] Paint a `NodeView`: box, text, file or theme colours with the 3:1 contrast plate, `FontSpec` or `JBFont`, icon glyphs, indicators, connectors, arrow links as cubic curves with arrowheads, selection and focus using `JBColor` · `freemind/src/main/java/etalii/adp/freemind/ui/NodePainter.java`
+- [x] **T065** [P] [US1] Port `LinkOpener`: URLs through `BrowserUtil.browse`, relative paths through `FileEditorManager.openFile` · `freemind/src/main/java/etalii/adp/freemind/ui/LinkOpener.java`
 
 **⟶ Wait for Wave 2 to finish, then Wave 3 — independent (different files):**
 
-- [ ] **T066** [P] [US1] `fileTypeDetector` returning `FreeMindFileType` when the sniffer accepts · `freemind/src/main/java/etalii/adp/freemind/FreeMindFileTypeDetector.java`
-- [ ] **T067** [P] [US1] Swing canvas over the layout: paint, hit-test, click and multi-select, keyboard focus and navigation, pan, zoom, note tooltips, link click through `LinkOpener`, `viewOf(key)`, view-only (no edits) · `freemind/src/main/java/etalii/adp/freemind/ui/MindMapCanvas.java`
+- [x] **T066** [P] [US1] `fileTypeDetector` returning `FreeMindFileType` when the sniffer accepts · `freemind/src/main/java/etalii/adp/freemind/FreeMindFileTypeDetector.java`
+- [x] **T067** [P] [US1] Swing canvas over the layout: paint, hit-test, click and multi-select, keyboard focus and navigation, pan, zoom, note tooltips, link click through `LinkOpener`, `viewOf(key)`, view-only (no edits) · `freemind/src/main/java/etalii/adp/freemind/ui/MindMapCanvas.java`
 
 **⟶ Wait for Wave 3 to finish, then:**
 
-- [ ] **T068** [US1] `MindMapDesigner extends AdpDesignerEditor<MindMap>`: `parse` via `MindMapParser`, `createView` returns the canvas in the scroll pane, `modelChanged` keeps selection and expansion by `NodeKey`, `reveal` expands folded ancestors in view state only and scrolls, `getStructureViewBuilder` returns `MindMapStructureView`, `installActions(canvas, "etalii.adp.freemind.DesignerPopup")` · `freemind/src/main/java/etalii/adp/freemind/ui/MindMapDesigner.java`
+- [x] **T068** [US1] `MindMapDesigner extends AdpDesignerEditor<MindMap>`: `parse` via `MindMapParser`, `createView` returns the canvas in the scroll pane, `modelChanged` keeps selection and expansion by `NodeKey`, `reveal` expands folded ancestors in view state only and scrolls, `getStructureViewBuilder` returns `MindMapStructureView`, `installActions(canvas, "etalii.adp.freemind.DesignerPopup")` · `freemind/src/main/java/etalii/adp/freemind/ui/MindMapDesigner.java`
 
 **⟶ Wait for T068, then:**
 
-- [ ] **T069** [US1] `MindMapEditorProvider extends AdpEditorProvider`: extensions `{mm}`, `FreeMindSniffer`, editor type id `etalii.adp.freemind.editor`, name "FreeMind Mind Map" · `freemind/src/main/java/etalii/adp/freemind/ui/MindMapEditorProvider.java`
+- [x] **T069** [US1] `MindMapEditorProvider extends AdpEditorProvider`: extensions `{mm}`, `FreeMindSniffer`, editor type id `etalii.adp.freemind.editor`, name "FreeMind Mind Map" · `freemind/src/main/java/etalii/adp/freemind/ui/MindMapEditorProvider.java`
 
 **⟶ Wait for T069, then:**
 
-- [ ] **T070** [US1] Register the editor provider, file type and detector · `freemind/src/main/resources/META-INF/adp-freemind-editor.xml`
+- [x] **T070** [US1] Register the editor provider, file type and detector · `freemind/src/main/resources/META-INF/adp-freemind-editor.xml`
 
 **⟶ Wait for T070, then:**
 
-- [ ] **T071** [US1] Run T050 to T059 with `./gradlew test` and T060 with `./gradlew integrationTest`. If Rider does not offer the designer, stop: the R12 fallback (frontend content module) changes `plugin.xml` and `build.gradle.kts`, which Phase 1 owns, so it goes back through the plan · (no file)
+- [x] **T071** [US1] Run T050 to T059 with `./gradlew test` and T060 with `./gradlew integrationTest`. If Rider does not offer the designer, stop: the R12 fallback (frontend content module) changes `plugin.xml` and `build.gradle.kts`, which Phase 1 owns, so it goes back through the plan · (no file)
 
 **Checkpoint**: User Story 1 works on its own: maps open and display in IntelliJ IDEA, Rider, WebStorm and PyCharm.
 
@@ -333,8 +333,8 @@ Files: `src/integrationTest/java/etalii/adp/it/NoPreviousHostIntegrationTest.jav
 
 **Wave 1 — independent (different files):**
 
-- [ ] **T110** [P] [US4] Search the tracked files (excluding `specs/002-jetbrains-ide-support/`), the built zip's entries and contents, and the sandbox's installed plug-in for the previous host's name, case-insensitive; fail on any hit (FR-017, SC-005) · `src/integrationTest/java/etalii/adp/it/NoPreviousHostIntegrationTest.java`
-- [ ] **T111** [P] [US4] Read `spec001-test-inventory.md` and fail when a row's new test class or method does not exist (FR-018, SC-007) · `freemind/src/test/java/etalii/adp/freemind/InventoryCoverageTest.java`
+- [x] **T110** [P] [US4] Search the tracked files (excluding `specs/002-jetbrains-ide-support/`), the built zip's entries and contents, and the sandbox's installed plug-in for the previous host's name, case-insensitive; fail on any hit (FR-017, SC-005) · `src/integrationTest/java/etalii/adp/it/NoPreviousHostIntegrationTest.java`
+- [x] **T111** [P] [US4] Read `spec001-test-inventory.md` and fail when a row's new test class or method does not exist (FR-018, SC-007) · `freemind/src/test/java/etalii/adp/freemind/InventoryCoverageTest.java`
 
 **⟶ Wait for Wave 1 to finish, then:**
 
@@ -363,7 +363,7 @@ Files: `src/integrationTest/java/etalii/adp/it/NoPreviousHostIntegrationTest.jav
 
 **Wave 1 — independent (different files):**
 
-- [ ] **T120** [P] No runtime network access: `core` and `freemind` main sources use no `java.net` connection, socket or `HttpClient` API; `BrowserUtil.browse` in `LinkOpener` is the only outward call (FR-021) · `freemind/src/test/java/etalii/adp/freemind/NoNetworkAccessTest.java`
+- [x] **T120** [P] No runtime network access: `core` and `freemind` main sources use no `java.net` connection, socket or `HttpClient` API; `BrowserUtil.browse` in `LinkOpener` is the only outward call (FR-021) · `freemind/src/test/java/etalii/adp/freemind/NoNetworkAccessTest.java`
 - [ ] **T121** [P] Reconcile the plan's source tree with what was built: `NodeView` and `AdpStructureView` in `core`, the four descriptor fragments, `MindMapAction`, `InPlaceRename`, `DragMove`, `EditingInstaller`, and the split performance and integration tests · `specs/002-jetbrains-ide-support/plan.md`
 
 **⟶ Wait for Wave 1 to finish, then:**

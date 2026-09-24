@@ -26,8 +26,9 @@ shortcuts; changing any of them is a contract change.
 | `fileTypeDetector` | `etalii.adp.freemind.FreeMindFileTypeDetector` → `FreeMindFileType` ("FreeMind Mind Map", default extension `mm`, not bound to the extension) |
 | `stripTrailingSpacesFilterFactory` | `etalii.adp.core.AdpStripTrailingSpacesFilterFactory`: `NOT_ALLOWED` for files an ADP provider accepts (research R5) |
 
-`FreeMindSniffer` accepts: optional UTF-8 BOM, optional XML declaration, then whitespace and
-comments, then a root start tag `<map` with a `version` attribute. Anything else, including an
+`FreeMindSniffer` accepts: optional UTF-8 BOM, optional XML declaration, then whitespace,
+comments and a DOCTYPE, then a root start tag `<map` with a `version` attribute. A DOCTYPE is
+skipped so such a map is claimed and its format problem is explained, not silently opened as text. Anything else, including an
 unreadable or empty file, is rejected.
 
 ## New file (FR-014)

@@ -452,6 +452,206 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-24T19:20:20.720Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T110",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:23:25.639Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T111",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:23:26.503Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T120",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:24:09.501Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T050",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:09.670Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T051",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:10.057Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T052",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:10.451Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T053",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:10.844Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T054",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:11.236Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T055",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:11.633Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T056",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:12.031Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T057",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:12.429Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T058",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:12.823Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T059",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:13.215Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T061",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:13.605Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T062",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:13.992Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T063",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:14.386Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T064",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:14.783Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T065",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:15.223Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T066",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:15.622Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T067",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:16.013Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T068",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:16.409Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T069",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:16.802Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T070",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:46:17.195Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T060",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T20:04:53.186Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T071",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T20:04:53.594Z"
     }
   ],
   "telemetryInstanceId": "a8dbc4c1-b846-4ee4-8679-39dc090dcaad",
@@ -606,7 +806,7 @@
       "summary": "125 tasks in 7 phases: Setup (baseline recording + Gradle skeleton), Foundational (core, format layer, test kit, R7/R8 proving tests), US1 view (MVP), US2 edit, US3 new/structure, US4 removal behind a gate, Polish; US2 and US3 file-disjoint and parallel"
     }
   },
-  "currentTask": "T049",
+  "currentTask": "T071",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -951,6 +1151,181 @@
     "T049": {
       "status": "DONE",
       "did": "core and freemind tests: 306 green incl. every reference scenario"
+    },
+    "T110": {
+      "status": "DONE",
+      "did": "Searches tracked files, plug-in zip (nested) and sandbox plug-in for the previous host's name",
+      "files": [
+        "src/integrationTest/java/etalii/adp/it/NoPreviousHostIntegrationTest.java"
+      ]
+    },
+    "T111": {
+      "status": "DONE",
+      "did": "Fails while an inventory row's new class or method is missing (fails now, as expected)",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/InventoryCoverageTest.java"
+      ]
+    },
+    "T120": {
+      "status": "DONE",
+      "did": "Scans core and freemind main sources for connection, socket and HTTP client APIs",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/NoNetworkAccessTest.java"
+      ]
+    },
+    "T050": {
+      "status": "DONE",
+      "did": "Sniffer tests: BOM, declaration, comments, DOCTYPE, version required, 4 KB limit, never throws (16 green)",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/FreeMindSnifferTest.java"
+      ]
+    },
+    "T051": {
+      "status": "DONE",
+      "did": "RegistrationTest ported: examples open in the designer, ObjC++ .mm not claimed, text side shares the Document, detector by content (6 green)",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/ui/RegistrationTest.java"
+      ]
+    },
+    "T052": {
+      "status": "DONE",
+      "did": "LayoutTest ported: root centred, sides, HGAP/VGAP/VSHIFT, arrow links, folded branches hidden (7 green)",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/ui/LayoutTest.java"
+      ]
+    },
+    "T053": {
+      "status": "DONE",
+      "did": "NodeDetailsTest ported: icons, colours, fonts, note tooltip, links via BrowserLauncher service and FileEditorManager (8 green)",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/ui/NodeDetailsTest.java"
+      ]
+    },
+    "T054": {
+      "status": "DONE",
+      "did": "ViewerInteractionTest ported: click/Ctrl/Shift/marquee select, arrow keys, pan, zoom steps and limits, Select All (11 green)",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/ui/ViewerInteractionTest.java"
+      ]
+    },
+    "T055": {
+      "status": "DONE",
+      "did": "FormatProblemTest ported: malformed, no map, no or two top nodes, DOCTYPE explained with line/column, bytes unchanged (2 green)",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/ui/FormatProblemTest.java"
+      ]
+    },
+    "T056": {
+      "status": "DONE",
+      "did": "TextVisualSyncTest ported: text edits redraw, selection and display folding survive a broken-then-fixed text (7 green)",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/ui/TextVisualSyncTest.java"
+      ]
+    },
+    "T057": {
+      "status": "DONE",
+      "did": "TwoEditorsTest ported: split editor on one file stays in step and shares one undo history (1 green)",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/ui/TwoEditorsTest.java"
+      ]
+    },
+    "T058": {
+      "status": "DONE",
+      "did": "ThemeTest: 3:1 contrast light and dark, plates for low-contrast file colours, JBUI scale 1.0 and 2.0 (5 green)",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/ui/ThemeTest.java"
+      ]
+    },
+    "T059": {
+      "status": "DONE",
+      "did": "OpenPerformanceTest: generated 1,000-node map opens, lays out and paints in about 0.5 s (budget 2 s)",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/ui/OpenPerformanceTest.java"
+      ]
+    },
+    "T061": {
+      "status": "DONE",
+      "did": "FreeMindSniffer: BOM, declaration, comments, DOCTYPE skipped, <map version=...> within 4 KB, never throws",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/FreeMindSniffer.java"
+      ]
+    },
+    "T062": {
+      "status": "DONE",
+      "did": "FreeMindFileType: non-binary FileType, default extension mm, registered without extensions",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/FreeMindFileType.java"
+      ]
+    },
+    "T063": {
+      "status": "DONE",
+      "did": "MindMapLayout ported to NodeView boxes, JBUI-scaled gaps, connectors and drawable arrow links",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/ui/MindMapLayout.java"
+      ]
+    },
+    "T064": {
+      "status": "DONE",
+      "did": "NodePainter: node box, text, icons/badges, link/note/fold indicators, connectors, cubic arrow links, JBColor theme pairs, 3:1 plates",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/ui/NodePainter.java"
+      ]
+    },
+    "T065": {
+      "status": "DONE",
+      "did": "LinkOpener ported: #ID reveals, URLs via BrowserUtil.browse, relative paths via FileEditorManager.openFile",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/ui/LinkOpener.java"
+      ]
+    },
+    "T066": {
+      "status": "DONE",
+      "did": "FreeMindFileTypeDetector gives sniffed .mm files the FreeMind file type",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/FreeMindFileTypeDetector.java"
+      ]
+    },
+    "T067": {
+      "status": "DONE",
+      "did": "MindMapCanvas: zoomed paint, keyAt/boundsOf, click and marquee selection, arrow-key navigation, Ctrl+wheel zoom, tooltips, link clicks; view-only",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/ui/MindMapCanvas.java"
+      ]
+    },
+    "T068": {
+      "status": "DONE",
+      "did": "MindMapDesigner: parse, canvas view, selection kept by key, display folding, reveal, structure view, DesignerPopup actions",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/ui/MindMapDesigner.java"
+      ]
+    },
+    "T069": {
+      "status": "DONE",
+      "did": "MindMapEditorProvider: mm + FreeMindSniffer, type id etalii.adp.freemind.editor, name FreeMind Mind Map",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/ui/MindMapEditorProvider.java"
+      ]
+    },
+    "T070": {
+      "status": "DONE",
+      "did": "Registered file type, detector and editor provider",
+      "files": [
+        "freemind/src/main/resources/META-INF/adp-freemind-editor.xml"
+      ]
+    },
+    "T060": {
+      "status": "DONE",
+      "did": "Starter + Driver OpenMapIntegrationTest in Java over IDEA, IDEA+licence (skipped without ADP_IDEA_LICENSE), Rider 2026.2.2, WebStorm, PyCharm; passes in all four products (needed a local init script for missing Kotlin/JUnit4/TeamCity runtime deps)",
+      "files": [
+        "src/integrationTest/java/etalii/adp/it/OpenMapIntegrationTest.java"
+      ]
+    },
+    "T071": {
+      "status": "DONE",
+      "did": "T050-T059 green (65 tests); T060 green in IntelliJ IDEA, Rider, WebStorm, PyCharm; Rider offers the designer, so no R12 fallback",
+      "files": [
+        "(no file)"
+      ]
     }
   }
 }

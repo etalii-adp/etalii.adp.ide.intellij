@@ -14,6 +14,8 @@ dependencyResolutionManagement {
     repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
     repositories {
         mavenCentral()
+        // TeamCity service messages, used by the Starter framework in integration tests.
+        maven("https://download.jetbrains.com/teamcity-repository")
         intellijPlatform {
             defaultRepositories()
         }

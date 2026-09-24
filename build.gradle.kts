@@ -38,7 +38,12 @@ dependencies {
     }
     integrationTestImplementation(platform("org.junit:junit-bom:5.13.4"))
     integrationTestImplementation("org.junit.jupiter:junit-jupiter")
+    // The platform plug-in strips Kotlin from the classpath; the Starter framework needs it.
+    integrationTestImplementation("org.jetbrains.kotlin:kotlin-stdlib:2.4.0")
+    integrationTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2")
     integrationTestRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    integrationTestRuntimeOnly("junit:junit:4.13.2")
+    integrationTestRuntimeOnly("org.jetbrains.teamcity:serviceMessages:2026.3-dsl6")
 }
 
 intellijPlatform {

@@ -6,3 +6,6 @@
 
 # FreeMind example maps are compared byte for byte, so git must never touch their line endings.
 *.mm -text
+
+# The Gradle wrapper script must stay LF, or it fails on Linux and macOS.
+gradlew text eol=lf

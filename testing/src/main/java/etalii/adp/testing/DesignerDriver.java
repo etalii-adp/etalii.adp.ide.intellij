@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -18,11 +19,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
+import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import com.intellij.ide.DataManager;
+import com.intellij.ide.impl.HeadlessDataManager;
 import com.intellij.ide.structureView.StructureViewModel;
 import com.intellij.ide.structureView.TreeBasedStructureViewBuilder;
 import com.intellij.openapi.Disposable;
@@ -79,6 +83,10 @@ public final class DesignerDriver implements AutoCloseable {
         this.fixture = fixture;
         this.project = fixture.getProject();
         this.file = file;
+        // Actions read the designer from the component tree, as in the IDE, not from a test data provider.
+        if (!HeadlessDataManager.isFallbackProductionDataManagerEnabled()) {
+            HeadlessDataManager.fallbackToProductionDataManager(fixture.getTestRootDisposable());
+        }
         FileEditor[] editors = FileEditorManager.getInstance(project).openFile(file, true);
         this.opened = editors.length == 0 ? null : FileEditorManager.getInstance(project).getSelectedEditor(file);
         this.document = FileDocumentManager.getInstance().getDocument(file);
@@ -206,10 +214,34 @@ public final class DesignerDriver implements AutoCloseable {
             }
         }
         long now = System.currentTimeMillis();
-        view().dispatchEvent(new KeyEvent(view(), KeyEvent.KEY_PRESSED, now, stroke.getModifiers(), stroke.getKeyCode(), KeyEvent.CHAR_UNDEFINED));
-        view().dispatchEvent(new KeyEvent(view(), KeyEvent.KEY_RELEASED, now, stroke.getModifiers(), stroke.getKeyCode(), KeyEvent.CHAR_UNDEFINED));
+        key(new KeyEvent(view(), KeyEvent.KEY_PRESSED, now, stroke.getModifiers(), stroke.getKeyCode(), KeyEvent.CHAR_UNDEFINED));
+        key(new KeyEvent(view(), KeyEvent.KEY_RELEASED, now, stroke.getModifiers(), stroke.getKeyCode(), KeyEvent.CHAR_UNDEFINED));
         settle();
         return this;
+    }
+
+    /**
+     * A key event to the view's own key listeners, then its focused key bindings. Headless, the
+     * focus manager drops key events for a component that is not showing, so they are not dispatched.
+     */
+    private void key(KeyEvent event) {
+        JComponent view = view();
+        for (KeyListener listener : view.getKeyListeners()) {
+            if (event.getID() == KeyEvent.KEY_PRESSED) {
+                listener.keyPressed(event);
+            } else {
+                listener.keyReleased(event);
+            }
+        }
+        if (event.isConsumed()) {
+            return;
+        }
+        KeyStroke stroke = KeyStroke.getKeyStrokeForEvent(event);
+        Object name = view.getInputMap(JComponent.WHEN_FOCUSED).get(stroke);
+        Action binding = name == null ? null : view.getActionMap().get(name);
+        if (binding != null && binding.isEnabled()) {
+            SwingUtilities.notifyAction(binding, stroke, event, view, event.getModifiersEx());
+        }
     }
 
     /** Click an item, as the mouse would; {@code clickCount} 2 is a double-click. */
