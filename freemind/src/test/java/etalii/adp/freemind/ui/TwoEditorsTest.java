@@ -16,6 +16,7 @@ import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.impl.EditorComposite;
 import com.intellij.openapi.fileEditor.impl.EditorWindow;
 import com.intellij.testFramework.FileEditorManagerTestCase;
+import com.intellij.testFramework.PlatformTestUtil;
 
 import etalii.adp.core.AdpEditorProvider;
 import etalii.adp.freemind.edit.MindMapEdits;
@@ -37,9 +38,10 @@ public class TwoEditorsTest extends FileEditorManagerTestCase {
             EditorWindow window = manager.getCurrentWindow();
             assertNotNull(window);
             EditorWindow split = window.split(SwingConstants.VERTICAL, true, d.file(), false);
-            d.settle();
             try {
                 assertNotNull("the editor splits", split);
+                // The split opens its editor in the background.
+                PlatformTestUtil.waitWithEventsDispatching("no designer in the split window", () -> composite(split) != null, 10);
                 AdpEditorProvider.Composite second = composite(split);
                 assertNotSame("a second editor, not the first one reused", d.composite(), second);
                 MindMapDesigner first = LayoutTest.designer(d);
@@ -101,7 +103,7 @@ public class TwoEditorsTest extends FileEditorManagerTestCase {
                 }
             }
         }
-        throw new AssertionError("no designer in the split window");
+        return null;
     }
 
     private static String text(DesignerDriver d, NodeKey key) {

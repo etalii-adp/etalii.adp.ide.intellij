@@ -26,12 +26,13 @@ two host types, so every visual edit is still a range-exact text change. It now 
 a ported layout, replacing GEF. Byte-for-byte parity with spec 001 is proved against reference
 results recorded from the previous implementation before it is deleted.
 
-Stack: Java 21, Gradle 9 with the IntelliJ Platform Gradle Plugin 2.19, IntelliJ Platform 2026.2
+Stack: Java 25, Gradle 9.8 with the IntelliJ Platform Gradle Plugin 2.19, IntelliJ Platform 2026.2
 (`since-build` 262), depending only on `com.intellij.modules.platform`. Licence: Apache-2.0.
 
 ## Technical Context
 
-**Language/Version**: Java 21 (JBR 21 runtime of IntelliJ Platform 2026.2). Gradle build scripts
+**Language/Version**: Java 25, the level IntelliJ Platform 2026.2 requires (its Gradle plug-in
+demands a Java 25 toolchain; Java 21 in the first draft of this plan was wrong). Gradle build scripts
 in Kotlin DSL; no Kotlin in the plug-in.
 
 **Primary Dependencies**: IntelliJ Platform 2026.2 (`com.intellij.modules.platform` only);
@@ -105,7 +106,7 @@ README.md, CLAUDE.md                 # rewritten for the IntelliJ plug-in
 src/main/resources/META-INF/
 ├── plugin.xml                       # contracts/plugin-contributions.md
 └── pluginIcon.svg
-src/integrationTest/java/etalii/adp/it/   # Starter + Driver suite (research R9)
+src/integrationTest/java/etalii/adp/it/   # Starter + Driver suite (research R9): OpenMap, EditUndo, NoPreviousHost
 core/                                # shared designer framework, no format knowledge
 ├── build.gradle.kts
 └── src/
@@ -113,22 +114,30 @@ core/                                # shared designer framework, no format know
     │   ├── AdpEditorProvider.java           # accept + sniff, TextEditorWithPreview, policy
     │   ├── AdpDesignerEditor.java           # FileEditor + DocumentReferenceProvider base
     │   ├── AdpStripTrailingSpacesFilterFactory.java
-    │   ├── AdpDataKeys.java
+    │   ├── AdpStructureView.java            # generic Structure view, synced both ways
+    │   ├── AdpDataKeys.java, NodeView.java  # NodeView: a laid-out box, read by the test kit
     │   ├── TextChange.java, TextChanges.java, Rgb.java, FormatProblem.java
     │   ├── ViewState.java                   # zoom, selection, transient expansion
     │   ├── actions/ZoomActions.java, SelectAllAction.java
     │   └── ui/ProblemPanel.java, ReadOnlyBanner.java
-    └── test/java/etalii/adp/core/           # TextChanges, undo bridge, provider, banners
+    ├── main/resources/META-INF/adp-core.xml # strip filter, core actions
+    └── test/                                # FakeFormat, TextChanges, undo bridge, provider, structure sync,
+                                             # strip filter; resources/META-INF/plugin.xml for the tests
 freemind/                            # FreeMind supported format
 ├── build.gradle.kts
 ├── src/main/java/etalii/adp/freemind/
 │   ├── model/  parse/  edit/                # carried over (data-model.md); host-free
 │   ├── FreeMindSniffer.java, FreeMindFileType.java, FreeMindFileTypeDetector.java
 │   └── ui/                                  # MindMapEditorProvider, MindMapDesigner, MindMapCanvas,
-│                                            # MindMapLayout, NodeView, NodePainter, FreeMindIcons,
-│                                            # LinkOpener, MindMapStructureView, NewMindMapAction,
-│                                            # actions/ (one class per action in the contract)
-├── src/test/java/etalii/adp/freemind/       # ported format + platform tests, reference replay
+│                                            # MindMapLayout, NodePainter, FreeMindIcons, LinkOpener,
+│                                            # MindMapStructureView, NewMindMapAction, InPlaceRename,
+│                                            # DragMove, EditingInstaller (attaches editing gestures),
+│                                            # actions/ (MindMapAction base + one class per action)
+├── src/main/resources/META-INF/             # adp-freemind-editor.xml (US1), adp-freemind-editing.xml (US2),
+│                                            # adp-freemind-new.xml (US3), included by plugin.xml
+├── src/test/java/etalii/adp/freemind/       # ported format + platform tests, reference replay,
+│                                            # Open/EditPerformanceTest, inventory, no-network checks
+├── src/test/resources/META-INF/plugin.xml   # includes the fragments for the module's tests
 └── testdata/
     ├── examples/<map>.mm + <map>.LICENSE    # moved with git mv from the previous test tree
     └── reference/                           # scenarios.json, <map>/<nn>-<action>.mm, spec001-test-inventory.md
@@ -192,6 +201,17 @@ beside the format that owns it.
    inventory fully checked off, then remove the previous host, relicense, rewrite docs, no-trace
    check. Manual steps last: SC-001 installs, SC-006 walkthrough, FreeMind 1.0.1 check, and the
    maintainer renaming the repository folder and remote to `EtAlii.Adp.IntelliJ`.
+
+## Built differently from the first draft
+
+- Java 25, not 21 (see Technical Context).
+- `plugin.xml` includes four fragments (`adp-core.xml`, `adp-freemind-editor.xml`,
+  `adp-freemind-editing.xml`, `adp-freemind-new.xml`) so each story owns its registrations.
+- Headless tests run on a real `FileEditorManagerImpl` (`FileEditorManagerTestCase`), with the
+  unified IDE's Ultimate plug-in disabled in the test sandbox, where it cannot start.
+- The composite remembers a user's layout switch, as the platform does; a switch to the text
+  caused by a format problem is not remembered.
+- The vendored examples all use LF; CRLF handling is proved on converted copies.
 
 ## Risks carried into tasks
 

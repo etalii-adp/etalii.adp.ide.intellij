@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.intellij.ide.structureView.StructureViewBuilder;
-import com.intellij.openapi.actionSystem.ActionGroup;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.DataSink;
@@ -180,8 +180,14 @@ public abstract class AdpDesignerEditor<M> extends UserDataHolderBase implements
         root.revalidate();
     }
 
-    /** The latest successful parse, or {@code null} while a problem is shown. */
+    /**
+     * The parse of the document as it is now, or {@code null} while a problem is shown. A change
+     * whose refresh is still queued is parsed first, so an edit is never built on stale offsets.
+     */
     public M model() {
+        if (refreshScheduled && ApplicationManager.getApplication().isDispatchThread()) {
+            refresh();
+        }
         return model;
     }
 
@@ -195,11 +201,25 @@ public abstract class AdpDesignerEditor<M> extends UserDataHolderBase implements
      * A no-op when not editable.
      */
     public void execute(String label, TextChanges changes) {
+        execute(label, changes, () -> {
+        });
+    }
+
+    /**
+     * As {@link #execute(String, TextChanges)}, then {@code andThen} (such as selecting the new
+     * node) on the fresh parse, inside the same command. The IDE records the view state a command
+     * leaves as that step's, and an Undo whose view state differs from the current one first only
+     * restores it; a selection made after the command would take a Ctrl+Z of its own.
+     */
+    public void execute(String label, TextChanges changes, Runnable andThen) {
         if (!isEditable() || changes.isEmpty() || !FileDocumentManager.getInstance().requestWriting(document, project)) {
             return;
         }
-        WriteCommandAction.writeCommandAction(project).withName(label).run(() -> changes.applyTo(document));
-        refresh();
+        WriteCommandAction.writeCommandAction(project).withName(label).run(() -> {
+            changes.applyTo(document);
+            refresh();
+            andThen.run();
+        });
     }
 
     public Document document() {
@@ -282,7 +302,7 @@ public abstract class AdpDesignerEditor<M> extends UserDataHolderBase implements
      * editors. Nothing happens when the group is not registered.
      */
     public void installActions(JComponent component, String groupId) {
-        if (ActionManager.getInstance().getAction(groupId) instanceof ActionGroup group) {
+        if (ActionManager.getInstance().getAction(groupId) instanceof DefaultActionGroup group) {
             PopupHandler.installPopupMenu(component, group, "AdpDesignerPopup");
             List<AnAction> actions = new ArrayList<>();
             collect(group, actions);
@@ -292,9 +312,9 @@ public abstract class AdpDesignerEditor<M> extends UserDataHolderBase implements
         }
     }
 
-    private static void collect(ActionGroup group, List<AnAction> actions) {
-        for (AnAction child : group.getChildren(null)) {
-            if (child instanceof ActionGroup nested) {
+    private static void collect(DefaultActionGroup group, List<AnAction> actions) {
+        for (AnAction child : group.getChildren(ActionManager.getInstance())) {
+            if (child instanceof DefaultActionGroup nested) {
                 collect(nested, actions);
             } else if (!(child instanceof Separator)) {
                 actions.add(child);

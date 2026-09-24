@@ -174,7 +174,7 @@ public final class DesignerDriver implements AutoCloseable {
     public DesignerDriver run(String actionId) {
         AnAction action = action(actionId);
         AnActionEvent event = event(action);
-        ActionUtil.performDumbAwareUpdate(action, event, true);
+        ActionUtil.updateAction(action, event);
         if (event.getPresentation().isEnabled()) {
             ActionUtil.performActionDumbAwareWithCallbacks(action, event);
         }
@@ -186,7 +186,7 @@ public final class DesignerDriver implements AutoCloseable {
     public Presentation presentation(String actionId) {
         AnAction action = action(actionId);
         AnActionEvent event = event(action);
-        ActionUtil.performDumbAwareUpdate(action, event, true);
+        ActionUtil.updateAction(action, event);
         return event.getPresentation();
     }
 
@@ -204,7 +204,7 @@ public final class DesignerDriver implements AutoCloseable {
                 if (shortcut instanceof KeyboardShortcut keyboard && keyboard.getFirstKeyStroke().equals(stroke)
                         && keyboard.getSecondKeyStroke() == null) {
                     AnActionEvent event = event(action);
-                    ActionUtil.performDumbAwareUpdate(action, event, true);
+                    ActionUtil.updateAction(action, event);
                     if (event.getPresentation().isEnabled()) {
                         ActionUtil.performActionDumbAwareWithCallbacks(action, event);
                         settle();

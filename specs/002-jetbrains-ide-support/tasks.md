@@ -228,53 +228,53 @@ Test files: `freemind/src/test/java/etalii/adp/freemind/ui/{AddNodeTest,RenameTe
 
 **Wave 1 — independent (different files):**
 
-- [ ] **T072** [P] [US2] Port `AddNodeTest`: add child (also into a self-closing node) and sibling, new node selected, "Undo Add Child Node" (AS-1) · `freemind/src/test/java/etalii/adp/freemind/ui/AddNodeTest.java`
-- [ ] **T073** [P] [US2] Port `RenameTest`: F2 and double-click start in-place rename, Enter commits, Escape cancels, rich-text node asks first and Cancel changes nothing · `freemind/src/test/java/etalii/adp/freemind/ui/RenameTest.java`
-- [ ] **T074** [P] [US2] Port `DeleteTest`: one and several nodes, arrow links to removed IDs removed, root refused with its reason · `freemind/src/test/java/etalii/adp/freemind/ui/DeleteTest.java`
-- [ ] **T075** [P] [US2] Port `MoveNodeTest`: move up and down, indent, outdent, `POSITION` fixed on entering and leaving the first level · `freemind/src/test/java/etalii/adp/freemind/ui/MoveNodeTest.java`
-- [ ] **T076** [P] [US2] Port `DragMoveTest`: drag before, after, onto; drop into own subtree rejected; root not draggable · `freemind/src/test/java/etalii/adp/freemind/ui/DragMoveTest.java`
-- [ ] **T077** [P] [US2] Port `FoldTest`: Space folds and unfolds with `FOLDED` written; on a read-only file it changes view state only · `freemind/src/test/java/etalii/adp/freemind/ui/FoldTest.java`
-- [ ] **T078** [P] [US2] Port `ContextMenuTest`: `DesignerPopup` contents and order per contract, separators, enablement follows selection · `freemind/src/test/java/etalii/adp/freemind/ui/ContextMenuTest.java`
-- [ ] **T079** [P] [US2] Keymap: every action in the contract table is in `$default` with its shortcut; a rebound shortcut runs the action (AS-7, FR-013); Tab, Enter, Space and Delete in a plain text editor do not run designer actions · `freemind/src/test/java/etalii/adp/freemind/ui/KeymapTest.java`
-- [ ] **T080** [P] [US2] Port `UndoRedoTest`: every action type's undo label, undo and redo through `$Undo`/`$Redo` with the designer focused; each reference scenario run through the designer matches its recorded bytes and undo restores the original (FR-004, SC-003) · `freemind/src/test/java/etalii/adp/freemind/ui/UndoRedoTest.java`
-- [ ] **T081** [P] [US2] Port `InterleavedUndoTest`: edits in the designer and the text layout share one history in order (AS-4) · `freemind/src/test/java/etalii/adp/freemind/ui/InterleavedUndoTest.java`
-- [ ] **T082** [P] [US2] Port `SaveLifecycleTest`: modified marker, save, close with and without changes, Local History records the change (FR-005) · `freemind/src/test/java/etalii/adp/freemind/ui/SaveLifecycleTest.java`
-- [ ] **T083** [P] [US2] Port `RoundTripTest`: every example opened and saved without edits is byte-identical through the platform, including CRLF and lone-CR files and "strip trailing spaces" enabled (FR-006, SC-002, AS-2) · `freemind/src/test/java/etalii/adp/freemind/ui/RoundTripTest.java`
-- [ ] **T084** [P] [US2] Port `PreservationTest`: attributes, clouds, edges, hooks and unknown content survive every action; only the edited ranges differ (FR-007) · `freemind/src/test/java/etalii/adp/freemind/ui/PreservationTest.java`
-- [ ] **T085** [P] [US2] Port `ExternalChangeTest`: disk change on a clean file reloads, on a modified file the IDE asks, as for a text file (AS-5) · `freemind/src/test/java/etalii/adp/freemind/ui/ExternalChangeTest.java`
-- [ ] **T086** [P] [US2] Port `ReadOnlyTest`: map shown, banner with reason, every edit action disabled with its reason (FR-010, AS-6) · `freemind/src/test/java/etalii/adp/freemind/ui/ReadOnlyTest.java`
-- [ ] **T087** [P] [US2] Port the edit half of `PerformanceTest`: on a 1,000-node map, add, rename, fold and delete show within 0.1 s (SC-004) · `freemind/src/test/java/etalii/adp/freemind/ui/EditPerformanceTest.java`
-- [ ] **T088** [P] [US2] Port `FreeMindCompatibilityTest`: with `FREEMIND_HOME` set, every reference result and a new-map text load in FreeMind 1.0.1's reader; skipped with a reason otherwise · `freemind/src/test/java/etalii/adp/freemind/ui/FreeMindCompatibilityTest.java`
-- [ ] **T089** [P] [US2] Starter + Driver over the same products as T060: Add Child Node then Undo returns the file to its original bytes · `src/integrationTest/java/etalii/adp/it/EditUndoIntegrationTest.java`
+- [x] **T072** [P] [US2] Port `AddNodeTest`: add child (also into a self-closing node) and sibling, new node selected, "Undo Add Child Node" (AS-1) · `freemind/src/test/java/etalii/adp/freemind/ui/AddNodeTest.java`
+- [x] **T073** [P] [US2] Port `RenameTest`: F2 and double-click start in-place rename, Enter commits, Escape cancels, rich-text node asks first and Cancel changes nothing · `freemind/src/test/java/etalii/adp/freemind/ui/RenameTest.java`
+- [x] **T074** [P] [US2] Port `DeleteTest`: one and several nodes, arrow links to removed IDs removed, root refused with its reason · `freemind/src/test/java/etalii/adp/freemind/ui/DeleteTest.java`
+- [x] **T075** [P] [US2] Port `MoveNodeTest`: move up and down, indent, outdent, `POSITION` fixed on entering and leaving the first level · `freemind/src/test/java/etalii/adp/freemind/ui/MoveNodeTest.java`
+- [x] **T076** [P] [US2] Port `DragMoveTest`: drag before, after, onto; drop into own subtree rejected; root not draggable · `freemind/src/test/java/etalii/adp/freemind/ui/DragMoveTest.java`
+- [x] **T077** [P] [US2] Port `FoldTest`: Space folds and unfolds with `FOLDED` written; on a read-only file it changes view state only · `freemind/src/test/java/etalii/adp/freemind/ui/FoldTest.java`
+- [x] **T078** [P] [US2] Port `ContextMenuTest`: `DesignerPopup` contents and order per contract, separators, enablement follows selection · `freemind/src/test/java/etalii/adp/freemind/ui/ContextMenuTest.java`
+- [x] **T079** [P] [US2] Keymap: every action in the contract table is in `$default` with its shortcut; a rebound shortcut runs the action (AS-7, FR-013); Tab, Enter, Space and Delete in a plain text editor do not run designer actions · `freemind/src/test/java/etalii/adp/freemind/ui/KeymapTest.java`
+- [x] **T080** [P] [US2] Port `UndoRedoTest`: every action type's undo label, undo and redo through `$Undo`/`$Redo` with the designer focused; each reference scenario run through the designer matches its recorded bytes and undo restores the original (FR-004, SC-003) · `freemind/src/test/java/etalii/adp/freemind/ui/UndoRedoTest.java`
+- [x] **T081** [P] [US2] Port `InterleavedUndoTest`: edits in the designer and the text layout share one history in order (AS-4) · `freemind/src/test/java/etalii/adp/freemind/ui/InterleavedUndoTest.java`
+- [x] **T082** [P] [US2] Port `SaveLifecycleTest`: modified marker, save, close with and without changes, Local History records the change (FR-005) · `freemind/src/test/java/etalii/adp/freemind/ui/SaveLifecycleTest.java`
+- [x] **T083** [P] [US2] Port `RoundTripTest`: every example opened and saved without edits is byte-identical through the platform, including CRLF and lone-CR files and "strip trailing spaces" enabled (FR-006, SC-002, AS-2) · `freemind/src/test/java/etalii/adp/freemind/ui/RoundTripTest.java`
+- [x] **T084** [P] [US2] Port `PreservationTest`: attributes, clouds, edges, hooks and unknown content survive every action; only the edited ranges differ (FR-007) · `freemind/src/test/java/etalii/adp/freemind/ui/PreservationTest.java`
+- [x] **T085** [P] [US2] Port `ExternalChangeTest`: disk change on a clean file reloads, on a modified file the IDE asks, as for a text file (AS-5) · `freemind/src/test/java/etalii/adp/freemind/ui/ExternalChangeTest.java`
+- [x] **T086** [P] [US2] Port `ReadOnlyTest`: map shown, banner with reason, every edit action disabled with its reason (FR-010, AS-6) · `freemind/src/test/java/etalii/adp/freemind/ui/ReadOnlyTest.java`
+- [x] **T087** [P] [US2] Port the edit half of `PerformanceTest`: on a 1,000-node map, add, rename, fold and delete show within 0.1 s (SC-004) · `freemind/src/test/java/etalii/adp/freemind/ui/EditPerformanceTest.java`
+- [x] **T088** [P] [US2] Port `FreeMindCompatibilityTest`: with `FREEMIND_HOME` set, every reference result and a new-map text load in FreeMind 1.0.1's reader; skipped with a reason otherwise · `freemind/src/test/java/etalii/adp/freemind/ui/FreeMindCompatibilityTest.java`
+- [x] **T089** [P] [US2] Starter + Driver over the same products as T060: Add Child Node then Undo returns the file to its original bytes · `src/integrationTest/java/etalii/adp/it/EditUndoIntegrationTest.java`
 
 ### Implementation
 
 **⟶ Wait for Wave 1 to finish, then Wave 2 — independent (different files):**
 
-- [ ] **T090** [P] [US2] Action base: reads `ADP_DESIGNER` and the selection from the `DataContext`, disables outside a focused designer, when not editable, or for the root, with the reason as description; builds the `Edit` and calls `designer.execute(label, changes)` · `freemind/src/main/java/etalii/adp/freemind/ui/actions/MindMapAction.java`
-- [ ] **T091** [P] [US2] In-place rename overlay (`JBTextField` over the node's `NodeView` bounds), Enter commits, Escape and focus loss cancel, rich-text confirmation with `Messages.showOkCancelDialog` (replaces `NodeRenameManager`) · `freemind/src/main/java/etalii/adp/freemind/ui/InPlaceRename.java`
-- [ ] **T092** [P] [US2] Drag-and-drop move on the canvas: drop feedback before, after, onto; own subtree and root refused; drop builds `MindMapEdits.move` and executes it · `freemind/src/main/java/etalii/adp/freemind/ui/DragMove.java`
+- [x] **T090** [P] [US2] Action base: reads `ADP_DESIGNER` and the selection from the `DataContext`, disables outside a focused designer, when not editable, or for the root, with the reason as description; builds the `Edit` and calls `designer.execute(label, changes)` · `freemind/src/main/java/etalii/adp/freemind/ui/actions/MindMapAction.java`
+- [x] **T091** [P] [US2] In-place rename overlay (`JBTextField` over the node's `NodeView` bounds), Enter commits, Escape and focus loss cancel, rich-text confirmation with `Messages.showOkCancelDialog` (replaces `NodeRenameManager`) · `freemind/src/main/java/etalii/adp/freemind/ui/InPlaceRename.java`
+- [x] **T092** [P] [US2] Drag-and-drop move on the canvas: drop feedback before, after, onto; own subtree and root refused; drop builds `MindMapEdits.move` and executes it · `freemind/src/main/java/etalii/adp/freemind/ui/DragMove.java`
 
 **⟶ Wait for Wave 2 to finish, then Wave 3 — independent (different files):**
 
-- [ ] **T093** [P] [US2] Add Child Node · `freemind/src/main/java/etalii/adp/freemind/ui/actions/AddChildAction.java`
-- [ ] **T094** [P] [US2] Add Sibling Node · `freemind/src/main/java/etalii/adp/freemind/ui/actions/AddSiblingAction.java`
-- [ ] **T095** [P] [US2] Rename Node, opening `InPlaceRename` · `freemind/src/main/java/etalii/adp/freemind/ui/actions/RenameAction.java`
-- [ ] **T096** [P] [US2] Delete Node / Delete Nodes · `freemind/src/main/java/etalii/adp/freemind/ui/actions/DeleteAction.java`
-- [ ] **T097** [P] [US2] Move Node Up · `freemind/src/main/java/etalii/adp/freemind/ui/actions/MoveUpAction.java`
-- [ ] **T098** [P] [US2] Move Node Down · `freemind/src/main/java/etalii/adp/freemind/ui/actions/MoveDownAction.java`
-- [ ] **T099** [P] [US2] Move Under Previous Sibling · `freemind/src/main/java/etalii/adp/freemind/ui/actions/IndentAction.java`
-- [ ] **T100** [P] [US2] Move Up a Level · `freemind/src/main/java/etalii/adp/freemind/ui/actions/OutdentAction.java`
-- [ ] **T101** [P] [US2] Fold / Unfold Branch: edit when editable, view-state toggle when read-only · `freemind/src/main/java/etalii/adp/freemind/ui/actions/ToggleFoldAction.java`
-- [ ] **T102** [P] [US2] `FileEditorManagerListener` that attaches `DragMove` and double-click `InPlaceRename` to each opened `MindMapDesigner`'s canvas and detaches on dispose. Prove first that `fileOpened` fires under `DesignerDriver.open` (T073, T076) · `freemind/src/main/java/etalii/adp/freemind/ui/EditingInstaller.java`
+- [x] **T093** [P] [US2] Add Child Node · `freemind/src/main/java/etalii/adp/freemind/ui/actions/AddChildAction.java`
+- [x] **T094** [P] [US2] Add Sibling Node · `freemind/src/main/java/etalii/adp/freemind/ui/actions/AddSiblingAction.java`
+- [x] **T095** [P] [US2] Rename Node, opening `InPlaceRename` · `freemind/src/main/java/etalii/adp/freemind/ui/actions/RenameAction.java`
+- [x] **T096** [P] [US2] Delete Node / Delete Nodes · `freemind/src/main/java/etalii/adp/freemind/ui/actions/DeleteAction.java`
+- [x] **T097** [P] [US2] Move Node Up · `freemind/src/main/java/etalii/adp/freemind/ui/actions/MoveUpAction.java`
+- [x] **T098** [P] [US2] Move Node Down · `freemind/src/main/java/etalii/adp/freemind/ui/actions/MoveDownAction.java`
+- [x] **T099** [P] [US2] Move Under Previous Sibling · `freemind/src/main/java/etalii/adp/freemind/ui/actions/IndentAction.java`
+- [x] **T100** [P] [US2] Move Up a Level · `freemind/src/main/java/etalii/adp/freemind/ui/actions/OutdentAction.java`
+- [x] **T101** [P] [US2] Fold / Unfold Branch: edit when editable, view-state toggle when read-only · `freemind/src/main/java/etalii/adp/freemind/ui/actions/ToggleFoldAction.java`
+- [x] **T102** [P] [US2] `FileEditorManagerListener` that attaches `DragMove` and double-click `InPlaceRename` to each opened `MindMapDesigner`'s canvas and detaches on dispose. Prove first that `fileOpened` fires under `DesignerDriver.open` (T073, T076) · `freemind/src/main/java/etalii/adp/freemind/ui/EditingInstaller.java`
 
 **⟶ Wait for Wave 3 to finish, then:**
 
-- [ ] **T103** [US2] Register the nine actions with ids, texts and `$default` shortcuts per contract, the `etalii.adp.freemind.DesignerPopup` group (table order, separators after AddSibling, Delete and Outdent, then the core zoom actions), and `EditingInstaller` as a project listener · `freemind/src/main/resources/META-INF/adp-freemind-editing.xml`
+- [x] **T103** [US2] Register the nine actions with ids, texts and `$default` shortcuts per contract, the `etalii.adp.freemind.DesignerPopup` group (table order, separators after AddSibling, Delete and Outdent, then the core zoom actions), and `EditingInstaller` as a project listener · `freemind/src/main/resources/META-INF/adp-freemind-editing.xml`
 
 **⟶ Wait for T103, then:**
 
-- [ ] **T104** [US2] Run T072 to T088 with `./gradlew test` and T089 with `./gradlew integrationTest` · (no file)
+- [x] **T104** [US2] Run T072 to T088 with `./gradlew test` and T089 with `./gradlew integrationTest` · (no file)
 
 **Checkpoint**: User Story 2 works on its own on top of US1: every edit is one named undo step and byte-identical to spec 001.
 
@@ -296,22 +296,22 @@ Test files: `freemind/src/test/java/etalii/adp/freemind/ui/{NewMapTest,Structure
 
 **Wave 1 — independent (different files):**
 
-- [ ] **T105** [P] [US3] Port `NewWizardTest`: the action is in `NewGroup` after `NewFile`; `.mm` appended when missing; an existing name refused; content matches FreeMind 1.0.1's new-map form with fresh `ID` and timestamps and the project's line separator; the file opens in the designer (FR-014, AS-1) · `freemind/src/test/java/etalii/adp/freemind/ui/NewMapTest.java`
-- [ ] **T106** [P] [US3] Port `OutlineTest`: the Structure view lists the tree with text and first icon; selecting an element inside a folded branch reveals and selects it without changing the file; designer selection becomes the current element (FR-015, AS-2) · `freemind/src/test/java/etalii/adp/freemind/ui/StructureViewTest.java`
+- [x] **T105** [P] [US3] Port `NewWizardTest`: the action is in `NewGroup` after `NewFile`; `.mm` appended when missing; an existing name refused; content matches FreeMind 1.0.1's new-map form with fresh `ID` and timestamps and the project's line separator; the file opens in the designer (FR-014, AS-1) · `freemind/src/test/java/etalii/adp/freemind/ui/NewMapTest.java`
+- [x] **T106** [P] [US3] Port `OutlineTest`: the Structure view lists the tree with text and first icon; selecting an element inside a folded branch reveals and selects it without changing the file; designer selection becomes the current element (FR-015, AS-2) · `freemind/src/test/java/etalii/adp/freemind/ui/StructureViewTest.java`
 
 ### Implementation
 
 **⟶ Wait for Wave 1 to finish, then:**
 
-- [ ] **T107** [US3] New file action: name prompt, `.mm` appended, refusal on existing name, content from `FreeMindConventions.newMapText`, open in the designer (replaces `NewMindMapWizard`) · `freemind/src/main/java/etalii/adp/freemind/ui/NewMindMapAction.java`
+- [x] **T107** [US3] New file action: name prompt, `.mm` appended, refusal on existing name, content from `FreeMindConventions.newMapText`, open in the designer (replaces `NewMindMapWizard`) · `freemind/src/main/java/etalii/adp/freemind/ui/NewMindMapAction.java`
 
 **⟶ Wait for T107, then:**
 
-- [ ] **T108** [US3] Register `etalii.adp.freemind.NewMindMap` in `NewGroup`, anchor after `NewFile` · `freemind/src/main/resources/META-INF/adp-freemind-new.xml`
+- [x] **T108** [US3] Register `etalii.adp.freemind.NewMindMap` in `NewGroup`, anchor after `NewFile` · `freemind/src/main/resources/META-INF/adp-freemind-new.xml`
 
 **⟶ Wait for T108, then:**
 
-- [ ] **T109** [US3] Run T105 and T106 · (no file)
+- [x] **T109** [US3] Run T105 and T106 · (no file)
 
 **Checkpoint**: User Story 3 works on its own on top of US1.
 
@@ -338,7 +338,7 @@ Files: `src/integrationTest/java/etalii/adp/it/NoPreviousHostIntegrationTest.jav
 
 **⟶ Wait for Wave 1 to finish, then:**
 
-- [ ] **T112** [US4] **Removal gate**: `InventoryCoverageTest`, `ReferenceReplayTest`, `UndoRedoTest` and both earlier integration tests green (only T110 may still fail). Commit. Nothing is removed before this passes (FR-008, FR-018) · (no file)
+- [x] **T112** [US4] **Removal gate**: `InventoryCoverageTest`, `ReferenceReplayTest`, `UndoRedoTest` and both earlier integration tests green (only T110 may still fail). Commit. Nothing is removed before this passes (FR-008, FR-018) · (no file)
 
 ### Implementation
 
@@ -364,7 +364,7 @@ Files: `src/integrationTest/java/etalii/adp/it/NoPreviousHostIntegrationTest.jav
 **Wave 1 — independent (different files):**
 
 - [x] **T120** [P] No runtime network access: `core` and `freemind` main sources use no `java.net` connection, socket or `HttpClient` API; `BrowserUtil.browse` in `LinkOpener` is the only outward call (FR-021) · `freemind/src/test/java/etalii/adp/freemind/NoNetworkAccessTest.java`
-- [ ] **T121** [P] Reconcile the plan's source tree with what was built: `NodeView` and `AdpStructureView` in `core`, the four descriptor fragments, `MindMapAction`, `InPlaceRename`, `DragMove`, `EditingInstaller`, and the split performance and integration tests · `specs/002-jetbrains-ide-support/plan.md`
+- [x] **T121** [P] Reconcile the plan's source tree with what was built: `NodeView` and `AdpStructureView` in `core`, the four descriptor fragments, `MindMapAction`, `InPlaceRename`, `DragMove`, `EditingInstaller`, and the split performance and integration tests · `specs/002-jetbrains-ide-support/plan.md`
 
 **⟶ Wait for Wave 1 to finish, then:**
 

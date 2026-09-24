@@ -1,0 +1,65 @@
+<!-- User Story 2: editing a map, with the IDE's own undo, redo and save (contracts/plugin-contributions.md). -->
+<idea-plugin>
+    <actions>
+        <action id="etalii.adp.freemind.AddChild" class="etalii.adp.freemind.ui.actions.AddChildAction" text="Add Child Node"
+                description="Add a child to the selected node">
+            <keyboard-shortcut keymap="$default" first-keystroke="INSERT"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="TAB"/>
+        </action>
+        <action id="etalii.adp.freemind.AddSibling" class="etalii.adp.freemind.ui.actions.AddSiblingAction" text="Add Sibling Node"
+                description="Add a node after the selected node">
+            <keyboard-shortcut keymap="$default" first-keystroke="ENTER"/>
+        </action>
+        <action id="etalii.adp.freemind.Rename" class="etalii.adp.freemind.ui.actions.RenameAction" text="Rename Node"
+                description="Edit the selected node's text in place">
+            <keyboard-shortcut keymap="$default" first-keystroke="F2"/>
+        </action>
+        <action id="etalii.adp.freemind.Delete" class="etalii.adp.freemind.ui.actions.DeleteAction" text="Delete Node"
+                description="Delete the selected nodes with their children">
+            <keyboard-shortcut keymap="$default" first-keystroke="DELETE"/>
+        </action>
+        <action id="etalii.adp.freemind.MoveUp" class="etalii.adp.freemind.ui.actions.MoveUpAction" text="Move Node Up"
+                description="Move the selected node before its previous sibling">
+            <keyboard-shortcut keymap="$default" first-keystroke="control UP"/>
+        </action>
+        <action id="etalii.adp.freemind.MoveDown" class="etalii.adp.freemind.ui.actions.MoveDownAction" text="Move Node Down"
+                description="Move the selected node after its next sibling">
+            <keyboard-shortcut keymap="$default" first-keystroke="control DOWN"/>
+        </action>
+        <action id="etalii.adp.freemind.Indent" class="etalii.adp.freemind.ui.actions.IndentAction" text="Move Under Previous Sibling"
+                description="Make the selected node the last child of its previous sibling">
+            <keyboard-shortcut keymap="$default" first-keystroke="control RIGHT"/>
+        </action>
+        <action id="etalii.adp.freemind.Outdent" class="etalii.adp.freemind.ui.actions.OutdentAction" text="Move Up a Level"
+                description="Move the selected node after its parent">
+            <keyboard-shortcut keymap="$default" first-keystroke="control LEFT"/>
+        </action>
+        <action id="etalii.adp.freemind.ToggleFold" class="etalii.adp.freemind.ui.actions.ToggleFoldAction" text="Fold / Unfold Branch"
+                description="Fold or unfold the selected branches">
+            <keyboard-shortcut keymap="$default" first-keystroke="SPACE"/>
+        </action>
+
+        <!-- The designer's context menu: the actions above in table order, then zoom. -->
+        <group id="etalii.adp.freemind.DesignerPopup" text="Mind Map" popup="false">
+            <reference ref="etalii.adp.freemind.AddChild"/>
+            <reference ref="etalii.adp.freemind.AddSibling"/>
+            <separator/>
+            <reference ref="etalii.adp.freemind.Rename"/>
+            <reference ref="etalii.adp.freemind.Delete"/>
+            <separator/>
+            <reference ref="etalii.adp.freemind.MoveUp"/>
+            <reference ref="etalii.adp.freemind.MoveDown"/>
+            <reference ref="etalii.adp.freemind.Indent"/>
+            <reference ref="etalii.adp.freemind.Outdent"/>
+            <separator/>
+            <reference ref="etalii.adp.freemind.ToggleFold"/>
+            <reference ref="etalii.adp.core.ZoomIn"/>
+            <reference ref="etalii.adp.core.ZoomOut"/>
+            <reference ref="etalii.adp.core.ZoomReset"/>
+        </group>
+    </actions>
+
+    <projectListeners>
+        <listener class="etalii.adp.freemind.ui.EditingInstaller" topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+    </projectListeners>
+</idea-plugin>

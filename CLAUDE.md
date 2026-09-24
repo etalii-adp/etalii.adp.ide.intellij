@@ -26,3 +26,4 @@ Specs say *what* and *why*; plans say *how*. Do not put implementation choices i
 - One feature per branch; merge back to `main` when its tasks are done.
 - End commit messages written by an agent with a `Co-Authored-By:` trailer naming the model.
 - Shell scripts for Spec Kit are the PowerShell variants (`.specify/scripts/powershell/`).
+- When writing markdown files do not split lines to ensure a maximum line length is honored.
