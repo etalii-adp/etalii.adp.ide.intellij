@@ -1,0 +1,19 @@
+# Build output (Maven/Tycho, Eclipse PDE)
+target/
+bin/
+*.class
+
+# Eclipse runtime workspaces (launched test instances)
+.metadata/
+runtime-*/
+
+# Python bytecode (spec-kit scripts)
+__pycache__/
+*.pyc
+
+# Agent-local settings (may hold machine-specific or private state)
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
