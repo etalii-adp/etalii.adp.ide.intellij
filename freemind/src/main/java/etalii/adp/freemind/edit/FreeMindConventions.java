@@ -47,6 +47,17 @@ public final class FreeMindConventions {
         }
     }
 
+    /**
+     * A new map as FreeMind 1.0.1 writes it: one root node, "New Mindmap", with {@code id} and
+     * {@code now} as its timestamps, lines ending in {@code separator}.
+     */
+    public static String newMapText(String id, long now, String separator) {
+        return "<map version=\"1.0.1\">" + separator
+                + "<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->" + separator
+                + "<node CREATED=\"" + now + "\" ID=\"" + id + "\" MODIFIED=\"" + now + "\" TEXT=\"New Mindmap\"/>" + separator
+                + "</map>" + separator;
+    }
+
     /** The clock read for one operation; every timestamp the operation writes uses it. */
     public static long now() {
         return System.currentTimeMillis();
