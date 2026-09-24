@@ -92,6 +92,366 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-24T18:41:01.546Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T005",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:41:26.697Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T006",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:54:51.703Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T007",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:54:53.838Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T008",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:54:56.578Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T009",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:54:58.657Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T010",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:55:01.763Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T011",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:55:03.752Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T012",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:55:05.382Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T013",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:55:06.493Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T014",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:55:07.894Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T015",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:55:09.009Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T016",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:55:09.591Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T017",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:46.114Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T018",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:47.229Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T019",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:48.569Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T020",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:49.480Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T021",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:50.436Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T022",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:51.262Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T023",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:52.205Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T024",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:53.319Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T025",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:54.141Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T026",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:55.197Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T027",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:56.381Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T028",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:57.481Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T029",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:58.495Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T030",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:19:59.636Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T031",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:00.749Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T032",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:02.011Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T033",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:03.180Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T034",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:04.432Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T035",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:05.843Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T036",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:07.160Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T037",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:08.351Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T038",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:09.379Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T039",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:10.635Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T040",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:11.769Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T041",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:12.899Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T042",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:13.938Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T043",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:14.784Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T044",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:15.927Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T045",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:17.015Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T046",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:18.137Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T047",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:19.025Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T048",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:19.808Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T049",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T19:20:20.720Z"
     }
   ],
   "telemetryInstanceId": "a8dbc4c1-b846-4ee4-8679-39dc090dcaad",
@@ -246,7 +606,7 @@
       "summary": "125 tasks in 7 phases: Setup (baseline recording + Gradle skeleton), Foundational (core, format layer, test kit, R7/R8 proving tests), US1 view (MVP), US2 edit, US3 new/structure, US4 removal behind a gate, Polish; US2 and US3 file-disjoint and parallel"
     }
   },
-  "currentTask": "T003",
+  "currentTask": "T049",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -275,6 +635,322 @@
       "files": [
         "freemind/testdata/reference/spec001-test-inventory.md"
       ]
+    },
+    "T005": {
+      "status": "DONE",
+      "did": "Moved examples with git mv and committed the recorded baseline",
+      "files": [
+        "freemind/testdata/examples/"
+      ]
+    },
+    "T006": {
+      "status": "DONE",
+      "did": "Gradle 9.8.0 wrapper",
+      "files": [
+        "gradlew",
+        "gradlew.bat",
+        "gradle/wrapper/"
+      ]
+    },
+    "T007": {
+      "status": "DONE",
+      "did": "Root name EtAlii.Adp.IntelliJ, modules core/freemind/testing, central repositories, foojay toolchain resolver",
+      "files": [
+        "settings.gradle.kts"
+      ]
+    },
+    "T008": {
+      "status": "DONE",
+      "did": "Version, platform 2026.2.3, since 262; Java 25 (the platform's required level, not 21)",
+      "files": [
+        "gradle.properties"
+      ]
+    },
+    "T009": {
+      "status": "DONE",
+      "did": "IPGP 2.19 root build: composed modules, Starter integrationTest source set wired into check, verifier matrix of 8 IDEs, etalii-adp zip",
+      "files": [
+        "build.gradle.kts"
+      ]
+    },
+    "T010": {
+      "status": "DONE",
+      "did": "core platform module with platform test framework, JUnit 5 + Vintage",
+      "files": [
+        "core/build.gradle.kts"
+      ]
+    },
+    "T011": {
+      "status": "DONE",
+      "did": "freemind module on core, testing kit for tests, testdata path property",
+      "files": [
+        "freemind/build.gradle.kts"
+      ]
+    },
+    "T012": {
+      "status": "DONE",
+      "did": "testing module on core and the platform test framework",
+      "files": [
+        "testing/build.gradle.kts"
+      ]
+    },
+    "T013": {
+      "status": "DONE",
+      "did": "Descriptor per contract with four xi:include fragments and empty fallbacks",
+      "files": [
+        "src/main/resources/META-INF/plugin.xml"
+      ]
+    },
+    "T014": {
+      "status": "DONE",
+      "did": "Plugin icon",
+      "files": [
+        "src/main/resources/META-INF/pluginIcon.svg"
+      ]
+    },
+    "T015": {
+      "status": "DONE",
+      "did": "Gradle/IntelliJ ignores, previous host entries dropped",
+      "files": [
+        ".gitignore"
+      ]
+    },
+    "T016": {
+      "status": "DONE",
+      "did": "gradlew build green, buildPlugin zip produced, runIde sandbox loaded the plug-in"
+    },
+    "T017": {
+      "status": "DONE",
+      "did": "FreeMindAsserts: key, example, reference over freemind/testdata",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/FreeMindAsserts.java"
+      ]
+    },
+    "T018": {
+      "status": "DONE",
+      "did": "Fake .txt '#adpfake' format with provider, sniff, designer and structure view, registered per test",
+      "files": [
+        "core/src/test/java/etalii/adp/core/FakeFormat.java"
+      ]
+    },
+    "T019": {
+      "status": "DONE",
+      "did": "TextChangesTest: order, same-offset inserts, overlap and bounds rejection",
+      "files": [
+        "core/src/test/java/etalii/adp/core/TextChangesTest.java"
+      ]
+    },
+    "T020": {
+      "status": "DONE",
+      "did": "Rgb, TextChange, TextChanges (MultiTextEdit ordering), FormatProblem",
+      "files": [
+        "core/src/main/java/etalii/adp/core/Rgb.java",
+        "TextChange.java",
+        "TextChanges.java",
+        "FormatProblem.java"
+      ]
+    },
+    "T021": {
+      "status": "DONE",
+      "did": "Ported XmlScannerTest",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/parse/XmlScannerTest.java"
+      ]
+    },
+    "T022": {
+      "status": "DONE",
+      "did": "Ported MindMapParserTest with Rgb; lineSeparator is \\n",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/parse/MindMapParserTest.java"
+      ]
+    },
+    "T023": {
+      "status": "DONE",
+      "did": "Ported RichTextTest",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/parse/RichTextTest.java"
+      ]
+    },
+    "T024": {
+      "status": "DONE",
+      "did": "Ported FreeMindConventionsTest",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/edit/FreeMindConventionsTest.java"
+      ]
+    },
+    "T025": {
+      "status": "DONE",
+      "did": "Ported MindMapEditsTest against TextChanges",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/edit/MindMapEditsTest.java"
+      ]
+    },
+    "T026": {
+      "status": "DONE",
+      "did": "Import scan of model/parse/edit",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/FormatPurityTest.java"
+      ]
+    },
+    "T027": {
+      "status": "DONE",
+      "did": "209 replays: 101 scenarios as recorded and as CRLF, 7 no-edit round trips",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/edit/ReferenceReplayTest.java"
+      ]
+    },
+    "T028": {
+      "status": "DONE",
+      "did": "Undo bridge proved: named step, undo/redo, shared history, read-only no-op",
+      "files": [
+        "core/src/test/java/etalii/adp/core/UndoBridgeTest.java"
+      ]
+    },
+    "T029": {
+      "status": "DONE",
+      "did": "Provider and designer tests: sniff, 4 KB, policy, problem layout, banner, coalesced parse, state",
+      "files": [
+        "core/src/test/java/etalii/adp/core/AdpEditorProviderTest.java"
+      ]
+    },
+    "T030": {
+      "status": "DONE",
+      "did": "Structure view sync proved both ways for the custom editor",
+      "files": [
+        "core/src/test/java/etalii/adp/core/StructureSyncTest.java"
+      ]
+    },
+    "T031": {
+      "status": "DONE",
+      "did": "Strip-on-save off for designer files, on for others",
+      "files": [
+        "core/src/test/java/etalii/adp/core/StripTrailingSpacesTest.java"
+      ]
+    },
+    "T032": {
+      "status": "DONE",
+      "did": "Model package ported with Rgb",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/model/"
+      ]
+    },
+    "T033": {
+      "status": "DONE",
+      "did": "ViewState (fold overrides, selection listeners, zoom levels) and ADP_DESIGNER key",
+      "files": [
+        "core/src/main/java/etalii/adp/core/ViewState.java",
+        "AdpDataKeys.java"
+      ]
+    },
+    "T034": {
+      "status": "DONE",
+      "did": "NodeView record",
+      "files": [
+        "core/src/main/java/etalii/adp/core/NodeView.java"
+      ]
+    },
+    "T035": {
+      "status": "DONE",
+      "did": "ProblemPanel with line, column and Show Text",
+      "files": [
+        "core/src/main/java/etalii/adp/core/ui/ProblemPanel.java"
+      ]
+    },
+    "T036": {
+      "status": "DONE",
+      "did": "ReadOnlyBanner notification panel",
+      "files": [
+        "core/src/main/java/etalii/adp/core/ui/ReadOnlyBanner.java"
+      ]
+    },
+    "T037": {
+      "status": "DONE",
+      "did": "Icon glyph table carried over unchanged",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/ui/FreeMindIcons.java"
+      ]
+    },
+    "T038": {
+      "status": "DONE",
+      "did": "DropPosition and Layout enums",
+      "files": [
+        "testing/src/main/java/etalii/adp/testing/DropPosition.java",
+        "Layout.java"
+      ]
+    },
+    "T039": {
+      "status": "DONE",
+      "did": "XmlScanner, MindMapParser, RichText ported (Rgb only)",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/parse/"
+      ]
+    },
+    "T040": {
+      "status": "DONE",
+      "did": "AdpDesignerEditor: coalesced parse, problem panel, banner, execute as WriteCommandAction, DocumentReferenceProvider, data context, zoom, installActions, state",
+      "files": [
+        "core/src/main/java/etalii/adp/core/AdpDesignerEditor.java"
+      ]
+    },
+    "T041": {
+      "status": "DONE",
+      "did": "MindMapEdits returns Edit(label, TextChanges, created)",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/edit/"
+      ]
+    },
+    "T042": {
+      "status": "DONE",
+      "did": "AdpEditorProvider: extension + 4 KB sniff, TextEditorWithPreview composite, HIDE_DEFAULT_EDITOR, unremembered layout switch",
+      "files": [
+        "core/src/main/java/etalii/adp/core/AdpEditorProvider.java"
+      ]
+    },
+    "T043": {
+      "status": "DONE",
+      "did": "AdpStructureView: generic tree model, navigate reveals, selection is current element",
+      "files": [
+        "core/src/main/java/etalii/adp/core/AdpStructureView.java"
+      ]
+    },
+    "T044": {
+      "status": "DONE",
+      "did": "Zoom In/Out/Actual Size and Select All, enabled only with a designer",
+      "files": [
+        "core/src/main/java/etalii/adp/core/actions/"
+      ]
+    },
+    "T045": {
+      "status": "DONE",
+      "did": "Strip filter NOT_ALLOWED for files any ADP provider accepts",
+      "files": [
+        "core/src/main/java/etalii/adp/core/AdpStripTrailingSpacesFilterFactory.java"
+      ]
+    },
+    "T046": {
+      "status": "DONE",
+      "did": "DesignerDriver over a real FileEditorManagerImpl (FileEditorManagerTestCase)",
+      "files": [
+        "testing/src/main/java/etalii/adp/testing/DesignerDriver.java"
+      ]
+    },
+    "T047": {
+      "status": "DONE",
+      "did": "FreeMind Structure view over NodeKey with first icon glyph",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/ui/MindMapStructureView.java"
+      ]
+    },
+    "T048": {
+      "status": "DONE",
+      "did": "Strip filter and core actions with default shortcuts registered",
+      "files": [
+        "core/src/main/resources/META-INF/adp-core.xml"
+      ]
+    },
+    "T049": {
+      "status": "DONE",
+      "did": "core and freemind tests: 306 green incl. every reference scenario"
     }
   }
 }

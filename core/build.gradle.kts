@@ -1,0 +1,36 @@
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
+plugins {
+    id("java")
+    id("org.jetbrains.intellij.platform.module")
+}
+
+val javaRelease = providers.gradleProperty("javaVersion").get().toInt()
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release = javaRelease
+    options.encoding = "UTF-8"
+}
+
+dependencies {
+    intellijPlatform {
+        intellijIdea(providers.gradleProperty("platformVersion"))
+        testFramework(TestFrameworkType.Platform)
+    }
+    testImplementation(project(":testing"))
+    testImplementation(platform("org.junit:junit-bom:5.13.4"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("junit:junit:4.13.2")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+// The unified IntelliJ IDEA distribution's Ultimate part cannot start in the headless test IDE;
+// the plug-in depends only on the platform, so its tests run without it.
+tasks.prepareTestSandbox {
+    disabledPlugins.add("com.intellij.modules.ultimate")
+}

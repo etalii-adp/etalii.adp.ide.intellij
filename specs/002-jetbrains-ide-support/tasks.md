@@ -49,24 +49,24 @@ beside it. The previous build is not run again after T004.
 
 **⟶ Wait for T004, then:**
 
-- [ ] **T005** Move the example maps and their licence files with `git mv` from `tests/etalii.adp.freemind.tests/examples/` and commit the recorded baseline (scenarios, results, inventory, moved examples) · `freemind/testdata/examples/`
+- [x] **T005** Move the example maps and their licence files with `git mv` from `tests/etalii.adp.freemind.tests/examples/` and commit the recorded baseline (scenarios, results, inventory, moved examples) · `freemind/testdata/examples/`
 
 **⟶ Wait for T005, then Wave 2 — independent (different files):**
 
-- [ ] **T006** [P] Add the Gradle 9 wrapper · `gradlew`, `gradlew.bat`, `gradle/wrapper/gradle-wrapper.properties`, `gradle/wrapper/gradle-wrapper.jar`
-- [ ] **T007** [P] `rootProject.name = "EtAlii.Adp.IntelliJ"`, include `core`, `freemind`, `testing` · `settings.gradle.kts`
-- [ ] **T008** [P] Plug-in version, platform version `2026.2.3`, `sinceBuild=262`, Java 21 · `gradle.properties`
-- [ ] **T009** [P] Root build: IntelliJ Platform Gradle Plugin 2.19, `intellijIdea("2026.2.3")` with no bundled plug-ins, `pluginComposedModule` for `core` and `freemind`, JUnit 5 Jupiter plus Vintage, the `integrationTest` source set (Starter + Driver, depends on `buildPlugin`, wired into `check`), `verifyPlugin` against IntelliJ IDEA, Rider, WebStorm, PyCharm, CLion, GoLand, PhpStorm and RubyMine from build 262, archive name `etalii-adp-<version>.zip` · `build.gradle.kts`
-- [ ] **T010** [P] `core` module: `org.jetbrains.intellij.platform.module`, platform test framework for tests · `core/build.gradle.kts`
-- [ ] **T011** [P] `freemind` module: depends on `core`, test dependency on `testing`, `testdata/` on the test classpath · `freemind/build.gradle.kts`
-- [ ] **T012** [P] `testing` module: depends on `core` and the platform test framework · `testing/build.gradle.kts`
-- [ ] **T013** [P] Plug-in descriptor per contracts/plugin-contributions.md (id `etalii.adp`, name, vendor, `since-build="262"`, depends only on `com.intellij.modules.platform`, description naming Apache-2.0) with the four `xi:include`s and empty fallbacks · `src/main/resources/META-INF/plugin.xml`
-- [ ] **T014** [P] Plug-in icon · `src/main/resources/META-INF/pluginIcon.svg`
-- [ ] **T015** [P] Rewrite for Gradle: `build/`, `.gradle/`, `.intellijPlatform/`, `out/`, `*.class`, `.idea/` workspace files, keep the Python, agent-local and OS entries, drop the previous host's entries · `.gitignore`
+- [x] **T006** [P] Add the Gradle 9 wrapper · `gradlew`, `gradlew.bat`, `gradle/wrapper/gradle-wrapper.properties`, `gradle/wrapper/gradle-wrapper.jar`
+- [x] **T007** [P] `rootProject.name = "EtAlii.Adp.IntelliJ"`, include `core`, `freemind`, `testing` · `settings.gradle.kts`
+- [x] **T008** [P] Plug-in version, platform version `2026.2.3`, `sinceBuild=262`, Java 21 · `gradle.properties`
+- [x] **T009** [P] Root build: IntelliJ Platform Gradle Plugin 2.19, `intellijIdea("2026.2.3")` with no bundled plug-ins, `pluginComposedModule` for `core` and `freemind`, JUnit 5 Jupiter plus Vintage, the `integrationTest` source set (Starter + Driver, depends on `buildPlugin`, wired into `check`), `verifyPlugin` against IntelliJ IDEA, Rider, WebStorm, PyCharm, CLion, GoLand, PhpStorm and RubyMine from build 262, archive name `etalii-adp-<version>.zip` · `build.gradle.kts`
+- [x] **T010** [P] `core` module: `org.jetbrains.intellij.platform.module`, platform test framework for tests · `core/build.gradle.kts`
+- [x] **T011** [P] `freemind` module: depends on `core`, test dependency on `testing`, `testdata/` on the test classpath · `freemind/build.gradle.kts`
+- [x] **T012** [P] `testing` module: depends on `core` and the platform test framework · `testing/build.gradle.kts`
+- [x] **T013** [P] Plug-in descriptor per contracts/plugin-contributions.md (id `etalii.adp`, name, vendor, `since-build="262"`, depends only on `com.intellij.modules.platform`, description naming Apache-2.0) with the four `xi:include`s and empty fallbacks · `src/main/resources/META-INF/plugin.xml`
+- [x] **T014** [P] Plug-in icon · `src/main/resources/META-INF/pluginIcon.svg`
+- [x] **T015** [P] Rewrite for Gradle: `build/`, `.gradle/`, `.intellijPlatform/`, `out/`, `*.class`, `.idea/` workspace files, keep the Python, agent-local and OS entries, drop the previous host's entries · `.gitignore`
 
 **⟶ Wait for Wave 2 to finish, then:**
 
-- [ ] **T016** Run `./gradlew build` (green with no sources yet) and `./gradlew runIde` (sandbox IDE starts with the empty plug-in installed) · (no file)
+- [x] **T016** Run `./gradlew build` (green with no sources yet) and `./gradlew runIde` (sandbox IDE starts with the empty plug-in installed) · (no file)
 
 ---
 
@@ -85,62 +85,62 @@ Files: `core/src/main/java/etalii/adp/core/**`, `core/src/main/resources/META-IN
 
 **Wave 1 — independent (different files):**
 
-- [ ] **T017** [P] Port `MindMapAsserts` as `key(...)`, `example(...)`, `reference(...)` over `freemind/testdata/` · `freemind/src/test/java/etalii/adp/freemind/FreeMindAsserts.java`
-- [ ] **T018** [P] A minimal second format for core tests (a line-per-item `.adpfake` file with its own provider, sniffer and designer), registered per test through `ExtensionTestUtil`. It also shows a format needs no core change (FR-019) · `core/src/test/java/etalii/adp/core/FakeFormat.java`
-- [ ] **T019** [P] Port `DocumentEditOperationTest`: inserts, deletes, replaces, same-offset order, overlap rejection, `applyTo(String)` · `core/src/test/java/etalii/adp/core/TextChangesTest.java`
+- [x] **T017** [P] Port `MindMapAsserts` as `key(...)`, `example(...)`, `reference(...)` over `freemind/testdata/` · `freemind/src/test/java/etalii/adp/freemind/FreeMindAsserts.java`
+- [x] **T018** [P] A minimal second format for core tests (a line-per-item `.adpfake` file with its own provider, sniffer and designer), registered per test through `ExtensionTestUtil`. It also shows a format needs no core change (FR-019) · `core/src/test/java/etalii/adp/core/FakeFormat.java`
+- [x] **T019** [P] Port `DocumentEditOperationTest`: inserts, deletes, replaces, same-offset order, overlap rejection, `applyTo(String)` · `core/src/test/java/etalii/adp/core/TextChangesTest.java`
 
 **⟶ Wait for Wave 1 to finish, then Wave 2 — independent (different files):**
 
-- [ ] **T020** [P] Implement `Rgb`, `TextChange`, `TextChanges` (`applyTo(String)`, `applyTo(Document)` highest offset first), `FormatProblem(message, offset)` per data-model.md · `core/src/main/java/etalii/adp/core/Rgb.java`, `TextChange.java`, `TextChanges.java`, `FormatProblem.java`
-- [ ] **T021** [P] Port `XmlScannerTest` · `freemind/src/test/java/etalii/adp/freemind/parse/XmlScannerTest.java`
-- [ ] **T022** [P] Port `MindMapParserTest` (colours as `Rgb`, `lineSeparator` always `\n`) · `freemind/src/test/java/etalii/adp/freemind/parse/MindMapParserTest.java`
-- [ ] **T023** [P] Port `RichTextTest` · `freemind/src/test/java/etalii/adp/freemind/parse/RichTextTest.java`
-- [ ] **T024** [P] Port `FreeMindConventionsTest` · `freemind/src/test/java/etalii/adp/freemind/edit/FreeMindConventionsTest.java`
-- [ ] **T025** [P] Port `MindMapEditsTest` against `TextChanges` · `freemind/src/test/java/etalii/adp/freemind/edit/MindMapEditsTest.java`
-- [ ] **T026** [P] Import scan: `model`, `parse`, `edit` import nothing from `com.intellij`, `java.awt`, `javax.swing` · `freemind/src/test/java/etalii/adp/freemind/FormatPurityTest.java`
-- [ ] **T027** [P] Replay every scenario in `scenarios.json` through the ported format layer and compare with the recorded bytes, after converting the example's separators as the platform `Document` would and restoring them on write (FR-008, SC-003); also open-and-write without edits for every example (SC-002, format level) · `freemind/src/test/java/etalii/adp/freemind/edit/ReferenceReplayTest.java`
-- [ ] **T028** [P] **Proving test (R7)**, port of `OperationHistoryCommandStackTest`: open a fake-format file, `execute("Rename Item", changes)` with the designer focused, assert `UndoManager` offers "Undo Rename Item", undo restores the text, redo reapplies, one command is one step, `execute` on a read-only document is a no-op · `core/src/test/java/etalii/adp/core/UndoBridgeTest.java`
-- [ ] **T029** [P] Port `AdpDesignerEditorTest` as provider and designer tests: accept only with extension and sniff, sniff reads at most 4 KB, `HIDE_DEFAULT_EDITOR`, composite is `TextEditorWithPreview` in preview layout, a `FormatProblem` opens in text layout with the problem panel and line and column and writes nothing, read-only banner follows writability, coalesced re-parse, `getState`/`setState` keep zoom and selection · `core/src/test/java/etalii/adp/core/AdpEditorProviderTest.java`
-- [ ] **T030** [P] **Proving test (R8)**: with the fake format, selecting a Structure view element reveals and selects the item in the designer, and selecting in the designer makes it the model's current element; the composite's `getStructureViewBuilder` is the designer's, not the text side's · `core/src/test/java/etalii/adp/core/StructureSyncTest.java`
-- [ ] **T031** [P] Trailing-space stripping is `NOT_ALLOWED` for accepted files and untouched for others, with "strip on save" enabled · `core/src/test/java/etalii/adp/core/StripTrailingSpacesTest.java`
+- [x] **T020** [P] Implement `Rgb`, `TextChange`, `TextChanges` (`applyTo(String)`, `applyTo(Document)` highest offset first), `FormatProblem(message, offset)` per data-model.md · `core/src/main/java/etalii/adp/core/Rgb.java`, `TextChange.java`, `TextChanges.java`, `FormatProblem.java`
+- [x] **T021** [P] Port `XmlScannerTest` · `freemind/src/test/java/etalii/adp/freemind/parse/XmlScannerTest.java`
+- [x] **T022** [P] Port `MindMapParserTest` (colours as `Rgb`, `lineSeparator` always `\n`) · `freemind/src/test/java/etalii/adp/freemind/parse/MindMapParserTest.java`
+- [x] **T023** [P] Port `RichTextTest` · `freemind/src/test/java/etalii/adp/freemind/parse/RichTextTest.java`
+- [x] **T024** [P] Port `FreeMindConventionsTest` · `freemind/src/test/java/etalii/adp/freemind/edit/FreeMindConventionsTest.java`
+- [x] **T025** [P] Port `MindMapEditsTest` against `TextChanges` · `freemind/src/test/java/etalii/adp/freemind/edit/MindMapEditsTest.java`
+- [x] **T026** [P] Import scan: `model`, `parse`, `edit` import nothing from `com.intellij`, `java.awt`, `javax.swing` · `freemind/src/test/java/etalii/adp/freemind/FormatPurityTest.java`
+- [x] **T027** [P] Replay every scenario in `scenarios.json` through the ported format layer and compare with the recorded bytes, after converting the example's separators as the platform `Document` would and restoring them on write (FR-008, SC-003); also open-and-write without edits for every example (SC-002, format level) · `freemind/src/test/java/etalii/adp/freemind/edit/ReferenceReplayTest.java`
+- [x] **T028** [P] **Proving test (R7)**, port of `OperationHistoryCommandStackTest`: open a fake-format file, `execute("Rename Item", changes)` with the designer focused, assert `UndoManager` offers "Undo Rename Item", undo restores the text, redo reapplies, one command is one step, `execute` on a read-only document is a no-op · `core/src/test/java/etalii/adp/core/UndoBridgeTest.java`
+- [x] **T029** [P] Port `AdpDesignerEditorTest` as provider and designer tests: accept only with extension and sniff, sniff reads at most 4 KB, `HIDE_DEFAULT_EDITOR`, composite is `TextEditorWithPreview` in preview layout, a `FormatProblem` opens in text layout with the problem panel and line and column and writes nothing, read-only banner follows writability, coalesced re-parse, `getState`/`setState` keep zoom and selection · `core/src/test/java/etalii/adp/core/AdpEditorProviderTest.java`
+- [x] **T030** [P] **Proving test (R8)**: with the fake format, selecting a Structure view element reveals and selects the item in the designer, and selecting in the designer makes it the model's current element; the composite's `getStructureViewBuilder` is the designer's, not the text side's · `core/src/test/java/etalii/adp/core/StructureSyncTest.java`
+- [x] **T031** [P] Trailing-space stripping is `NOT_ALLOWED` for accepted files and untouched for others, with "strip on save" enabled · `core/src/test/java/etalii/adp/core/StripTrailingSpacesTest.java`
 
 ### Implementation
 
 **⟶ Wait for Wave 2 to finish, then Wave 3 — independent (different files):**
 
-- [ ] **T032** [P] Port the model package with `Rgb` for colours: `MindMap`, `MapNode`, `ArrowLink`, `NodeKey`, `NodeRanges`, `Range`, `Side`, `FontSpec`, `AttributeRange` · `freemind/src/main/java/etalii/adp/freemind/model/*.java`
-- [ ] **T033** [P] `ViewState` (expanded, selection, zoom 0.25 to 4.0 in steps) and `AdpDataKeys` (`ADP_DESIGNER`) · `core/src/main/java/etalii/adp/core/ViewState.java`, `AdpDataKeys.java`
-- [ ] **T034** [P] `NodeView` record: key, bounds, text, foreground, background, font, icon glyphs, link and note indicators, folded flag · `core/src/main/java/etalii/adp/core/NodeView.java`
-- [ ] **T035** [P] Problem panel: message, line, column, "Show Text" link (replaces `MessagePanel`) · `core/src/main/java/etalii/adp/core/ui/ProblemPanel.java`
-- [ ] **T036** [P] Read-only banner as an `EditorNotificationPanel` stating the reason · `core/src/main/java/etalii/adp/core/ui/ReadOnlyBanner.java`
-- [ ] **T037** [P] Port the builtin-icon to Unicode glyph table · `freemind/src/main/java/etalii/adp/freemind/ui/FreeMindIcons.java`
-- [ ] **T038** [P] Port `DropPosition`; `Layout` enum (DESIGNER, TEXT, SPLIT) replacing `Page` · `testing/src/main/java/etalii/adp/testing/DropPosition.java`, `Layout.java`
+- [x] **T032** [P] Port the model package with `Rgb` for colours: `MindMap`, `MapNode`, `ArrowLink`, `NodeKey`, `NodeRanges`, `Range`, `Side`, `FontSpec`, `AttributeRange` · `freemind/src/main/java/etalii/adp/freemind/model/*.java`
+- [x] **T033** [P] `ViewState` (expanded, selection, zoom 0.25 to 4.0 in steps) and `AdpDataKeys` (`ADP_DESIGNER`) · `core/src/main/java/etalii/adp/core/ViewState.java`, `AdpDataKeys.java`
+- [x] **T034** [P] `NodeView` record: key, bounds, text, foreground, background, font, icon glyphs, link and note indicators, folded flag · `core/src/main/java/etalii/adp/core/NodeView.java`
+- [x] **T035** [P] Problem panel: message, line, column, "Show Text" link (replaces `MessagePanel`) · `core/src/main/java/etalii/adp/core/ui/ProblemPanel.java`
+- [x] **T036** [P] Read-only banner as an `EditorNotificationPanel` stating the reason · `core/src/main/java/etalii/adp/core/ui/ReadOnlyBanner.java`
+- [x] **T037** [P] Port the builtin-icon to Unicode glyph table · `freemind/src/main/java/etalii/adp/freemind/ui/FreeMindIcons.java`
+- [x] **T038** [P] Port `DropPosition`; `Layout` enum (DESIGNER, TEXT, SPLIT) replacing `Page` · `testing/src/main/java/etalii/adp/testing/DropPosition.java`, `Layout.java`
 
 **⟶ Wait for Wave 3 to finish, then Wave 4 — independent (different files):**
 
-- [ ] **T039** [P] Port `XmlScanner`, `MindMapParser`, `RichText` unchanged in logic · `freemind/src/main/java/etalii/adp/freemind/parse/*.java`
-- [ ] **T040** [P] `AdpDesignerEditor<M>` per contracts/designer-framework.md: `FileEditor` plus `DocumentReferenceProvider`, coalesced parse on open and on document change, `modelChanged`, problem panel and switch to text layout, read-only banner and `isEditable()`, `execute(label, changes)` as one `WriteCommandAction`, `DataContext` (`ADP_DESIGNER`, `SELECTED_ITEMS`), selection in `ViewState` with listeners, abstract `reveal(key)` and `viewOf(key)`, zoom and `JBScrollPane`, `installActions(view, groupId)`, `getState`/`setState`, `dispose` · `core/src/main/java/etalii/adp/core/AdpDesignerEditor.java`
+- [x] **T039** [P] Port `XmlScanner`, `MindMapParser`, `RichText` unchanged in logic · `freemind/src/main/java/etalii/adp/freemind/parse/*.java`
+- [x] **T040** [P] `AdpDesignerEditor<M>` per contracts/designer-framework.md: `FileEditor` plus `DocumentReferenceProvider`, coalesced parse on open and on document change, `modelChanged`, problem panel and switch to text layout, read-only banner and `isEditable()`, `execute(label, changes)` as one `WriteCommandAction`, `DataContext` (`ADP_DESIGNER`, `SELECTED_ITEMS`), selection in `ViewState` with listeners, abstract `reveal(key)` and `viewOf(key)`, zoom and `JBScrollPane`, `installActions(view, groupId)`, `getState`/`setState`, `dispose` · `core/src/main/java/etalii/adp/core/AdpDesignerEditor.java`
 
 **⟶ Wait for Wave 4 to finish, then Wave 5 — independent (different files):**
 
-- [ ] **T041** [P] Port `MindMapEdits` and `FreeMindConventions` returning `Edit(label, TextChanges, created)` · `freemind/src/main/java/etalii/adp/freemind/edit/*.java`
-- [ ] **T042** [P] `AdpEditorProvider` (`DumbAware`): `accept` = extension and 4 KB sniff via `VirtualFile.getInputStream`, `createEditor` returns a `TextEditorWithPreview` subclass (preview-only default, text layout on a problem, `getStructureViewBuilder` delegated to the designer), policy `HIDE_DEFAULT_EDITOR` · `core/src/main/java/etalii/adp/core/AdpEditorProvider.java`
-- [ ] **T043** [P] Generic Structure view: `TreeBasedStructureViewBuilder` and model base over a designer, navigate calls `reveal`, designer selection drives the current element and fires model change · `core/src/main/java/etalii/adp/core/AdpStructureView.java`
-- [ ] **T044** [P] Zoom In, Zoom Out, Actual Size and Select All Nodes actions, enabled only with a focused designer · `core/src/main/java/etalii/adp/core/actions/ZoomActions.java`, `SelectAllAction.java`
+- [x] **T041** [P] Port `MindMapEdits` and `FreeMindConventions` returning `Edit(label, TextChanges, created)` · `freemind/src/main/java/etalii/adp/freemind/edit/*.java`
+- [x] **T042** [P] `AdpEditorProvider` (`DumbAware`): `accept` = extension and 4 KB sniff via `VirtualFile.getInputStream`, `createEditor` returns a `TextEditorWithPreview` subclass (preview-only default, text layout on a problem, `getStructureViewBuilder` delegated to the designer), policy `HIDE_DEFAULT_EDITOR` · `core/src/main/java/etalii/adp/core/AdpEditorProvider.java`
+- [x] **T043** [P] Generic Structure view: `TreeBasedStructureViewBuilder` and model base over a designer, navigate calls `reveal`, designer selection drives the current element and fires model change · `core/src/main/java/etalii/adp/core/AdpStructureView.java`
+- [x] **T044** [P] Zoom In, Zoom Out, Actual Size and Select All Nodes actions, enabled only with a focused designer · `core/src/main/java/etalii/adp/core/actions/ZoomActions.java`, `SelectAllAction.java`
 
 **⟶ Wait for Wave 5 to finish, then Wave 6 — independent (different files):**
 
-- [ ] **T045** [P] `stripTrailingSpacesFilterFactory` returning `NOT_ALLOWED` when any registered `AdpEditorProvider` accepts the file · `core/src/main/java/etalii/adp/core/AdpStripTrailingSpacesFilterFactory.java`
-- [ ] **T046** [P] Port `DesignerDriver` to contracts/test-kit.md: `open`/`openText` through the fixture, `run` through `ActionManager` with the designer's `DataContext`, `press` to the focused view, `dragOnto` as mouse events at `viewOf` bounds, `typeInPlace` into the focused in-place field, `undo`/`redo` through `$Undo`/`$Redo`, layouts, text edits, disk change with VFS refresh, read-only, observers, `settle` · `testing/src/main/java/etalii/adp/testing/DesignerDriver.java`
-- [ ] **T047** [P] FreeMind Structure view elements over `NodeKey`: node text with its first icon glyph, children in document order, built on `AdpStructureView` · `freemind/src/main/java/etalii/adp/freemind/ui/MindMapStructureView.java`
+- [x] **T045** [P] `stripTrailingSpacesFilterFactory` returning `NOT_ALLOWED` when any registered `AdpEditorProvider` accepts the file · `core/src/main/java/etalii/adp/core/AdpStripTrailingSpacesFilterFactory.java`
+- [x] **T046** [P] Port `DesignerDriver` to contracts/test-kit.md: `open`/`openText` through the fixture, `run` through `ActionManager` with the designer's `DataContext`, `press` to the focused view, `dragOnto` as mouse events at `viewOf` bounds, `typeInPlace` into the focused in-place field, `undo`/`redo` through `$Undo`/`$Redo`, layouts, text edits, disk change with VFS refresh, read-only, observers, `settle` · `testing/src/main/java/etalii/adp/testing/DesignerDriver.java`
+- [x] **T047** [P] FreeMind Structure view elements over `NodeKey`: node text with its first icon glyph, children in document order, built on `AdpStructureView` · `freemind/src/main/java/etalii/adp/freemind/ui/MindMapStructureView.java`
 
 **⟶ Wait for Wave 6 to finish, then:**
 
-- [ ] **T048** Register the strip filter and the core actions with their `$default` shortcuts (`Ctrl+A`, `Ctrl+=`, `Ctrl+-`, `Ctrl+0`) · `core/src/main/resources/META-INF/adp-core.xml`
+- [x] **T048** Register the strip filter and the core actions with their `$default` shortcuts (`Ctrl+A`, `Ctrl+=`, `Ctrl+-`, `Ctrl+0`) · `core/src/main/resources/META-INF/adp-core.xml`
 
 **⟶ Wait for T048, then:**
 
-- [ ] **T049** Run `./gradlew :core:test :freemind:test`: T019 to T031 green, including every reference scenario · (no file)
+- [x] **T049** Run `./gradlew :core:test :freemind:test`: T019 to T031 green, including every reference scenario · (no file)
 
 **Checkpoint**: framework, format layer and test kit ready; the undo bridge and Structure view sync are proved for a non-text editor.
 

@@ -12,8 +12,8 @@ This file lists every spec 001 test method with the behaviour it verifies and th
 | `AdpDesignerEditorTest.aMalformedFileOpensOnTheTextPageUnmodified` | A malformed file opens on the text page without being modified. | `AdpEditorProviderTest.aMalformedFileOpensOnTheTextPageUnmodified` |
 | `AdpDesignerEditorTest.aReadOnlyInputShowsTheBannerAndCannotBeEdited` | A read-only input shows a banner and cannot be edited. | `AdpEditorProviderTest.aReadOnlyInputShowsTheBannerAndCannotBeEdited` |
 | `AdpDesignerEditorTest.executeLandsOneLabelledUndoEntry` | Executing a designer edit adds exactly one labelled undo entry. | `AdpEditorProviderTest.executeLandsOneLabelledUndoEntry` |
-| `DocumentEditOperationTest.oneLabelledEntryThatUndoesAndRedoesInOneStep` | A text edit is one labelled entry that undoes and redoes in one step. | `TextChangesTest.oneLabelledEntryThatUndoesAndRedoesInOneStep` |
-| `DocumentEditOperationTest.typingAfterAnEditIsItsOwnEntry` | Typing after a designer edit becomes its own undo entry. | `TextChangesTest.typingAfterAnEditIsItsOwnEntry` |
+| `DocumentEditOperationTest.oneLabelledEntryThatUndoesAndRedoesInOneStep` | A text edit is one labelled entry that undoes and redoes in one step. | `UndoBridgeTest.oneLabelledEntryThatUndoesAndRedoesInOneStep` |
+| `DocumentEditOperationTest.typingAfterAnEditIsItsOwnEntry` | Typing after a designer edit becomes its own undo entry. | `UndoBridgeTest.typingAfterAnEditIsItsOwnEntry` |
 | `DocumentEditOperationTest.aBadEditLeavesTheDocumentUnchanged` | An edit that cannot be applied leaves the document unchanged. | `TextChangesTest.aBadEditLeavesTheDocumentUnchanged` |
 | `OperationHistoryCommandStackTest.routesATextEditCommandToItsExecutor` | A text edit command is routed to its executor. | `UndoBridgeTest.routesATextEditCommandToItsExecutor` |
 | `OperationHistoryCommandStackTest.refusesOtherCommands` | Commands that are not text edits are refused. | `UndoBridgeTest.refusesOtherCommands` |
