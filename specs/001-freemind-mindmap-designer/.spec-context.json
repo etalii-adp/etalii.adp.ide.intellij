@@ -4,7 +4,7 @@
   "branch": "001-freemind-mindmap-designer",
   "selectedAt": "2026-09-24T12:52:04.101Z",
   "currentStep": "implement",
-  "status": "implementing",
+  "status": "completed",
   "history": [
     {
       "step": "specify",
@@ -763,6 +763,21 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-24T16:37:42.137Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T087",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T16:54:26.843Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T16:54:27.085Z"
     }
   ],
   "telemetryInstanceId": "77cd8d67-df26-43c6-94cc-4fbe48f8ad21",
@@ -1107,7 +1122,7 @@
     }
   },
   "approach": "The FreeMind designer is a multi-page Eclipse editor: a GEF Classic visual page and the platform's TextEditor over one IDocument. The visual model is re-parsed from the text after every change, and each visual edit is a range-exact TextEdit run as one labelled operation on the document's undo context, so save, dirty state, undo and byte fidelity come from the platform. A format-agnostic etalii.adp.core framework hosts the lifecycle, and etalii.adp.freemind supplies the parsing, edits and figures.",
-  "currentTask": "T086",
+  "currentTask": "T087",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -1716,6 +1731,13 @@
     "T086": {
       "status": "DONE",
       "did": "mvn clean verify: BUILD SUCCESS, 220 tests, 0 failures, 7 skipped (opt-in FreeMind check), 0 warnings"
+    },
+    "T087": {
+      "status": "DONE",
+      "did": "Manual checks approved by the project owner: FreeMind 1.0.1 checks passed (3/3 ticked); SC-006 walkthrough approved without itemised steps",
+      "files": [
+        "specs/001-freemind-mindmap-designer/checklists/manual-verification.md"
+      ]
     }
   },
   "verified": [

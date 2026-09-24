@@ -31,8 +31,8 @@
 
 ## Notes
 
-- Eclipse, its standard views and menus, and the FreeMind file format (XML, rich HTML node content, numeric character references) are named because they are the product's domain and the user's stated requirement, not implementation choices. No language, library or internal structure is prescribed.
-- The audience is developers using Eclipse; "non-technical stakeholder" is read as "someone who does not need to know how the plug-in is built".
+- The host IDE's standard views and menus, and the FreeMind file format (XML, rich HTML node content, numeric character references) are named because they are the product's domain and the user's stated requirement, not implementation choices. No language, library or internal structure is prescribed.
+- The audience is developers using an IDE; "non-technical stakeholder" is read as "someone who does not need to know how the plug-in is built".
 - Iteration 1 fixed FR-020, which offered two alternative behaviours (preserve formatting *or* warn); it now specifies one (warn, with cancel).
 - Iteration 2 resolved the single [NEEDS CLARIFICATION] marker (FR-018) with the user: display icons, colours, fonts, hyperlinks and notes; edit only structure and text.
 - Resume pass (2026-09-24, Companion): re-graded every item against the committed spec. All 27 functional requirements are single testable MUSTs, no clarification markers remain, and the six success criteria are measurable and technology-agnostic. No fixes were needed; the spec is ready for planning.

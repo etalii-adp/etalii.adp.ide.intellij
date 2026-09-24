@@ -324,7 +324,7 @@ Files: `fm-tests/ui/PerformanceTest.java`, `fm-tests/ui/FreeMindCompatibilityTes
 
 **⟶ Wait for T086, then:**
 
-- [ ] **T087** Manual checks before merge, recorded with date and result: open saved maps in FreeMind 1.0.1 (FR-012, SC-005); a first-time walkthrough of open, add five nodes, undo two, save, without documentation (SC-006) · `specs/001-freemind-mindmap-designer/checklists/manual-verification.md`
+- [x] **T087** Manual checks before merge, recorded with date and result: open saved maps in FreeMind 1.0.1 (FR-012, SC-005); a first-time walkthrough of open, add five nodes, undo two, save, without documentation (SC-006) · `specs/001-freemind-mindmap-designer/checklists/manual-verification.md`
 
 ---
 

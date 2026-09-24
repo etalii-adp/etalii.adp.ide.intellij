@@ -1,0 +1,139 @@
+{
+  "workflow": "companion",
+  "specName": "Jetbrains Ide Support",
+  "branch": "002-jetbrains-ide-support",
+  "currentStep": "plan",
+  "status": "planning",
+  "history": [
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-09-24T16:42:01.436Z"
+    },
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-09-24T16:44:46.599Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-09-24T16:57:45.966Z"
+    }
+  ],
+  "telemetryInstanceId": "a8dbc4c1-b846-4ee4-8679-39dc090dcaad",
+  "selectedAt": "2026-09-24T16:42:01.436Z",
+  "last_action": "living specs evaluated — no capabilities matched",
+  "coverage": {
+    "FR-001": {
+      "title": "Installs and runs in every IntelliJ Platform IDE at the supported release"
+    },
+    "FR-002": {
+      "title": "Default editor for FreeMind .mm files only"
+    },
+    "FR-003": {
+      "title": "Same file viewable in the IDE text editor, one document and undo history"
+    },
+    "FR-004": {
+      "title": "Every designer change is one named step in the IDE's Undo/Redo"
+    },
+    "FR-005": {
+      "title": "Modified state, save, close, reload and Local History behave as the text editor"
+    },
+    "FR-006": {
+      "title": "Open and save without edits is byte-identical"
+    },
+    "FR-007": {
+      "title": "An edit changes only the parts representing the edited content"
+    },
+    "FR-008": {
+      "title": "Same edits produce byte-identical text in JetBrains and Eclipse editions"
+    },
+    "FR-009": {
+      "title": "Uninterpretable file opens as text with explanation, unchanged"
+    },
+    "FR-010": {
+      "title": "Read-only files open view-only with the reason stated"
+    },
+    "FR-011": {
+      "title": "Displays everything the Eclipse edition displays"
+    },
+    "FR-012": {
+      "title": "Offers every Eclipse editing action from keyboard and context menu"
+    },
+    "FR-013": {
+      "title": "Designer shortcuts rebindable in the IDE keymap"
+    },
+    "FR-014": {
+      "title": "New mind map from the IDE New file menu"
+    },
+    "FR-015": {
+      "title": "Node tree in the Structure view with two-way selection sync"
+    },
+    "FR-016": {
+      "title": "Legible under light and dark themes and any font scale"
+    },
+    "FR-017": {
+      "title": "Eclipse edition unchanged; its tests pass unchanged"
+    },
+    "FR-018": {
+      "title": "A format correction reaches both editions from a single change"
+    },
+    "FR-019": {
+      "title": "New format needs no change to shared infrastructure or other formats"
+    },
+    "FR-020": {
+      "title": "One headless build produces both editions and runs all tests"
+    },
+    "FR-021": {
+      "title": "No network access at runtime"
+    }
+  },
+  "size": "oversized",
+  "classification": {
+    "projectedFiles": 60,
+    "projectedTasks": 45,
+    "scopeSignal": "larger",
+    "verdict": "oversized"
+  },
+  "expectations": [
+    "JetBrains Marketplace publication",
+    "JetBrains Fleet, Gateway thin clients, Visual Studio/ReSharper",
+    "Android Studio testing",
+    "features beyond spec 001 parity",
+    "older IntelliJ Platform releases"
+  ],
+  "context": [
+    "area: bundles/etalii.adp.core (Eclipse designer framework)",
+    "area: bundles/etalii.adp.freemind (format model/parse/edit plus Eclipse UI)",
+    "area: build (Maven/Tycho, features, releng)",
+    "constraint: constitution v1.0.0 is Eclipse-only and needs amendment before plan",
+    "constraint: parity with spec 001 FreeMind designer"
+  ],
+  "intent": "Ship a JetBrains (IntelliJ Platform) edition of the ADP designer with parity to the Eclipse edition, sharing format behaviour",
+  "concerns": [
+    {
+      "note": "This change resolved no living-spec capability, so nothing was loaded before it and nothing was folded after it. Either the areas it touched belong to no capability yet, or a capability claims them and no requirement describes them — `living-validate` names which."
+    }
+  ],
+  "reviewComments": [
+    {
+      "id": "ref-1790268956155-9pgni",
+      "doc": "spec",
+      "anchor": {
+        "heading": "Feature Specification: JetBrains IDE Support",
+        "blockText": "**Feature Branch**: `002-jetbrains-ide-support`\n**Created**: 2026-09-24\n**Status**: Draft\n**Input**: \"Enhance the codebase so that it also runs in IntelliJ, JetBrains Rider and other related IDE's.\"",
+        "line": 5
+      },
+      "comment": "Take notice that this specification is not intended to be an additional plug-in. The work should be to replace the eclipse plug-in completely with a intellij plug-in. \n\nThere should be no traces of eclipse left.",
+      "status": "applied",
+      "createdAt": "2026-09-24T16:55:56.156Z"
+    }
+  ]
+}

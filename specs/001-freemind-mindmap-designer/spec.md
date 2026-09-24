@@ -6,10 +6,10 @@
 
 **Status**: Draft
 
-**Input**: User description: "A simple Eclipse plug-in that adds multiple new visual designers for
-text-based files. It should embrace all features from Eclipse, like the undo-redo stack, and the
-designers should also be registered correctly for the specific file extensions. Use the FreeMind
-XML file format as the first visual designer."
+**Input**: User description (restated host-neutrally): "A simple IDE plug-in that adds multiple
+new visual designers for text-based files. It should embrace all features of the IDE, like the
+undo-redo stack, and the designers should also be registered correctly for the specific file
+extensions. Use the FreeMind XML file format as the first visual designer."
 
 **Refinement**: The plug-in is named **A Different Perspective (ADP)**. FreeMind is the first of
 many file formats ADP will visualise; each visual designer, such as the FreeMind one, is referred
@@ -20,7 +20,7 @@ to as a *supported file format* of ADP.
 This is the first feature of the A Different Perspective (ADP) plug-in and delivers its first
 supported file format, FreeMind mind maps. More supported file formats, each with its own visual
 designer, will follow. The behaviours this feature defines for *how a supported file format lives
-inside Eclipse* (registration, undo/redo, dirty state and save, the paired text view, preserving
+inside the IDE* (registration, undo/redo, dirty state and save, the paired text view, preserving
 what it does not understand) are the ones every later ADP supported file format will be expected
 to share; only the mind-map-specific parts are unique to this feature.
 
@@ -43,12 +43,12 @@ attributes and arrow links drawn between arbitrary nodes.
 ### User Story 1 - Open and view a mind map (Priority: P1)
 
 A developer keeps a project mind map (`roadmap.mm`) in their repository. They double-click it in
-the Project Explorer and it opens in the ADP mind map designer, showing the map as FreeMind would:
+the IDE's project view and it opens in the ADP mind map designer, showing the map as FreeMind would:
 the root in the centre, its branches spread to the left and right, collapsed branches collapsed.
 They can expand and collapse branches, pan and zoom, and switch to a text view of the very same
 file. Closing it without changes leaves the file exactly as it was.
 
-**Why this priority**: Seeing a map in its natural form, straight from the workbench, is the
+**Why this priority**: Seeing a map in its natural form, straight from the IDE, is the
 smallest thing that is useful on its own, and it proves the registration and the non-destructive
 reading every other story depends on.
 
@@ -59,8 +59,8 @@ without edits leaves every file byte-identical.
 **Acceptance Scenarios**:
 
 1. **Given** a workspace containing a FreeMind `.mm` file, **When** the user double-clicks it,
-   **Then** it opens in the mind map designer, and the designer is listed under *Open With* and
-   selectable as the default editor for `.mm` files like any built-in editor.
+   **Then** it opens in the mind map designer, and the designer is listed among the editors that can
+   open it and selectable as the default editor for `.mm` files like any built-in editor.
 2. **Given** an open map, **When** the user looks at it, **Then** every node's text is shown in
    a tree around the central root, each first-level branch on the side the file records, and
    branches the file records as folded are shown collapsed.
@@ -73,7 +73,7 @@ without edits leaves every file byte-identical.
 
 ---
 
-### User Story 2 - Edit a mind map visually, with Eclipse undo/redo and save (Priority: P2)
+### User Story 2 - Edit a mind map visually, with the IDE's undo/redo and save (Priority: P2)
 
 The developer adds ideas to the map: a child under a node, a sibling next to it, renames a node
 in place, deletes a node, moves a node up, down or under another node, and folds a branch away.
@@ -82,7 +82,7 @@ editor shows the unsaved-changes marker, and Save writes the map so it still ope
 with everything else in the file intact.
 
 **Why this priority**: Editing is what makes a designer more than a viewer; undo/redo and the
-save lifecycle are what make it trustworthy inside Eclipse.
+save lifecycle are what make it trustworthy inside the IDE.
 
 **Independent Test**: Perform each editing action on an example map, undo and redo each one,
 save, reopen the file in the designer and in FreeMind 1.0.1, and diff it against the original:
@@ -99,11 +99,11 @@ only the edited parts differ, and undoing every action restores the original byt
    describe the change being undone or redone.
 4. **Given** all changes have been undone, **When** the user checks the editor, **Then** it is
    no longer marked dirty.
-5. **Given** a dirty editor, **When** the user saves, closes, or reverts, **Then** the platform's
+5. **Given** a dirty editor, **When** the user saves, closes, or reverts, **Then** the IDE's
    standard save, unsaved-changes prompt and revert behaviour apply.
 6. **Given** a saved map, **When** it is compared with the version before editing, **Then** only
    the edited nodes differ, and all content the designer does not display is unchanged.
-7. **Given** the workbench New wizard, **When** the user creates a new mind map file, **Then**
+7. **Given** the IDE's New file action, **When** the user creates a new mind map file, **Then**
    a valid map with a single root node is created and opened in the designer.
 
 ---
@@ -113,7 +113,7 @@ only the edited parts differ, and undoing every action restores the original byt
 Some changes are quicker in the text (bulk-editing a note, fixing an attribute the designer does
 not expose). The developer edits the text view, switches back, and the visual view reflects the
 change; one undo history covers both views. If a teammate's change arrives on disk through
-version control while the file is open, Eclipse's usual external-change handling applies.
+version control while the file is open, the IDE's usual external-change handling applies.
 
 **Why this priority**: The paired text view guarantees no content is ever out of reach, but the
 visual designer is useful without cross-view synchronisation for most users.
@@ -132,26 +132,26 @@ modify the file on disk while it is open (clean and dirty), checking each outcom
    keeps the text intact, and offers to return to the text view; no content is discarded.
 4. **Given** an open, unmodified map, **When** the file changes on disk, **Then** the editor
    reloads it; **Given** an open, modified map, **When** the file changes on disk, **Then** the
-   user is asked whether to replace their changes, as in the platform's text editor.
+   user is asked whether to replace their changes, as in the IDE's text editor.
 
 ---
 
-### User Story 4 - Navigate a large map through the Outline view (Priority: P4)
+### User Story 4 - Navigate a large map through the structure view (Priority: P4)
 
-For a map with hundreds of nodes, the developer uses the standard Outline view to see the node
-tree and jump to a node, and selecting a node in the designer highlights it in the Outline.
+For a map with hundreds of nodes, the developer uses the IDE's structure view to see the node
+tree and jump to a node, and selecting a node in the designer highlights it in the structure view.
 
 **Why this priority**: Valuable for large maps, but not needed to view or edit a typical map.
 
-**Independent Test**: Open a large example map, navigate via the Outline, and confirm the
+**Independent Test**: Open a large example map, navigate via the structure view, and confirm the
 selection stays linked in both directions.
 
 **Acceptance Scenarios**:
 
-1. **Given** an open map, **When** the Outline view is shown, **Then** it lists the node tree.
-2. **Given** a node selected in the Outline, **When** the selection changes, **Then** the
+1. **Given** an open map, **When** the structure view is shown, **Then** it lists the node tree.
+2. **Given** a node selected in the structure view, **When** the selection changes, **Then** the
    designer brings that node into view and selects it, expanding collapsed ancestors in the
-   view without marking the editor dirty; and selecting in the designer selects in the Outline.
+   view without marking the editor dirty; and selecting in the designer selects in the structure view.
 
 ---
 
@@ -180,21 +180,21 @@ selection stays linked in both directions.
 
 ### Functional Requirements
 
-**Workbench integration (shared by all future ADP supported file formats)**
+**IDE integration (shared by all future ADP supported file formats)**
 
-- **FR-001**: The designer MUST be registered with the workbench for the `.mm` file extension as
-  that extension's default editor, and MUST appear under *Open With* for it.
+- **FR-001**: The designer MUST be registered with the IDE for the `.mm` file extension as
+  that extension's default editor, and MUST be offered among the editors that can open it.
 - **FR-002**: The designer MUST be selected by default only for `.mm` files whose content is a
   FreeMind mind map; other `.mm` files MUST open with the editor that would otherwise apply.
-- **FR-003**: Users MUST be able to open any `.mm` file in the platform's plain text editor
-  instead, via *Open With*, and to make either editor their default through the standard
+- **FR-003**: Users MUST be able to open any `.mm` file in the IDE's plain text editor
+  instead, and to make either editor their default through the standard
   preference.
 - **FR-004**: Every change made through the designer MUST be recorded as an undoable operation in
-  the workbench's standard undo/redo history, reachable through Edit > Undo/Redo, their standard
+  the IDE's standard undo/redo history, reachable through Edit > Undo/Redo, their standard
   key bindings, and labelled with a description of the change.
 - **FR-005**: The editor MUST report its dirty state, and MUST support Save, Save As, Revert,
   close-with-unsaved-changes prompts and external-change detection with the same behaviour as
-  the platform's text editor.
+  the IDE's text editor.
 - **FR-006**: The designer MUST offer a text view of the same file, sharing one document and one
   undo history with the visual view, so edits made in either view are visible in the other.
 - **FR-007**: A file the designer cannot interpret MUST open in the text view with an explanation
@@ -245,14 +245,14 @@ selection stays linked in both directions.
 - **FR-023**: Users MUST be able to fold and unfold branches as a persisted, undoable edit, as
   FreeMind does.
 - **FR-024**: Every editing action MUST be available from the keyboard and from a context menu.
-- **FR-025**: Users MUST be able to create a new mind map file through the workbench's New wizard;
+- **FR-025**: Users MUST be able to create a new mind map file through the IDE's New file action;
   the new file contains a single root node and opens in the designer.
 
 **Standard views**
 
-- **FR-026**: The designer MUST provide the node tree to the standard Outline view, with selection
+- **FR-026**: The designer MUST provide the node tree to the IDE's structure view, with selection
   linked in both directions.
-- **FR-027**: Selecting nodes MUST publish the selection to the workbench, so standard selection-
+- **FR-027**: Selecting nodes MUST publish the selection to the IDE, so standard selection-
   driven views and commands work with it.
 
 ### Key Entities
@@ -283,7 +283,7 @@ selection stays linked in both directions.
   file.
 - **SC-005**: 100% of maps saved by the designer open in FreeMind 1.0.1 showing the same tree and
   text as the designer showed before saving.
-- **SC-006**: A developer familiar with Eclipse can open an existing map, add five nodes, undo two
+- **SC-006**: A developer familiar with their IDE can open an existing map, add five nodes, undo two
   of them and save, on their first attempt and without documentation.
 - **SC-007**: 100% of the visual view's behaviours — each node detail it displays (FR-018), each
   editing action (FR-019 to FR-023), and selection, folding, pan and zoom — can be verified by an
@@ -293,8 +293,8 @@ selection stays linked in both directions.
 
 ## Assumptions
 
-- Target users are developers and architects who keep mind maps alongside code in an Eclipse
-  workspace; they know Eclipse editors and may or may not know FreeMind.
+- Target users are developers and architects who keep mind maps alongside code in their
+  IDE's projects; they know its editors and may or may not know FreeMind.
 - Supported input is the FreeMind map format as written by FreeMind 0.7.1 through 1.0.1. Files
   from compatible tools (Freeplane) and other versions open with their content preserved, but
   only FreeMind 1.0.1 features are displayed.
