@@ -1,0 +1,18 @@
+{
+  "workflow": "companion",
+  "specName": "001-freemind-mindmap-designer",
+  "branch": "001-freemind-mindmap-designer",
+  "selectedAt": "2026-09-24T12:52:04.101Z",
+  "currentStep": "specify",
+  "status": "specifying",
+  "history": [
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-09-24T14:06:30.267Z"
+    }
+  ],
+  "telemetryInstanceId": "77cd8d67-df26-43c6-94cc-4fbe48f8ad21"
+}
