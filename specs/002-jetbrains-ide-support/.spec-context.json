@@ -2,8 +2,8 @@
   "workflow": "companion",
   "specName": "Jetbrains Ide Support",
   "branch": "002-jetbrains-ide-support",
-  "currentStep": "plan",
-  "status": "planning",
+  "currentStep": "implement",
+  "status": "implementing",
   "history": [
     {
       "step": "specify",
@@ -25,6 +25,73 @@
       "kind": "start",
       "by": "extension",
       "at": "2026-09-24T16:57:45.966Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-09-24T18:07:26.760Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-09-24T18:23:08.455Z"
+    },
+    {
+      "step": "tasks",
+      "substep": "generate",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:31:59.339Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:32:13.006Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-09-24T18:34:23.013Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T001",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:39:00.205Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T002",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:39:00.759Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T004",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:39:01.323Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T003",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T18:41:01.546Z"
     }
   ],
   "telemetryInstanceId": "a8dbc4c1-b846-4ee4-8679-39dc090dcaad",
@@ -32,67 +99,96 @@
   "last_action": "living specs evaluated — no capabilities matched",
   "coverage": {
     "FR-001": {
-      "title": "Installs and runs in every IntelliJ Platform IDE at the supported release"
+      "title": "Installs and runs in every IntelliJ Platform IDE at the supported release",
+      "tasks": "T009,T013,T060,T089,T122,T123"
     },
     "FR-002": {
-      "title": "Default editor for FreeMind .mm files only"
+      "title": "Designer is default for FreeMind .mm files only",
+      "tasks": "T042,T050,T051,T061,T066,T069,T070"
     },
     "FR-003": {
-      "title": "Same file viewable in the IDE text editor, one document and undo history"
+      "title": "Same file in the plain text editor, one document and one undo history",
+      "tasks": "T029,T042,T051,T056,T057,T081"
     },
     "FR-004": {
-      "title": "Every designer change is one named step in the IDE's Undo/Redo"
+      "title": "Every designer change is one named Undo/Redo step",
+      "tasks": "T028,T040,T080,T090,T093,T094,T095,T096,T097,T098,T099,T100,T101"
     },
     "FR-005": {
-      "title": "Modified state, save, close, reload and Local History behave as the text editor"
+      "title": "Modified state, save, close, reload and Local History as for the text editor",
+      "tasks": "T042,T082,T085"
     },
     "FR-006": {
-      "title": "Open and save without edits is byte-identical"
+      "title": "Open and save without edits is byte-identical",
+      "tasks": "T027,T031,T045,T083"
     },
     "FR-007": {
-      "title": "An edit changes only the parts representing the edited content"
+      "title": "An edit changes only the edited content",
+      "tasks": "T020,T041,T084"
     },
     "FR-008": {
-      "title": "Same edits produce byte-identical text in JetBrains and Eclipse editions"
+      "title": "Edits byte-identical to spec 001 reference results, recorded before removal",
+      "tasks": "T001,T002,T004,T005,T027,T080,T112"
     },
     "FR-009": {
-      "title": "Uninterpretable file opens as text with explanation, unchanged"
+      "title": "Uninterpretable file opens as text with an explanation, unchanged",
+      "tasks": "T029,T035,T040,T055"
     },
     "FR-010": {
-      "title": "Read-only files open view-only with the reason stated"
+      "title": "Read-only files viewable, editing disabled with reason",
+      "tasks": "T036,T040,T086,T090"
     },
     "FR-011": {
-      "title": "Displays everything the Eclipse edition displays"
+      "title": "Display everything spec 001 requires, with pan, zoom, multi-selection",
+      "tasks": "T034,T037,T044,T052,T053,T054,T063,T064,T065,T067,T068"
     },
     "FR-012": {
-      "title": "Offers every Eclipse editing action from keyboard and context menu"
+      "title": "Every spec 001 editing action from keyboard and context menu",
+      "tasks": "T072,T073,T074,T075,T076,T077,T078,T091,T092,T093,T094,T095,T096,T097,T098,T099,T100,T101,T102,T103"
     },
     "FR-013": {
-      "title": "Designer shortcuts rebindable in the IDE keymap"
+      "title": "Designer shortcuts in the keymap, rebindable",
+      "tasks": "T048,T079,T103"
     },
     "FR-014": {
-      "title": "New mind map from the IDE New file menu"
+      "title": "New mind map from the New file menu",
+      "tasks": "T105,T107,T108"
     },
     "FR-015": {
-      "title": "Node tree in the Structure view with two-way selection sync"
+      "title": "Structure view with two-way selection",
+      "tasks": "T030,T043,T047,T068,T106"
     },
     "FR-016": {
-      "title": "Legible under light and dark themes and any font scale"
+      "title": "Legible under light and dark themes and any font scale",
+      "tasks": "T058,T063,T064"
     },
     "FR-017": {
-      "title": "Eclipse edition unchanged; its tests pass unchanged"
+      "title": "Eclipse plug-in removed completely",
+      "tasks": "T015,T110,T113,T117,T118,T119"
     },
     "FR-018": {
-      "title": "A format correction reaches both editions from a single change"
+      "title": "Every spec 001 test behaviour covered before old tests are removed",
+      "tasks": "T003,T111,T112"
     },
     "FR-019": {
-      "title": "New format needs no change to shared infrastructure or other formats"
+      "title": "A new format needs no change to shared infrastructure or another format",
+      "tasks": "T018,T026,T029"
     },
     "FR-020": {
-      "title": "One headless build produces both editions and runs all tests"
+      "title": "One headless build produces the plug-in and runs all tests incl. real IDEs",
+      "tasks": "T006,T007,T008,T009,T010,T011,T012,T016,T122"
     },
     "FR-021": {
-      "title": "No network access at runtime"
+      "title": "No network access at runtime",
+      "tasks": "T120"
+    },
+    "FR-017a": {
+      "title": "Spec 001 implementation artifacts removed or rewritten when the code is removed",
+      "tasks": "T114,T115"
+    },
+    "FR-022": {
+      "title": "Relicensed to Apache-2.0",
+      "tasks": "T013,T116,T117"
     }
   },
   "size": "oversized",
@@ -120,6 +216,15 @@
   "concerns": [
     {
       "note": "This change resolved no living-spec capability, so nothing was loaded before it and nothing was folded after it. Either the areas it touched belong to no capability yet, or a capability claims them and no requirement describes them — `living-validate` names which."
+    },
+    {
+      "note": "NodeView moved from freemind/ui to core because the format-agnostic test kit returns it; plan tree reconciled in T121"
+    },
+    {
+      "note": "EditingInstaller relies on FileEditorManagerListener.fileOpened firing under the headless test fixture; T102 proves it first"
+    },
+    {
+      "note": "R12 Rider fallback would change Phase 1 files (plugin.xml, build.gradle.kts); T071 stops for replanning if needed"
     }
   ],
   "reviewComments": [
@@ -135,5 +240,41 @@
       "status": "applied",
       "createdAt": "2026-09-24T16:55:56.156Z"
     }
-  ]
+  ],
+  "step_summaries": {
+    "tasks": {
+      "summary": "125 tasks in 7 phases: Setup (baseline recording + Gradle skeleton), Foundational (core, format layer, test kit, R7/R8 proving tests), US1 view (MVP), US2 edit, US3 new/structure, US4 removal behind a gate, Polish; US2 and US3 file-disjoint and parallel"
+    }
+  },
+  "currentTask": "T003",
+  "task_summaries": {
+    "T001": {
+      "status": "DONE",
+      "did": "101 scenarios over 7 example maps, every action type, fixed seed and clock",
+      "files": [
+        "freemind/testdata/reference/scenarios.json"
+      ]
+    },
+    "T002": {
+      "status": "DONE",
+      "did": "JUnit recorder over the previous parser, MindMapEdits and text-edit application",
+      "files": [
+        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/edit/ReferenceRecorder.java"
+      ]
+    },
+    "T004": {
+      "status": "DONE",
+      "did": "Recorded 101 reference results with the previous build, eyeballed one map per action type, mvn clean",
+      "files": [
+        "freemind/testdata/reference/"
+      ]
+    },
+    "T003": {
+      "status": "DONE",
+      "did": "154-row inventory of spec 001 test methods mapped to new test classes",
+      "files": [
+        "freemind/testdata/reference/spec001-test-inventory.md"
+      ]
+    }
+  }
 }
