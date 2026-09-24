@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: A Different Perspective (ADP) Core Tests
+Bundle-SymbolicName: etalii.adp.core.tests;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: EtAlii
+Fragment-Host: etalii.adp.core
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Require-Bundle: etalii.adp.testing
+Import-Package: org.junit.jupiter.api;version="[5.0.0,7.0.0)",
+ org.junit.jupiter.api.function;version="[5.0.0,7.0.0)"

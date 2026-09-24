@@ -11,12 +11,18 @@ text-based files. It should embrace all features from Eclipse, like the undo-red
 designers should also be registered correctly for the specific file extensions. Use the FreeMind
 XML file format as the first visual designer."
 
+**Refinement**: The plug-in is named **A Different Perspective (ADP)**. FreeMind is the first of
+many file formats ADP will visualise; each visual designer, such as the FreeMind one, is referred
+to as a *supported file format* of ADP.
+
 ## Context
 
-This is the first feature of the plug-in and delivers its first designer. The behaviours it
-defines for *how a designer lives inside Eclipse* (registration, undo/redo, dirty state and save,
-the paired text view, preserving what it does not understand) are the ones every later designer
-will be expected to share; only the mind-map-specific parts are unique to this feature.
+This is the first feature of the A Different Perspective (ADP) plug-in and delivers its first
+supported file format, FreeMind mind maps. More supported file formats, each with its own visual
+designer, will follow. The behaviours this feature defines for *how a supported file format lives
+inside Eclipse* (registration, undo/redo, dirty state and save, the paired text view, preserving
+what it does not understand) are the ones every later ADP supported file format will be expected
+to share; only the mind-map-specific parts are unique to this feature.
 
 A FreeMind mind map is a single XML text file (extension `.mm`) holding one tree of nodes under a
 central root, plus optional per-node detail such as notes, icons, colours, fonts, hyperlinks,
@@ -29,13 +35,15 @@ attributes and arrow links drawn between arbitrary nodes.
 - Q: Beyond node text, folding and arrow links, which node details does the first version cover?
   → A: Display icons, colours, fonts, hyperlinks and notes; edit only structure and text
   (FR-018). Everything else is preserved and reachable through the text view.
+- Q: How are the plug-in and its designers named? → A: The plug-in is *A Different Perspective*
+  (ADP); FreeMind is the first of many ADP supported file formats, each with its own designer.
 
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Open and view a mind map (Priority: P1)
 
 A developer keeps a project mind map (`roadmap.mm`) in their repository. They double-click it in
-the Project Explorer and it opens in the mind map designer, showing the map as FreeMind would:
+the Project Explorer and it opens in the ADP mind map designer, showing the map as FreeMind would:
 the root in the centre, its branches spread to the left and right, collapsed branches collapsed.
 They can expand and collapse branches, pan and zoom, and switch to a text view of the very same
 file. Closing it without changes leaves the file exactly as it was.
@@ -172,7 +180,7 @@ selection stays linked in both directions.
 
 ### Functional Requirements
 
-**Workbench integration (shared by all future designers)**
+**Workbench integration (shared by all future ADP supported file formats)**
 
 - **FR-001**: The designer MUST be registered with the workbench for the `.mm` file extension as
   that extension's default editor, and MUST appear under *Open With* for it.
@@ -277,6 +285,11 @@ selection stays linked in both directions.
   text as the designer showed before saving.
 - **SC-006**: A developer familiar with Eclipse can open an existing map, add five nodes, undo two
   of them and save, on their first attempt and without documentation.
+- **SC-007**: 100% of the visual view's behaviours — each node detail it displays (FR-018), each
+  editing action (FR-019 to FR-023), and selection, folding, pan and zoom — can be verified by an
+  automated test that runs unattended, needs no person watching the screen, and checks the result
+  against both the rendered map and the saved file. A developer familiar with the project can add
+  such a test for a new diagram behaviour in under 30 minutes, reusing the existing example maps.
 
 ## Assumptions
 
@@ -295,5 +308,5 @@ selection stays linked in both directions.
   nodes.
 - Real published example maps with a permissive (non-share-alike) licence can be obtained and
   vendored for testing, as the constitution requires.
-- This feature establishes the shared designer behaviour; additional file formats are separate,
-  later features.
+- This feature establishes the behaviour shared by all ADP supported file formats; additional
+  supported file formats are separate, later features.

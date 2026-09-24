@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature id="etalii.adp.feature">
+      <category name="etalii.adp"/>
+   </feature>
+   <category-def name="etalii.adp" label="A Different Perspective (ADP)">
+      <description>Visual designers for text-based files.</description>
+   </category-def>
+</site>

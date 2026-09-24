@@ -3,3 +3,6 @@
 
 # Shell scripts must stay LF everywhere, or bash fails on the carriage returns.
 *.sh text eol=lf
+
+# FreeMind example maps are compared byte for byte, so git must never touch their line endings.
+*.mm -text
