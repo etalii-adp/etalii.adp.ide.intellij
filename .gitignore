@@ -1,11 +1,16 @@
-# Build output (Maven/Tycho, Eclipse PDE)
-target/
-bin/
+# Build output (Gradle, IntelliJ Platform Gradle Plugin)
+build/
+.gradle/
+.intellijPlatform/
+.kotlin/
+out/
 *.class
 
-# Eclipse runtime workspaces (launched test instances)
-.metadata/
-runtime-*/
+# IntelliJ IDEA workspace files
+.idea/workspace.xml
+.idea/shelf/
+.idea/usage.statistics.xml
+*.iws
 
 # Python bytecode (spec-kit scripts)
 __pycache__/
@@ -17,3 +22,4 @@ __pycache__/
 # OS
 .DS_Store
 Thumbs.db
+.trace.jsonl

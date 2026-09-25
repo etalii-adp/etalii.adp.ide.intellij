@@ -1,23 +1,26 @@
-# EtAlii.Adp.Eclipse Constitution
+# EtAlii.Adp.IntelliJ Constitution
 
 ## Core Principles
 
-### I. Native Eclipse Citizenship (NON-NEGOTIABLE)
+### I. Native IntelliJ Platform Citizenship (NON-NEGOTIABLE)
 
-Every visual designer MUST be a real Eclipse editor and MUST use the platform's own mechanism
-wherever the platform provides one, never a parallel one:
+Every visual designer MUST be a real editor of the IntelliJ Platform and MUST use the platform's
+own mechanism wherever the platform provides one, never a parallel one:
 
-- Registration MUST go through the workbench editor registry for the file extensions (and,
-  where applicable, content types) the designer handles, so that *Open With*, default-editor
-  selection, and editor-per-extension preferences behave exactly as for built-in editors.
-- Every user-visible change MUST be an undoable operation on the workbench operation history,
-  so Edit > Undo/Redo, their keyboard shortcuts, and the undo history limit work unchanged.
-- Dirty state, Save, Save As, Revert, close-with-unsaved-changes prompts and external-change
-  detection MUST behave as they do in the platform's text editor.
-- Selection, Outline, Properties, Problems and Find/Replace integration MUST use the standard
-  workbench views and adapters when a designer offers the corresponding capability.
+- Registration MUST go through the platform's file editor and file type registration for the
+  file extensions (and, where applicable, file content) the designer handles, so that choosing
+  an editor, default-editor selection and file type associations behave exactly as for
+  built-in editors.
+- Every user-visible change MUST be an undoable command on the platform's undo manager, so
+  Edit > Undo/Redo, their keyboard shortcuts and Local History work unchanged.
+- Modified state, saving, closing, reloading after an external change and read-only handling
+  MUST behave as they do in the platform's text editor, through the platform's document and
+  virtual file system.
+- Selection, the Structure view, actions, keymap settings, find and themes (light, dark, font
+  scale) MUST use the standard platform services when a designer offers the corresponding
+  capability.
 
-Rationale: users adopt a designer only if it feels like part of Eclipse. Every re-implemented
+Rationale: users adopt a designer only if it feels like part of their IDE. Every re-implemented
 platform mechanism is a place where it behaves differently, and a maintenance burden.
 
 ### II. The Text File Is the Source of Truth
@@ -54,7 +57,7 @@ Rationale: the goal is many designers; the second one must cost a fraction of th
   not only hand-written samples. Example data MUST carry a permissive licence, vendored beside
   it; share-alike licences are refused.
 - Editor registration and undo/redo behaviour (principle I) MUST be covered by automated tests
-  running in a headless workbench.
+  running in a headless IDE instance.
 
 Rationale: the failures that matter most here (lost content, broken undo, wrong editor) are
 invisible in a quick manual try and obvious to users within a day.
@@ -70,14 +73,18 @@ Rationale: a small designer that honours principles I and II beats a large one t
 
 ## Platform and Technology Constraints
 
-- The deliverable is an installable Eclipse plug-in (feature + update site) targeting the
-  current Eclipse Simultaneous Release at planning time, recorded in a checked-in target
-  platform definition. Older releases are supported only when a specification says so.
-- Java version follows the minimum required by that Eclipse release.
-- The build MUST run headlessly from the command line (Maven/Tycho) and produce the same
-  result as the IDE, including running all tests.
-- Third-party dependencies MUST be EPL-2.0-compatible and SHOULD come from the Eclipse release
-  train or Eclipse Orbit.
+- The deliverable is one installable IntelliJ Platform plug-in targeting the current IntelliJ
+  Platform release at planning time, with its compatible build range declared in the plug-in
+  descriptor. Older releases are supported only when a specification says so.
+- Single host: the IntelliJ Platform is ADP's only host. The plug-in MUST depend only on the
+  platform's common modules, not on a language- or product-specific one, so that it runs in
+  every IDE built on the platform (IntelliJ IDEA, Rider, WebStorm, PyCharm and the rest).
+  Adding another host requires amending this constitution first.
+- The JVM language level follows the minimum required by that platform release.
+- The build MUST run headlessly from the command line (Gradle with the IntelliJ Platform Gradle
+  Plugin) and produce the same result as the IDE, including running all tests.
+- ADP is licensed under Apache-2.0. Third-party dependencies MUST be Apache-2.0-compatible and
+  SHOULD be ones the IntelliJ Platform already bundles.
 - No network access at runtime is required or performed by any designer.
 
 ## Development Workflow
@@ -99,4 +106,4 @@ removing or redefining a principle, MINOR for adding a principle or materially e
 guidance, PATCH for clarifications. Reviews of plans and changes MUST verify compliance with
 the principles above; runtime guidance for agents lives in `CLAUDE.md`.
 
-**Version**: 1.0.0 | **Ratified**: 2026-09-24 | **Last Amended**: 2026-09-24
+**Version**: 2.0.0 | **Ratified**: 2026-09-24 | **Last Amended**: 2026-09-24

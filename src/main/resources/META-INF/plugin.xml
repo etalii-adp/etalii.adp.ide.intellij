@@ -1,0 +1,20 @@
+<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
+    <id>etalii.adp</id>
+    <name>A Different Perspective (ADP)</name>
+    <vendor>EtAlii</vendor>
+    <idea-version since-build="262"/>
+
+    <description><![CDATA[
+    Visual designers for text-based files. Each designer is an editor on the file's own text,
+    with the IDE's undo, redo, save and text view. The first format is FreeMind mind maps (<code>.mm</code>).
+    Licensed under the Apache License, Version 2.0.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <!-- Each part registers its own contributions; an absent part is simply skipped. -->
+    <xi:include href="/META-INF/adp-core.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-freemind-editor.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-freemind-editing.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-freemind-new.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+</idea-plugin>

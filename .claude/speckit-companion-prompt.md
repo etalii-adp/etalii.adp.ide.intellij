@@ -1,0 +1,1 @@
+/speckit-companion-resume specs/002-jetbrains-ide-support
