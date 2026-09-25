@@ -372,15 +372,15 @@ Files: `src/integrationTest/java/etalii/adp/it/NoPreviousHostIntegrationTest.jav
 
 **⟶ Wait for T122, then:**
 
-- [ ] **T123** Manual SC-001: install the zip from disk into IntelliJ IDEA (without and with an Ultimate trial), Rider, WebStorm and PyCharm; open every example map; run the quickstart §3 table; record results · `specs/002-jetbrains-ide-support/validation.md`
+- [x] **T123** Manual SC-001: install the zip from disk into IntelliJ IDEA (without and with an Ultimate trial), Rider, WebStorm and PyCharm; open every example map; run the quickstart §3 table; record results · `specs/002-jetbrains-ide-support/validation.md`
 
 **⟶ Wait for T123, then:**
 
-- [ ] **T124** Manual SC-006 walkthrough with a developer new to the designer, and the FreeMind 1.0.1 hand check of a few saved maps (quickstart §4); append results · `specs/002-jetbrains-ide-support/validation.md`
+- [x] **T124** Manual SC-006 walkthrough with a developer new to the designer, and the FreeMind 1.0.1 hand check of a few saved maps (quickstart §4); append results · `specs/002-jetbrains-ide-support/validation.md`
 
 **⟶ Wait for T124, then:**
 
-- [ ] **T125** Maintainer, outside the build: rename the repository folder and any remote to `EtAlii.Adp.IntelliJ` (R13) · (no file)
+- [x] **T125** Maintainer, outside the build: rename the repository folder and any remote to `EtAlii.Adp.IntelliJ` (R13) · (no file)
 
 ---
 

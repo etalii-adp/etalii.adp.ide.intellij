@@ -3,7 +3,7 @@
   "specName": "Jetbrains Ide Support",
   "branch": "002-jetbrains-ide-support",
   "currentStep": "implement",
-  "status": "implementing",
+  "status": "completed",
   "history": [
     {
       "step": "specify",
@@ -1036,11 +1036,42 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-25T10:13:48.806Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T123",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-25T13:49:14.155Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T124",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-25T13:49:14.622Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T125",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-25T13:49:15.061Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-25T13:49:15.198Z"
     }
   ],
   "telemetryInstanceId": "a8dbc4c1-b846-4ee4-8679-39dc090dcaad",
   "selectedAt": "2026-09-24T16:42:01.436Z",
-  "last_action": "122/125 tasks done; waiting on manual T123-T125",
+  "last_action": "all 125 tasks done; manual checks reported by the maintainer",
   "coverage": {
     "FR-001": {
       "title": "Installs and runs in every IntelliJ Platform IDE at the supported release",
@@ -1224,9 +1255,12 @@
   "step_summaries": {
     "tasks": {
       "summary": "125 tasks in 7 phases: Setup (baseline recording + Gradle skeleton), Foundational (core, format layer, test kit, R7/R8 proving tests), US1 view (MVP), US2 edit, US3 new/structure, US4 removal behind a gate, Polish; US2 and US3 file-disjoint and parallel"
+    },
+    "implement": {
+      "summary": "FreeMind designer for IntelliJ Platform IDEs: build, tests, manual IDE validation and rename done"
     }
   },
-  "currentTask": "T122",
+  "currentTask": "T125",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -2082,6 +2116,24 @@
       "files": [
         "(no file)"
       ]
+    },
+    "T123": {
+      "status": "DONE",
+      "did": "Maintainer installed in IDEA, Rider, WebStorm, PyCharm and ran the quickstart table; recorded",
+      "files": [
+        "specs/002-jetbrains-ide-support/validation.md"
+      ]
+    },
+    "T124": {
+      "status": "DONE",
+      "did": "Maintainer ran the SC-006 walkthrough and the FreeMind 1.0.1 hand check; recorded",
+      "files": [
+        "specs/002-jetbrains-ide-support/validation.md"
+      ]
+    },
+    "T125": {
+      "status": "DONE",
+      "did": "Checked the folder and origin remote are named EtAlii.Adp.IntelliJ"
     }
   },
   "verified": [
@@ -2172,6 +2224,21 @@
     {
       "what": "SC-002/003/004/005/007 and FR-020 from the clean build",
       "result": "RoundTripTest 4/4; ReferenceReplayTest 209/209; open 234 ms (budget 2000), add/rename/fold/delete 23-50 ms (budget 100); NoPreviousHost 3/3; InventoryCoverage 1/1; one headless build produced zip and ran everything"
+    },
+    {
+      "what": "SC-001 install and quickstart §3 in IDEA, Rider, WebStorm, PyCharm",
+      "command": "manual, by the maintainer",
+      "result": "reported done, no failures; per-check results not recorded"
+    },
+    {
+      "what": "SC-006 walkthrough and FreeMind 1.0.1 hand check",
+      "command": "manual, by the maintainer",
+      "result": "reported done, no failures"
+    },
+    {
+      "what": "R13 repository rename",
+      "command": "pwd -W; git remote -v",
+      "result": "folder and origin are EtAlii.Adp.IntelliJ"
     }
   ],
   "decisions": [
