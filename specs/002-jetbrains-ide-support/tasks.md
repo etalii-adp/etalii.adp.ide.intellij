@@ -344,16 +344,16 @@ Files: `src/integrationTest/java/etalii/adp/it/NoPreviousHostIntegrationTest.jav
 
 **⟶ Wait for T112, then Wave 2 — independent (different files):**
 
-- [ ] **T113** [P] [US4] Delete the previous build and code with `git rm -r`: `pom.xml`, `.mvn/`, `bundles/`, `features/`, `releng/`, `tests/` · (removed paths)
-- [ ] **T114** [P] [US4] Delete spec 001's host-specific artifacts: `plan.md`, `research.md`, `data-model.md`, `contracts/`, `tasks.md`; keep `spec.md` and `checklists/` (FR-017a) · `specs/001-freemind-mindmap-designer/`
-- [ ] **T115** [P] [US4] Remove previous-host references from spec 001's context (step summaries, file lists, coverage task ids pointing at deleted tasks) with the companion writer where it has a field for it, keeping the file valid JSON (FR-017a) · `specs/001-freemind-mindmap-designer/.spec-context.json`
-- [ ] **T116** [P] [US4] Apache-2.0 full text (FR-022) · `LICENSE`
-- [ ] **T117** [P] [US4] Rewrite for the IntelliJ plug-in: what it is, supported IDEs and release, install from disk, `./gradlew build`/`test`/`integrationTest`/`runIde`, Apache-2.0, and a licence table of every build and test dependency checked for Apache-2.0 compatibility (R14) · `README.md`
-- [ ] **T118** [P] [US4] Rewrite: title `EtAlii.Adp.IntelliJ`, IntelliJ Platform plug-in description, the Spec Kit flow, conventions (Gradle build, PowerShell Spec Kit scripts, commit trailer) · `CLAUDE.md`
+- [x] **T113** [P] [US4] Delete the previous build and code with `git rm -r`: `pom.xml`, `.mvn/`, `bundles/`, `features/`, `releng/`, `tests/` · (removed paths)
+- [x] **T114** [P] [US4] Delete spec 001's host-specific artifacts: `plan.md`, `research.md`, `data-model.md`, `contracts/`, `tasks.md`; keep `spec.md` and `checklists/` (FR-017a) · `specs/001-freemind-mindmap-designer/`
+- [x] **T115** [P] [US4] Remove previous-host references from spec 001's context (step summaries, file lists, coverage task ids pointing at deleted tasks) with the companion writer where it has a field for it, keeping the file valid JSON (FR-017a) · `specs/001-freemind-mindmap-designer/.spec-context.json`
+- [x] **T116** [P] [US4] Apache-2.0 full text (FR-022) · `LICENSE`
+- [x] **T117** [P] [US4] Rewrite for the IntelliJ plug-in: what it is, supported IDEs and release, install from disk, `./gradlew build`/`test`/`integrationTest`/`runIde`, Apache-2.0, and a licence table of every build and test dependency checked for Apache-2.0 compatibility (R14) · `README.md`
+- [x] **T118** [P] [US4] Rewrite: title `EtAlii.Adp.IntelliJ`, IntelliJ Platform plug-in description, the Spec Kit flow, conventions (Gradle build, PowerShell Spec Kit scripts, commit trailer) · `CLAUDE.md`
 
 **⟶ Wait for Wave 2 to finish, then:**
 
-- [ ] **T119** [US4] Run `git grep -i` for the previous host's name outside `specs/002-jetbrains-ide-support/` (expect none), then `./gradlew integrationTest --tests '*NoPreviousHost*'` green · (no file)
+- [x] **T119** [US4] Run `git grep -i` for the previous host's name outside `specs/002-jetbrains-ide-support/` (expect none), then `./gradlew integrationTest --tests '*NoPreviousHost*'` green · (no file)
 
 **Checkpoint**: User Story 4 done: a clean checkout builds and tests with Gradle alone, and the previous host is gone.
 

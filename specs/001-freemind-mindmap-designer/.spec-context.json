@@ -781,155 +781,93 @@
     }
   ],
   "telemetryInstanceId": "77cd8d67-df26-43c6-94cc-4fbe48f8ad21",
-  "last_action": "86/87 tasks done, mvn clean verify green (220 tests, 7 opt-in skipped); T087 manual checks left for a person",
+  "last_action": "Plan, tasks and implementation artifacts removed with the previous host (spec 002, FR-017a); spec and checklists kept",
   "coverage": {
     "FR-001": {
-      "title": "Designer registered as default editor for .mm and listed under Open With",
-      "tasks": "T031,T039,T056",
-      "tests": "RegistrationTest"
+      "title": "Designer registered as default editor for .mm and listed under Open With"
     },
     "FR-002": {
-      "title": "Default only for .mm files whose content is a FreeMind map",
-      "tasks": "T031,T039",
-      "tests": "RegistrationTest::anObjectiveCppFileIsNotClaimed"
+      "title": "Default only for .mm files whose content is a FreeMind map"
     },
     "FR-003": {
-      "title": "Any .mm can open in the plain text editor; either can be default",
-      "tasks": "T031,T039",
-      "tests": "RegistrationTest"
+      "title": "Any .mm can open in the plain text editor; either can be default"
     },
     "FR-004": {
-      "title": "Every designer change is a labelled undoable operation in the workbench history",
-      "tasks": "T014,T025,T032,T035,T037,T063,T076",
-      "tests": "UndoRedoTest,InterleavedUndoTest,DocumentEditOperationTest"
+      "title": "Every designer change is a labelled undoable operation in the workbench history"
     },
     "FR-005": {
-      "title": "Dirty state, Save, Save As, Revert, close prompts and external-change detection as the text editor",
-      "tasks": "T021,T035,T064,T078",
-      "tests": "SaveLifecycleTest,ExternalChangeTest,AdpDesignerEditorTest"
+      "title": "Dirty state, Save, Save As, Revert, close prompts and external-change detection as the text editor"
     },
     "FR-006": {
-      "title": "Text view of the same file sharing one document and one undo history",
-      "tasks": "T021,T035,T075,T076,T079",
-      "tests": "TextVisualSyncTest,InterleavedUndoTest,TwoEditorsTest"
+      "title": "Text view of the same file sharing one document and one undo history"
     },
     "FR-007": {
-      "title": "Uninterpretable file opens in the text view with problem and location, unmodified",
-      "tasks": "T021,T024,T027,T033,T035,T077",
-      "tests": "FormatProblemTest,MindMapParserTest,AdpDesignerEditorTest"
+      "title": "Uninterpretable file opens in the text view with problem and location, unmodified"
     },
     "FR-008": {
-      "title": "Read-only files open for viewing with editing disabled and explained",
-      "tasks": "T021,T027,T035,T043,T046,T066",
-      "tests": "ReadOnlyTest,AdpDesignerEditorTest"
+      "title": "Read-only files open for viewing with editing disabled and explained"
     },
     "FR-009": {
-      "title": "Open and save without edits is byte-identical",
-      "tasks": "T003,T018,T029,T040",
-      "tests": "RoundTripTest"
+      "title": "Open and save without edits is byte-identical"
     },
     "FR-010": {
-      "title": "An edit changes only the edited content; everything else preserved",
-      "tasks": "T023,T036,T065",
-      "tests": "PreservationTest,MindMapEditsTest"
+      "title": "An edit changes only the edited content; everything else preserved"
     },
     "FR-011": {
-      "title": "New nodes get FreeMind IDs and timestamps; edited nodes get new MODIFIED",
-      "tasks": "T020,T023,T034,T036,T059",
-      "tests": "MindMapEditsTest,FreeMindConventionsTest,AddNodeTest"
+      "title": "New nodes get FreeMind IDs and timestamps; edited nodes get new MODIFIED"
     },
     "FR-012": {
-      "title": "Saved maps open in FreeMind 1.0.1 and show the same map",
-      "tasks": "T023,T036,T084,T087",
-      "tests": "FreeMindCompatibilityTest (opt-in, skipped here),MindMapEditsTest::writtenFormsMatchTheFreeMind101Examples"
+      "title": "Saved maps open in FreeMind 1.0.1 and show the same map"
     },
     "FR-013": {
-      "title": "Tree around central root, first-level branches on recorded or automatic side",
-      "tasks": "T041,T047",
-      "tests": "LayoutTest"
+      "title": "Tree around central root, first-level branches on recorded or automatic side"
     },
     "FR-014": {
-      "title": "Display node text, rich HTML as readable text",
-      "tasks": "T019,T030,T042,T050",
-      "tests": "NodeDetailsTest,RichTextTest"
+      "title": "Display node text, rich HTML as readable text"
     },
     "FR-015": {
-      "title": "Display arrow links between nodes",
-      "tasks": "T041,T054",
-      "tests": "LayoutTest"
+      "title": "Display arrow links between nodes"
     },
     "FR-016": {
-      "title": "Folded branches shown collapsed; users can expand and collapse",
-      "tasks": "T043,T046,T058",
-      "tests": "FoldTest"
+      "title": "Folded branches shown collapsed; users can expand and collapse"
     },
     "FR-017": {
-      "title": "Pan, zoom and select one or more nodes",
-      "tasks": "T037,T044,T052,T053",
-      "tests": "ViewerInteractionTest"
+      "title": "Pan, zoom and select one or more nodes"
     },
     "FR-018": {
-      "title": "Display icons, colours, fonts, hyperlink and note indicators",
-      "tasks": "T042,T048,T049,T050",
-      "tests": "NodeDetailsTest"
+      "title": "Display icons, colours, fonts, hyperlink and note indicators"
     },
     "FR-019": {
-      "title": "Add child and sibling nodes and type text immediately",
-      "tasks": "T059,T074",
-      "tests": "AddNodeTest"
+      "title": "Add child and sibling nodes and type text immediately"
     },
     "FR-020": {
-      "title": "Edit node text in place; warn before replacing rich content",
-      "tasks": "T060,T069,T073",
-      "tests": "RenameTest"
+      "title": "Edit node text in place; warn before replacing rich content"
     },
     "FR-021": {
-      "title": "Delete selected non-root nodes with descendants and attached arrow links",
-      "tasks": "T023,T036,T061,T070",
-      "tests": "DeleteTest"
+      "title": "Delete selected non-root nodes with descendants and attached arrow links"
     },
     "FR-022": {
-      "title": "Reorder and re-parent by keyboard and drag; refuse moves into own descendants",
-      "tasks": "T045,T051,T062,T071",
-      "tests": "MoveNodeTest,DragMoveTest"
+      "title": "Reorder and re-parent by keyboard and drag; refuse moves into own descendants"
     },
     "FR-023": {
-      "title": "Fold and unfold as a persisted undoable edit",
-      "tasks": "T023,T043,T058",
-      "tests": "FoldTest"
+      "title": "Fold and unfold as a persisted undoable edit"
     },
     "FR-024": {
-      "title": "Every editing action from keyboard and context menu",
-      "tasks": "T031,T037,T068",
-      "tests": "ContextMenuTest"
+      "title": "Every editing action from keyboard and context menu"
     },
     "FR-025": {
-      "title": "New mind map through the New wizard, opens in the designer",
-      "tasks": "T031,T067,T072",
-      "tests": "NewWizardTest"
+      "title": "New mind map through the New wizard, opens in the designer"
     },
     "FR-026": {
-      "title": "Node tree in the Outline view with selection linked both ways",
-      "tasks": "T031,T080,T081,T082",
-      "tests": "OutlineTest"
+      "title": "Node tree in the Outline view with selection linked both ways"
     },
     "FR-027": {
-      "title": "Node selection published to the workbench",
-      "tasks": "T035,T044,T053,T080",
-      "tests": "ViewerInteractionTest,OutlineTest"
+      "title": "Node selection published to the workbench"
     },
-    "SC-001": {
-      "tests": "RoundTripTest"
-    },
-    "SC-002": {
-      "tests": "UndoRedoTest"
-    },
-    "SC-003": {
-      "tests": "PerformanceTest"
-    },
-    "SC-004": {
-      "tests": "PreservationTest"
-    }
+    "SC-001": {},
+    "SC-002": {},
+    "SC-003": {},
+    "SC-004": {}
   },
   "size": "oversized",
   "classification": {
@@ -949,18 +887,18 @@
   "context": [
     "area: greenfield repository — no plug-in source exists yet; this feature creates the first designer and the shared designer behaviour every later one inherits",
     "living spec: none loaded — living-specs.yml is enabled but registers no capabilities yet",
-    "constraint: constitution v1.0.0 — native Eclipse citizenship, text as the source of truth, pluggable designers, test-first, simplicity",
+    "constraint: constitution v1.0.0 — native IDE citizenship, text as the source of truth, pluggable designers, test-first, simplicity",
     "constraint: FreeMind map format as written by FreeMind 0.7.1 through 1.0.1; only 1.0.1 features are displayed",
     "constraint: round-trip fidelity — unedited save must be byte-identical, and unrecognised content survives every edit"
   ],
-  "intent": "Deliver a FreeMind .mm visual designer as a first-class Eclipse editor — registered per extension, on the workbench undo/redo stack, with a paired text view and byte-faithful round-tripping",
+  "intent": "Deliver a FreeMind .mm visual designer as a first-class IDE editor — registered per extension, on the IDE's undo/redo stack, with a paired text view and byte-faithful round-tripping",
   "reviewComments": [
     {
       "id": "ref-1790260614084-xxd62",
       "doc": "spec",
       "anchor": {
         "heading": "Feature Specification: FreeMind Mind Map Designer",
-        "blockText": "**Input**: User description: \"A simple Eclipse plug-in that adds multiple new visual designers for\ntext-based files. It should embrace all features from Eclipse, like the undo-redo stack, and the\ndesigners should also be registered correctly for the specific file extensions. Use the FreeMind\nXML file format as the first visual designer.\"",
+        "blockText": "**Input**: User description (restated host-neutrally): \"A simple IDE plug-in that adds multiple\nnew visual designers for text-based files. It should embrace all features of the IDE, like the\nundo-redo stack, and the designers should also be registered correctly for the specific file\nextensions. Use the FreeMind XML file format as the first visual designer.\"",
         "line": 9
       },
       "comment": "Remember that this diagram is the first of many. i.e. there will be more diagrams that will be visualized using the plugin. Keep using the name \"A Different Perspective\" or its abbreviation ADP wherever possible when referencing to the plugin, and refer to diagram editors like the 'freemind' one as supported file formats in the ADP plugin.",
@@ -978,787 +916,6 @@
       "comment": "Add a success criteria that evaluates how easy it is to test the plugin diagram functionalities.",
       "status": "applied",
       "createdAt": "2026-09-24T14:50:39.599Z"
-    }
-  ],
-  "decisions": [
-    {
-      "decision": "Multi-page editor nesting the platform TextEditor; save/dirty/revert/external change delegated to it",
-      "why": "Inherits FR-005/FR-006 behaviour and shared file buffers instead of re-implementing them (principle I)",
-      "rejected": "Own EditorPart/document handling, or separate GEF editor with its own history"
-    },
-    {
-      "decision": "Visual edits are labelled DocumentEditOperations run inside TriggeredOperations on the document undo context",
-      "why": "One labelled history entry shared with the text view (FR-004, FR-006); same pattern LTK refactorings use",
-      "rejected": "GEF CommandStack (second history) or bare document changes (unlabelled Typing entries)"
-    },
-    {
-      "decision": "Register the editor by content type (XML root element map) with default=true, not by extension",
-      "why": "FR-002: Objective-C++ .mm files must not open in the designer",
-      "rejected": "extensions=mm, which claims every .mm file"
-    },
-    {
-      "decision": "SAX for well-formedness plus an in-house offset-exact XML scanner; edits are range-exact TextEdits, never re-serialization",
-      "why": "FR-009/FR-010 need attribute-level source offsets that no JDK parser provides",
-      "rejected": "DOM plus serializer, WTP structured documents"
-    },
-    {
-      "decision": "GEF Classic viewer with NodeKey edit-part models re-derived from the text after each change",
-      "why": "Selection, drag and drop, zoom, keyboard and context menu from the release train; key-stable parts keep SC-003 incremental",
-      "rejected": "Raw SWT canvas, Zest, Sirius/GMF, GEF 5"
-    },
-    {
-      "decision": "Fold toggle is a persisted FOLDED edit; transient expansion only for Outline reveal and read-only viewing",
-      "why": "Matches FreeMind (FR-023) without dirtying on reveal (US4)",
-      "rejected": "All-transient or all-persisted expansion"
-    },
-    {
-      "decision": "FreeMind icons shown as Unicode emoji with name-badge fallback",
-      "why": "FreeMind artwork is GPL; no new dependency",
-      "rejected": "Bundling FreeMind PNGs, drawing a custom icon set now"
-    },
-    {
-      "decision": "Mark *.mm -text in .gitattributes and vendor only CC0/CC-BY/MIT/Apache example maps",
-      "why": "text=auto would rewrite example bytes on Windows checkouts and break byte-identity tests",
-      "rejected": "FreeMind GPL documentation maps"
-    },
-    {
-      "decision": "FreeMind 1.0.1 compatibility checked by structural tests, an opt-in FREEMIND_HOME test and a manual pre-merge check",
-      "why": "FreeMind is GPL and cannot be a build dependency",
-      "rejected": "Vendoring FreeMind or its XSD"
-    },
-    {
-      "decision": "Tycho 5 pomless build, Java 21, 2026-09 target; reusable DesignerDriver in plain bundle etalii.adp.testing",
-      "why": "Constitution headless build; SC-007 test ergonomics shared by future formats",
-      "rejected": "PDE build, per-bundle poms, SWTBot"
-    },
-    {
-      "decision": "DocumentEditOperation undoes and redoes itself through UndoEdits and restores the modification stamp with an empty IDocumentExtension4.replace",
-      "why": "TriggeredOperations only calls the trigger's undo; the doc undo manager's records become children of the one labelled entry, and the restored stamp clears the dirty marker",
-      "rejected": "R2 fallback (no-op trigger undo), which cannot work because TriggeredOperations never undoes its children"
-    },
-    {
-      "decision": "Custom MindMapContentDescriber instead of XMLRootElementContentDescriber2",
-      "why": "the platform describer answers INDETERMINATE for non-XML text, so Objective-C++ .mm files matched (FR-002); research R3 amended",
-      "rejected": "platform root-element describer"
-    },
-    {
-      "decision": "Zoom uses GEF's org.eclipse.gef.zoom_in/zoom_out commands",
-      "why": "org.eclipse.ui.zoomIn is not defined by any bundle; contract updated",
-      "rejected": "platform zoom command ids"
-    },
-    {
-      "decision": "AdpDesignerEditor adapts to AbstractTextEditor on both pages",
-      "why": "the nested text editor only checks external changes when the activated part adapts to it; without this a dirty designer never asked (FR-005)",
-      "rejected": "leaving MultiPageEditorPart's page-dependent adapter"
-    },
-    {
-      "decision": "DesignerDriver.run falls back to the editor's global action handler for undo/redo/zoom/select-all/revert",
-      "why": "the workbench activates those handlers only while its window has OS focus, which an unattended run cannot promise",
-      "rejected": "forcing window focus"
-    },
-    {
-      "decision": "Test kit and framework gained small public additions beyond the contracts: DesignerDriver.setReadOnly/file, AdpDesignerEditor textEditor/showTextPage/showVisualPage/isVisualPageActive/problemMessage/readOnlyMessage/doRevertToSaved/refreshView",
-      "why": "read-only and page tests need them; the contracts list the minimum",
-      "rejected": "reflection in tests"
-    },
-    {
-      "decision": "US4 was built before US3",
-      "why": "it depends only on US1 and shares no files; this avoided two concurrent Maven builds on one target directory",
-      "rejected": "strict phase order with idle waiting"
-    }
-  ],
-  "concerns": [
-    {
-      "note": "TriggeredOperations plus DocumentUndoManager interaction is the least documented mechanism; first core test must prove label, single-step undo and return-to-clean before editing code (fallback in research R2)"
-    },
-    {
-      "note": "simplified: moved subtrees are not re-indented to their new depth; binds only for hand-indented files; re-indent by depth delta if it does"
-    },
-    {
-      "note": "Sourcing enough permissively licensed (non-share-alike) real .mm files is unverified"
-    },
-    {
-      "note": "Files with bytes invalid in their detected charset cannot round-trip through a text document; covered only as far as the platform text editor covers it"
-    },
-    {
-      "note": "T087 manual checks are not done: opening saved maps in FreeMind 1.0.1 (FR-012, SC-005) and a first-time walkthrough (SC-006) need a person; checklists/manual-verification.md is prepared. The spec is left at implemented, not completed.",
-      "step": "implement"
-    },
-    {
-      "note": "FreeMindCompatibilityTest was skipped (no FREEMIND_HOME here); its dump program uses freemind.main.XMLElement's NanoXML API unverified against a real FreeMind jar.",
-      "step": "implement"
-    },
-    {
-      "note": "No genuine pre-0.8 FreeMind map without IDs could be sourced under a permissive licence; the 0.7.1 example has simple numeric IDs.",
-      "step": "implement"
-    },
-    {
-      "note": "Root refusals: commands are disabled for a root-only selection (per the contract table), so the status-line reason shows only when Delete runs on a selection containing the root and other nodes; data-model asks for both.",
-      "step": "implement"
-    },
-    {
-      "note": "simplified: RichText decodes only a small table of named HTML entities; unknown names show as written. Add names if a real map shows them.",
-      "step": "implement"
-    },
-    {
-      "note": "simplified (research R5): a moved subtree keeps its original indentation; binds only for hand-indented files.",
-      "step": "implement"
-    },
-    {
-      "note": "Maven is not installed on this machine; builds ran with Maven 3.9.16 from the session scratchpad. A developer needs their own Maven 3.9+.",
-      "step": "implement"
-    }
-  ],
-  "step_summaries": {
-    "plan": {
-      "summary": "Plan: two-page editor (GEF visual + platform TextEditor) over one document; visual edits are range-exact TextEdits run as labelled operations on the shared undo history; core framework bundle plus FreeMind format bundle",
-      "key_finding": "Treating the document as the only model and edits as exact TextEdits makes byte-identical saves, shared undo and dirty tracking fall out of the platform instead of being built"
-    },
-    "tasks": {
-      "summary": "87 tasks: Setup (13), Foundational (25, undo-bridge gate), US1 MVP (20), US2 (16), US3 (5, tests only), US4 (3), Polish (5); waves per phase, one owner phase per file"
-    },
-    "implement": {
-      "summary": "ADP core framework + FreeMind .mm designer (Tycho 5, Eclipse 2026-09, GEF Classic): 86/87 tasks, 220 tests green; manual FreeMind/walkthrough check (T087) pending"
-    }
-  },
-  "approach": "The FreeMind designer is a multi-page Eclipse editor: a GEF Classic visual page and the platform's TextEditor over one IDocument. The visual model is re-parsed from the text after every change, and each visual edit is a range-exact TextEdit run as one labelled operation on the document's undo context, so save, dirty state, undo and byte fidelity come from the platform. A format-agnostic etalii.adp.core framework hosts the lifecycle, and etalii.adp.freemind supplies the parsing, edits and figures.",
-  "currentTask": "T087",
-  "task_summaries": {
-    "T001": {
-      "status": "DONE",
-      "did": "Tycho 5.0.4 pomless build extension",
-      "files": [
-        ".mvn/extensions.xml"
-      ]
-    },
-    "T002": {
-      "status": "DONE",
-      "did": "Root reactor: Tycho 5, modules, target file ref, UI-harness surefire",
-      "files": [
-        "pom.xml"
-      ]
-    },
-    "T003": {
-      "status": "DONE",
-      "did": "*.mm -text so example bytes survive checkout",
-      "files": [
-        ".gitattributes"
-      ]
-    },
-    "T004": {
-      "status": "DONE",
-      "did": "Target platform pinned to 2026-09 release: platform, GEF Classic, JUnit",
-      "files": [
-        "releng/etalii.adp.target/etalii.adp.target.target"
-      ]
-    },
-    "T005": {
-      "status": "DONE",
-      "did": "p2 site category A Different Perspective (ADP)",
-      "files": [
-        "releng/etalii.adp.site/category.xml"
-      ]
-    },
-    "T006": {
-      "status": "DONE",
-      "did": "Feature including core and freemind, EPL-2.0",
-      "files": [
-        "features/etalii.adp.feature/feature.xml",
-        "features/etalii.adp.feature/build.properties"
-      ]
-    },
-    "T007": {
-      "status": "DONE",
-      "did": "Core manifest, exports etalii.adp.core only, singleton for test fragment contributions",
-      "files": [
-        "bundles/etalii.adp.core/META-INF/MANIFEST.MF",
-        "bundles/etalii.adp.core/build.properties"
-      ]
-    },
-    "T008": {
-      "status": "DONE",
-      "did": "FreeMind manifest, singleton, plugin.xml in bin.includes",
-      "files": [
-        "bundles/etalii.adp.freemind/META-INF/MANIFEST.MF",
-        "bundles/etalii.adp.freemind/build.properties"
-      ]
-    },
-    "T009": {
-      "status": "DONE",
-      "did": "Test kit plain bundle manifest",
-      "files": [
-        "tests/etalii.adp.testing/META-INF/MANIFEST.MF",
-        "tests/etalii.adp.testing/build.properties"
-      ]
-    },
-    "T010": {
-      "status": "DONE",
-      "did": "Core test fragment manifest with fragment.xml",
-      "files": [
-        "tests/etalii.adp.core.tests/META-INF/MANIFEST.MF",
-        "tests/etalii.adp.core.tests/build.properties"
-      ]
-    },
-    "T011": {
-      "status": "DONE",
-      "did": "FreeMind test fragment manifest with examples/",
-      "files": [
-        "tests/etalii.adp.freemind.tests/META-INF/MANIFEST.MF",
-        "tests/etalii.adp.freemind.tests/build.properties"
-      ]
-    },
-    "T013": {
-      "status": "DONE",
-      "did": "mvn -B verify: 2026-09 target resolves, empty reactor (7 modules) builds",
-      "files": [
-        "pom.xml"
-      ]
-    },
-    "T014": {
-      "status": "DONE",
-      "did": "Undo bridge test: one labelled entry, single-step undo/redo, stamp restored; seen failing",
-      "files": [
-        "tests/etalii.adp.core.tests/src/etalii/adp/core/DocumentEditOperationTest.java"
-      ]
-    },
-    "T015": {
-      "status": "DONE",
-      "did": "Command stack test: routes TextEditCommand, refuses others, empty stacks",
-      "files": [
-        "tests/etalii.adp.core.tests/src/etalii/adp/core/OperationHistoryCommandStackTest.java"
-      ]
-    },
-    "T016": {
-      "status": "DONE",
-      "did": "LineListEditor test designer + fragment.xml registration for *.adptest",
-      "files": [
-        "tests/etalii.adp.core.tests/src/etalii/adp/core/LineListEditor.java",
-        "tests/etalii.adp.core.tests/fragment.xml"
-      ]
-    },
-    "T017": {
-      "status": "DONE",
-      "did": "MindMapAsserts: example, examples, read, key, keyPath, generatedMap",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/MindMapAsserts.java"
-      ]
-    },
-    "T018": {
-      "status": "DONE",
-      "did": "XmlScanner test: exact ranges, both quote styles, tiling over every example",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/parse/XmlScannerTest.java"
-      ]
-    },
-    "T019": {
-      "status": "DONE",
-      "did": "RichText test: tags, blocks, whitespace, entities",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/parse/RichTextTest.java"
-      ]
-    },
-    "T020": {
-      "status": "DONE",
-      "did": "FreeMindConventions test: escaping, IDs, separator and indent detection",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/edit/FreeMindConventionsTest.java"
-      ]
-    },
-    "T021": {
-      "status": "DONE",
-      "did": "Framework behaviour test through LineListEditor and DesignerDriver",
-      "files": [
-        "tests/etalii.adp.core.tests/src/etalii/adp/core/AdpDesignerEditorTest.java"
-      ]
-    },
-    "T022": {
-      "status": "DONE",
-      "did": "MindMapParser test: fields, arrow links, ranges, keys, format problems, every example",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/parse/MindMapParserTest.java"
-      ]
-    },
-    "T023": {
-      "status": "DONE",
-      "did": "MindMapEdits test: every catalogue entry with exact expected text, plus real-map range checks",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/edit/MindMapEditsTest.java"
-      ]
-    },
-    "T012": {
-      "status": "DONE",
-      "did": "7 real maps vendored (Apache-2.0/MIT, commit-pinned) with LICENSE files: 0.7.1, 0.8.1, 0.9.0, 2x 1.0.1, 2x Freeplane; rich, notes, arrowlinks, icons, numeric refs, 625-node map",
-      "files": [
-        "tests/etalii.adp.freemind.tests/examples/"
-      ]
-    },
-    "T024": {
-      "status": "DONE",
-      "did": "FormatProblem(message, offset) checked exception",
-      "files": [
-        "bundles/etalii.adp.core/src/etalii/adp/core/FormatProblem.java"
-      ]
-    },
-    "T025": {
-      "status": "DONE",
-      "did": "DocumentEditOperation: compound apply, own undo/redo via UndoEdit, modification stamp restored, runIn(history) wraps in TriggeredOperations",
-      "files": [
-        "bundles/etalii.adp.core/src/etalii/adp/core/DocumentEditOperation.java"
-      ]
-    },
-    "T026": {
-      "status": "DONE",
-      "did": "TextEditCommand(label, Supplier<TextEdit>)",
-      "files": [
-        "bundles/etalii.adp.core/src/etalii/adp/core/TextEditCommand.java"
-      ]
-    },
-    "T027": {
-      "status": "DONE",
-      "did": "MessagePanel: read-only banner and problem panel with line, column and Show text",
-      "files": [
-        "bundles/etalii.adp.core/src/etalii/adp/core/ui/MessagePanel.java"
-      ]
-    },
-    "T028": {
-      "status": "DONE",
-      "did": "Immutable parse model: MindMap, MapNode, NodeKey, NodeRanges, AttributeRange, ArrowLink, Side, FontSpec, Range",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/model/"
-      ]
-    },
-    "T029": {
-      "status": "DONE",
-      "did": "XmlScanner: tiling tokens with exact tag, attribute, comment, CDATA, PI, DOCTYPE ranges",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/parse/XmlScanner.java"
-      ]
-    },
-    "T030": {
-      "status": "DONE",
-      "did": "RichText HTML-to-text: blocks, br, whitespace collapse, entities",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/parse/RichText.java"
-      ]
-    },
-    "T031": {
-      "status": "DONE",
-      "did": "plugin.xml: content type, editor by content type, context, 9 commands+handlers+keys, context menu, New wizard, outline adapter factory",
-      "files": [
-        "bundles/etalii.adp.freemind/plugin.xml"
-      ]
-    },
-    "T032": {
-      "status": "DONE",
-      "did": "OperationHistoryCommandStack routes TextEditCommands to the editor, refuses others, records nothing; gate T014 passed first (3/3, no R2 fallback)",
-      "files": [
-        "bundles/etalii.adp.core/src/etalii/adp/core/OperationHistoryCommandStack.java"
-      ]
-    },
-    "T033": {
-      "status": "DONE",
-      "did": "MindMapParser: secure SAX pass (no DOCTYPE, no external entities) then scanner pass building MindMap with whole-line ranges",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/parse/MindMapParser.java"
-      ]
-    },
-    "T034": {
-      "status": "DONE",
-      "did": "FreeMindConventions: escaping with hex refs, ID drawing, clock, separator and indent detection",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/edit/FreeMindConventions.java"
-      ]
-    },
-    "T035": {
-      "status": "DONE",
-      "did": "AdpDesignerEditor: GEF page + nested TextEditor, coalesced re-parse, problem panel, read-only banner, execute via DocumentEditOperation, context and selection switching",
-      "files": [
-        "bundles/etalii.adp.core/src/etalii/adp/core/AdpDesignerEditor.java"
-      ]
-    },
-    "T036": {
-      "status": "DONE",
-      "did": "MindMapEdits: add child/sibling, rename (plain, rich), delete with arrow links, move (before/after/into, POSITION fix), fold/unfold",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/edit/MindMapEdits.java"
-      ]
-    },
-    "T037": {
-      "status": "DONE",
-      "did": "AdpActionBarContributor: visual undo/redo/zoom/select-all handlers, text editor actions on the text page, revert on both",
-      "files": [
-        "bundles/etalii.adp.core/src/etalii/adp/core/AdpActionBarContributor.java"
-      ]
-    },
-    "T038": {
-      "status": "DONE",
-      "did": "DesignerDriver, Page, DropPosition per the test-kit contract, plus setReadOnly and file(); 79/79 Phase 2 tests pass",
-      "files": [
-        "tests/etalii.adp.testing/src/etalii/adp/testing/"
-      ]
-    },
-    "T039": {
-      "status": "DONE",
-      "did": "Registration tests written, fail (MindMapEditor missing)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/RegistrationTest.java"
-      ]
-    },
-    "T040": {
-      "status": "DONE",
-      "did": "Round-trip tests over all examples written, fail to compile",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/RoundTripTest.java"
-      ]
-    },
-    "T041": {
-      "status": "DONE",
-      "did": "Layout and arrow-link tests written, fail to compile",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/LayoutTest.java"
-      ]
-    },
-    "T042": {
-      "status": "DONE",
-      "did": "Node detail tests (text, icons, colours, font, link, note) written, fail to compile",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/NodeDetailsTest.java"
-      ]
-    },
-    "T043": {
-      "status": "DONE",
-      "did": "Fold tests (edit, multi, leaf, read-only, reveal) written, fail to compile",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/FoldTest.java"
-      ]
-    },
-    "T044": {
-      "status": "DONE",
-      "did": "Viewer tests (zoom, pan, selection, marquee, keys, published NodeKeys) written, fail to compile",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/ViewerInteractionTest.java"
-      ]
-    },
-    "T045": {
-      "status": "DONE",
-      "did": "Drag-move tests written, fail to compile",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/DragMoveTest.java"
-      ]
-    },
-    "T046": {
-      "status": "DONE",
-      "did": "ViewState: stable contents with latest map, transient expanded/collapsed overrides, drawn-link indexes, pending selection",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/ViewState.java"
-      ]
-    },
-    "T047": {
-      "status": "DONE",
-      "did": "MindMapLayout: root centred at origin, sides from sideOf, HGAP/VGAP/VSHIFT (0 = FreeMind default), edges recorded, linear pass",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/MindMapLayout.java"
-      ]
-    },
-    "T048": {
-      "status": "DONE",
-      "did": "FreeMindIcons: built-in icon names to emoji, name badge for unknown",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/FreeMindIcons.java"
-      ]
-    },
-    "T049": {
-      "status": "DONE",
-      "did": "LinkOpener: URLs via browser support, #ID via reveal, map-relative paths via IDE.openEditor",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/LinkOpener.java"
-      ]
-    },
-    "T050": {
-      "status": "DONE",
-      "did": "NodeFigure: icons, text, colours, font, link Clickable, note tooltip, folded marker; rebuilt only on change",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/figures/NodeFigure.java"
-      ]
-    },
-    "T051": {
-      "status": "DONE",
-      "did": "MindMapLayoutPolicy: REQ_MOVE/ADD/MOVE_CHILDREN to MindMapEdits.move TextEditCommand, quarter-based drop placement, drop feedback",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/parts/MindMapLayoutPolicy.java"
-      ]
-    },
-    "T052": {
-      "status": "DONE",
-      "did": "MapEditPart: ViewState model, visible NodeKey children, MindMapLayout, parent-child lines, pending selection restore",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/parts/MapEditPart.java",
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/parts/PartSupport.java"
-      ]
-    },
-    "T053": {
-      "status": "DONE",
-      "did": "NodeEditPart: NodeKey model, refreshVisuals from current MapNode, arrow-link connections, NodeKey adapter, double-click runs rename command",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/parts/NodeEditPart.java"
-      ]
-    },
-    "T054": {
-      "status": "DONE",
-      "did": "ArrowLinkEditPart: dashed PolylineConnection with start/end arrow decorations",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/parts/ArrowLinkEditPart.java"
-      ]
-    },
-    "T055": {
-      "status": "DONE",
-      "did": "MindMapEditPartFactory mapping ViewState, NodeKey, ArrowLink",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/parts/MindMapEditPartFactory.java"
-      ]
-    },
-    "T056": {
-      "status": "DONE",
-      "did": "MindMapEditor: parse, factory, stable ViewState contents, context id, reveal, showFolded, redraw",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/MindMapEditor.java"
-      ]
-    },
-    "T057": {
-      "status": "DONE",
-      "did": "NodeHandler base: active editor and selected nodes, enabledFor/run, status-line helper",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/handlers/NodeHandler.java"
-      ]
-    },
-    "T058": {
-      "status": "DONE",
-      "did": "ToggleFoldHandler: one labelled FOLDED MultiTextEdit when editable, view-only when read-only or override",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/handlers/ToggleFoldHandler.java"
-      ]
-    },
-    "T059": {
-      "status": "DONE",
-      "did": "add child and sibling tests (placement, ID/timestamps/POSITION, in-place editor, root refusal) (written first; red: does not compile until the handlers exist)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/AddNodeTest.java"
-      ]
-    },
-    "T060": {
-      "status": "DONE",
-      "did": "F2 and double-click rename tests, rich-node warning via confirmer seam (written first; red: does not compile until the handlers exist)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/RenameTest.java"
-      ]
-    },
-    "T061": {
-      "status": "DONE",
-      "did": "delete one/several, root refusal with status message, arrow links restored by one undo (written first; red: does not compile until the handlers exist)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/DeleteTest.java"
-      ]
-    },
-    "T062": {
-      "status": "DONE",
-      "did": "up/down/indent/outdent tests with command-table enablement and POSITION fixing (written first; red: does not compile until the handlers exist)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/MoveNodeTest.java"
-      ]
-    },
-    "T063": {
-      "status": "DONE",
-      "did": "labelled undo/redo for every action type, reverse order, original bytes, dirty cleared (written first; red: does not compile until the handlers exist)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/UndoRedoTest.java"
-      ]
-    },
-    "T064": {
-      "status": "DONE",
-      "did": "save, Save As (dialog answered unattended), revert and save-on-close tests (written first; red: does not compile until the handlers exist)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/SaveLifecycleTest.java"
-      ]
-    },
-    "T065": {
-      "status": "DONE",
-      "did": "mixed edits on every example preserve all undisplayed content (written first; red: does not compile until the handlers exist)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/PreservationTest.java"
-      ]
-    },
-    "T066": {
-      "status": "DONE",
-      "did": "read-only banner, every edit command disabled, fold view-only (written first; red: does not compile until the handlers exist)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/ReadOnlyTest.java"
-      ]
-    },
-    "T067": {
-      "status": "DONE",
-      "did": "New wizard creates FreeMind 1.0.1 new-map text with fresh ID and opens the designer (written first; red: does not compile until the handlers exist)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/NewWizardTest.java"
-      ]
-    },
-    "T068": {
-      "status": "DONE",
-      "did": "context menu order, separators, enablement and key bindings in the designer context (written first; red: does not compile until the handlers exist)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/ContextMenuTest.java"
-      ]
-    },
-    "T069": {
-      "status": "DONE",
-      "did": "GEF DirectEditManager with TextCellEditor over the node figure; rich-node confirmation through a replaceable Confirmer seam; commits one Rename Node edit",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/NodeRenameManager.java"
-      ]
-    },
-    "T070": {
-      "status": "DONE",
-      "did": "Delete Node/Nodes for selected non-root nodes, root refused with a status message, survivor reselected",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/handlers/DeleteHandler.java"
-      ]
-    },
-    "T071": {
-      "status": "DONE",
-      "did": "up/down/indent/outdent via IExecutableExtension, same-side moves on the first level, table enablement",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/handlers/MoveNodeHandler.java"
-      ]
-    },
-    "T072": {
-      "status": "DONE",
-      "did": "WizardNewFileCreationPage with mindmap.mm, FreeMind 1.0.1 new-map text with fresh ID and one clock read, opens the file",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/NewMindMapWizard.java"
-      ]
-    },
-    "T073": {
-      "status": "DONE",
-      "did": "opens NodeRenameManager on the one selected node (F2, double-click)",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/handlers/RenameHandler.java"
-      ]
-    },
-    "T074": {
-      "status": "DONE",
-      "did": "child/sibling add edit, selects the new node, expands a folded parent for display, opens the in-place editor",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/handlers/AddNodeHandler.java"
-      ]
-    },
-    "T080": {
-      "status": "DONE",
-      "did": "Outline test: tree by NodeKey, follows edits, reveal from outline without edit, designer selection mirrored; seen failing",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/OutlineTest.java"
-      ]
-    },
-    "T081": {
-      "status": "DONE",
-      "did": "MindMapOutlinePage: NodeKey tree refreshed after each re-parse, selection linked via reveal and the viewer, loop-guarded",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/MindMapOutlinePage.java"
-      ]
-    },
-    "T082": {
-      "status": "DONE",
-      "did": "MindMapOutlineAdapterFactory: one outline page per editor; OutlineTest 4/4",
-      "files": [
-        "bundles/etalii.adp.freemind/src/etalii/adp/freemind/ui/MindMapOutlineAdapterFactory.java"
-      ]
-    },
-    "T085": {
-      "status": "DONE",
-      "did": "README: what ADP is, build, tests (Xvfb on Linux), install from the update site, opt-in FreeMind check",
-      "files": [
-        "README.md"
-      ]
-    },
-    "T075": {
-      "status": "DONE",
-      "did": "TextVisualSyncTest: text edits show on the visual page; selection kept by key across page switches and re-parses (4 tests green)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/TextVisualSyncTest.java"
-      ]
-    },
-    "T076": {
-      "status": "DONE",
-      "did": "InterleavedUndoTest: visual and typed edits undo in reverse order from either page, back to original bytes and clean (2 tests green)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/InterleavedUndoTest.java"
-      ]
-    },
-    "T077": {
-      "status": "DONE",
-      "did": "FormatProblemTest: malformed XML, non-map root, two roots explained with line/column and Show text; text kept; malformed file opens on text page unmodified (6 tests green)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/FormatProblemTest.java"
-      ]
-    },
-    "T079": {
-      "status": "DONE",
-      "did": "TwoEditorsTest: two MindMapEditors on one file share document, view updates and one undo history (green)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/TwoEditorsTest.java"
-      ]
-    },
-    "T078": {
-      "status": "DONE",
-      "did": "External change: clean reloads, dirty asks (Replace/Ignore) on both pages after the designer adapts to AbstractTextEditor; 7/7",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/ExternalChangeTest.java",
-        "bundles/etalii.adp.core/src/etalii/adp/core/AdpDesignerEditor.java"
-      ]
-    },
-    "T083": {
-      "status": "DONE",
-      "did": "SC-003 on 1,000 nodes: open+draw 256 ms, add 53, rename 31, fold 37, delete 30 ms; asserts 3x headroom",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/PerformanceTest.java"
-      ]
-    },
-    "T084": {
-      "status": "DONE",
-      "did": "Opt-in FreeMind 1.0.1 check via freemind.main.XMLElement in a separate JVM; skipped here (no FREEMIND_HOME)",
-      "files": [
-        "tests/etalii.adp.freemind.tests/src/etalii/adp/freemind/ui/FreeMindCompatibilityTest.java"
-      ]
-    },
-    "T086": {
-      "status": "DONE",
-      "did": "mvn clean verify: BUILD SUCCESS, 220 tests, 0 failures, 7 skipped (opt-in FreeMind check), 0 warnings"
-    },
-    "T087": {
-      "status": "DONE",
-      "did": "Manual checks approved by the project owner: FreeMind 1.0.1 checks passed (3/3 ticked); SC-006 walkthrough approved without itemised steps",
-      "files": [
-        "specs/001-freemind-mindmap-designer/checklists/manual-verification.md"
-      ]
-    }
-  },
-  "verified": [
-    {
-      "what": "Full Tycho build and 220 UI-harness tests (mvn verify)",
-      "command": "C:/Users/vrenk/AppData/Local/Temp/claude/C--git-EtAlii-Adp-Eclipse/f68e61db-93e5-441e-9fa0-f143c1f4a104/scratchpad/apache-maven-3.9.16/bin/mvn.cmd -B -o -q verify",
-      "source": "derived",
-      "exitCode": 0,
-      "durationSeconds": 51.6,
-      "result": "WARNING: Final field saveAndRestore in class org.eclipse.e4.ui.internal.workbench.ResourceHandler has been mutated reflectively by class org.eclipse.e4.core.internal.di.FieldRequestor in unnamed module @4078695f (file:/C:/Users/vrenk/.m2/repository/p2/osgi/bundle/org.eclipse.e4.core.di/1.9.900.v20260731-1431/org.eclipse.e4.core.di-1.9.900.v20260731-1431.jar) · WARNING: Use --enable-final-field-mutation=ALL-UNNAMED to avoid a warning · WARNING: Mutating final fields will be blocked in a future release unless final field mutation is enabled"
-    },
-    {
-      "what": "SC-003 timings on a 1,000-node map read from PerformanceTest output",
-      "result": "open+draw 256 ms, add 53, rename 31, fold 37, delete 30 ms, all under the raw budgets",
-      "warnings": [
-        "JDK 26 prints final-field-mutation warnings from e4 DI; benign"
-      ]
-    },
-    {
-      "what": "Example maps vendored by a worker were checked on disk",
-      "result": "7 .mm files, each with a .LICENSE (Apache-2.0 or MIT, commit-pinned), one <map> root each"
     }
   ]
 }

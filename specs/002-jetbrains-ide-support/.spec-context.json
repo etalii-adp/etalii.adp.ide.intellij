@@ -972,11 +972,67 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-24T23:14:23.181Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T116",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-24T23:18:35.352Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T113",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-25T09:24:25.973Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T114",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-25T09:24:26.468Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T117",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-25T09:28:05.088Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T118",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-25T09:28:22.906Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T115",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-25T09:33:38.639Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T119",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-25T09:34:06.477Z"
     }
   ],
   "telemetryInstanceId": "a8dbc4c1-b846-4ee4-8679-39dc090dcaad",
   "selectedAt": "2026-09-24T16:42:01.436Z",
-  "last_action": "US2 done: T089 and T104 closed; unit suite and both integration suites green",
+  "last_action": "T113, T114, T116-T118 done; T115 blocked on permission, T119 waits on it",
   "coverage": {
     "FR-001": {
       "title": "Installs and runs in every IntelliJ Platform IDE at the supported release",
@@ -1129,6 +1185,14 @@
     {
       "note": "verified[] holds four exit-1 entries whose result is \"not recognized as an internal or external command\": --verify-run runs through cmd.exe outside the repository root, so ./gradlew and a bare gradlew.bat fail. They are tooling failures, not test failures; the passing receipts use the absolute gradlew.bat path with -p.",
       "step": "implement"
+    },
+    {
+      "note": "T113/T114 (git rm of the previous build and spec 001 host artifacts) were denied by the auto-mode permission classifier; T115, T117-T119 and Polish are paused behind them for the maintainer to authorise",
+      "step": "implement"
+    },
+    {
+      "note": "T115 (stripping old-host content from specs/001-freemind-mindmap-designer/.spec-context.json) was refused by the auto-mode classifier twice; it is the only tracked file still naming the previous host, so T119 and NoPreviousHostIntegrationTest stay red until it is done",
+      "step": "implement"
     }
   ],
   "reviewComments": [
@@ -1150,7 +1214,7 @@
       "summary": "125 tasks in 7 phases: Setup (baseline recording + Gradle skeleton), Foundational (core, format layer, test kit, R7/R8 proving tests), US1 view (MVP), US2 edit, US3 new/structure, US4 removal behind a gate, Polish; US2 and US3 file-disjoint and parallel"
     }
   },
-  "currentTask": "T112",
+  "currentTask": "T119",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -1942,6 +2006,60 @@
     "T112": {
       "status": "DONE",
       "did": "Removal gate green: InventoryCoverage, ReferenceReplay (209), UndoRedo, OpenMap and EditUndo integration tests pass; only NoPreviousHost (T110) fails",
+      "files": [
+        "(no file)"
+      ]
+    },
+    "T116": {
+      "status": "DONE",
+      "did": "Apache-2.0 full text, canonical LICENSE-2.0.txt (sha256 c71d239d...)",
+      "files": [
+        "LICENSE"
+      ]
+    },
+    "T113": {
+      "status": "DONE",
+      "did": "Previous Maven/Tycho build and bundles, features, releng, tests removed with git rm (run by the maintainer)",
+      "files": [
+        "pom.xml",
+        ".mvn/",
+        "bundles/",
+        "features/",
+        "releng/",
+        "tests/"
+      ]
+    },
+    "T114": {
+      "status": "DONE",
+      "did": "Spec 001 plan, research, data-model, contracts and tasks removed; spec.md and checklists kept",
+      "files": [
+        "specs/001-freemind-mindmap-designer/"
+      ]
+    },
+    "T117": {
+      "status": "DONE",
+      "did": "README rewritten for the IntelliJ plug-in: IDEs, install from disk, Gradle tasks, integration settings, FreeMind check, Apache-2.0 and a dependency licence table",
+      "files": [
+        "README.md"
+      ]
+    },
+    "T118": {
+      "status": "DONE",
+      "did": "CLAUDE.md retitled EtAlii.Adp.IntelliJ, IntelliJ Platform description, Spec Kit flow, Gradle conventions",
+      "files": [
+        "CLAUDE.md"
+      ]
+    },
+    "T115": {
+      "status": "DONE",
+      "did": "Spec 001 context: host wording neutralised; plan/tasks/implement-derived decisions, concerns, verified, approach, task summaries and coverage task/test ids removed; valid JSON",
+      "files": [
+        "specs/001-freemind-mindmap-designer/.spec-context.json"
+      ]
+    },
+    "T119": {
+      "status": "DONE",
+      "did": "git grep -i for the previous host outside spec 002: no hits; NoPreviousHostIntegrationTest 3/3 green",
       "files": [
         "(no file)"
       ]
