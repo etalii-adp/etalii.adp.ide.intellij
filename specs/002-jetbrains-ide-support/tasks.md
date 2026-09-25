@@ -368,7 +368,7 @@ Files: `src/integrationTest/java/etalii/adp/it/NoPreviousHostIntegrationTest.jav
 
 **⟶ Wait for Wave 1 to finish, then:**
 
-- [ ] **T122** Run the full `./gradlew build` from a clean checkout: all format, platform and integration tests, `verifyPluginProjectConfiguration` and `verifyPlugin` for the eight IDEs, zip produced. Validate SC-002, SC-003, SC-004, SC-005, SC-007 and FR-020 from the results · (no file)
+- [x] **T122** Run the full `./gradlew build` from a clean checkout: all format, platform and integration tests, `verifyPluginProjectConfiguration` and `verifyPlugin` for the eight IDEs, zip produced. Validate SC-002, SC-003, SC-004, SC-005, SC-007 and FR-020 from the results · (no file)
 
 **⟶ Wait for T122, then:**
 

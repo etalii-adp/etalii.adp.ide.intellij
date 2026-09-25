@@ -1,0 +1,10 @@
+<!-- The plug-in's contributions, for the FreeMind module's tests; src/main/resources/META-INF/plugin.xml includes the same files. -->
+<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
+    <id>etalii.adp.freemind.test</id>
+    <name>ADP FreeMind (tests)</name>
+    <depends>com.intellij.modules.platform</depends>
+    <xi:include href="/META-INF/adp-core.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-freemind-editor.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-freemind-editing.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-freemind-new.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+</idea-plugin>

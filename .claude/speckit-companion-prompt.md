@@ -1,1 +1,1 @@
-/speckit-companion-living-adopt src
+/speckit-companion-resume specs/002-jetbrains-ide-support

@@ -1,0 +1,8 @@
+<!-- User Story 1: FreeMind maps open in the designer (contracts/plugin-contributions.md). -->
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="FreeMind Mind Map" implementationClass="etalii.adp.freemind.FreeMindFileType" fieldName="INSTANCE"/>
+        <fileTypeDetector implementation="etalii.adp.freemind.FreeMindFileTypeDetector"/>
+        <fileEditorProvider implementation="etalii.adp.freemind.ui.MindMapEditorProvider"/>
+    </extensions>
+</idea-plugin>

@@ -1028,11 +1028,19 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-25T09:34:06.477Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T122",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-25T10:13:48.806Z"
     }
   ],
   "telemetryInstanceId": "a8dbc4c1-b846-4ee4-8679-39dc090dcaad",
   "selectedAt": "2026-09-24T16:42:01.436Z",
-  "last_action": "T113, T114, T116-T118 done; T115 blocked on permission, T119 waits on it",
+  "last_action": "122/125 tasks done; waiting on manual T123-T125",
   "coverage": {
     "FR-001": {
       "title": "Installs and runs in every IntelliJ Platform IDE at the supported release",
@@ -1193,6 +1201,10 @@
     {
       "note": "T115 (stripping old-host content from specs/001-freemind-mindmap-designer/.spec-context.json) was refused by the auto-mode classifier twice; it is the only tracked file still naming the previous host, so T119 and NoPreviousHostIntegrationTest stay red until it is done",
       "step": "implement"
+    },
+    {
+      "note": "T123 to T125 are manual (install in IDEA/Rider/WebStorm/PyCharm, SC-006 walkthrough with a new developer, FreeMind 1.0.1 hand check, repo rename). An agent cannot do them, so the spec stays at implementing.",
+      "step": "implement"
     }
   ],
   "reviewComments": [
@@ -1214,7 +1226,7 @@
       "summary": "125 tasks in 7 phases: Setup (baseline recording + Gradle skeleton), Foundational (core, format layer, test kit, R7/R8 proving tests), US1 view (MVP), US2 edit, US3 new/structure, US4 removal behind a gate, Polish; US2 and US3 file-disjoint and parallel"
     }
   },
-  "currentTask": "T119",
+  "currentTask": "T122",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -2063,6 +2075,13 @@
       "files": [
         "(no file)"
       ]
+    },
+    "T122": {
+      "status": "DONE",
+      "did": "Clean-clone ./gradlew build green in 22m29s: 470 tests + 13 integration, 0 failures; verifyPlugin Compatible for 8 IDEs; verifyPluginProjectConfiguration clean; zip produced; SC-002/003/004/005/007 and FR-020 met",
+      "files": [
+        "(no file)"
+      ]
     }
   },
   "verified": [
@@ -2136,6 +2155,23 @@
       "exitCode": 0,
       "durationSeconds": 1.2,
       "result": "no output"
+    },
+    {
+      "what": "T122 clean-clone full build (tests, integration tests, verifyPlugin x8, zip)",
+      "command": "./gradlew build (fresh git clone of af5a7fb)",
+      "result": "BUILD SUCCESSFUL in 22m29s; core 29, freemind 428 (2 skipped), integrationTest 13 (2 skipped), 0 failures; all 8 IDEs Compatible; build/distributions/etalii-adp-0.1.0.zip",
+      "warnings": [
+        "Skips: Ultimate-licence runs (no ADP_IDEA_LICENSE), FreeMindCompatibilityTest (no FREEMIND_HOME), Local History test (no revisions in test IDE, recorded decision)"
+      ]
+    },
+    {
+      "what": "verifyPluginProjectConfiguration",
+      "command": "./gradlew verifyPluginProjectConfiguration",
+      "result": "clean for root, core, freemind, testing"
+    },
+    {
+      "what": "SC-002/003/004/005/007 and FR-020 from the clean build",
+      "result": "RoundTripTest 4/4; ReferenceReplayTest 209/209; open 234 ms (budget 2000), add/rename/fold/delete 23-50 ms (budget 100); NoPreviousHost 3/3; InventoryCoverage 1/1; one headless build produced zip and ran everything"
     }
   ],
   "decisions": [
