@@ -1,0 +1,1 @@
+/speckit-companion-living-adopt src
