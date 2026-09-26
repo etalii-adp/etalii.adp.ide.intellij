@@ -20,9 +20,11 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.testFramework.FileEditorManagerTestCase;
+import com.intellij.ui.JBColor;
 
 import etalii.adp.core.diagram.properties.PropertiesToolWindowFactory;
 import etalii.adp.core.diagram.toolbox.ToolboxToolWindowFactory;
+import etalii.adp.core.diagram.view.ElementPainter;
 import etalii.adp.testing.DiagramDriver;
 import etalii.adp.testing.Layout;
 
@@ -175,6 +177,23 @@ public class DrawioDesignerTest extends FileEditorManagerTestCase {
             assertNotNull("its edge is still drawn", d.connectionView("21ea969265ad0168-33"));
             d.driver().undo();
             assertEquals(before, d.driver().text());
+        }
+    }
+
+    @Test
+    public void aListsRowsReadOnTheListsFillInEitherTheme() {
+        String list = "21ea969265ad0168-14";
+        for (boolean dark : new boolean[] { false, true }) {
+            JBColor.setDark(dark);
+            try (var d = open("data_flow_1")) {
+                java.awt.Color body = d.elementView(list).fill();
+                for (String row : List.of("21ea969265ad0168-15", "21ea969265ad0168-16", "21ea969265ad0168-17")) {
+                    double contrast = ElementPainter.contrast(d.elementView(row).text(), body);
+                    assertTrue((dark ? "dark: " : "light: ") + row + " is drawn on the list's white body, contrast " + contrast, contrast >= 4.5);
+                }
+            } finally {
+                JBColor.setDark(false);
+            }
         }
     }
 

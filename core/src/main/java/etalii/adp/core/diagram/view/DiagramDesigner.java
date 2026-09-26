@@ -1,5 +1,6 @@
 package etalii.adp.core.diagram.view;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.InputEvent;
@@ -84,6 +85,7 @@ public class DiagramDesigner extends AdpDesignerEditor<Object> implements Diagra
     private final DiagramCommands commands;
     private final Map<Object, ElementRender> elementCache = new HashMap<>();
     private final Map<Object, Element> elementSource = new HashMap<>();
+    private final Map<Object, Color> elementUnder = new HashMap<>();
     private final Map<Object, Dimension2D> sizeCache = new HashMap<>();
     private final Map<Object, Connection> connectionSource = new HashMap<>();
     private Router router = new Router(JBUI.scale(ROUTE_MARGIN));
@@ -188,15 +190,22 @@ public class DiagramDesigner extends AdpDesignerEditor<Object> implements Diagra
             if (box == null) {
                 continue;
             }
+            // a part inside its parent, such as a list's row, is drawn on the parent's fill, so its texts are judged against that;
+            // a mind map's child sits beside its parent, on the canvas
+            ElementRender owner = element.parent() == null ? null : elements.get(element.parent());
+            Color under = owner == null || !owner.bounds().contains(box) ? null : owner.view().fill();
             ElementRender cached = elementCache.get(element.key());
-            if (cached != null && element.equals(elementSource.get(element.key())) && cached.bounds().equals(box)) {
+            if (cached != null && element.equals(elementSource.get(element.key())) && cached.bounds().equals(box)
+                    && Objects.equals(under, elementUnder.get(element.key()))) {
                 elements.put(element.key(), cached);
             } else {
-                elements.put(element.key(), ElementPainter.render(definition.elementType(element.type()), element, box, measure));
+                elements.put(element.key(), ElementPainter.render(definition.elementType(element.type()), element, box, measure, under));
             }
+            elementUnder.put(element.key(), under);
         }
         elementCache.keySet().retainAll(diagram.elements().keySet());
         elementSource.keySet().retainAll(diagram.elements().keySet());
+        elementUnder.keySet().retainAll(diagram.elements().keySet());
         elementCache.putAll(elements);
         diagram.elements().values().forEach(element -> elementSource.put(element.key(), element));
 

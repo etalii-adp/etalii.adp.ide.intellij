@@ -86,9 +86,20 @@ public final class ElementPainter {
      * @param drawn whether the outline is drawn; without it there is no fill and texts sit on the canvas
      */
     public static Colours colours(Tone tone, StyleOverride style, boolean drawn) {
+        return colours(tone, style, drawn, null);
+    }
+
+    /**
+     * The colours as {@link #colours(Tone, StyleOverride, boolean)}, for an element drawn on
+     * another's fill, such as a list's row: without an outline of its own, its texts are judged
+     * against {@code under} rather than the canvas.
+     *
+     * @param under the fill the element sits on, or {@code null} for the canvas
+     */
+    public static Colours colours(Tone tone, StyleOverride style, boolean drawn, Color under) {
         Color fill = !drawn ? null : style != null && style.fill() != null ? style.fill() : tone.fill();
         Color border = style != null && style.border() != null ? style.border() : tone.border();
-        Color behind = fill != null ? fill : CANVAS;
+        Color behind = fill != null ? fill : under != null ? under : CANVAS;
         if (style != null && style.text() != null) {
             Color text = style.text();
             Color plate = null;
@@ -109,9 +120,14 @@ public final class ElementPainter {
 
     /** Lay out one element at {@code bounds}: its texts, anchors and colours. */
     public static ElementRender render(ElementType type, Element element, Rectangle2D bounds, ElementMeasure measure) {
+        return render(type, element, bounds, measure, null);
+    }
+
+    /** Lay out one element at {@code bounds} drawn on {@code under}, the fill of the element it is part of, or {@code null} for the canvas. */
+    public static ElementRender render(ElementType type, Element element, Rectangle2D bounds, ElementMeasure measure, Color under) {
         boolean placeholder = type == null;
         Outline outline = placeholder ? Outline.RECTANGLE : type.outline();
-        Colours colours = colours(placeholder ? Tone.NEUTRAL : type.tone(), placeholder ? null : element.style(), outline.drawn());
+        Colours colours = colours(placeholder ? Tone.NEUTRAL : type.tone(), placeholder ? null : element.style(), outline.drawn(), under);
         List<PlacedText> texts = measure.place(type, element, bounds);
         Map<String, String> shown = new LinkedHashMap<>();
         Rectangle2D extent = (Rectangle2D) bounds.clone();
