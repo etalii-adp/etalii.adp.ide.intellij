@@ -31,6 +31,6 @@
 
 ## Notes
 
-- One open marker, FR-016: whether loading DEDL definitions from folders (User Story 5) belongs in this feature or in the specification that introduces DEDL interpretation in the IntelliJ plug-in. Resolve in clarify before planning.
+- FR-016 resolved in clarify on 2026-09-26: DEDL definitions are copied out of etalii.adp and bundled with each plug-in that interprets them; the page shows their source and loads nothing from folders. No open markers remain.
 - Canvas options (User Story 3) depend on spec 003's framework; the plan should order them after it lands.
 - "Settings > Tools > ADP" is recorded as an assumption, not a requirement: FR-001 asks only for the IDE's usual place for tool settings.

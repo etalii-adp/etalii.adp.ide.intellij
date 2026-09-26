@@ -13,6 +13,12 @@ Constitution principle I asks that this place be the IDE's own Settings dialog, 
 
 Two roles appear below. A **user** is the developer who edits files with ADP designers in their IDE. A **designer author** is the developer who builds a designer, by definition or by module.
 
+## Clarifications
+
+### Session 2026-09-26
+
+- Q: Should the page let users load DEDL definitions from user or project folders (FR-016)? → A: No. Definitions written to the DEDL specification are copied out of the etalii.adp repository and included in each plug-in that can interpret and consume them. The page shows where a bundled definition came from; it does not load definitions from elsewhere.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - See which designers are installed and whether they work (Priority: P1)
@@ -81,19 +87,19 @@ A designer that has settings of its own (for example, the FreeMind designer's la
 
 ---
 
-### User Story 5 - Load designer definitions from folders (Priority: P3)
+### User Story 5 - See which DEDL definition a designer comes from (Priority: P3)
 
-A user or a team adds designers that are not built into the plug-in by pointing ADP at folders that hold DEDL definitions: a folder for the user, and a folder inside the project that is shared with the team through version control. Designers found there appear in the designer list with their origin.
+Designers defined in DEDL are not loaded from the user's disk: their definitions are copied out of the etalii.adp repository and shipped inside the plug-in that can interpret them. A user looking at such a designer on the ADP page sees that it comes from a bundled definition, which definition and DEDL version it is, and which etalii.adp revision it was copied from, so a problem can be reported against the right source.
 
-**Why this priority**: it is where the definition-first direction leads, but it depends on the IntelliJ plug-in interpreting DEDL definitions, which no specification here promises yet.
+**Why this priority**: it matters once designers are defined in DEDL and interpreted by the plug-in, which no IntelliJ specification promises yet; until then every designer is built into the plug-in as a module.
 
-**Independent Test**: place a valid and an invalid definition in a project folder, add the folder on the page, and check that the valid one appears as a working designer and the invalid one with its problems.
+**Independent Test**: ship the plug-in with one bundled DEDL definition, open the ADP page, and check that its designer shows the definition's name, DEDL version and source revision.
 
 **Acceptance Scenarios**:
 
-1. **Given** a folder with a valid definition, **When** the user adds the folder and applies, **Then** the designer it defines appears in the list with the folder as its origin, and its file types open in it.
-2. **Given** a project-level folder, **When** a teammate opens the same project, **Then** the same designers are available to them without further set-up.
-3. **Given** two definitions claim the same file type, **When** the user views the list, **Then** the conflict is shown, with which designer wins and how to change that.
+1. **Given** a designer defined by a bundled DEDL definition, **When** the user selects it in the designer list, **Then** its origin reads as a bundled definition, with the definition's name, its DEDL version and the etalii.adp revision it was copied from.
+2. **Given** a bundled definition the plug-in cannot interpret, **When** the user selects it, **Then** it is listed as not loaded, with each problem and the part of the definition it concerns.
+3. **Given** two designers claim the same file type, **When** the user views the list, **Then** the conflict is shown, with which designer is used and how to change that.
 
 ---
 
@@ -105,7 +111,7 @@ A user or a team adds designers that are not built into the plug-in by pointing 
 - A designer is uninstalled: its stored settings are kept but no longer shown; it is not listed.
 - The last designer for a file type is turned off while the file is open with unsaved changes: nothing is lost; the change takes effect the next time the file is opened.
 - The IDE runs headless (for tests or inspections): settings are still read and applied, with no dialog.
-- A folder in User Story 5 is missing or unreadable: it is listed with that problem, and the other folders still load.
+- A bundled definition needs a DEDL feature the plug-in does not support: it is listed as not loaded, naming the missing feature, and the other designers still load.
 
 ## Requirements *(mandatory)*
 
@@ -117,12 +123,12 @@ A user or a team adds designers that are not built into the plug-in by pointing 
 - **FR-002**: The page MUST behave like the IDE's own settings pages: changes take effect only on Apply or OK, Cancel discards them, the modified state of the page is shown as the IDE shows it, and every option can be reset to its default.
 - **FR-003**: Settings MUST be stored, exported, imported and synchronised through the IDE's own settings mechanisms, so they move with the user's other IDE settings.
 - **FR-004**: ADP MUST NOT offer its own copy of a choice the IDE already offers (default editor per file type, file type associations, keymap, colour scheme), and SHOULD link to the IDE's own page for it instead.
-- **FR-005**: A setting MUST be stored for the user across all projects unless this specification says it belongs to a project.
+- **FR-005**: Every setting MUST be stored for the user, across all projects.
 - **FR-006**: Applying a setting MUST take effect in open designers without reopening them, and MUST NOT change any file, its undo history or its modified state.
 
 **Designer list**
 
-- **FR-007**: The page MUST list every installed designer with its name, the file types it handles, its version, its origin (built into the plug-in, contributed by another plug-in, or loaded from a folder) and its load status.
+- **FR-007**: The page MUST list every installed designer with its name, the file types it handles, its version, its origin (a module built into the plug-in, a DEDL definition bundled with the plug-in, or another plug-in) and its load status.
 - **FR-008**: For a designer that failed to load or has definition problems, the page MUST show each problem with the part of the definition it concerns.
 - **FR-009**: Users MUST be able to turn each designer off and on. A designer that is off MUST NOT be offered for any file, and its files MUST open as they would without ADP.
 - **FR-010**: Turning a designer off MUST NOT close, change or discard an editor already open in it.
@@ -138,9 +144,9 @@ A user or a team adds designers that are not built into the plug-in by pointing 
 - **FR-014**: A designer MUST be able to declare settings of its own, shown on a page named after it, under the ADP page. A designer without such settings MUST NOT get an empty page.
 - **FR-015**: A designer's own settings MUST be kept while it is turned off or uninstalled, and MUST apply again when it returns.
 
-**Definition folders**
+**Bundled definitions**
 
-- **FR-016**: Users MUST be able to name folders from which ADP loads DEDL designer definitions: at user level, and at project level where the folder and the setting travel with the project. [NEEDS CLARIFICATION: is loading DEDL definitions from folders in scope for this feature, given that no IntelliJ specification yet promises that the plug-in interprets DEDL definitions, or does it belong to the specification that introduces DEDL interpretation?]
+- **FR-016**: For a designer defined by a DEDL definition bundled with the plug-in, the page MUST show the definition's name, its DEDL version and the etalii.adp revision it was copied from. Users MUST NOT be offered a way to load definitions from elsewhere.
 - **FR-017**: When two designers claim the same file type, the page MUST show the conflict, which designer is used, and how the user changes that.
 
 **Robustness**
@@ -150,12 +156,11 @@ A user or a team adds designers that are not built into the plug-in by pointing 
 
 ### Key Entities
 
-- **ADP settings**: the user-level choices: which designers are off, the canvas options, and user-level definition folders.
-- **Project ADP settings**: the project-level choices, travelling with the project: project-level definition folders.
+- **ADP settings**: the user-level choices: which designers are off and the canvas options.
 - **Designer entry**: one installed designer as the page shows it: name, file types, version, origin, load status, problems, on or off.
 - **Canvas options**: show grid, snap to grid, opening zoom level, play animations; each with a default.
 - **Designer-specific settings**: the settings a designer declares for itself, with their defaults, shown on its own page.
-- **Definition folder**: a folder ADP reads designer definitions from, at user or project level, with its read status.
+- **Bundled definition**: a DEDL definition copied out of the etalii.adp repository and shipped inside the plug-in, with its name, DEDL version and source revision.
 
 ## Success Criteria *(mandatory)*
 
@@ -176,4 +181,5 @@ A user or a team adds designers that are not built into the plug-in by pointing 
 - Defaults: every designer on, grid off, snapping on, opening zoom 100%, animations on (still subject to reduced motion).
 - Colours, fonts and key bindings are the IDE's own colour scheme and keymap settings, not ADP settings.
 - A visual editor for designer definitions is out of scope.
+- Copying definitions out of etalii.adp into the plug-in, and interpreting them, belong to the specification that introduces DEDL interpretation in the IntelliJ plug-in; this feature only shows the result.
 - No setting causes network access (constitution, Platform and Technology Constraints).

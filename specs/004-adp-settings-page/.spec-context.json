@@ -24,5 +24,12 @@
     {
       "note": "FR-016: loading DEDL definitions from folders may belong to the spec that introduces DEDL interpretation; resolve in clarify"
     }
+  ],
+  "decisions": [
+    {
+      "decision": "DEDL definitions are copied out of etalii.adp and bundled with each plug-in that interprets them; no definition folders",
+      "why": "Peter, 2026-09-26",
+      "rejected": "User- and project-level definition folders"
+    }
   ]
 }
