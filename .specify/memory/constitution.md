@@ -92,8 +92,13 @@ Rationale: a small designer that honours principles I and II beats a large one t
 - Work follows GitHub Spec Kit: constitution, specify, (clarify), plan, tasks, implement.
   Specifications state *what* and *why* and stay free of implementation choices; plans state
   *how*.
-- Each feature is developed on its own branch named after its specification and merged into
-  `main` only when all its tasks are done.
+- Each feature is developed on its own branch, `features/<number>-<name>` after its
+  specification, in its own worktree. The one exception is `claude/<name>`, which Claude's
+  cloud sessions are handed by their harness.
+- A feature reaches `develop`, the integration branch, only when all its tasks are done, and
+  only through a pull request merged with a merge commit. A feature branch is never merged
+  locally into `develop`, and nothing is pushed to `develop` directly. When the pull request
+  is merged or closed, the branch is deleted locally and on `origin`, and the worktree removed.
 - Every plan MUST include a Constitution Check against these principles; any deviation MUST be
   recorded with its justification in the plan's complexity-tracking section.
 - A change is mergeable only when the headless build and the full test suite pass.
@@ -106,4 +111,4 @@ removing or redefining a principle, MINOR for adding a principle or materially e
 guidance, PATCH for clarifications. Reviews of plans and changes MUST verify compliance with
 the principles above; runtime guidance for agents lives in `CLAUDE.md`.
 
-**Version**: 2.0.0 | **Ratified**: 2026-09-24 | **Last Amended**: 2026-09-24
+**Version**: 2.1.0 | **Ratified**: 2026-09-24 | **Last Amended**: 2026-09-26
