@@ -49,10 +49,10 @@ class InventoryCoverageTest {
         assertEquals(List.of(), missing);
     }
 
-    /** Test sources of every module, by simple class name. */
+    /** Test sources of every module, by simple class name; FreeMind's own win when core has a class of the same name. */
     private static Map<String, Path> testClasses() throws IOException {
         Path modules = Path.of("").toAbsolutePath().getParent();
-        try (Stream<Path> files = Stream.of("core", "freemind").map(m -> modules.resolve(m).resolve("src/test/java")).filter(Files::isDirectory)
+        try (Stream<Path> files = Stream.of("freemind", "core").map(m -> modules.resolve(m).resolve("src/test/java")).filter(Files::isDirectory)
                 .flatMap(InventoryCoverageTest::walk)) {
             return files.filter(p -> p.toString().endsWith(".java"))
                     .collect(Collectors.toMap(p -> p.getFileName().toString().replace(".java", ""), Function.identity(), (a, b) -> a));

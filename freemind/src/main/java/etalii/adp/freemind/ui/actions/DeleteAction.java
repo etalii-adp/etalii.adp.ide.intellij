@@ -9,7 +9,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys;
 import com.intellij.openapi.wm.StatusBar;
 
-import etalii.adp.freemind.edit.MindMapEdits;
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
 import etalii.adp.freemind.model.NodeKey;
@@ -19,7 +18,8 @@ import etalii.adp.freemind.ui.MindMapDesigner;
  * Delete Node / Delete Nodes (spec 001 FR-021): the selected nodes with their descendants, and the
  * arrow links into them, as one step. The root is never deleted; when it is selected with other
  * nodes, the others are, and the status bar says why the root stayed. What remains nearest to the
- * first deleted node is selected afterwards.
+ * first deleted node is selected afterwards. It is the framework's delete, through the designer's
+ * commands, with spec 001's name and selection.
  */
 public final class DeleteAction extends MindMapAction {
 
@@ -51,10 +51,10 @@ public final class DeleteAction extends MindMapAction {
         // Paths of other nodes can shift when several go, so a path-keyed survivor is only
         // selected again after a single delete.
         NodeKey keep = survivor.id() != null || deleted.size() == 1 ? survivor.key() : null;
-        execute(designer, MindMapEdits.delete(map, deleted.stream().map(MapNode::key).toList()), () -> {
+        designer.withReselect(() -> {
             MindMap after = designer.model();
             designer.select(keep != null && after != null && after.node(keep) != null ? List.of(keep) : List.of());
-        });
+        }, () -> designer.commands().remove(deleted.stream().map(MapNode::key).toList()));
     }
 
     private static boolean isInside(MapNode node, List<MapNode> deleted) {

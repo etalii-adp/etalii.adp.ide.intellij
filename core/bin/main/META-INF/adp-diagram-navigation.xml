@@ -1,0 +1,6 @@
+<!-- Navigating diagrams (US4): sectors, panning and wheel zooming. First, so a Space-drag pans before selection and move claim the press. -->
+<idea-plugin>
+    <extensions defaultExtensionNs="etalii.adp">
+        <diagramFeature implementation="etalii.adp.core.diagram.navigation.NavigationFeature" order="first"/>
+    </extensions>
+</idea-plugin>

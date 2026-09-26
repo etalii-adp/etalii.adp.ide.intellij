@@ -31,13 +31,16 @@ class NoPreviousHostIntegrationTest {
 
     private static final String OWN_SPEC = "specs/002-jetbrains-ide-support/";
 
+    /** Spec 003's library survey names third-party libraries that carry the word, not the host. */
+    private static final String LIBRARY_SURVEY = "specs/003-diagram-designer-framework/library-survey.md";
+
     private final Path repository = Path.of(System.getProperty("adp.repository", "."));
 
     @Test
     void theTrackedFilesDoNotNameIt() throws Exception {
         List<String> hits = new ArrayList<>();
         for (String file : trackedFiles()) {
-            if (file.startsWith(OWN_SPEC)) {
+            if (file.startsWith(OWN_SPEC) || file.equals(LIBRARY_SURVEY)) {
                 continue;
             }
             if (mentions(file.getBytes(UTF_8)) || Files.isRegularFile(repository.resolve(file)) && mentions(Files.readAllBytes(repository.resolve(file)))) {

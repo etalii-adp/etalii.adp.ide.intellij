@@ -30,10 +30,11 @@ import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
 import etalii.adp.freemind.model.NodeKey;
 import etalii.adp.freemind.model.NodeRanges;
-import etalii.adp.freemind.model.Range;
+import etalii.adp.core.xml.Range;
 import etalii.adp.freemind.model.Side;
-import etalii.adp.freemind.parse.XmlScanner.Attribute;
-import etalii.adp.freemind.parse.XmlScanner.Token;
+import etalii.adp.core.xml.XmlScanner;
+import etalii.adp.core.xml.XmlScanner.Attribute;
+import etalii.adp.core.xml.XmlScanner.Token;
 
 /**
  * Reads a FreeMind map in two passes (research R4). A SAX pass with secure processing, no DOCTYPE

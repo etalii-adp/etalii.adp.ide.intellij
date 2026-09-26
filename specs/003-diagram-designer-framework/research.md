@@ -191,7 +191,7 @@ Phase 0 decisions. The library survey (`library-survey.md`) is the input for R2.
 
 ## R22. Measuring SC-001
 
-**Decision**: a `CodeSizeTest` in `drawio` and one for the sample designer count non-blank, non-comment lines of main sources. Each must be at most one tenth of the FreeMind baseline recorded before the migration (3,423 lines on 2026-09-25, so 342). The same test asserts that neither module contains drawing, selection, undo or property panel code: no `Graphics2D`, `UndoManager`, `JTable` or `MouseListener` references.
+**Decision**: a `CodeSizeTest` in `drawio` and one for the sample designer count the code lines of main sources: lines that are not blank, not comments and not `package` or `import` lines. (Imports were first counted too; on 2026-09-25 the user chose to leave them out, since draw.io with explicit imports came to about 364 lines, and the remaining lines are the R20 scope itself.) Each must be at most one tenth of the FreeMind baseline recorded before the migration (3,423 lines on 2026-09-25, so 342). The same test asserts that neither module contains drawing, selection, undo or property panel code: no `Graphics2D`, `UndoManager`, `JTable` or `MouseListener` references.
 
 **Rationale**: makes the success criterion a failing test rather than a claim.
 

@@ -1,5 +1,7 @@
 package etalii.adp.freemind.model;
 
+import etalii.adp.core.xml.Range;
+
 import java.util.Map;
 
 /**

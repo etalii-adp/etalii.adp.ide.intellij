@@ -9,11 +9,20 @@ import com.intellij.openapi.project.DumbAware;
 
 import etalii.adp.core.AdpDataKeys;
 import etalii.adp.core.AdpDesignerEditor;
+import etalii.adp.core.diagram.view.DiagramDesigner;
 
-/** Zoom In, Zoom Out and Actual Size, enabled only with a focused designer. */
+/**
+ * Zoom In, Zoom Out and Actual Size, enabled only with a focused designer that zooms: every
+ * designer but a diagram designer whose view options turn zoom off (FR-025).
+ */
 public final class ZoomActions {
 
     private ZoomActions() {
+    }
+
+    /** False for a diagram designer whose view options turn zoom off. */
+    static boolean zooms(AdpDesignerEditor<?> designer) {
+        return !(designer instanceof DiagramDesigner diagram) || diagram.definition().view().zoom();
     }
 
     /** An action on the focused designer; disabled anywhere else, so its shortcut keeps its meaning in other editors. */
@@ -23,13 +32,14 @@ public final class ZoomActions {
 
         @Override
         public void update(@NotNull AnActionEvent event) {
-            event.getPresentation().setEnabled(event.getData(AdpDataKeys.ADP_DESIGNER) != null);
+            AdpDesignerEditor<?> designer = event.getData(AdpDataKeys.ADP_DESIGNER);
+            event.getPresentation().setEnabled(designer != null && zooms(designer));
         }
 
         @Override
         public void actionPerformed(@NotNull AnActionEvent event) {
             AdpDesignerEditor<?> designer = event.getData(AdpDataKeys.ADP_DESIGNER);
-            if (designer != null) {
+            if (designer != null && zooms(designer)) {
                 run(designer);
             }
         }

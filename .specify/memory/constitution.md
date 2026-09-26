@@ -112,3 +112,7 @@ guidance, PATCH for clarifications. Reviews of plans and changes MUST verify com
 the principles above; runtime guidance for agents lives in `CLAUDE.md`.
 
 **Version**: 2.1.0 | **Ratified**: 2026-09-24 | **Last Amended**: 2026-09-26
+
+## Quality above everything else.
+
+- Any compiler warnings need to be solved. Not worked around but interpreted and adequately fixed. People that focus on building compilers and analytical tools will for sure have wider understanding of what good coding practices are. Take especially attention of the information provied by tools from Jetbrains. 

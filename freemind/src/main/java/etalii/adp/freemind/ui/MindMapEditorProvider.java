@@ -8,8 +8,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
-import etalii.adp.core.AdpDesignerEditor;
-import etalii.adp.core.AdpEditorProvider;
+import etalii.adp.core.diagram.view.DiagramEditorProvider;
 import etalii.adp.freemind.FreeMindSniffer;
 
 /**
@@ -17,9 +16,13 @@ import etalii.adp.freemind.FreeMindSniffer;
  * {@link FreeMindSniffer} recognises. Other {@code .mm} files are left to the editor the IDE would
  * use without the plug-in.
  */
-public final class MindMapEditorProvider extends AdpEditorProvider {
+public final class MindMapEditorProvider extends DiagramEditorProvider {
 
     public static final String EDITOR_TYPE_ID = "etalii.adp.freemind.editor";
+
+    public MindMapEditorProvider() {
+        super(FreeMindDefinition.DEFINITION, FreeMindMapping::new);
+    }
 
     @Override
     protected Set<String> extensions() {
@@ -31,8 +34,9 @@ public final class MindMapEditorProvider extends AdpEditorProvider {
         return FreeMindSniffer.isFreeMind(head);
     }
 
+    /** The FreeMind designer, with its folding, tree navigation and actions. */
     @Override
-    protected AdpDesignerEditor<?> createDesigner(Project project, VirtualFile file, Document document) {
+    protected MindMapDesigner createDesigner(Project project, VirtualFile file, Document document) {
         return new MindMapDesigner(project, file, document);
     }
 

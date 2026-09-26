@@ -12,6 +12,7 @@ import java.util.random.RandomGenerator;
 
 import etalii.adp.core.TextChange;
 import etalii.adp.core.TextChanges;
+import etalii.adp.core.xml.Range;
 import etalii.adp.freemind.model.ArrowLink;
 import etalii.adp.freemind.model.AttributeRange;
 import etalii.adp.freemind.model.MapNode;
@@ -35,6 +36,9 @@ public final class MindMapEdits {
     public static final String MOVE = "Move Node";
     public static final String FOLD = "Fold Branch";
     public static final String UNFOLD = "Unfold Branch";
+    public static final String SET_ATTRIBUTE = "Change Node";
+    public static final String ADD_ARROW_LINK = "Add Arrow Link";
+    public static final String REMOVE_ARROW_LINK = "Remove Arrow Link";
 
     /** One undoable change. {@code created} is the key of an added node, else {@code null}. */
     public record Edit(String label, TextChanges changes, NodeKey created) {
@@ -174,6 +178,60 @@ public final class MindMapEdits {
         return new Edit(folded ? FOLD : UNFOLD, new TextChanges(edit), null);
     }
 
+    /**
+     * Sets one attribute of the node's start tag: replaces its value, inserts it where alphabetical
+     * order puts it, or removes it for a {@code null} or empty value. Returns {@code null} when the
+     * tag already says so.
+     */
+    public static Edit setAttribute(MindMap map, NodeKey key, String name, String value) {
+        MapNode node = existing(map, key);
+        AttributeRange present = node.ranges().attribute(name);
+        List<TextChange> edit = new ArrayList<>();
+        if (value == null || value.isEmpty()) {
+            if (present == null) {
+                return null;
+            }
+            edit.add(TextChange.delete(present.start(), present.end() - present.start()));
+        } else {
+            if (present != null && present.value().of(map.text()).equals(FreeMindConventions.escape(value))) {
+                return null;
+            }
+            setAttributes(edit, map, node, Map.of(name, value));
+        }
+        return new Edit(SET_ATTRIBUTE, new TextChanges(edit), null);
+    }
+
+    /**
+     * A new arrow link from one node to another, as FreeMind 1.0.1 writes it: after the source's
+     * last arrow link, else before its first child, else as its last content. Returns {@code null}
+     * when the destination has no {@code ID} to point to.
+     */
+    public static Edit addArrowLink(MindMap map, NodeKey sourceKey, NodeKey destinationKey, RandomGenerator random) {
+        MapNode source = existing(map, sourceKey);
+        MapNode destination = existing(map, destinationKey);
+        if (destination.id() == null) {
+            return null;
+        }
+        String id = "Arrow_" + FreeMindConventions.newId(candidate -> map.text().contains("\"Arrow_" + candidate + "\""), random);
+        String element = "<arrowlink DESTINATION=\"" + FreeMindConventions.escape(destination.id()) + "\" ENDARROW=\"Default\" ID=\"" + id
+                + "\" STARTARROW=\"None\"/>";
+        List<ArrowLink> own = map.arrowLinks().stream().filter(link -> link.source().equals(sourceKey)).toList();
+        TextChange insert;
+        if (!own.isEmpty()) {
+            insert = insertAfter(map, own.get(own.size() - 1).range(), element);
+        } else if (!source.children().isEmpty()) {
+            insert = insertBeside(map, source.children().get(0), Placement.BEFORE, element);
+        } else {
+            insert = insertInto(map, source, element);
+        }
+        return new Edit(ADD_ARROW_LINK, TextChanges.of(insert), null);
+    }
+
+    /** Removes an arrow link element, with its own line when it is alone on it. */
+    public static Edit removeArrowLink(MindMap map, ArrowLink link) {
+        return new Edit(REMOVE_ARROW_LINK, TextChanges.of(TextChange.delete(link.range().offset(), link.range().length())), null);
+    }
+
     private static MapNode existing(MindMap map, NodeKey key) {
         MapNode node = map.node(key);
         if (node == null) {
@@ -232,6 +290,20 @@ public final class MindMapEdits {
         case AFTER -> ranges.element().end();
         case INTO -> ranges.childInsertPoint();
         };
+    }
+
+    /** Inserts {@code element} after an element's range, on a line of its own, indented alike, when the element has one. */
+    private static TextChange insertAfter(MindMap map, Range range, String element) {
+        String text = map.text();
+        int end = range.end();
+        if (end == 0 || (text.charAt(end - 1) != '\n' && text.charAt(end - 1) != '\r')) {
+            return TextChange.insert(end, element);
+        }
+        int indentEnd = range.offset();
+        while (indentEnd < end && (text.charAt(indentEnd) == ' ' || text.charAt(indentEnd) == '\t')) {
+            indentEnd++;
+        }
+        return TextChange.insert(end, text.substring(range.offset(), indentEnd) + element + map.lineSeparator());
     }
 
     /** Inserts {@code element} before or after {@code target}, in the target's line style. */

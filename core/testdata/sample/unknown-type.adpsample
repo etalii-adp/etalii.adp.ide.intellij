@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sample>
+  <meta generator="by hand"/>
+  <box id="a" type="task" x="40" y="40">Known</box>
+  <box id="z" type="gizmo" x="240" y="40" w="80" h="40" colour="teal">Unknown</box>
+  <link id="f1" type="flow" from="a" fromAnchor="out" to="z" toAnchor="in"/>
+  <link id="w1" type="wire" from="z" to="a"/>
+</sample>

@@ -1,11 +1,11 @@
-package etalii.adp.freemind.parse;
+package etalii.adp.core.xml;
 
-import static etalii.adp.freemind.parse.XmlScanner.Kind.CDATA;
-import static etalii.adp.freemind.parse.XmlScanner.Kind.COMMENT;
-import static etalii.adp.freemind.parse.XmlScanner.Kind.END_TAG;
-import static etalii.adp.freemind.parse.XmlScanner.Kind.PI;
-import static etalii.adp.freemind.parse.XmlScanner.Kind.START_TAG;
-import static etalii.adp.freemind.parse.XmlScanner.Kind.TEXT;
+import static etalii.adp.core.xml.XmlScanner.Kind.CDATA;
+import static etalii.adp.core.xml.XmlScanner.Kind.COMMENT;
+import static etalii.adp.core.xml.XmlScanner.Kind.END_TAG;
+import static etalii.adp.core.xml.XmlScanner.Kind.PI;
+import static etalii.adp.core.xml.XmlScanner.Kind.START_TAG;
+import static etalii.adp.core.xml.XmlScanner.Kind.TEXT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,9 +17,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.api.Test;
 
-import etalii.adp.freemind.FreeMindAsserts;
-import etalii.adp.freemind.parse.XmlScanner.Attribute;
-import etalii.adp.freemind.parse.XmlScanner.Token;
+import etalii.adp.core.xml.XmlScanner.Attribute;
+import etalii.adp.core.xml.XmlScanner.Token;
 
 class XmlScannerTest {
 
@@ -78,39 +77,4 @@ class XmlScannerTest {
         assertEquals("a b c", XmlScanner.scan(text).get(0).attribute("TEXT").decodedValue(text));
     }
 
-    @ParameterizedTest
-    @MethodSource("etalii.adp.freemind.FreeMindAsserts#examples")
-    void rescanningEveryExampleReproducesEveryRangesText(Path example) throws Exception {
-        String text = FreeMindAsserts.read(example);
-
-        List<Token> tokens = XmlScanner.scan(text);
-
-        int expectedOffset = 0;
-        for (Token token : tokens) {
-            assertEquals(expectedOffset, token.offset(), "tokens must tile the text");
-            String range = token.range().of(text);
-            switch (token.kind()) {
-            case START_TAG -> {
-                assertTrue(range.startsWith("<" + token.name()), range);
-                assertTrue(range.endsWith(token.selfClosing() ? "/>" : ">"), range);
-                for (Attribute attribute : token.attributes()) {
-                    assertTrue(text.startsWith(attribute.name(), attribute.nameOffset()), range);
-                    assertEquals(attribute.quote(), text.charAt(attribute.value().offset() - 1), range);
-                    assertEquals(attribute.quote(), text.charAt(attribute.value().end()), range);
-                }
-            }
-            case END_TAG -> {
-                assertTrue(range.startsWith("</" + token.name()), range);
-                assertTrue(range.endsWith(">"), range);
-            }
-            case COMMENT -> assertTrue(range.startsWith("<!--") && range.endsWith("-->"), range);
-            case CDATA -> assertTrue(range.startsWith("<![CDATA[") && range.endsWith("]]>"), range);
-            case PI -> assertTrue(range.startsWith("<?") && range.endsWith("?>"), range);
-            case TEXT -> assertFalse(range.contains("<"), range);
-            case DOCTYPE -> assertTrue(range.startsWith("<!DOCTYPE"), range);
-            }
-            expectedOffset = token.end();
-        }
-        assertEquals(text.length(), expectedOffset);
-    }
 }

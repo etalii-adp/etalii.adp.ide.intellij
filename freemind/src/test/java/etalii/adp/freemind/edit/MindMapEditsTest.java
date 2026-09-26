@@ -22,7 +22,7 @@ import etalii.adp.freemind.edit.MindMapEdits.Edit;
 import etalii.adp.freemind.edit.MindMapEdits.Placement;
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
-import etalii.adp.freemind.model.Range;
+import etalii.adp.core.xml.Range;
 import etalii.adp.freemind.parse.MindMapParser;
 
 class MindMapEditsTest {
@@ -269,6 +269,94 @@ class MindMapEditsTest {
         String added = apply(text, MindMapEdits.addChild(map, map.root().key(), "new", NOW, sequence(77)));
         assertTrue(Pattern.compile("<node CREATED=\"100\" ID=\"ID_77\" MODIFIED=\"100\" POSITION=\"(left|right)\" TEXT=\"new\"/>")
                 .matcher(added).find(), added);
+    }
+
+    private static final String C_TAG = "<node CREATED=\"6\" ID=\"ID_6\" MODIFIED=\"6\" POSITION=\"right\" TEXT=\"C\"/>";
+
+    @Test
+    void setAttributeInsertsWhereAlphabeticalOrderPutsIt() throws Exception {
+        MindMap map = parse(MAP);
+        Edit colour = MindMapEdits.setAttribute(map, key("ID_6"), "COLOR", "#ff0000");
+        Edit link = MindMapEdits.setAttribute(map, key("ID_6"), "LINK", "a & b.mm");
+
+        assertEquals(MindMapEdits.SET_ATTRIBUTE, colour.label());
+        assertEquals(MAP.replace(C_TAG, C_TAG.replace("<node CREATED", "<node COLOR=\"#ff0000\" CREATED")), apply(MAP, colour));
+        assertEquals(MAP.replace(C_TAG, C_TAG.replace("MODIFIED=", "LINK=\"a &amp; b.mm\" MODIFIED=")), apply(MAP, link));
+        assertOnlyInside(MAP, apply(MAP, colour), map.node(key("ID_6")).ranges().startTag());
+    }
+
+    @Test
+    void setAttributeReplacesOnlyTheValue() throws Exception {
+        String coloured = MAP.replace(C_TAG, C_TAG.replace("<node CREATED", "<node COLOR=\"#ff0000\" CREATED"));
+        MindMap map = parse(coloured);
+        Edit edit = MindMapEdits.setAttribute(map, key("ID_6"), "COLOR", "#00ff00");
+
+        assertEquals(coloured.replace("#ff0000", "#00ff00"), apply(coloured, edit));
+        assertOnlyInside(coloured, apply(coloured, edit), map.node(key("ID_6")).ranges().attribute("COLOR").value());
+        assertNull(MindMapEdits.setAttribute(map, key("ID_6"), "COLOR", "#ff0000"), "the value is already set");
+    }
+
+    @Test
+    void setAttributeToNothingRemovesIt() throws Exception {
+        String coloured = MAP.replace(C_TAG, C_TAG.replace("<node CREATED", "<node COLOR=\"#ff0000\" CREATED"));
+        MindMap map = parse(coloured);
+
+        assertEquals(MAP, apply(coloured, MindMapEdits.setAttribute(map, key("ID_6"), "COLOR", null)));
+        assertEquals(MAP, apply(coloured, MindMapEdits.setAttribute(map, key("ID_6"), "COLOR", "")));
+        assertNull(MindMapEdits.setAttribute(parse(MAP), key("ID_6"), "COLOR", ""), "nothing to remove");
+    }
+
+    @Test
+    void addArrowLinkExpandsASelfClosingSource() throws Exception {
+        MindMap map = parse(MAP);
+        Edit edit = MindMapEdits.addArrowLink(map, key("ID_6"), key("ID_4"), sequence(77));
+
+        assertEquals(MindMapEdits.ADD_ARROW_LINK, edit.label());
+        assertEquals(MAP.replace(C_TAG + "\n", C_TAG.replace("/>", ">") + "\n"
+                + "<arrowlink DESTINATION=\"ID_4\" ENDARROW=\"Default\" ID=\"Arrow_ID_77\" STARTARROW=\"None\"/>\n</node>\n"), apply(MAP, edit));
+        MindMap after = parse(apply(MAP, edit));
+        assertEquals(2, after.arrowLinks().size());
+        assertEquals(key("ID_6"), after.arrowLinks().get(1).source());
+        assertEquals("ID_4", after.arrowLinks().get(1).destinationId());
+    }
+
+    @Test
+    void addArrowLinkGoesAfterTheSourcesLinksOrBeforeItsChildren() throws Exception {
+        MindMap map = parse(MAP);
+        String link = "<arrowlink DESTINATION=\"ID_6\" ENDARROW=\"Default\" ID=\"Arrow_ID_77\" STARTARROW=\"None\"/>\n";
+
+        String afterLinks = apply(MAP, MindMapEdits.addArrowLink(map, key("ID_5"), key("ID_6"), sequence(77)));
+        assertEquals(MAP.replace("STARTARROW=\"None\"/>\n", "STARTARROW=\"None\"/>\n" + link), afterLinks);
+
+        String beforeChildren = apply(MAP, MindMapEdits.addArrowLink(map, key("ID_2"), key("ID_6"), sequence(77)));
+        assertEquals(MAP.replace("<node CREATED=\"3\"", link + "<node CREATED=\"3\""), beforeChildren);
+        assertEquals(key("ID_2"), parse(beforeChildren).arrowLinks().get(0).source());
+    }
+
+    @Test
+    void addArrowLinkNeedsADestinationWithAnId() throws Exception {
+        String noId = MAP.replace("CREATED=\"4\" ID=\"ID_4\" ", "CREATED=\"4\" ");
+        MindMap map = parse(noId);
+        MapNode a2 = map.node(key("ID_2")).children().get(1);
+
+        assertNull(MindMapEdits.addArrowLink(map, key("ID_6"), a2.key(), sequence(77)));
+    }
+
+    @Test
+    void removeArrowLinkTakesItsLine() throws Exception {
+        MindMap map = parse(MAP);
+        Edit edit = MindMapEdits.removeArrowLink(map, map.arrowLinks().get(0));
+
+        assertEquals(MindMapEdits.REMOVE_ARROW_LINK, edit.label());
+        assertEquals(MAP.replace("<arrowlink DESTINATION=\"ID_3\" ENDARROW=\"Default\" ID=\"Arrow_ID_1\" STARTARROW=\"None\"/>\n", ""), apply(MAP, edit));
+        Range line = map.arrowLinks().get(0).range();
+        assertEquals(MAP.substring(0, line.offset()) + MAP.substring(line.end()), apply(MAP, edit), "exactly the link's range goes");
+    }
+
+    /** The text changed only within {@code allowed}. */
+    private static void assertOnlyInside(String before, String after, Range allowed) {
+        Range changed = changedRange(before, after);
+        assertTrue(allowed.offset() <= changed.offset() && changed.end() <= allowed.end(), changed + " outside " + allowed);
     }
 
     static MindMap parse(String text) throws Exception {

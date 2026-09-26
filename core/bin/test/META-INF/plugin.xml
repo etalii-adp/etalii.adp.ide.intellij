@@ -1,7 +1,11 @@
-<!-- The core module's own contributions, for its tests; the plug-in's descriptor includes the same file. -->
+<!-- The core module's own contributions, for its tests; the plug-in's descriptor includes the same files. -->
 <idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
     <id>etalii.adp.core.test</id>
     <name>ADP Core (tests)</name>
     <depends>com.intellij.modules.platform</depends>
     <xi:include href="/META-INF/adp-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/adp-diagram.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-diagram-editing.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-diagram-properties.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-diagram-navigation.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
 </idea-plugin>

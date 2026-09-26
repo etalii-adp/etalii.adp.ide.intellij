@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sample>
+  <box id="a" type="task" x="40" y="40">First</box>
+  <box id="b" type="task" x="40" y="240">Second</box>
+  <link id="n1" type="note" from="a" fromAnchor="bottom" to="b" toAnchor="top">see also</link>
+</sample>

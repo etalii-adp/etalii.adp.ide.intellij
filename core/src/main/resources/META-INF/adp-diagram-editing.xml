@@ -1,0 +1,23 @@
+<!-- Editing diagrams (US2): the canvas tools, the ADP Toolbox, Delete and the canvas context menu. -->
+<idea-plugin>
+    <extensions defaultExtensionNs="etalii.adp">
+        <diagramFeature implementation="etalii.adp.core.diagram.edit.EditingFeature"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="ADP Toolbox" factoryClass="etalii.adp.core.diagram.toolbox.ToolboxToolWindowFactory"
+                    anchor="right" secondary="false" icon="AllIcons.Toolwindows.ToolWindowPalette"/>
+    </extensions>
+
+    <actions>
+        <action id="etalii.adp.core.Delete" class="etalii.adp.core.diagram.edit.DeleteAction" text="Delete"
+                description="Delete the selected elements and connections" use-shortcut-of="$Delete"/>
+        <group id="etalii.adp.core.DiagramPopup" text="Diagram">
+            <reference ref="etalii.adp.core.Delete"/>
+            <separator/>
+            <reference ref="etalii.adp.core.ZoomIn"/>
+            <reference ref="etalii.adp.core.ZoomOut"/>
+            <reference ref="etalii.adp.core.ZoomReset"/>
+        </group>
+    </actions>
+</idea-plugin>

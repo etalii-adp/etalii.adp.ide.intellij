@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sample>
+  <lane id="l1" label="Customer" y="0" height="200"/>
+  <lane id="l2" label="Shop" y="200" height="200"/>
+  <box id="a" type="task" x="40" y="40" lane="l1">Place order</box>
+  <box id="b" type="task" x="40" y="260" lane="l2">Ship</box>
+  <link id="f1" type="flow" from="a" fromAnchor="out" to="b" toAnchor="in"/>
+</sample>

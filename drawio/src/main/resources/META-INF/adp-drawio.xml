@@ -1,0 +1,8 @@
+<!-- The draw.io designer (FR-031, contracts/plugin-contributions.md). -->
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="draw.io Diagram" implementationClass="etalii.adp.drawio.DrawioFileType"
+                  fieldName="INSTANCE" extensions="drawio"/>
+        <fileEditorProvider implementation="etalii.adp.drawio.DrawioEditorProvider"/>
+    </extensions>
+</idea-plugin>

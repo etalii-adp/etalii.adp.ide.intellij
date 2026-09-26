@@ -4,10 +4,9 @@ import java.util.List;
 
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
-import etalii.adp.freemind.ui.InPlaceRename;
 import etalii.adp.freemind.ui.MindMapDesigner;
 
-/** Rename Node (spec 001 FR-020): opens the in-place editor on the one selected node. */
+/** Rename Node (spec 001 FR-020): opens the framework's in-place editor on the one selected node's text. */
 public final class RenameAction extends MindMapAction {
 
     @Override
@@ -17,6 +16,6 @@ public final class RenameAction extends MindMapAction {
 
     @Override
     protected void perform(MindMapDesigner designer, MindMap map, List<MapNode> nodes) {
-        InPlaceRename.open(designer, nodes.get(0).key());
+        designer.rename(nodes.get(0).key());
     }
 }

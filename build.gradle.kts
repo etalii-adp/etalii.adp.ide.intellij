@@ -1,5 +1,6 @@
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import java.util.Properties
 
 plugins {
     id("java")
@@ -33,6 +34,7 @@ dependencies {
         intellijIdea(providers.gradleProperty("platformVersion"))
         pluginComposedModule(implementation(project(":core")))
         pluginComposedModule(implementation(project(":freemind")))
+        pluginComposedModule(implementation(project(":drawio")))
         testFramework(TestFrameworkType.Starter, configurationName = integrationTestImplementation.name)
         pluginVerifier()
     }
@@ -95,6 +97,38 @@ val integrationTestTask = tasks.register<Test>("integrationTest") {
     shouldRunAfter(tasks.test)
 }
 
+// Every third-party library the plug-in ships must have an Apache-2.0-compatible licence (research R21, SC-006).
+// The composed modules' external runtime artifacts are checked against gradle/allowed-licences.properties;
+// the IntelliJ Platform is provided by the IDE and is not on this classpath.
+val verifyDependencyLicences = tasks.register("verifyDependencyLicences") {
+    description = "Fails when a shipped third-party library is not allowed with an Apache-2.0-compatible licence."
+    group = "verification"
+    val allowlist = layout.projectDirectory.file("gradle/allowed-licences.properties")
+    val compatible = setOf("Apache-2.0", "MIT", "BSD-2-Clause", "BSD-3-Clause", "CC0-1.0")
+    val artifacts = configurations.runtimeClasspath.get().incoming.artifacts.resolvedArtifacts.map { results ->
+        results.map { it.id.componentIdentifier }
+            .filterIsInstance<org.gradle.api.artifacts.component.ModuleComponentIdentifier>()
+            .map { "${it.group}:${it.module}" }
+            .distinct()
+            .sorted()
+    }
+    inputs.file(allowlist)
+    inputs.property("artifacts", artifacts)
+    doLast {
+        val allowed = Properties().apply { allowlist.asFile.reader().use { load(it) } }
+        val problems = artifacts.get().mapNotNull { artifact ->
+            when (val licence = allowed.getProperty(artifact)) {
+                null -> "$artifact is not in gradle/allowed-licences.properties"
+                !in compatible -> "$artifact is listed with $licence, which is not Apache-2.0-compatible"
+                else -> null
+            }
+        }
+        if (problems.isNotEmpty()) {
+            throw GradleException("Third-party libraries without an allowed licence:\n  " + problems.joinToString("\n  "))
+        }
+    }
+}
+
 tasks.check {
-    dependsOn(integrationTestTask, tasks.verifyPlugin)
+    dependsOn(integrationTestTask, tasks.verifyPlugin, verifyDependencyLicences)
 }

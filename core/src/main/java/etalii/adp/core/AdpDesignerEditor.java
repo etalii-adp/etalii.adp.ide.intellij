@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JComponent;
@@ -23,6 +24,7 @@ import com.intellij.openapi.actionSystem.Separator;
 import com.intellij.openapi.actionSystem.UiDataProvider;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
+import com.intellij.openapi.application.WriteIntentReadAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.command.undo.DocumentReference;
 import com.intellij.openapi.command.undo.DocumentReferenceManager;
@@ -37,6 +39,7 @@ import com.intellij.openapi.fileEditor.FileEditorStateLevel;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.EditorNotifications;
 import com.intellij.ui.PopupHandler;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.components.BorderLayoutPanel;
@@ -154,6 +157,7 @@ public abstract class AdpDesignerEditor<M> extends UserDataHolderBase implements
     }
 
     private void showProblem(FormatProblem problem) {
+        String before = problemMessage();
         if (problemPanel != null) {
             notices.remove(problemPanel);
             problemPanel = null;
@@ -166,6 +170,9 @@ public abstract class AdpDesignerEditor<M> extends UserDataHolderBase implements
             notices.add(problemPanel, BorderLayout.CENTER);
         }
         scrollPane.setVisible(problem == null);
+        if (!Objects.equals(before, problemMessage())) {
+            EditorNotifications.getInstance(project).updateNotifications(file);
+        }
         root.revalidate();
         root.repaint();
     }
@@ -212,7 +219,9 @@ public abstract class AdpDesignerEditor<M> extends UserDataHolderBase implements
      * restores it; a selection made after the command would take a Ctrl+Z of its own.
      */
     public void execute(String label, TextChanges changes, Runnable andThen) {
-        if (!isEditable() || changes.isEmpty() || !FileDocumentManager.getInstance().requestWriting(document, project)) {
+        // Input events arrive without the write-intent lock, which asking for write access needs (it consults the project file index).
+        if (!isEditable() || changes.isEmpty()
+                || !WriteIntentReadAction.compute(() -> FileDocumentManager.getInstance().requestWriting(document, project))) {
             return;
         }
         WriteCommandAction.writeCommandAction(project).withName(label).run(() -> {

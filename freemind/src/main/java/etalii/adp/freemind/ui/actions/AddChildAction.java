@@ -6,7 +6,6 @@ import etalii.adp.freemind.edit.MindMapEdits;
 import etalii.adp.freemind.edit.MindMapEdits.Edit;
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
-import etalii.adp.freemind.ui.InPlaceRename;
 import etalii.adp.freemind.ui.MindMapDesigner;
 
 /**
@@ -40,7 +39,7 @@ public final class AddChildAction extends MindMapAction {
             }
         });
         if (designer.selection().equals(List.of(edit.created()))) {
-            InPlaceRename.open(designer, edit.created());
+            designer.rename(edit.created());
         }
     }
 }

@@ -2,7 +2,6 @@ package etalii.adp.freemind.ui;
 
 import java.util.List;
 
-import etalii.adp.core.AdpDesignerEditor;
 import etalii.adp.core.AdpStructureView;
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
@@ -11,9 +10,9 @@ import etalii.adp.freemind.model.NodeKey;
 /** The node tree in the Structure view: each node's text after its first icon, children in document order (FR-015). */
 public final class MindMapStructureView extends AdpStructureView {
 
-    private final AdpDesignerEditor<MindMap> designer;
+    private final MindMapDesigner designer;
 
-    public MindMapStructureView(AdpDesignerEditor<MindMap> designer) {
+    public MindMapStructureView(MindMapDesigner designer) {
         super(designer);
         this.designer = designer;
     }

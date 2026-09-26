@@ -15,6 +15,7 @@ import com.intellij.openapi.fileEditor.FileEditorPolicy;
 import com.intellij.openapi.fileEditor.FileEditorStateLevel;
 import com.intellij.openapi.fileEditor.TextEditorWithPreview;
 import com.intellij.testFramework.FileEditorManagerTestCase;
+import com.intellij.ui.EditorNotificationPanel;
 
 import etalii.adp.testing.DesignerDriver;
 import etalii.adp.testing.Layout;
@@ -189,6 +190,19 @@ public class AdpEditorProviderTest extends FileEditorManagerTestCase {
             assertEquals(1.25, d.designer().viewState().zoom(), 1e-9);
             assertEquals(List.of(2), d.selectedKeys());
             assertEquals(TEXT, d.text());
+        }
+    }
+
+    @Test
+    public void aFormatProblemShowsABannerAboveTheText() {
+        try (var d = open(FakeFormat.HEADER + "alpha\n!x\n")) {
+            var banner = new AdpProblemNotifications().collectNotificationData(getProject(), d.file()).apply(d.composite());
+            assertNotNull(banner);
+            String text = ((EditorNotificationPanel) banner).getText();
+            assertTrue(text, text.contains("Line 3, column 1"));
+        }
+        try (var d = DesignerDriver.openText(myFixture, "fine.txt", TEXT)) {
+            assertNull(new AdpProblemNotifications().collectNotificationData(getProject(), d.file()).apply(d.composite()));
         }
     }
 }
