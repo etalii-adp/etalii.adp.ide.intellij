@@ -1,5 +1,7 @@
 package etalii.adp.freemind.model;
 
+import etalii.adp.core.xml.Range;
+
 /**
  * Where one attribute sits in a start tag. {@code start} is the whitespace before its name, so
  * {@code [start, end)} removes it cleanly, and inserting {@code " NAME=\"v\""} at {@code start}

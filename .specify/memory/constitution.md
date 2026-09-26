@@ -1,12 +1,3 @@
-<!--
-Sync Impact Report
-- Version: 2.0.0 -> 2.1.0 (MINOR: materially expanded Development Workflow guidance)
-- Modified sections: Development Workflow (branch naming now `feature/<number>-<name>`;
-  added pull-request delivery and post-resolution branch/worktree cleanup)
-- Principles: unchanged. Added/removed sections: none.
-- Follow-up: the git extension still creates `NNN-name` branches; its branch naming must be
-  aligned with `feature/<number>-<name>`. CLAUDE.md "One feature per branch" line to align.
--->
 # EtAlii.Adp.IntelliJ Constitution
 
 ## Core Principles

@@ -1,0 +1,12 @@
+Vendored test example: uml_1.drawio
+
+Source (raw file): https://raw.githubusercontent.com/jgraph/drawio/6c66d8c3ecf59a00e110b92832504ad1f9530140/src/main/webapp/templates/uml/uml_1.xml
+Source (repository page): https://github.com/jgraph/drawio/blob/6c66d8c3ecf59a00e110b92832504ad1f9530140/src/main/webapp/templates/uml/uml_1.xml
+Repository: https://github.com/jgraph/drawio (pinned to commit 6c66d8c3ecf59a00e110b92832504ad1f9530140)
+Copyright holder: JGraph Ltd
+Licence: Creative Commons Attribution 4.0 International (CC-BY-4.0), as stated by
+https://github.com/jgraph/drawio/blob/6c66d8c3ecf59a00e110b92832504ad1f9530140/src/main/webapp/templates/LICENSE
+Licence text: https://creativecommons.org/licenses/by/4.0/legalcode
+
+Modification: decompressed from the published template: each <diagram> page's base64, raw-deflated, URL-encoded content is replaced by the <mxGraphModel> it holds, and the file is indented with two spaces per level as draw.io writes uncompressed files. No cell, attribute or value was changed.
+Made with drawio/src/test/java/etalii/adp/drawio/DecompressTemplates.java.

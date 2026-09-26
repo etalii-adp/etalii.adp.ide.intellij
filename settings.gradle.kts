@@ -8,7 +8,7 @@ plugins {
 
 rootProject.name = "EtAlii.Adp.IntelliJ"
 
-include("core", "freemind", "testing")
+include("core", "freemind", "drawio", "testing")
 
 dependencyResolutionManagement {
     repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS

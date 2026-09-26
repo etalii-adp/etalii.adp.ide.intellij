@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sample>
+  <legend id="g" label="Legend" x="0" width="150"/>
+  <box id="k" type="task" x="10" y="40" lane="g">Key</box>
+  <box id="a" type="task" x="300" y="40">Main</box>
+</sample>

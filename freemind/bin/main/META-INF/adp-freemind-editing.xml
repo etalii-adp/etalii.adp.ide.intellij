@@ -1,4 +1,5 @@
-<!-- User Story 2: editing a map, with the IDE's own undo, redo and save (contracts/plugin-contributions.md). -->
+<!-- User Story 2: editing a map, with the IDE's own undo, redo and save (contracts/plugin-contributions.md).
+     The gestures come from the diagram framework's canvas; these are FreeMind's own actions and its context menu. -->
 <idea-plugin>
     <actions>
         <action id="etalii.adp.freemind.AddChild" class="etalii.adp.freemind.ui.actions.AddChildAction" text="Add Child Node"
@@ -58,8 +59,4 @@
             <reference ref="etalii.adp.core.ZoomReset"/>
         </group>
     </actions>
-
-    <projectListeners>
-        <listener class="etalii.adp.freemind.ui.EditingInstaller" topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
-    </projectListeners>
 </idea-plugin>

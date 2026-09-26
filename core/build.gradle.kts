@@ -27,6 +27,9 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    // Hand-written sample designer files, read by the diagram tests.
+    systemProperty("adp.testdata", layout.projectDirectory.dir("testdata").asFile.absolutePath)
+    inputs.dir("testdata")
 }
 
 // The unified IntelliJ IDEA distribution's Ultimate part cannot start in the headless test IDE;

@@ -6,7 +6,8 @@
 
     <description><![CDATA[
     Visual designers for text-based files. Each designer is an editor on the file's own text,
-    with the IDE's undo, redo, save and text view. The first format is FreeMind mind maps (<code>.mm</code>).
+    with the IDE's undo, redo, save and text view. The formats are FreeMind mind maps (<code>.mm</code>)
+    and draw.io diagrams (<code>.drawio</code>), edited with a shared toolbox and property panel.
     Licensed under the Apache License, Version 2.0.
     ]]></description>
 
@@ -17,4 +18,9 @@
     <xi:include href="/META-INF/adp-freemind-editor.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
     <xi:include href="/META-INF/adp-freemind-editing.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
     <xi:include href="/META-INF/adp-freemind-new.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-diagram.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-diagram-editing.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-diagram-properties.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-diagram-navigation.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-drawio.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
 </idea-plugin>

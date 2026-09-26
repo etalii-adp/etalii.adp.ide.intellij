@@ -1,1 +1,1 @@
-/speckit-companion-resume specs/002-jetbrains-ide-support
+/speckit-companion-resume specs/003-diagram-designer-framework

@@ -59,7 +59,7 @@ This file lists every spec 001 test method with the behaviour it verifies and th
 | `XmlScannerTest.elementEndsCommentsCdataAndProcessingInstructionsHaveExactRanges` | Element ends, comments, CDATA and processing instructions have exact ranges. | `XmlScannerTest.elementEndsCommentsCdataAndProcessingInstructionsHaveExactRanges` |
 | `XmlScannerTest.decodesPredefinedAndNumericReferences` | Predefined and numeric references are decoded. | `XmlScannerTest.decodesPredefinedAndNumericReferences` |
 | `XmlScannerTest.attributeValuesNormaliseLiteralWhitespace` | Attribute values normalise literal whitespace. | `XmlScannerTest.attributeValuesNormaliseLiteralWhitespace` |
-| `XmlScannerTest.rescanningEveryExampleReproducesEveryRangesText` | Rescanning every example reproduces the text of every range. | `XmlScannerTest.rescanningEveryExampleReproducesEveryRangesText` |
+| `XmlScannerTest.rescanningEveryExampleReproducesEveryRangesText` | Rescanning every example reproduces the text of every range. | `ExampleScanTest.rescanningEveryExampleReproducesEveryRangesText` |
 | `AddNodeTest.addChildOpensAnInPlaceEditorAndTypingSetsItsText` | Add child opens an in-place editor and typing sets the new node's text. | `AddNodeTest.addChildOpensAnInPlaceEditorAndTypingSetsItsText` |
 | `AddNodeTest.aFirstLevelChildGetsASide` | A new first-level child gets a side. | `AddNodeTest.aFirstLevelChildGetsASide` |
 | `AddNodeTest.addSiblingGoesRightAfterTheSelectedNode` | Add sibling inserts the node right after the selected node. | `AddNodeTest.addSiblingGoesRightAfterTheSelectedNode` |

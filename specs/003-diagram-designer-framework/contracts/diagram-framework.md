@@ -82,10 +82,11 @@ public interface DiagramRules {
     default Verdict canConnect(Diagram d, String type, End source, End target) { return Verdict.allow(); }
     default Verdict canDisconnect(Diagram d, Object connection)           { return Verdict.allow(); }
     default Verdict canDrop(Diagram d, Set<Object> keys, Object target, Placement placement) { return Verdict.allow(); }
+    default Verdict canSetProperty(Diagram d, Object key, String property) { return Verdict.allow(); }  // read-only for one item
 }
 
 @FunctionalInterface
-public interface DiagramListener { void changed(DiagramDesigner designer, List<DiagramChange> changes); }
+public interface DiagramListener { void changed(DiagramCommands.Host designer, List<DiagramChange> changes); }  // the designer is the host
 ```
 
 The order of checks for every gesture is: definition permissions, then rules, then the mapping. The first refusal wins, and nothing is written.
@@ -103,14 +104,18 @@ public interface DiagramLayout {
 
 ```java
 public abstract class DiagramEditorProvider extends AdpEditorProvider {
+    // the usual form: files with this extension whose first element (after the XML prolog) is one of rootNames
+    protected DiagramEditorProvider(DiagramDefinition definition, Supplier<DiagramMapping> mapping,
+                                    String editorTypeId, String editorName, String extension, String... rootNames);
+    // or, overriding extensions(), sniff(byte[]), editorName() and getEditorTypeId() instead:
     protected DiagramEditorProvider(DiagramDefinition definition, Supplier<DiagramMapping> mapping);
-    // author still implements: extensions(), sniff(byte[]), editorName(), getEditorTypeId()
     // createDesigner(...) is provided: returns a DiagramDesigner; override to return a subclass (FreeMind).
 }
 
-public class DiagramDesigner extends AdpDesignerEditor<Diagram> {
+public class DiagramDesigner extends AdpDesignerEditor<Object> implements DiagramCommands.Host {
+    // the model is the diagram, or a format's own parse (FreeMind) from which diagramOf(model) builds it
     public DiagramDefinition definition();
-    public Diagram diagram();                      // same as model()
+    public Diagram diagram();                      // the diagram of model()
     public List<Object> selection();               // element and connection keys
     public ElementView elementView(Object key);     // null when not shown
     public ConnectionView connectionView(Object key);
@@ -118,7 +123,7 @@ public class DiagramDesigner extends AdpDesignerEditor<Diagram> {
     public Verdict lastRefusal();                  // for tests; null when the last gesture was allowed
 
     // for designer-specific actions (FreeMind fold, tree navigation):
-    protected void navigate(Object from, Direction direction);   // default: nearest element in that direction
+    protected void navigate(Object from, Heading heading);       // UP, DOWN, LEFT, RIGHT; default: nearest element that way
     public void runCommand(String label, Function<CharSequence, TextChanges> edit, Runnable reselect);
 }
 ```
@@ -168,5 +173,13 @@ public final class XmlEdits {                  // each returns a TextChange, pre
     public static TextChange remove(CharSequence text, XmlElement e);                 // with its own line when alone on it
     public static TextChange setContent(XmlElement e, String text);                    // escaped
     public static String escape(String text);
+    public static TextChange update(XmlElement e, String name, String value);          // set, remove when empty, null when unchanged
+    public static TextChange updateNumber(XmlElement e, String name, double value);    // a coordinate, two decimals, null when unchanged
+    public static String element(String name, Map<String, String> attributes, String content);
+    public static Map<String, String> attributes(String... namesAndValues);
+    public static String uniqueId(XmlElement root, String prefix);
+    public static TextChanges changes(TextChange... changes);                         // drops the nulls
 }
+// also: XmlTree.reread(text) (unchecked, for text read before), XmlTree.rootName(byte[] head) (for sniffing),
+// XmlElement.attribute(name, fallback), number(name, fallback), child(name), descendants(); and core's AdpFileType
 ```

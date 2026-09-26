@@ -1,5 +1,7 @@
 package etalii.adp.freemind.parse;
 
+import etalii.adp.core.xml.XmlScanner;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;

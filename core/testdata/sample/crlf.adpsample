@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sample>
+  <box id="a" type="task" x="40" y="40" owner="Ann">Place order</box>
+  <box id="b" type="task" x="240" y="40">Ship</box>
+  <link id="f1" type="flow" from="a" fromAnchor="out" to="b" toAnchor="in">submit</link>
+</sample>

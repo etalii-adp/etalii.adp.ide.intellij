@@ -1,4 +1,4 @@
-package etalii.adp.freemind.model;
+package etalii.adp.core.xml;
 
 /** A character range in the text a map was parsed from. */
 public record Range(int offset, int length) {

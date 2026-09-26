@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sample>
+  <box id="a" type="task" x="40" y="40">Check payment</box>
+  <box id="d" type="decision" x="240" y="40">Paid?</box>
+  <link id="f1" type="flow" from="a" fromAnchor="out" to="d" toAnchor="in" tag="t1" note="always">check</link>
+</sample>

@@ -2,7 +2,7 @@
 
 ADP is an IntelliJ Platform plug-in that adds visual designers for text-based files. Each designer is a real editor in the IDE: it is registered for its file type, uses the IDE's own undo and redo, has the usual modified state and save behaviour, and sits next to the IDE's text editor on the same document. The text is always the source of truth: the designer re-reads it after every change, and every visual edit changes only the text it has to.
 
-The first supported file format is **FreeMind mind maps** (`.mm`):
+Two file formats are supported. **FreeMind mind maps** (`.mm`):
 
 - A FreeMind `.mm` file opens in the designer. Other `.mm` files, such as Objective-C++ source, open with whatever editor would otherwise apply.
 - The map is drawn around its root, with branches on their recorded side, folding, arrow links, icons, colours, fonts, links and notes.
@@ -10,6 +10,18 @@ The first supported file format is **FreeMind mind maps** (`.mm`):
 - A file saved without edits is byte-identical. Edits leave everything else in the file as it was.
 - The Structure tool window lists the node tree. **File > New > FreeMind Mind Map** creates a new map.
 
+**draw.io diagrams** (`.drawio`, uncompressed):
+
+- A `.drawio` file whose content is a draw.io diagram opens in the designer: shapes, dashed, curved and orthogonal edges, arrowheads, labels and swimlanes. `.drawio.svg` and `.drawio.png` files are left alone.
+- Add shapes from the toolbox, connect them, move, resize and delete them, and edit their fill colour, line style and labels. Everything the designer does not show, such as other pages, groups and unknown shapes, is kept as it is.
+- A compressed file opens in the text view, with an explanation of how to save it uncompressed from draw.io.
+
+Every diagram designer shares two tool windows on the right:
+
+- **ADP Toolbox** lists the element and connection types of the selected diagram. Drag an entry onto the canvas, or press Enter on it to add it in the middle.
+- **ADP Properties** shows the properties of the selection and edits them, several items at once where they share a property. Double-click a text on the canvas, or press F2, to edit it in place.
+
+Both designers are built on the diagram framework in `core`. To build a designer for a format of your own, follow the [designer author guide](docs/diagram-designer-guide.md).
 ## Supported IDEs
 
 Every IntelliJ Platform IDE from release 2026.2 (build 262) on. The build verifies the plug-in against IntelliJ IDEA, Rider, WebStorm, PyCharm, CLion, GoLand, PhpStorm and RubyMine. The plug-in makes no network access at runtime.
@@ -37,9 +49,10 @@ The layout:
 
 | Path | What it is |
 |---|---|
-| `core` | The designer framework. It knows no file format. |
+| `core` | The designer framework, including the diagram framework (definitions, mapping contract, canvas, toolbox, property panel, XML helpers). It knows no file format. |
 | `freemind` | The FreeMind file format: parser, text edits, designer, actions. The vendored example maps are in `freemind/testdata/examples/`, each with its licence. |
-| `testing` | `DesignerDriver`, the test kit the designer tests use. |
+| `drawio` | The draw.io designer: definition, mapping and registration. The example diagrams in `drawio/testdata/examples/` are decompressed draw.io templates (CC-BY-4.0), each with its licence. |
+| `testing` | `DesignerDriver` and `DiagramDriver`, the test kit the designer tests use. |
 | `src/integrationTest` | Tests that install the built zip into real IDEs. |
 
 ### Integration test settings
@@ -68,7 +81,9 @@ Every change starts as a specification, using GitHub Spec Kit. See `CLAUDE.md` a
 
 ## Licence
 
-Apache License, Version 2.0. See `LICENSE`. The example maps keep their own licences, recorded in the `.LICENSE` file beside each map.
+Apache License, Version 2.0. See `LICENSE`. The example maps and diagrams keep their own licences, recorded in the `.LICENSE` file beside each one.
+
+The build checks that every third-party library the plug-in ships has an Apache-2.0-compatible licence (`./gradlew verifyDependencyLicences`, part of `check`, against `gradle/allowed-licences.properties`). Today it ships none.
 
 The plug-in zip contains only this project's code. The build and test dependencies, checked for compatibility with Apache-2.0:
 

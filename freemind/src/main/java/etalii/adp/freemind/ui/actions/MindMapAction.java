@@ -136,9 +136,9 @@ public abstract class MindMapAction extends AnAction implements DumbAware {
         return nodes;
     }
 
-    /** One named step in the IDE's Undo; {@code andThen} (the selection it leaves) is part of it. */
+    /** One named step in the IDE's Undo, as a designer command; {@code andThen} (the selection it leaves) is part of it. */
     static void execute(MindMapDesigner designer, Edit edit, Runnable andThen) {
-        designer.execute(edit.label(), edit.changes(), andThen);
+        designer.runCommand(edit.label(), text -> edit.changes(), andThen);
     }
 
     /**

@@ -1,6 +1,7 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
         <stripTrailingSpacesFilterFactory implementation="etalii.adp.core.AdpStripTrailingSpacesFilterFactory"/>
+        <editorNotificationProvider implementation="etalii.adp.core.AdpProblemNotifications"/>
     </extensions>
 
     <actions>

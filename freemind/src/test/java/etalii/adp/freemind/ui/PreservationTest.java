@@ -23,7 +23,7 @@ import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
 import etalii.adp.freemind.model.NodeKey;
 import etalii.adp.freemind.model.NodeRanges;
-import etalii.adp.freemind.model.Range;
+import etalii.adp.core.xml.Range;
 import etalii.adp.freemind.parse.MindMapParser;
 import etalii.adp.testing.DesignerDriver;
 

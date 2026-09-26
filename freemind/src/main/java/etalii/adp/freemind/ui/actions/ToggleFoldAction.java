@@ -48,7 +48,8 @@ public final class ToggleFoldAction extends MindMapAction {
             }
         }
         if (!changes.isEmpty()) {
-            designer.execute(fold ? MindMapEdits.FOLD : MindMapEdits.UNFOLD, new TextChanges(changes));
+            designer.runCommand(fold ? MindMapEdits.FOLD : MindMapEdits.UNFOLD, text -> new TextChanges(changes), () -> {
+            });
         }
     }
 }

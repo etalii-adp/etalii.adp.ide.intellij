@@ -1,10 +1,9 @@
-package etalii.adp.freemind.parse;
+package etalii.adp.core.xml;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import etalii.adp.core.FormatProblem;
-import etalii.adp.freemind.model.Range;
 
 /**
  * Lexes XML text into tokens that tile it exactly, recording the range of every start tag, end
@@ -12,7 +11,7 @@ import etalii.adp.freemind.model.Range;
  * No JDK parser reports attribute offsets, and minimal edits need them.
  *
  * <p>
- * It does not judge well-formedness: {@link MindMapParser} runs a validating SAX pass first. It only
+ * It does not judge well-formedness: callers check that ({@link XmlTree} balances the tags). It only
  * fails on constructs it cannot delimit.
  */
 public final class XmlScanner {
@@ -252,7 +251,7 @@ public final class XmlScanner {
     }
 
     /** A predefined entity or numeric reference, named without {@code &} and {@code ;}, or {@code null}. */
-    static String entity(String name) {
+    public static String entity(String name) {
         switch (name) {
         case "amp":
             return "&";
