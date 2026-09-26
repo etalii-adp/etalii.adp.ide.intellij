@@ -1,3 +1,12 @@
+<!--
+Sync Impact Report
+- Version: 2.0.0 -> 2.1.0 (MINOR: materially expanded Development Workflow guidance)
+- Modified sections: Development Workflow (branch naming now `feature/<number>-<name>`;
+  added pull-request delivery and post-resolution branch/worktree cleanup)
+- Principles: unchanged. Added/removed sections: none.
+- Follow-up: the git extension still creates `NNN-name` branches; its branch naming must be
+  aligned with `feature/<number>-<name>`. CLAUDE.md "One feature per branch" line to align.
+-->
 # EtAlii.Adp.IntelliJ Constitution
 
 ## Core Principles
@@ -92,8 +101,14 @@ Rationale: a small designer that honours principles I and II beats a large one t
 - Work follows GitHub Spec Kit: constitution, specify, (clarify), plan, tasks, implement.
   Specifications state *what* and *why* and stay free of implementation choices; plans state
   *how*.
-- Each feature is developed on its own branch named after its specification and merged into
-  `main` only when all its tasks are done.
+- Each feature is developed on its own branch named `feature/<number>-<name>` after its
+  specification (for example `feature/003-diagram-designer-framework`), and merged into `main`
+  only when all its tasks are done.
+- Delivery goes through a pull request. When a feature's work is done, the agent MUST push its
+  local branch, from the worktree it is working in, to `origin`, then open a pull request into
+  `main`. Nothing reaches `main` except through a pull request.
+- When the pull request is resolved (merged or closed), the agent MUST delete the feature
+  branch locally and on `origin`, and remove the local worktree it used.
 - Every plan MUST include a Constitution Check against these principles; any deviation MUST be
   recorded with its justification in the plan's complexity-tracking section.
 - A change is mergeable only when the headless build and the full test suite pass.
@@ -106,4 +121,8 @@ removing or redefining a principle, MINOR for adding a principle or materially e
 guidance, PATCH for clarifications. Reviews of plans and changes MUST verify compliance with
 the principles above; runtime guidance for agents lives in `CLAUDE.md`.
 
-**Version**: 2.0.0 | **Ratified**: 2026-09-24 | **Last Amended**: 2026-09-24
+**Version**: 2.1.0 | **Ratified**: 2026-09-24 | **Last Amended**: 2026-09-25
+
+## Quality above everything else.
+
+- Any compiler warnings need to be solved. Not worked around but interpreted and adequately fixed. People that focus on building compilers and analytical tools will for sure have wider understanding of what good coding practices are. Take especially attention of the information provied by tools from Jetbrains. 
