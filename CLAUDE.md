@@ -19,7 +19,8 @@ Specs say *what* and *why*; plans say *how*. Do not put implementation choices i
 ## Conventions
 
 - The build is Gradle with the IntelliJ Platform Gradle Plugin: `./gradlew build` runs everything, `./gradlew test` the headless tests, `./gradlew integrationTest` the real-IDE tests, `./gradlew runIde` a sandbox IDE. Modules: `core` (framework), `freemind` (format), `testing` (test kit).
-- One feature per branch; merge back to `main` when its tasks are done.
+- One feature per branch, named `features/<number>-<name>` (Spec Kit's `branch_prefix` is set to `features`). The one exception is `claude/<name>`, which Claude's cloud sessions are handed by their harness.
+- A feature branch is never merged locally into `develop`. When its tasks are done, push the branch from the worktree it was built in to `origin` and open a pull request into `develop`; nothing reaches `develop` except through a pull request. When the pull request is merged or closed, delete the branch locally and on `origin`, and remove the worktree.
 - End commit messages written by an agent with a `Co-Authored-By:` trailer naming the model.
 - Shell scripts for Spec Kit are the PowerShell variants (`.specify/scripts/powershell/`).
 - When writing markdown files do not split lines to ensure a maximum line length is honored.
