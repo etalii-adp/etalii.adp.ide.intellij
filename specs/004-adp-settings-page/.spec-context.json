@@ -1,0 +1,21 @@
+{
+  "workflow": "speckit",
+  "specName": "ADP Settings Page",
+  "branch": "features/004-adp-settings-page",
+  "currentStep": "specify",
+  "status": "specified",
+  "history": [
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-09-26T18:19:14.179Z"
+    }
+  ],
+  "concerns": [
+    {
+      "note": "FR-016: loading DEDL definitions from folders may belong to the spec that introduces DEDL interpretation; resolve in clarify"
+    }
+  ]
+}
