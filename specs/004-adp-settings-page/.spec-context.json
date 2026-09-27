@@ -466,6 +466,14 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-27T02:38:03.435Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T051",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T08:13:17.867Z"
     }
   ],
   "concerns": [
@@ -730,7 +738,7 @@
       "tests": "core/src/test/java/etalii/adp/core/settings/SettingsPagePerformanceTest.java"
     }
   },
-  "currentTask": "T052",
+  "currentTask": "T051",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -1075,6 +1083,13 @@
     "T052": {
       "status": "DONE",
       "did": "Traced FR-001 to FR-019 (FR-013 withdrawn) and SC-001 to SC-006 to tests and code; read back FR-010 (accepts only at open, apply only writes offDesigners) and FR-018 (per-field loadState and one notice)"
+    },
+    "T051": {
+      "status": "DONE",
+      "did": "Real IDE: the settings search finds etalii.adp.settings for ADP and FreeMind Mind Map; builds the index with retries; fails for a nonsense word",
+      "files": [
+        "src/integrationTest/java/etalii/adp/it/SettingsPageIntegrationTest.java"
+      ]
     }
   },
   "last_action": "All tasks but T051 and T053 done; gradlew test, verifyPlugin and verifyDependencyLicences exit 0; integrationTest awaiting permission",
@@ -1097,6 +1112,14 @@
       "exitCode": 0,
       "durationSeconds": 2.0,
       "result": "BUILD SUCCESSFUL in 1s · 59 actionable tasks: 2 executed, 57 up-to-date · Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.0/userguide/configuration_cache_enabling.html"
+    },
+    {
+      "what": "gate: gradlew check, integration tests included",
+      "command": "C:\\git\\etalii.adp.ide.intellij\\.claude\\worktrees\\004-settings-page\\gradlew.bat -p C:\\git\\etalii.adp.ide.intellij\\.claude\\worktrees\\004-settings-page check --console=plain",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 2.4,
+      "result": "BUILD SUCCESSFUL in 2s · 62 actionable tasks: 2 executed, 60 up-to-date · Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.0/userguide/configuration_cache_enabling.html"
     }
   ]
 }

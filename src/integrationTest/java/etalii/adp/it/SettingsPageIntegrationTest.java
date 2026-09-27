@@ -69,8 +69,7 @@ class SettingsPageIntegrationTest {
         try {
             Driver driver = run.getDriver();
             Project opened = waitForProject(driver);
-            // the index is built in the background when the Settings dialog first opens; build it now
-            driver.service(JvmClassMappingKt.getKotlinClass(SearchableOptionsRegistrarRemote.class), RdTarget.DEFAULT).initializeBlocking();
+            buildSearchIndex(driver);
 
             for (String search : List.of("ADP", "FreeMind Mind Map")) {
                 List<String> hits = pagesFound(driver, opened, search);
@@ -79,6 +78,30 @@ class SettingsPageIntegrationTest {
         } finally {
             closeIdeAndWait(run);
         }
+    }
+
+    /**
+     * The index is built when the Settings dialog first opens; build it now. Building reads under a
+     * cancellable read action, which the IDE's own start-up writes cancel, so it is tried again
+     * until it holds.
+     */
+    private static void buildSearchIndex(Driver driver) throws InterruptedException {
+        SearchableOptionsRegistrarRemote registrar = driver.service(JvmClassMappingKt.getKotlinClass(SearchableOptionsRegistrarRemote.class),
+                RdTarget.DEFAULT);
+        long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.MINUTES.toNanos(2);
+        RuntimeException last = null;
+        while (System.nanoTime() < deadline) {
+            try {
+                registrar.initializeBlocking();
+                if (registrar.isInitialized()) {
+                    return;
+                }
+            } catch (RuntimeException e) {
+                last = e;
+            }
+            Thread.sleep(2_000);
+        }
+        throw new AssertionError("The settings search index was not built within 2 minutes", last);
     }
 
     /** The ids of the pages the Settings dialog's search finds for {@code search}, over every settings group. */
@@ -123,9 +146,12 @@ class SettingsPageIntegrationTest {
 
     // The IDE's settings search, as the Driver sees it.
 
-    @Remote("com.intellij.ide.ui.search.SearchableOptionsRegistrar")
+    /** The platform's implementation, which alone can build the index on demand. */
+    @Remote(value = "com.intellij.ide.ui.search.SearchableOptionsRegistrarImpl", serviceInterface = "com.intellij.ide.ui.search.SearchableOptionsRegistrar")
     public interface SearchableOptionsRegistrarRemote {
         void initializeBlocking();
+
+        boolean isInitialized();
 
         ConfigurableHitRemote getConfigurables(List<ConfigurableGroupRemote> groups, Object type, Set<Object> configurables, String option,
                 Project project);
@@ -142,7 +168,8 @@ class SettingsPageIntegrationTest {
 
     @Remote("com.intellij.ide.ui.search.ConfigurableHit")
     public interface ConfigurableHitRemote {
-        Set<SearchableConfigurableRemote> getAll();
+        // a Set in the IDE; the Driver hands collections back as lists
+        List<SearchableConfigurableRemote> getAll();
     }
 
     @Remote("com.intellij.openapi.options.SearchableConfigurable")
