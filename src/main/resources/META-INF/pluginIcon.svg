@@ -1,30 +1,61 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <!-- ADP mark "two perspectives", rounded variant, redrawn at 40 x 40 without its bevel and emboss filters, which do not survive at this size. Source: etalii-adp/etalii.adp.site src/assets/brand/adp-icon.svg. Light theme variant. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="40" height="40" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="EtAlii ADP">
+  <!-- The ADP mark "two perspectives", rounded variant: etalii-adp/etalii.adp.site src/assets/brand/adp-icon.svg, the site's logo, favicon and hero, copied verbatim apart from its size and its C2PA metadata. Used in both themes. -->
   <defs>
     <radialGradient id="bg" cx="42%" cy="35%" r="80%">
       <stop offset="0" stop-color="#0c9a0c"/>
       <stop offset="0.55" stop-color="#008200"/>
       <stop offset="1" stop-color="#005c00"/>
     </radialGradient>
+    <linearGradient id="bevel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.45" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.55"/>
+    </linearGradient>
+    <clipPath id="tile"><rect width="500" height="500" rx="100"/></clipPath>
+    <filter id="soft" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="3"/></filter>
+    <!-- Punch: the artwork reads as pressed into the green. A dark inner shadow on its upper edges, a light rim just below its lower edges. -->
+    <filter id="punch" x="-10%" y="-10%" width="120%" height="120%">
+      <feOffset in="SourceAlpha" dy="7" result="down"/>
+      <feGaussianBlur in="down" stdDeviation="4" result="downBlur"/>
+      <feComposite in="SourceAlpha" in2="downBlur" operator="out" result="innerEdge"/>
+      <feFlood flood-color="#000000" flood-opacity="0.7"/>
+      <feComposite in2="innerEdge" operator="in" result="innerShadow"/>
+      <feOffset in="SourceAlpha" dy="3" result="up"/>
+      <feComposite in="up" in2="SourceAlpha" operator="out" result="rimEdge"/>
+      <feGaussianBlur in="rimEdge" stdDeviation="1.2" result="rimBlur"/>
+      <feFlood flood-color="#b6ffb6" flood-opacity="0.5"/>
+      <feComposite in2="rimBlur" operator="in" result="rim"/>
+      <feMerge><feMergeNode in="rim"/><feMergeNode in="SourceGraphic"/><feMergeNode in="innerShadow"/></feMerge>
+    </filter>
   </defs>
-  <g transform="translate(2 2) scale(0.072)">
-    <rect width="500" height="500" rx="100" fill="url(#bg)"/>
-    <!-- Text below, the same thing as a diagram above, projected onto each other. -->
-    <g transform="matrix(0.866 0.5 -0.866 0.5 250 332)">
-      <rect x="-85" y="-85" width="170" height="170" rx="14" fill="#013801" stroke="#013801" stroke-width="8"/>
-      <path d="M-58 -52h90M-58 -22h116M-38 8h70M-38 38h96M-58 62h50" stroke="#cbd5e1" stroke-width="14"/>
+  <g clip-path="url(#tile)">
+    <rect width="500" height="500" fill="url(#bg)"/>
+    <g filter="url(#punch)">
+  <!-- One model, two perspectives: text below, the same thing as a diagram above, projected onto each other. -->
+  <g transform="matrix(0.866 0.5 -0.866 0.5 250 332)">
+    <rect x="-85" y="-85" width="170" height="170" rx="14" fill="#013801" stroke="#013801" stroke-width="8"/>
+    <g stroke="#cbd5e1" stroke-width="12">
+      <path d="M-58 -52h90M-58 -22h116M-38 8h70M-38 38h96M-58 62h50"/>
     </g>
-    <path d="M250 222v70M186 196v96M314 196v96" stroke="#013801" stroke-width="6" stroke-dasharray="4 14" opacity="0.7"/>
-    <g transform="matrix(0.866 0.5 -0.866 0.5 250 168)">
-      <rect x="-85" y="-85" width="170" height="170" rx="14" fill="#013801" stroke="#ffffff" stroke-width="14"/>
-      <path d="M-45 -45 40 -40M-45 -45 -40 40M40 -40 45 45M-40 40 45 45" stroke="#ffffff" stroke-width="11"/>
-      <g fill="#ffffff">
-        <circle cx="-45" cy="-45" r="18"/>
-        <circle cx="40" cy="-40" r="14"/>
-        <circle cx="-40" cy="40" r="14"/>
-        <circle cx="45" cy="45" r="18"/>
-      </g>
+  </g>
+  <g stroke="#013801" stroke-width="5" stroke-dasharray="4 14" opacity="0.7">
+    <path d="M250 222v70M186 196v96M314 196v96"/>
+  </g>
+  <g transform="matrix(0.866 0.5 -0.866 0.5 250 168)">
+    <rect x="-85" y="-85" width="170" height="170" rx="14" fill="#013801" stroke="#ffffff" stroke-width="12"/>
+    <g stroke="#ffffff" stroke-width="9">
+      <path d="M-45 -45 40 -40M-45 -45 -40 40M40 -40 45 45M-40 40 45 45"/>
     </g>
-    <rect x="3" y="3" width="494" height="494" rx="97" stroke="#003a00" stroke-opacity="0.6" stroke-width="6"/>
+    <g fill="#ffffff">
+      <circle cx="-45" cy="-45" r="18"/>
+      <circle cx="40" cy="-40" r="14"/>
+      <circle cx="-40" cy="40" r="14"/>
+      <circle cx="45" cy="45" r="18"/>
+    </g>
+  </g>
+  </g>
+    <rect x="7" y="7" width="486" height="486" rx="93" stroke="url(#bevel)" stroke-width="14" filter="url(#soft)"/>
+    <rect x="1.5" y="1.5" width="497" height="497" rx="98.5" stroke="#003a00" stroke-opacity="0.6" stroke-width="3"/>
   </g>
 </svg>
