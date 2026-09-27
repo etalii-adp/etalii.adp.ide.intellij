@@ -179,7 +179,7 @@ Files: `core/test/…/sample/BundledSampleProvider.java` and the test below. Ren
 
 ### Tests
 
-- [ ] **T048** [US5] Bundled origin: the row reads "DEDL definition <name> (DEDL <version>), copied from etalii.adp at <revision>"; a bundled designer with problems shows `Not loaded` and each problem; the page offers no way to load a definition from elsewhere (FR-016, acceptance 5.1–5.3) · `core/test/…/settings/BundledOriginTest.java`, `core/test/…/sample/BundledSampleProvider.java`
+- [x] **T048** [US5] Bundled origin: the row reads "DEDL definition <name> (DEDL <version>), copied from etalii.adp at <revision>"; a bundled designer with problems shows `Not loaded` and each problem; the page offers no way to load a definition from elsewhere (FR-016, acceptance 5.1–5.3) · `core/test/…/settings/BundledOriginTest.java`, `core/test/…/sample/BundledSampleProvider.java`
 
 **Checkpoint**: when the DEDL interpretation specification lands, its provider only has to return `BundledDefinition` from `origin()`.
 

@@ -434,6 +434,14 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-27T02:31:51.659Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T048",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:33:13.646Z"
     }
   ],
   "concerns": [
@@ -594,7 +602,7 @@
       "tasks": "T004"
     }
   },
-  "currentTask": "T047",
+  "currentTask": "T048",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -912,6 +920,14 @@
       "did": "Registered DesignerPagesSection on etalii.adp.settingsSection",
       "files": [
         "core/src/main/resources/META-INF/adp-settings-designer-pages.xml"
+      ]
+    },
+    "T048": {
+      "status": "DONE",
+      "did": "Bundled origin: definition, DEDL version and revision shown; broken bundled Not loaded with its problem; conflict shown; no way to load definitions (fails when the origin override is removed)",
+      "files": [
+        "core/src/test/java/etalii/adp/core/settings/BundledOriginTest.java",
+        "core/src/test/java/etalii/adp/core/diagram/sample/BundledSampleProvider.java"
       ]
     }
   }
