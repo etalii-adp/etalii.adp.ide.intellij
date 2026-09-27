@@ -45,3 +45,14 @@ Once the real-IDE tests use the per-user cache, the old `out/ide-tests` folder i
 | Date | Commit | Machine | Ready (s) | Indexed files / time (s) | Heap used / max | Memory events | Latency map / diagram (ms) | Cache growth (MB) |
 |---|---|---|---|---|---|---|---|---|
 | 2026-09-27 (from log, before) | `2c373d8` | 32 threads, 64 GB | not reached | `out/ide-tests` indexed | out of memory at 2 GB | 11 OOM, 4 low-memory, 2 freezes | not measured | about 3,000 (dump) |
+| 2026-09-27 after, first start of a fresh sandbox | `47345ec` | 32 threads, 64 GB | 78 (includes about 72 s waiting on first-run dialogs) | 14 example files; 43,392 bundled platform files indexed once in 6 s | 292 MB / 2 GB | 0 | 44 / 33 | 0 (315 MB dump in `log_runIde`) |
+| 2026-09-27 after, second start, `--offline` | `47345ec` | 32 threads, 64 GB | 21 | 0 files to index | 258 MB / 2 GB | 0 | 44 / 33 | 0 |
+
+Notes on the after rows:
+
+- Ready is measured from `IDE STARTED` to the last `exit dumb mode`; the Gradle part before it is a few seconds with everything present.
+- SC-002 counts the project's own files. A fresh sandbox also indexes the platform's bundled libraries once (43,392 files, 6 s, responsiveness "ok"); later starts index nothing.
+- SC-003's thirty minutes of hands-on editing was not done by the agent; heap after GC and memory events were read right after startup. Peter's first real session is the thirty-minute check.
+- SC-005 was forced with a temporary `-Xmx200m` through a Gradle init script: the dump went to `log_runIde\java_pid1124432.hprof` and the Gradle cache's platform folder did not grow.
+- The second start logged a platform `NullPointerException` in the refresh queue during startup, after the first sandbox had been stopped by killing its process. It is the platform's, not the plug-in's; that the hard kill caused it is likely but not proven.
+

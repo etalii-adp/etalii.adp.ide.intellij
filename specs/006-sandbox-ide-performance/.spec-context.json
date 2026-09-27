@@ -218,6 +218,46 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-27T18:23:38.811Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T003",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:33:52.418Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T014",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:33:53.064Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T015",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:33:53.711Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T021",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:33:54.282Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T023",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:33:54.878Z"
     }
   ],
   "concerns": [
@@ -309,7 +349,7 @@
       "tasks": "T004,T006,T007,T008,T009,T010,T011,T012,T013"
     }
   },
-  "currentTask": "T022",
+  "currentTask": "T023",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -413,6 +453,32 @@
       "did": "README: download cache, ADP_IDE_TESTS_HOME, sandbox folders and example project, exclusions",
       "files": [
         "README.md"
+      ]
+    },
+    "T003": {
+      "status": "DONE",
+      "did": "Baseline taken from the 2026-09-27 10:46 sandbox log instead of a live run: Peter chose to move out/ide-tests first, so a live before-run was no longer possible",
+      "files": [
+        "specs/006-sandbox-ide-performance/quickstart.md"
+      ]
+    },
+    "T014": {
+      "status": "DONE",
+      "did": "Sandbox opens example-project; warm start ready in 21 s, 0 files to index, 258 MB heap after GC, no memory events; 30-minute hands-on session left to Peter"
+    },
+    "T015": {
+      "status": "DONE",
+      "did": "Forced OOM with -Xmx200m: 315 MB dump in log_runIde, Gradle cache platform folder did not grow"
+    },
+    "T021": {
+      "status": "DONE",
+      "did": "Second runIde with --offline succeeds; dry run graph is prepareSandboxProject and runIde only"
+    },
+    "T023": {
+      "status": "DONE",
+      "did": "After rows added to quickstart Results",
+      "files": [
+        "specs/006-sandbox-ide-performance/quickstart.md"
       ]
     }
   }

@@ -22,7 +22,7 @@
 **⟶ Wait for Wave 1 to finish, then:**
 
 - [x] **T002** Run `./gradlew check` in the new worktree: green before any change · (no file)
-- [ ] **T003** Baseline: follow quickstart steps 1 and 2 once in the original clone, where `out/ide-tests` and the spec 004 worktree are still present; stop the sandbox at the first out-of-memory error or after five minutes; add the row to Results · `specs/006-sandbox-ide-performance/quickstart.md`
+- [x] **T003** Baseline: follow quickstart steps 1 and 2 once in the original clone, where `out/ide-tests` and the spec 004 worktree are still present; stop the sandbox at the first out-of-memory error or after five minutes; add the row to Results · `specs/006-sandbox-ide-performance/quickstart.md`
 
 ---
 
@@ -73,7 +73,7 @@ Implementation note: `IdeTestsHome` became a launcher session listener (research
 **⟶ Wait for Wave 2 to finish, then:**
 
 - [x] **T013** [US1] Run `./gradlew integrationTest` with an empty `out/` in the worktree: every test passes, the downloads appear under `adp.ideTests.home`, and `out/ide-tests` is not created · (no file)
-- [ ] **T014** [US1] Quickstart steps 2 and 3: the sandbox opens `example-project` (not the repository), indexes fewer than 5,000 files within 30 seconds, and logs no memory event in thirty minutes; also open the repository itself in the sandbox and confirm `out`, `.intellijPlatform` and `.claude/worktrees` are excluded (SC-001, SC-002, SC-003) · (no file)
+- [x] **T014** [US1] Quickstart steps 2 and 3: the sandbox opens `example-project` (not the repository), indexes fewer than 5,000 files within 30 seconds, and logs no memory event in thirty minutes; also open the repository itself in the sandbox and confirm `out`, `.intellijPlatform` and `.claude/worktrees` are excluded (SC-001, SC-002, SC-003) · (no file)
 
 **Checkpoint**: the reported slowdown is gone; Story 1 is independently usable.
 
@@ -87,7 +87,7 @@ Implementation note: `IdeTestsHome` became a launcher session listener (research
 
 Files: none (the configuration is T004).
 
-- [ ] **T015** [US2] Quickstart step 5: with a temporary `-Xmx256m`, force an out-of-memory error; `java_pid*.hprof` is in `log_runIde` and the Gradle cache grew by less than 10 MB; remove the temporary setting (SC-005) · (no file)
+- [x] **T015** [US2] Quickstart step 5: with a temporary `-Xmx256m`, force an out-of-memory error; `java_pid*.hprof` is in `log_runIde` and the Gradle cache grew by less than 10 MB; remove the temporary setting (SC-005) · (no file)
 
 **Checkpoint**: Story 2 verified.
 
@@ -127,7 +127,7 @@ Files: `freemind/src/test/java/etalii/adp/freemind/ui/TypingLatencyTest.java`, `
 
 Files: none.
 
-- [ ] **T021** [US4] Run `./gradlew runIde` twice; the second with `--offline` succeeds, and `--dry-run` shows no `verifyPlugin` or `integrationTest` in its task graph (SC-006, FR-008) · (no file)
+- [x] **T021** [US4] Run `./gradlew runIde` twice; the second with `--offline` succeeds, and `--dry-run` shows no `verifyPlugin` or `integrationTest` in its task graph (SC-006, FR-008) · (no file)
 
 **Checkpoint**: Story 4 verified.
 
@@ -140,7 +140,7 @@ Files: `README.md`, `specs/006-sandbox-ide-performance/quickstart.md`.
 **Wave 1 — independent (different files):**
 
 - [x] **T022** [P] A "Trying the plug-in" section: what `runIde` opens, where the sandbox keeps settings, logs, dumps and crash logs, how to reset it, where the real-IDE tests keep their downloads (about 30 GB), how to override that folder, and that old `out/ide-tests` folders can be deleted (FR-007) · `README.md`
-- [ ] **T023** [P] Quickstart steps 1 to 5 after the change on Peter's machine; add the "after" row to Results and record any success-criteria number that had to change, with its reason · `specs/006-sandbox-ide-performance/quickstart.md`
+- [x] **T023** [P] Quickstart steps 1 to 5 after the change on Peter's machine; add the "after" row to Results and record any success-criteria number that had to change, with its reason · `specs/006-sandbox-ide-performance/quickstart.md`
 
 **⟶ Wait for Wave 1 to finish, then:**
 
