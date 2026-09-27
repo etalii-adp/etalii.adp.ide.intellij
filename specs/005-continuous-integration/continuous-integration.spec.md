@@ -160,4 +160,4 @@ A maintainer decides that `develop` is ready to be a version, for example 0.1.0.
 - Signing the plug-in is out of scope; the IDE installs unsigned plug-ins from disk. Signing comes with Marketplace publishing.
 - The real-IDE tests that need an IntelliJ IDEA Ultimate licence run only when the repository has the licence key as a secret; without it they are skipped as FR-005 describes. Whether to add that secret is the maintainer's choice.
 - The full check run downloads the IntelliJ Platform and several IDEs; runs are allowed to cache those downloads between runs, and SC-004's 60 minutes assumes that cache.
-- The same CI approach is expected in the VS Code and Eclipse repositories later; this specification covers only this repository.
+- The same CI approach is expected in the other ADP IDE repositories later; this specification covers only this repository.
