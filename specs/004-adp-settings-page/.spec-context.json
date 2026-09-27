@@ -2,8 +2,8 @@
   "workflow": "companion",
   "specName": "ADP Settings Page",
   "branch": "features/004-adp-settings-page",
-  "currentStep": "specify",
-  "status": "specified",
+  "currentStep": "plan",
+  "status": "planned",
   "history": [
     {
       "step": "specify",
@@ -18,11 +18,45 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-26T18:19:30.526Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-09-27T00:00:06.098Z"
+    },
+    {
+      "step": "plan",
+      "substep": "research",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T00:02:13.740Z"
+    },
+    {
+      "step": "plan",
+      "substep": "design",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T00:03:20.956Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T00:03:55.479Z"
     }
   ],
   "concerns": [
     {
       "note": "FR-016: loading DEDL definitions from folders may belong to the spec that introduces DEDL interpretation; resolve in clarify"
+    },
+    {
+      "note": "Play animations has no caller until a designer animates (R10); consider dropping FR-011's animations and FR-013 until then"
+    },
+    {
+      "note": "Implementation waits for spec 003 (PR #4) to merge; re-check R5 and R8 against the merged code"
     }
   ],
   "decisions": [
@@ -30,6 +64,63 @@
       "decision": "DEDL definitions are copied out of etalii.adp and bundled with each plug-in that interprets them; no definition folders",
       "why": "Peter, 2026-09-26",
       "rejected": "User- and project-level definition folders"
+    },
+    {
+      "decision": "applicationConfigurable under Tools, Java SearchableConfigurable + Configurable.Composite, Swing FormBuilder",
+      "why": "Platform place and Apply/Cancel/Reset for free; Java-only code base",
+      "rejected": "Kotlin UI DSL; top-level node; tool window"
+    },
+    {
+      "decision": "One application PersistentStateComponent AdpSettings (adp.xml), all settings user-level",
+      "why": "Export, import and Settings Sync carry it; no project setting remains after clarification",
+      "rejected": "PropertiesComponent keys; project service"
+    },
+    {
+      "decision": "Field-level fallback on read, unknown fields kept, one ADP notification per session",
+      "why": "FR-018 keeps what it can",
+      "rejected": "Versioned migrations"
+    },
+    {
+      "decision": "SearchableOptionContributor at runtime; buildSearchableOptions stays off",
+      "why": "Designer names are only known at runtime",
+      "rejected": "Build-time searchable options index"
+    },
+    {
+      "decision": "Registry over fileEditorProvider AdpEditorProvider instances; DiagramEditorProvider catches DefinitionException and refuses files",
+      "why": "Platform list is the single source; broken designers become listable",
+      "rejected": "Separate ADP designer extension point"
+    },
+    {
+      "decision": "Designer settings declared as DesignerSetting data, stored in AdpSettings by designer id, page built by framework",
+      "why": "FR-015 survives uninstall; matches declared-not-coded",
+      "rejected": "Designer-contributed Configurables"
+    },
+    {
+      "decision": "Off = accepts() returns false; open editors untouched",
+      "why": "Platform falls back to the next editor",
+      "rejected": "Dynamic unregistering; closing editors"
+    },
+    {
+      "decision": "Canvas options via message-bus topic; ViewOptions.grid becomes spacing plus fixed options; snap stays in MoveTool.snap",
+      "why": "One effective-value function, no caller changes",
+      "rejected": "Reopening editors; per-tool subscriptions"
+    },
+    {
+      "decision": "DesignerOrigin sealed: Module, OtherPlugin, BundledDefinition(name, dedlVersion, sourceRevision)",
+      "why": "Clarification: definitions bundled from etalii.adp",
+      "rejected": "Deferring US5 entirely"
+    },
+    {
+      "decision": "Reduced motion read from the OS per platform, best-effort",
+      "why": "Platform exposes no flag",
+      "rejected": "Ignoring reduced motion"
     }
-  ]
+  ],
+  "step_summaries": {
+    "plan": {
+      "summary": "Settings page as a platform configurable over one application settings service, a designer registry over editor providers, and a topic that repaints open designers",
+      "key_finding": "Spec 003 throws DefinitionException from the provider constructor, so broken designers vanish; they must be caught to be listed. Nothing animates yet, so the animations option has no caller."
+    }
+  },
+  "approach": "A SearchableConfigurable under Tools reads designers from the platform's editor providers and stores every choice in one application PersistentStateComponent. Turning a designer off makes its provider refuse files; canvas options reach open designers through a message-bus topic and an effective-value check that respects options a definition fixes. Designers declare their own settings and origin as data."
 }
