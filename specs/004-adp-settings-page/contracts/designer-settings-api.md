@@ -6,13 +6,16 @@ What a designer author implements and what framework code reads. Packages are un
 
 ```java
 /** Settings this designer shows on its own page under ADP; empty for none (FR-014). */
-protected List<DesignerSetting> settings()            // default: List.of()
+public List<DesignerSetting> settings()               // default: List.of()
 
 /** Where this designer comes from (FR-007, FR-016). */
-protected DesignerOrigin origin()                     // default: Module or OtherPlugin, from the registering plug-in
+public DesignerOrigin origin()                        // default: Module or OtherPlugin, from the registering plug-in
 
 /** Problems found while loading; non-empty means the designer refuses every file (FR-008). */
-public List<String> problems()                        // default: List.of(); DiagramEditorProvider fills it from DefinitionException
+public List<String> problems()                        // default: the problems of settings(); DiagramEditorProvider adds DefinitionException problems
+
+/** Canvas options this designer fixes, so it does not follow the user's value (FR-012). */
+public Set<CanvasOption> fixedOptions()               // default: Set.of(); DiagramEditorProvider: the definition's fixed options
 
 /** Everything the page shows; not overridden. */
 public final DesignerInfo designerInfo()
@@ -53,9 +56,14 @@ public double openingZoom();
 public boolean yesNo(String designerId, DesignerSetting setting);   // stored or default
 public int number(String designerId, DesignerSetting setting);
 public String choice(String designerId, DesignerSetting setting);
-```
+public String value(String designerId, DesignerSetting setting);    // stored text or default
 
-Writes happen only through the ADP page's `apply()`.
+// Writes; only the ADP page and the designer pages call these:
+public Set<String> offDesigners();
+public void setOff(String designerId, boolean off);
+public void setCanvas(CanvasOptions options);
+public void setValue(String designerId, DesignerSetting setting, String value);
+```
 
 ## `settings.SettingsSection` (framework-internal extension point)
 
@@ -65,7 +73,7 @@ public interface SettingsSection {
     int order();                                  // designers 10, canvas 20, designer pages 30
     @Nullable JComponent createComponent();       // null for a section that only adds child pages
     boolean isModified();
-    void apply();                                 // writes AdpSettings; the page publishes the topic once
+    void apply();                                 // writes AdpSettings; the ADP page publishes the topic once per Apply
     void reset();
     List<String> searchableLabels();
     default List<Configurable> children() { return List.of(); }
@@ -84,7 +92,7 @@ public interface AdpSettingsListener {
 }
 ```
 
-Published on the application message bus after `apply()` changed anything. Subscribers repaint or re-read; they never change a document (FR-006).
+Published on the application message bus by the ADP page, and by each designer page, after an Apply that changed anything. Subscribers repaint or re-read; they never change a document (FR-006).
 
 ## `diagram.ViewOptions` (changed)
 

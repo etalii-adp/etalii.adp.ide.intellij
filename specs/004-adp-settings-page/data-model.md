@@ -12,7 +12,7 @@ The bean `AdpSettings` persists to `adp.xml` (research R2). Values are stored as
 | `showGrid` | string (`true`/`false`) | `false` | Anything else reads as the default. |
 | `snapToGrid` | string | `true` | As above. |
 | `openingZoom` | string (percent) | `100` | Integer 25 to 400; otherwise the default. |
-| `designerSettings` | map: designer id → (key → value) | empty | Kept for designers that are off or uninstalled (FR-015). A value is validated against the designer's current `DesignerSetting` when read. |
+| `designerSettings` | map: `<designer id>/<setting key>` → value | empty | Kept for designers that are off or uninstalled (FR-015). A value is validated against the designer's current `DesignerSetting` when read. |
 | unknown elements | kept as read | – | Written back unchanged, so a newer plug-in's fields survive (FR-018). |
 
 **Fallback**: a field that fails validation reads as its default; the stored text is left alone until the user applies the page. If any field fell back during a session, one `ADP` notification lists the settings shown at their defaults.
@@ -35,10 +35,10 @@ What the page shows for one installed designer (FR-007).
 | `version` | version of the plug-in that registered the provider |
 | `origin` | `DesignerOrigin` (below) |
 | `problems` | list of strings; empty when loaded |
-| `status` | `LOADED` when `problems` is empty, else `NOT_LOADED` |
+| `status()` | derived: `LOADED` when `problems` is empty, else `NOT_LOADED` |
 | `on` | not in `offDesigners` |
 | `conflictsWith` | ids of other designers sharing a file type (R11) |
-| `unfollowed` | the `CanvasOption`s this designer fixes |
+| `unfollowed` | `fixedOptions()`: the `CanvasOption`s this designer fixes (`DiagramEditorProvider`: `definition().view().fixed().keySet()`) |
 
 **State transitions**: `on` ↔ off, by the user on Apply only. `status` is decided when the provider is created and does not change during a session.
 

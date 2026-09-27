@@ -19,7 +19,7 @@
 **Wave 1 — independent (different files):**
 
 - [x] **T001** [P] Include `adp-settings.xml`, `adp-settings-designers.xml`, `adp-settings-canvas.xml` and `adp-settings-designer-pages.xml`, each with an empty `xi:fallback` · `src/main/resources/META-INF/plugin.xml`
-- [x] **T002** [P] Include the same four fragments in the core test descriptor · `core/src/test/resources/META-INF/plugin.xml`
+- [x] **T002** [P] Include the same four fragments in the core, FreeMind and draw.io test descriptors · `core/src/test/resources/META-INF/plugin.xml`
 
 **⟶ Wait for Wave 1 to finish, then:**
 
@@ -71,7 +71,7 @@ Files: `core/…/settings/{AdpSettings,AdpSettingsListener,CanvasOption,CanvasOp
 **⟶ Wait for Wave 4, then Wave 5 — independent (different files):**
 
 - [x] **T025** [P] `DiagramEditorProvider`: the builder constructor catches `DefinitionException` and returns its problems from `problems()` · `core/src/main/java/etalii/adp/core/diagram/view/DiagramEditorProvider.java`
-- [x] **T026** [P] `AdpDesigners`: registry over the platform's `fileEditorProvider` list, version from the registering plug-in, conflicts by overlapping file types (research R5, R11) · `core/…/settings/AdpDesigners.java`
+- [x] **T026** [P] `AdpDesigners`: registry over the platform's `fileEditorProvider` list (`providers()`, `all()`, `withPages()`); the provider's `designerInfo()` computes the version (through `PluginAware`) and conflicts by overlapping file types (research R5, R11) · `core/…/settings/AdpDesigners.java`
 - [x] **T027** [P] `AdpSearchableOptions` · `core/…/settings/AdpSearchableOptions.java`
 
 **⟶ Wait for Wave 5, then:**
@@ -131,14 +131,14 @@ Files: `core/…/settings/CanvasSection.java`, `core/src/main/resources/META-INF
 
 **⟶ Wait for the tests above, then Wave 2 — independent (different files):**
 
-- [x] **T038** [P] [US3] `GridLayer`: dots at the grid spacing, scaled with zoom, in a `JBColor` tone readable in light and dark themes · `core/src/main/java/etalii/adp/core/diagram/view/GridLayer.java`
+- [x] **T038** [P] [US3] `GridLayer`: dots at the grid spacing, a constant screen size, thinned when closer than 6 px, in a `JBColor` tone readable in light and dark themes · `core/src/main/java/etalii/adp/core/diagram/view/GridLayer.java`
 - [x] **T039** [P] [US3] `MoveTool.snap` snaps only when `AdpSettings.effective(SNAP_TO_GRID, view)` is true · `core/src/main/java/etalii/adp/core/diagram/edit/MoveTool.java`
 - [x] **T040** [P] [US3] FreeMind definition fixes grid and snap off · `freemind/src/main/java/etalii/adp/freemind/ui/FreeMindDefinition.java`
 - [x] **T041** [P] [US3] `CanvasSection` (order 20) · `core/…/settings/CanvasSection.java`
 
 **⟶ Wait for Wave 2, then:**
 
-- [x] **T042** [US3] `DiagramDesigner`: installs `GridLayer` when showing is effectively on, subscribes to `AdpSettingsListener.TOPIC` for its lifetime and repaints, applies the opening zoom when no `DesignerState` was restored · `core/src/main/java/etalii/adp/core/diagram/view/DiagramDesigner.java`
+- [x] **T042** [US3] `DiagramDesigner`: always adds `GridLayer`, which paints only when showing is effectively on, subscribes to `AdpSettingsListener.TOPIC` for its lifetime and repaints, sets the opening zoom at creation, which a restored `DesignerState` overrides · `core/src/main/java/etalii/adp/core/diagram/view/DiagramDesigner.java`
 - [x] **T043** [US3] Register `CanvasSection` · `core/src/main/resources/META-INF/adp-settings-canvas.xml`
 
 **Checkpoint**: canvas options apply to every open and new diagram designer, and designers that fix an option are named.
@@ -190,7 +190,7 @@ Files: `core/test/…/sample/BundledSampleProvider.java` and the test below. Ren
 **Wave 1 — independent (different files):**
 
 - [x] **T049** [P] Author guide: a "Settings" section on `settings()`, `origin()` and `ViewOptions.fix`, with the FreeMind example · `docs/diagram-designer-guide.md`
-- [x] **T050** [P] Page cost: with 20 registered designers (the real ones plus test-only fillers), creating and resetting the page takes under 100 ms (SC-006) · `core/test/…/settings/SettingsPagePerformanceTest.java`
+- [x] **T050** [P] Page cost: with 20 registered test-only designers (18 fillers and the two samples), creating and resetting the page takes a median under 100 ms, asserted with 3x CI headroom (SC-006) · `core/test/…/settings/SettingsPagePerformanceTest.java`
 - [x] **T051** [P] Integration: in a real IDE, open Settings, search "ADP" and "FreeMind Mind Map" and land on the ADP page both times (SC-001, FR-001) · `src/integrationTest/java/etalii/adp/it/SettingsPageIntegrationTest.java`
 
 **⟶ Wait for Wave 1 to finish, then:**
