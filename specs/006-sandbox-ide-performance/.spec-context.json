@@ -1,0 +1,161 @@
+{
+  "workflow": "companion",
+  "specName": "A Fast Sandbox IDE",
+  "branch": "features/006-sandbox-ide-performance",
+  "currentStep": "tasks",
+  "status": "ready-to-implement",
+  "history": [
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-09-27T17:18:07.015Z"
+    },
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T17:19:25.646Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-09-27T17:40:26.604Z"
+    },
+    {
+      "step": "plan",
+      "substep": "research",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T17:45:07.755Z"
+    },
+    {
+      "step": "plan",
+      "substep": "design",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T17:45:08.193Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T17:45:13.035Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-09-27T18:01:46.700Z"
+    },
+    {
+      "step": "tasks",
+      "substep": "generate",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:04:00.073Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:04:14.841Z"
+    }
+  ],
+  "concerns": [
+    {
+      "note": "Cause inferred from the sandbox log of 2026-09-27 10:46-10:50; no live measurement of a running sandbox yet"
+    },
+    {
+      "note": "Spec drafted on develop in a dirty working tree; the feature branch is not created yet"
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "Defaults pending Peter: sandbox opens a bundled examples project; real-IDE test downloads move out of the repo; heap dumps go to the sandbox log folder"
+    },
+    {
+      "decision": "Peter chose on 2026-09-27: runIde opens a small example project; real-IDE test downloads live outside the repo in a per-user cache; heap dumps are kept, written to the sandbox log folder"
+    },
+    {
+      "decision": "runIde opens a copied example-project in the sandbox folder",
+      "why": "a command-line project stops the sandbox reopening this repo, and copies keep vendored test data clean",
+      "rejected": "opening testdata/examples directly"
+    },
+    {
+      "decision": "Integration tests rebind the Starter GlobalPaths to a per-user cache",
+      "why": "Starter derives out/ide-tests from the git root; the DI binding is its documented override",
+      "rejected": "a junction from out/ide-tests, which the IDE would still index"
+    },
+    {
+      "decision": "Exclude out, .intellijPlatform and build via the Gradle idea plug-in",
+      "why": "travels with the build to any IDE importing it, no committed .idea files",
+      "rejected": "committed .iml exclusions"
+    },
+    {
+      "decision": "HeapDumpPath and ErrorFile point at the sandbox log folder",
+      "why": "RunIdeTask sets the working directory to the platform in the Gradle cache, where dumps landed",
+      "rejected": "turning dumps off"
+    },
+    {
+      "decision": "Keep the 2 GB default heap",
+      "why": "the OOM came from indexing 29 GB of IDEs, not from a small project",
+      "rejected": "raising Xmx as the fix"
+    }
+  ],
+  "step_summaries": {
+    "plan": {
+      "summary": "Build-only fix plus designer latency tests and a manual sandbox measurement",
+      "key_finding": "Starter puts downloads under <git root>/out/ide-tests and runIde runs with the Gradle-cache platform as working directory"
+    },
+    "tasks": {
+      "summary": "24 tasks: setup, one foundational build change, four story phases, polish"
+    }
+  },
+  "approach": "Fix the build, not the plug-in: runIde opens a copied example project, the real-IDE tests keep downloads in a per-user cache, the build excludes generated folders, and dumps go to the sandbox log folder. Headless latency tests and a quickstart measurement check the success criteria.",
+  "coverage": {
+    "FR-001": {
+      "title": "The sandbox never indexes test downloads, build output, Gradle caches, sandbox folders or nested worktrees",
+      "tasks": "T004,T014"
+    },
+    "FR-002": {
+      "title": "runIde opens a small example project by default",
+      "tasks": "T004,T014"
+    },
+    "FR-003": {
+      "title": "Heap dumps kept, written to the sandbox log folder, never the Gradle cache",
+      "tasks": "T004,T015"
+    },
+    "FR-004": {
+      "title": "The sandbox meets the success criteria with test downloads on disk",
+      "tasks": "T014,T023,T024"
+    },
+    "FR-005": {
+      "title": "A repeatable measurement of start time, idle memory and typing latency",
+      "tasks": "T003,T016,T019,T023"
+    },
+    "FR-006": {
+      "title": "Designers use no idle CPU and release memory when closed",
+      "tasks": "T018,T020"
+    },
+    "FR-007": {
+      "title": "Readme explains sandbox folders, reset, and test download location and size",
+      "tasks": "T022"
+    },
+    "FR-008": {
+      "title": "runIde downloads nothing when dependencies are present",
+      "tasks": "T021"
+    },
+    "FR-009": {
+      "title": "Real-IDE test downloads live in a per-user cache outside the repository",
+      "tasks": "T004,T006,T007,T008,T009,T010,T011,T012,T013"
+    }
+  }
+}
