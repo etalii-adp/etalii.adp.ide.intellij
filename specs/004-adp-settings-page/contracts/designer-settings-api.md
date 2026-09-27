@@ -50,7 +50,6 @@ public boolean isOff(String designerId);
 public CanvasOptions canvas();                                      // the user's values
 public boolean effective(CanvasOption option, ViewOptions view);    // fixed value, else the user's
 public double openingZoom();
-public boolean animationsAllowed();                                 // option && !reduced motion (FR-013)
 public boolean yesNo(String designerId, DesignerSetting setting);   // stored or default
 public int number(String designerId, DesignerSetting setting);
 public String choice(String designerId, DesignerSetting setting);
@@ -95,7 +94,7 @@ public record ViewOptions(boolean zoom, boolean pan, int grid, Map<CanvasOption,
 //          fix(CanvasOption option, boolean value) makes the designer ignore the user's option.
 ```
 
-`CanvasOption` is `SHOW_GRID`, `SNAP_TO_GRID`, `PLAY_ANIMATIONS`. Opening zoom is not fixable: a designer that must not zoom already turns zoom off.
+`CanvasOption` is `SHOW_GRID`, `SNAP_TO_GRID`. Opening zoom is not fixable: a designer that must not zoom already turns zoom off.
 
 ## `diagram.edit.MoveTool.snap` (behaviour changed)
 

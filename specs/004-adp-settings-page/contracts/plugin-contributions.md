@@ -15,7 +15,7 @@ What the settings fragments register, each included from `plugin.xml` with an em
 ## The page, top to bottom
 
 1. **Designers**: a table with columns On (check box), Name, File types, Version, Origin, Status. Selecting a row shows below it the designer's problems, its conflicts, and the canvas options it does not follow. A link "File types and default editors…" opens the platform's File Types page (FR-004).
-2. **Canvas**: Show grid, Snap to grid, Opening zoom (combo: 50, 75, 100, 125, 150, 200 %), Play animations. Under each, when any designer fixes it: "Not followed by: <names>" (acceptance scenario 3.2).
+2. **Canvas**: Show grid, Snap to grid, Opening zoom (combo: 50, 75, 100, 125, 150, 200 %). Under each, when any designer fixes it: "Not followed by: <names>" (acceptance scenario 3.2).
 3. A "Reset to defaults" link that resets the canvas options on the page (applied only on Apply, FR-002).
 
 Labels are the strings above; tests and the search contributor use them verbatim.

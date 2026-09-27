@@ -83,13 +83,11 @@ The page is made of sections. `AdpConfigurable` owns the dialog contract (`isMod
 
 **Alternatives considered**: waiting with User Story 5 until DEDL interpretation lands (possible, and the tasks keep it in its own last story phase so it can be dropped without touching the rest).
 
-## R10. Animations and reduced motion (FR-011, FR-013)
+## R10. Animations (dropped 2026-09-27)
 
-**Decision**: `AdpSettings.animationsAllowed()` returns the "Play animations" option and false when reduced motion is asked for. Reduced motion is read once per IDE session from the operating system: `defaults read com.apple.universalaccess reduceMotion` on macOS, `SystemParametersInfo(SPI_GETCLIENTAREAANIMATION)` through the platform-bundled JNA on Windows, and `gsettings get org.gnome.desktop.interface enable-animations` on Linux; any failure means "not asked". No designer animates today, so the method has no caller yet. It is the one place a future animation (DEDL's `flow` style) must consult.
+**Decision**: no "Play animations" option and no reduced-motion check. Peter dropped them from the spec on 2026-09-27 (FR-013 withdrawn), because no designer animates yet, so the option and the operating system query behind it would have had no caller (principle V). They come back, with the reduced-motion check, when a designer first animates (for example DEDL's `flow` style).
 
-**Rationale**: The platform exposes no reduced-motion flag of its own. The spec asks for the option now (FR-011) and for reduced motion to win (FR-013).
-
-**Alternatives considered**: leaving the option out until something animates (cleaner under principle V; recorded as a concern for Peter, since it changes the spec).
+**Alternatives considered**: keeping the option with a per-platform reduced-motion query and no caller (rejected as unused code).
 
 ## R11. Conflicting designers (FR-017)
 

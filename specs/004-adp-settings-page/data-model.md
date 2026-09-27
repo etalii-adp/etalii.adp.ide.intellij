@@ -12,7 +12,6 @@ The bean `AdpSettings` persists to `adp.xml` (research R2). Values are stored as
 | `showGrid` | string (`true`/`false`) | `false` | Anything else reads as the default. |
 | `snapToGrid` | string | `true` | As above. |
 | `openingZoom` | string (percent) | `100` | Integer 25 to 400; otherwise the default. |
-| `playAnimations` | string | `true` | As above. |
 | `designerSettings` | map: designer id → (key → value) | empty | Kept for designers that are off or uninstalled (FR-015). A value is validated against the designer's current `DesignerSetting` when read. |
 | unknown elements | kept as read | – | Written back unchanged, so a newer plug-in's fields survive (FR-018). |
 
@@ -20,9 +19,9 @@ The bean `AdpSettings` persists to `adp.xml` (research R2). Values are stored as
 
 ## CanvasOptions (derived, not stored)
 
-The typed view of the four canvas fields: `showGrid`, `snapToGrid`, `openingZoom` (double, 1.0 = 100%), `playAnimations`. `CanvasOption` names the four for `ViewOptions.fixed`.
+The typed view of the three canvas fields: `showGrid`, `snapToGrid`, `openingZoom` (double, 1.0 = 100%). `CanvasOption` names the two that a designer can fix, for `ViewOptions.fixed`.
 
-**Effective value** for a designer: `definition.view().fixed().get(option)` when present, else the user's value (R8). `animationsAllowed()` is `playAnimations && !ReducedMotion.asked()`.
+**Effective value** for a designer: `definition.view().fixed().get(option)` when present, else the user's value (R8).
 
 ## DesignerInfo (derived per designer)
 

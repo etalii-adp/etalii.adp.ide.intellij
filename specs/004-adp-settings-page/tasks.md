@@ -29,7 +29,7 @@
 
 ## Phase 2: Foundational (blocks every story)
 
-Files: `core/…/settings/{AdpSettings,AdpSettingsListener,CanvasOption,CanvasOptions,DesignerSetting,DesignerInfo,DesignerOrigin,AdpDesigners,ReducedMotion,SettingsSection,AdpConfigurable,AdpSearchableOptions}.java`; `core/src/main/resources/META-INF/adp-settings.xml`; `core/src/main/java/etalii/adp/core/AdpEditorProvider.java`; `core/src/main/java/etalii/adp/core/diagram/ViewOptions.java`; `core/src/main/java/etalii/adp/core/diagram/view/DiagramEditorProvider.java`; the tests below.
+Files: `core/…/settings/{AdpSettings,AdpSettingsListener,CanvasOption,CanvasOptions,DesignerSetting,DesignerInfo,DesignerOrigin,AdpDesigners,SettingsSection,AdpConfigurable,AdpSearchableOptions}.java`; `core/src/main/resources/META-INF/adp-settings.xml`; `core/src/main/java/etalii/adp/core/AdpEditorProvider.java`; `core/src/main/java/etalii/adp/core/diagram/ViewOptions.java`; `core/src/main/java/etalii/adp/core/diagram/view/DiagramEditorProvider.java`; the tests below.
 
 ### Tests
 
@@ -43,7 +43,7 @@ Files: `core/…/settings/{AdpSettings,AdpSettingsListener,CanvasOption,CanvasOp
 - [ ] **T009** [P] Gating: a designer that is off, or has problems, accepts no file and `acceptedByAny` agrees; turned on again it accepts as before (FR-009, research R7) · `core/test/…/settings/DesignerGatingTest.java`
 - [ ] **T010** [P] `AdpConfigurable` with two fake sections: `isModified` is any section's; `apply` applies each and publishes `AdpSettingsListener.TOPIC` once, and not at all when nothing changed; `reset` and Cancel leave `AdpSettings` untouched; children come from the sections in `order()`; id `etalii.adp.settings`, name "ADP" (FR-001, FR-002) · `core/test/…/settings/AdpConfigurableTest.java`
 - [ ] **T011** [P] `AdpSearchableOptions`: contributes "ADP", every installed designer's name and every section's labels for `etalii.adp.settings`, and each child page's labels for its own id (FR-001, research R4) · `core/test/…/settings/AdpSearchableOptionsTest.java`
-- [ ] **T012** [P] `ReducedMotion`: parses each operating system's answer ("1"/"0", "true"/"false", the Windows flag), treats errors and unknown systems as "not asked", and asks once per session (FR-013, research R10) · `core/test/…/settings/ReducedMotionTest.java`
+- ~~**T012**~~ withdrawn 2026-09-27: no reduced-motion check until a designer animates (FR-013 withdrawn, research R10)
 - [ ] **T013** [P] `ViewOptions`: grid spacing defaults to 10; `fix` records a value per `CanvasOption`; `AdpSettings.effective` returns the fixed value when present and the user's otherwise (FR-012, research R8) · `core/src/test/java/etalii/adp/core/diagram/ViewOptionsTest.java`
 
 ### Implementation
@@ -54,14 +54,14 @@ Files: `core/…/settings/{AdpSettings,AdpSettingsListener,CanvasOption,CanvasOp
 - [ ] **T015** [P] `DesignerSetting` record, factories and validation · `core/…/settings/DesignerSetting.java`
 - [ ] **T016** [P] `DesignerOrigin` sealed interface with `Module`, `OtherPlugin`, `BundledDefinition` and `describe()` giving the texts in data-model.md · `core/…/settings/DesignerOrigin.java`
 - [ ] **T017** [P] `AdpSettingsListener` and its topic · `core/…/settings/AdpSettingsListener.java`
-- [ ] **T018** [P] `ReducedMotion` · `core/…/settings/ReducedMotion.java`
+- ~~**T018**~~ withdrawn 2026-09-27: no `ReducedMotion` until a designer animates (FR-013 withdrawn, research R10)
 - [ ] **T019** [P] `SettingsSection` interface and extension point name · `core/…/settings/SettingsSection.java`
 
 **⟶ Wait for Wave 2, then Wave 3 — independent (different files):**
 
 - [ ] **T020** [P] `ViewOptions`: `grid` is spacing with default 10; `fixed` map and `Builder.fix` · `core/src/main/java/etalii/adp/core/diagram/ViewOptions.java`
 - [ ] **T021** [P] `DesignerInfo` record with status, conflicts and unfollowed options · `core/…/settings/DesignerInfo.java`
-- [ ] **T022** [P] `AdpSettings`: `@State` service, `State` bean, typed reads with field fallback, unknown fields kept, the once-per-session notice, `effective`, `animationsAllowed`, designer setting reads (research R2, R3) · `core/…/settings/AdpSettings.java`
+- [ ] **T022** [P] `AdpSettings`: `@State` service, `State` bean, typed reads with field fallback, unknown fields kept, the once-per-session notice, `effective`, designer setting reads (research R2, R3) · `core/…/settings/AdpSettings.java`
 
 **⟶ Wait for Wave 3, then Wave 4 — independent (different files):**
 
@@ -77,7 +77,7 @@ Files: `core/…/settings/{AdpSettings,AdpSettingsListener,CanvasOption,CanvasOp
 **⟶ Wait for Wave 5, then:**
 
 - [ ] **T028** Register the service, configurable, option contributor, `ADP` notification group and the `etalii.adp.settingsSection` extension point (contracts/plugin-contributions.md) · `core/src/main/resources/META-INF/adp-settings.xml`
-- [ ] **T029** Run `./gradlew test`: T004–T013 green, and every spec 001–003 test still green · (no file)
+- [ ] **T029** Run `./gradlew test`: T004–T013 green (T012 withdrawn), and every spec 001–003 test still green · (no file)
 
 ---
 
@@ -113,7 +113,7 @@ Files: `core/…/settings/DesignersSection.java`, `core/…/settings/DesignerTab
 
 ## Phase 4: User Story 3, canvas options (P2)
 
-**Goal**: grid, snap, opening zoom and animations apply to every diagram designer, live.
+**Goal**: grid, snap and opening zoom apply to every diagram designer, live.
 
 **Independent Test**: turn the grid on and snapping off, apply, and see both open diagrams show the grid and move without snapping, their files unmodified.
 
@@ -123,7 +123,7 @@ Files: `core/…/settings/CanvasSection.java`, `core/src/main/resources/META-INF
 
 **Wave 1 — independent (different files):**
 
-- [ ] **T035** [P] [US3] Canvas section: the four options with their defaults; opening zoom choices as in the contract; "Not followed by" lists designers that fix an option; "Reset to defaults" resets the page and nothing is stored until Apply (FR-011, FR-012, acceptance 3.2, 3.4) · `core/test/…/settings/CanvasSectionTest.java`
+- [ ] **T035** [P] [US3] Canvas section: the three options with their defaults; opening zoom choices as in the contract; "Not followed by" lists designers that fix an option; "Reset to defaults" resets the page and nothing is stored until Apply (FR-011, FR-012, acceptance 3.2, 3.3) · `core/test/…/settings/CanvasSectionTest.java`
 - [ ] **T036** [P] [US3] Live apply with `DiagramDriver` on two open sample files: grid shown after apply without reopening; snapping off moves by unsnapped amounts and on snaps to the spacing; opening zoom applies to a file with no remembered state and a remembered zoom wins; a designer fixing an option ignores the user's; in every case the document text, its modified state and its undo stack are unchanged (FR-006, FR-011, FR-012, acceptance 3.1, 3.2, SC-003) · `core/src/test/java/etalii/adp/core/diagram/view/CanvasOptionsLiveTest.java`
 - [ ] **T037** [P] [US3] FreeMind fixes Show grid and Snap to grid off, so the page lists it under both (FR-012) · `freemind/src/test/java/etalii/adp/freemind/ui/FreeMindDefinitionTest.java`
 
@@ -204,9 +204,10 @@ Files: `core/test/…/sample/BundledSampleProvider.java` and the test below. Ren
 
 - **Setup → Foundational → stories → Polish.** Phase 3 (US1 and US2) is the MVP. Phases 4, 5 and 6 each depend only on Phase 2 and own disjoint files, so they can run in any order or in parallel after it. Polish waits for every story.
 - **Phase 1**: Wave 1 (T001, T002) → T003.
-- **Phase 2**: tests T004–T013 → Wave 2 (T014–T019) → Wave 3 (T020–T022) → Wave 4 (T023, T024) → Wave 5 (T025–T027) → T028 → T029.
+- **Phase 2**: tests T004–T013 (without T012) → Wave 2 (T014–T019, without T018) → Wave 3 (T020–T022) → Wave 4 (T023, T024) → Wave 5 (T025–T027) → T028 → T029.
 - **Phase 3**: tests T030, T031 → T032 → T033 → T034.
 - **Phase 4**: tests T035–T037 → Wave 2 (T038–T041) → T042 → T043.
 - **Phase 5**: T044 → T045 → T046 → T047.
 - **Phase 6**: T048.
 - **Phase 7**: Wave 1 (T049–T051) → T052 → T053.
+- **Withdrawn**: T012 and T018, with FR-013, on 2026-09-27. Their numbers are kept so references stay stable; FR-013 has no task on purpose.

@@ -8,7 +8,7 @@
 
 ## Summary
 
-ADP gets one page at Settings > Tools > ADP. It lists every installed designer with its file types, version, origin and whether it loaded, shows each definition problem, and lets the user turn a designer off. It also holds four canvas options shared by every diagram designer, and a child page per designer for settings the designer declares. The page is a platform `SearchableConfigurable`, its values live in one application-level `PersistentStateComponent` that export, import and Settings Sync already carry, and Apply reaches open designers through a message-bus topic without touching any file.
+ADP gets one page at Settings > Tools > ADP. It lists every installed designer with its file types, version, origin and whether it loaded, shows each definition problem, and lets the user turn a designer off. It also holds three canvas options shared by every diagram designer, and a child page per designer for settings the designer declares. The page is a platform `SearchableConfigurable`, its values live in one application-level `PersistentStateComponent` that export, import and Settings Sync already carry, and Apply reaches open designers through a message-bus topic without touching any file.
 
 No new dependency and no new module: everything is in `core`, in a new `settings` package and small changes to the editor provider and the diagram view.
 
@@ -16,7 +16,7 @@ No new dependency and no new module: everything is in `core`, in a new `settings
 
 **Language/Version**: Java 25, Gradle Kotlin DSL.
 
-**Primary Dependencies**: IntelliJ Platform 2026.2 only: `SearchableConfigurable`, `Configurable.Composite`, `PersistentStateComponent`, `SearchableOptionContributor`, the application message bus, `NotificationGroup`, `FormBuilder`, `JBTable`, `ActionLink`, and JNA as bundled by the platform (R10).
+**Primary Dependencies**: IntelliJ Platform 2026.2 only: `SearchableConfigurable`, `Configurable.Composite`, `PersistentStateComponent`, `SearchableOptionContributor`, the application message bus, `NotificationGroup`, `FormBuilder`, `JBTable` and `ActionLink`.
 
 **Storage**: `adp.xml` in the IDE's options folder, through `@State` (R2). Nothing in any project or designer file.
 
@@ -42,8 +42,8 @@ No new dependency and no new module: everything is in `core`, in a new `settings
 | II. Text Is the Source of Truth | PASS | No setting is written to a designer's file. Apply only repaints open designers (R8), tested by asserting the document and its modified state are unchanged (SC-003). |
 | III. One Framework, Many Designers | PASS | The page, storage and designer subpages are framework code in `core`. A designer contributes only data: its settings list and, for DEDL, its origin (R6, R9). No format module depends on another. |
 | IV. Test-First, Against Real Files | PASS | Tests precede code in every phase. Registration, gating and live application run in a headless IDE. The broken designer that proves SC-004 is a test-only sample, as in spec 003. |
-| V. Simplicity | PASS, one concern | No new module, no dependency, no priority list or migration framework (R3, R11). The "Play animations" option has no caller yet (R10): kept because FR-011 asks for it, and raised with Peter as a possible spec change. |
-| Platform and technology constraints | PASS | One plug-in, platform module only, headless Gradle build runs every test. The reduced-motion check reads local OS settings and makes no network call. |
+| V. Simplicity | PASS | No new module, no dependency, no priority list or migration framework (R3, R11). No animations option until a designer animates (R10, FR-013 withdrawn). |
+| Platform and technology constraints | PASS | One plug-in, platform module only, headless Gradle build runs every test. No setting makes a network call. |
 
 ## Project Structure
 
@@ -82,7 +82,6 @@ core/src/main/java/etalii/adp/core/
 │   ├── DesignerSetting.java               # declared setting: key, label, kind, default, range/choices (R6)
 │   ├── DesignerInfo.java, DesignerOrigin.java
 │   ├── AdpDesigners.java                  # registry over fileEditorProvider (R5, R11)
-│   ├── ReducedMotion.java                 # OS query (R10)
 │   ├── SettingsSection.java               # extension point: one part of the page (R1)
 │   ├── AdpConfigurable.java               # the ADP page: delegates to sections (R1)
 │   ├── AdpSearchableOptions.java          # SearchableOptionContributor over sections (R4)
@@ -115,5 +114,4 @@ src/integrationTest/java/etalii/adp/it/SettingsPageIntegrationTest.java      # s
 
 ## Concerns
 
-- **Animations have no caller** (R10). FR-011 and FR-013 ask for an option nothing uses until a designer animates. Dropping it from the spec until then is simpler; the plan keeps it because the spec asks for it.
 - **Spec 003 must merge first.** If PR #4 changes `ViewOptions`, `DiagramEditorProvider` or the snapping tools before merging, R5 and R8 are re-checked against the merged code before tasks start.

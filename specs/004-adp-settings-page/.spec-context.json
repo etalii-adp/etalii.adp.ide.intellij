@@ -74,9 +74,6 @@
       "note": "FR-016: loading DEDL definitions from folders may belong to the spec that introduces DEDL interpretation; resolve in clarify"
     },
     {
-      "note": "Play animations has no caller until a designer animates (R10); consider dropping FR-011's animations and FR-013 until then"
-    },
-    {
       "note": "Implementation waits for spec 003 (PR #4) to merge; re-check R5 and R8 against the merged code"
     }
   ],
@@ -135,6 +132,11 @@
       "decision": "Reduced motion read from the OS per platform, best-effort",
       "why": "Platform exposes no flag",
       "rejected": "Ignoring reduced motion"
+    },
+    {
+      "decision": "No animations option until a designer animates",
+      "why": "Peter, 2026-09-27: nothing animates yet",
+      "rejected": "Option plus OS reduced-motion check with no caller"
     }
   ],
   "step_summaries": {
@@ -189,7 +191,7 @@
       "tasks": "T031"
     },
     "FR-011": {
-      "title": "Canvas options: grid, snap, opening zoom, animations",
+      "title": "Canvas options: grid, snap, opening zoom",
       "tasks": "T035,T036,T038,T039,T041,T042"
     },
     "FR-012": {
@@ -197,8 +199,8 @@
       "tasks": "T013,T020,T035,T036,T037,T040"
     },
     "FR-013": {
-      "title": "No animations when off or reduced motion",
-      "tasks": "T012,T018,T022"
+      "title": "Withdrawn 2026-09-27: no animations option until a designer animates",
+      "tasks": ""
     },
     "FR-014": {
       "title": "Designer-declared settings on their own page",

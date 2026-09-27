@@ -19,6 +19,10 @@ Two roles appear below. A **user** is the developer who edits files with ADP des
 
 - Q: Should the page let users load DEDL definitions from user or project folders (FR-016)? → A: No. Definitions written to the DEDL specification are copied out of the etalii.adp repository and included in each plug-in that can interpret and consume them. The page shows where a bundled definition came from; it does not load definitions from elsewhere.
 
+### Session 2026-09-27
+
+- Q: Should the page offer a "Play animations" option (FR-011, FR-013) while no designer animates? → A: No. Drop it for now; it comes back, with the operating system's reduced-motion check, when a designer first animates.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - See which designers are installed and whether they work (Priority: P1)
@@ -56,7 +60,7 @@ A user who prefers the text editor for one file type, or who is troubleshooting 
 
 ### User Story 3 - Adjust how the canvas behaves in every designer (Priority: P2)
 
-A user sets preferences that apply to the canvas of every diagram designer: whether a grid is shown, whether elements snap to it, the zoom level a diagram opens at, and whether animations are played. Each designer honours them unless its definition fixes that behaviour, in which case the page says so.
+A user sets preferences that apply to the canvas of every diagram designer: whether a grid is shown, whether elements snap to it, and the zoom level a diagram opens at. Each designer honours them unless its definition fixes that behaviour, in which case the page says so.
 
 **Why this priority**: these are the canvas choices users ask for first, and making them once for all designers is what a shared framework promises; but the designers are usable without them.
 
@@ -66,8 +70,7 @@ A user sets preferences that apply to the canvas of every diagram designer: whet
 
 1. **Given** the grid is off, **When** the user turns it on and applies, **Then** open and newly opened diagrams show the grid without being reopened.
 2. **Given** a designer whose definition fixes snapping, **When** the user views the snapping option, **Then** the page shows that this designer does not follow the option, and why.
-3. **Given** animations are turned off on the page or the operating system asks for reduced motion, **When** a designer would animate, **Then** it does not.
-4. **Given** the user has changed canvas options, **When** they choose Reset, **Then** every option returns to its default.
+3. **Given** the user has changed canvas options, **When** they choose Reset, **Then** every option returns to its default.
 
 ---
 
@@ -135,9 +138,9 @@ Designers defined in DEDL are not loaded from the user's disk: their definitions
 
 **Canvas options**
 
-- **FR-011**: The page MUST offer these canvas options, applying to every diagram designer: show grid, snap to grid, the zoom level a diagram opens at, and play animations.
+- **FR-011**: The page MUST offer these canvas options, applying to every diagram designer: show grid, snap to grid and the zoom level a diagram opens at.
 - **FR-012**: A designer whose definition fixes the behaviour of a canvas option MUST keep its own behaviour, and the page MUST show which designers do not follow that option.
-- **FR-013**: Animations MUST NOT play when the option is off or when the operating system asks for reduced motion.
+- **FR-013**: *Withdrawn 2026-09-27: there is no animations option until a designer animates.*
 
 **Designer-specific settings**
 
@@ -158,7 +161,7 @@ Designers defined in DEDL are not loaded from the user's disk: their definitions
 
 - **ADP settings**: the user-level choices: which designers are off and the canvas options.
 - **Designer entry**: one installed designer as the page shows it: name, file types, version, origin, load status, problems, on or off.
-- **Canvas options**: show grid, snap to grid, opening zoom level, play animations; each with a default.
+- **Canvas options**: show grid, snap to grid, opening zoom level; each with a default.
 - **Designer-specific settings**: the settings a designer declares for itself, with their defaults, shown on its own page.
 - **Bundled definition**: a DEDL definition copied out of the etalii.adp repository and shipped inside the plug-in, with its name, DEDL version and source revision.
 
@@ -178,7 +181,7 @@ Designers defined in DEDL are not loaded from the user's disk: their definitions
 - The page sits where the IDE places settings for tools (Settings > Tools > ADP). Its exact place is a presentation choice for the plan.
 - The default editor for a file type (designer or text) stays the IDE's own choice (spec 001, FR-003); the ADP page links to it rather than repeating it.
 - Canvas options apply to designers built on the diagram designer framework (spec 003). The FreeMind designer follows them once it is migrated onto that framework.
-- Defaults: every designer on, grid off, snapping on, opening zoom 100%, animations on (still subject to reduced motion).
+- Defaults: every designer on, grid off, snapping on, opening zoom 100%.
 - Colours, fonts and key bindings are the IDE's own colour scheme and keymap settings, not ADP settings.
 - A visual editor for designer definitions is out of scope.
 - Copying definitions out of etalii.adp into the plug-in, and interpreting them, belong to the specification that introduces DEDL interpretation in the IntelliJ plug-in; this feature only shows the result.
