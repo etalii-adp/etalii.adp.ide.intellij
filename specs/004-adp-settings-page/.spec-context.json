@@ -474,6 +474,26 @@
     },
     {
       "note": "Implementation waits for spec 003 (PR #4) to merge; re-check R5 and R8 against the merged code"
+    },
+    {
+      "note": "integrationTest not run: the permission classifier refused it as Modify Shared Resources, awaiting Peter. SettingsPageIntegrationTest (T051) compiles but never ran, the NoPreviousHost fix is unconfirmed, T051 and T053 stay open",
+      "step": "implement"
+    },
+    {
+      "note": "T004-T011 and T013 were closed together after the foundational code, so their finish times cluster",
+      "step": "implement"
+    },
+    {
+      "note": "SC-002's 30 seconds is not timed; TurnDesignerOffTest covers the path only",
+      "step": "implement"
+    },
+    {
+      "note": "FR-003 is covered by the serializer round trip, not by the IDE's export, import and Settings Sync end to end",
+      "step": "implement"
+    },
+    {
+      "note": "Left as found, from spec 003: nine -Xlint warnings, experimental WriteIntentReadAction in AdpDesignerEditor, and a Windows temp-dir lock flake in AdpEditorProviderTest.stateKeepsZoomAndSelection on develop",
+      "step": "implement"
     }
   ],
   "decisions": [
@@ -536,6 +556,51 @@
       "decision": "No animations option until a designer animates",
       "why": "Peter, 2026-09-27: nothing animates yet",
       "rejected": "Option plus OS reduced-motion check with no caller"
+    },
+    {
+      "decision": "R5 and R8 re-checked against merged spec 003: ViewOptions, DiagramEditorProvider and MoveTool.snap were as the plan assumed",
+      "why": "tasks.md Before T001",
+      "rejected": "Re-planning"
+    },
+    {
+      "decision": "FreeMind and draw.io test descriptors include the four settings fragments too",
+      "why": "MoveTool.snap and GridLayer read AdpSettings in every diagram designer's tests",
+      "rejected": "Only the core test descriptor, as T002 said"
+    },
+    {
+      "decision": "Without an application every designer counts as on",
+      "why": "draw.io's plain unit tests call accepts() with no IDE running",
+      "rejected": "Rewriting the sniffer tests as platform tests"
+    },
+    {
+      "decision": "A provider learns its plug-in through PluginAware",
+      "why": "PluginManager.getPluginByClass is internal API and the verifier fails on it",
+      "rejected": "PluginManager.getPluginByClass, PluginAwareClassLoader, ExtensionPointName.processWithPluginDescriptor (all internal)"
+    },
+    {
+      "decision": "AdpSettings persists an Element and reads each known field on its own",
+      "why": "Unknown fields are written back and a damaged field falls back alone (FR-018)",
+      "rejected": "A plain bean state, which drops unknown fields"
+    },
+    {
+      "decision": "Designer settings stored as one map keyed <designer id>/<setting key>",
+      "why": "The platform serializer handles a flat string map",
+      "rejected": "A nested map per designer"
+    },
+    {
+      "decision": "settings() and origin() are public, and AdpEditorProvider gains fixedOptions()",
+      "why": "The settings package reads them; unfollowed options come from any provider, not only diagram ones",
+      "rejected": "Protected methods as in the contract"
+    },
+    {
+      "decision": "Story phases built inline, not dispatched to workers",
+      "why": "Concurrent Gradle builds in one worktree contend for its locks and the test IDE sandbox",
+      "rejected": "One worker per story phase"
+    },
+    {
+      "decision": "Spec 005 line reworded, and two draw.io tests red on develop fixed, on this branch in their own commits",
+      "why": "Peter's option A through the coordinator, so the gates can be green",
+      "rejected": "Leaving develop's red tests to a separate PR"
     }
   ],
   "step_summaries": {
@@ -545,57 +610,72 @@
     },
     "tasks": {
       "summary": "53 tasks in 7 phases: setup, foundational, US1+US2 MVP, US3, US4, US5, polish; page sections registered per story keep phases file-disjoint"
+    },
+    "implement": {
+      "summary": "ADP settings page: designer list with on/off, canvas options live in every diagram designer, designer pages, bundled origin; headless tests and verifier green, integration tests not run"
     }
   },
   "approach": "A SearchableConfigurable under Tools reads designers from the platform's editor providers and stores every choice in one application PersistentStateComponent. Turning a designer off makes its provider refuse files; canvas options reach open designers through a message-bus topic and an effective-value check that respects options a definition fixes. Designers declare their own settings and origin as data.",
   "coverage": {
     "FR-001": {
       "title": "One ADP page under the IDE tools settings, found by search",
-      "tasks": "T010,T011,T024,T027,T051"
+      "tasks": "T010,T011,T024,T027,T051",
+      "tests": "core/src/test/java/etalii/adp/core/settings/AdpConfigurableTest.java,core/src/test/java/etalii/adp/core/settings/AdpSearchableOptionsTest.java"
     },
     "FR-002": {
       "title": "Apply/OK/Cancel/modified/reset like platform pages",
-      "tasks": "T010,T024,T035"
+      "tasks": "T010,T024,T035",
+      "tests": "core/src/test/java/etalii/adp/core/settings/AdpConfigurableTest.java,core/src/test/java/etalii/adp/core/settings/DesignersSectionTest.java,core/src/test/java/etalii/adp/core/settings/CanvasSectionTest.java"
     },
     "FR-003": {
       "title": "Stored, exported, imported and synced by platform mechanisms",
-      "tasks": "T005,T022"
+      "tasks": "T005,T022",
+      "tests": "core/src/test/java/etalii/adp/core/settings/AdpSettingsStateRoundTripTest.java"
     },
     "FR-004": {
       "title": "No copy of platform choices; link to them",
-      "tasks": "T030,T033"
+      "tasks": "T030,T033",
+      "tests": "core/src/test/java/etalii/adp/core/settings/DesignersSectionTest.java"
     },
     "FR-005": {
       "title": "Every setting stored for the user across projects",
-      "tasks": "T004,T022"
+      "tasks": "T004,T022",
+      "tests": "core/src/test/java/etalii/adp/core/settings/AdpSettingsTest.java"
     },
     "FR-006": {
       "title": "Apply reaches open designers without touching files",
-      "tasks": "T036,T042"
+      "tasks": "T036,T042",
+      "tests": "core/src/test/java/etalii/adp/core/diagram/view/CanvasOptionsLiveTest.java,core/src/test/java/etalii/adp/core/settings/TurnDesignerOffTest.java"
     },
     "FR-007": {
       "title": "List designers with name, file types, version, origin, status",
-      "tasks": "T007,T026,T030,T032,T033"
+      "tasks": "T007,T026,T030,T032,T033",
+      "tests": "core/src/test/java/etalii/adp/core/settings/AdpDesignersTest.java,core/src/test/java/etalii/adp/core/settings/DesignersSectionTest.java"
     },
     "FR-008": {
       "title": "Show each definition problem",
-      "tasks": "T008,T025,T030"
+      "tasks": "T008,T025,T030",
+      "tests": "core/src/test/java/etalii/adp/core/diagram/sample/BrokenSampleProviderTest.java,core/src/test/java/etalii/adp/core/settings/DesignersSectionTest.java"
     },
     "FR-009": {
       "title": "Turn designers off and on",
-      "tasks": "T009,T023,T031"
+      "tasks": "T009,T023,T031",
+      "tests": "core/src/test/java/etalii/adp/core/settings/DesignerGatingTest.java,core/src/test/java/etalii/adp/core/settings/TurnDesignerOffTest.java"
     },
     "FR-010": {
       "title": "Turning off never closes or changes an open editor",
-      "tasks": "T031"
+      "tasks": "T031",
+      "tests": "core/src/test/java/etalii/adp/core/settings/TurnDesignerOffTest.java"
     },
     "FR-011": {
       "title": "Canvas options: grid, snap, opening zoom",
-      "tasks": "T035,T036,T038,T039,T041,T042"
+      "tasks": "T035,T036,T038,T039,T041,T042",
+      "tests": "core/src/test/java/etalii/adp/core/settings/CanvasSectionTest.java,core/src/test/java/etalii/adp/core/diagram/view/CanvasOptionsLiveTest.java"
     },
     "FR-012": {
       "title": "Designers fixing an option keep it and are named",
-      "tasks": "T013,T020,T035,T036,T037,T040"
+      "tasks": "T013,T020,T035,T036,T037,T040",
+      "tests": "core/src/test/java/etalii/adp/core/diagram/ViewOptionsTest.java,core/src/test/java/etalii/adp/core/settings/CanvasSectionTest.java,core/src/test/java/etalii/adp/core/diagram/view/CanvasOptionsLiveTest.java,freemind/src/test/java/etalii/adp/freemind/ui/FreeMindDefinitionTest.java"
     },
     "FR-013": {
       "title": "Withdrawn 2026-09-27: no animations option until a designer animates",
@@ -603,27 +683,51 @@
     },
     "FR-014": {
       "title": "Designer-declared settings on their own page",
-      "tasks": "T006,T015,T044,T045,T046,T047"
+      "tasks": "T006,T015,T044,T045,T046,T047",
+      "tests": "core/src/test/java/etalii/adp/core/settings/DesignerSettingsConfigurableTest.java,core/src/test/java/etalii/adp/core/settings/DesignerSettingTest.java"
     },
     "FR-015": {
       "title": "Designer settings kept while off or uninstalled",
-      "tasks": "T005,T044"
+      "tasks": "T005,T044",
+      "tests": "core/src/test/java/etalii/adp/core/settings/DesignerSettingsConfigurableTest.java,core/src/test/java/etalii/adp/core/settings/AdpSettingsStateRoundTripTest.java"
     },
     "FR-016": {
       "title": "Bundled DEDL definition name, version and source revision",
-      "tasks": "T016,T048"
+      "tasks": "T016,T048",
+      "tests": "core/src/test/java/etalii/adp/core/settings/BundledOriginTest.java"
     },
     "FR-017": {
       "title": "Conflicting designers shown",
-      "tasks": "T007,T026,T030"
+      "tasks": "T007,T026,T030",
+      "tests": "core/src/test/java/etalii/adp/core/settings/AdpDesignersTest.java,core/src/test/java/etalii/adp/core/settings/DesignersSectionTest.java,core/src/test/java/etalii/adp/core/settings/BundledOriginTest.java"
     },
     "FR-018": {
       "title": "Unreadable settings fall back per field, told once",
-      "tasks": "T004,T022"
+      "tasks": "T004,T022",
+      "tests": "core/src/test/java/etalii/adp/core/settings/AdpSettingsTest.java"
     },
     "FR-019": {
       "title": "Settings read and applied headless",
-      "tasks": "T004"
+      "tasks": "T004",
+      "tests": "core/src/test/java/etalii/adp/core/settings/AdpSettingsTest.java"
+    },
+    "SC-001": {
+      "tests": "core/src/test/java/etalii/adp/core/settings/AdpSearchableOptionsTest.java,src/integrationTest/java/etalii/adp/it/SettingsPageIntegrationTest.java (not run)"
+    },
+    "SC-002": {
+      "tests": "core/src/test/java/etalii/adp/core/settings/TurnDesignerOffTest.java"
+    },
+    "SC-003": {
+      "tests": "core/src/test/java/etalii/adp/core/diagram/view/CanvasOptionsLiveTest.java,core/src/test/java/etalii/adp/core/settings/TurnDesignerOffTest.java"
+    },
+    "SC-004": {
+      "tests": "core/src/test/java/etalii/adp/core/diagram/sample/BrokenSampleProviderTest.java,core/src/test/java/etalii/adp/core/settings/DesignersSectionTest.java"
+    },
+    "SC-005": {
+      "tests": "core/src/test/java/etalii/adp/core/settings/AdpSettingsStateRoundTripTest.java"
+    },
+    "SC-006": {
+      "tests": "core/src/test/java/etalii/adp/core/settings/SettingsPagePerformanceTest.java"
     }
   },
   "currentTask": "T052",
@@ -972,5 +1076,27 @@
       "status": "DONE",
       "did": "Traced FR-001 to FR-019 (FR-013 withdrawn) and SC-001 to SC-006 to tests and code; read back FR-010 (accepts only at open, apply only writes offDesigners) and FR-018 (per-field loadState and one notice)"
     }
-  }
+  },
+  "last_action": "All tasks but T051 and T053 done; gradlew test, verifyPlugin and verifyDependencyLicences exit 0; integrationTest awaiting permission",
+  "verified": [
+    {
+      "what": "headless tests, plug-in verifier and licence check",
+      "command": "gradlew.bat test verifyPlugin verifyDependencyLicences --console=plain",
+      "source": "derived",
+      "exitCode": 1,
+      "durationSeconds": 0.0,
+      "result": "'gradlew.bat' is not recognized as an internal or external command, · operable program or batch file.",
+      "warnings": [
+        "exited 1"
+      ]
+    },
+    {
+      "what": "gate: gradlew test, verifyPlugin and verifyDependencyLicences",
+      "command": "C:\\git\\etalii.adp.ide.intellij\\.claude\\worktrees\\004-settings-page\\gradlew.bat -p C:\\git\\etalii.adp.ide.intellij\\.claude\\worktrees\\004-settings-page test verifyPlugin verifyDependencyLicences --console=plain",
+      "source": "derived",
+      "exitCode": 0,
+      "durationSeconds": 2.0,
+      "result": "BUILD SUCCESSFUL in 1s · 59 actionable tasks: 2 executed, 57 up-to-date · Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.0/userguide/configuration_cache_enabling.html"
+    }
+  ]
 }
