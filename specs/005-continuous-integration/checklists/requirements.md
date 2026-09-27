@@ -31,6 +31,7 @@
 
 ## Notes
 
-- No [NEEDS CLARIFICATION] markers. Open choices are recorded as defaults under Assumptions: the Releases page rather than the JetBrains Marketplace, a rolling development build plus versioned releases on a version mark, no signing, and the licensed real-IDE tests skipped without a secret.
+- Peter chose on 2026-09-27 that the Releases page carries both the rolling development build (User Story 3) and versioned releases (User Story 4).
+- No [NEEDS CLARIFICATION] markers. Other open choices are recorded as defaults under Assumptions: the Releases page rather than the JetBrains Marketplace, no signing, and the licensed real-IDE tests skipped without a secret.
 - GitHub, its Releases page and pull requests are the user's own subject matter ("a download in GitHub"), not implementation choices; which CI service and which workflow files is left to the plan.
 - Real-IDE tests (FR-003) may need a display and long runs on hosted runners; the plan should decide how, and record any deviation from the constitution's "full test suite" rule in its complexity tracking.

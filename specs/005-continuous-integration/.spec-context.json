@@ -20,9 +20,10 @@
       "at": "2026-09-26T19:36:46.000Z"
     }
   ],
-  "concerns": [
+  "concerns": [],
+  "decisions": [
     {
-      "note": "Open choice for Peter: rolling development build plus versioned releases (default), or only one of them"
+      "note": "Releases page carries both a rolling development build and versioned releases (Peter, 2026-09-27)"
     }
   ]
 }
