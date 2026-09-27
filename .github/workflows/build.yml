@@ -24,10 +24,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      # javaVersion in gradle.properties.
+      # javaVersion in gradle.properties. Not Temurin: the jar manifest records the JDK's vendor, and
+      # "Eclipse Adoptium" there fails NoPreviousHostIntegrationTest, which forbids the previous host's name.
       - uses: actions/setup-java@v6
         with:
-          distribution: temurin
+          distribution: zulu
           java-version: '25'
       # Caches Gradle and the IntelliJ Platform downloads between runs.
       - uses: gradle/actions/setup-gradle@v6
