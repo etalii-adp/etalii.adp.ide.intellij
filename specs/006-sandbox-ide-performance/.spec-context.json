@@ -202,6 +202,22 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-27T18:16:06.795Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T013",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:23:37.487Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T022",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:23:38.811Z"
     }
   ],
   "concerns": [
@@ -293,7 +309,7 @@
       "tasks": "T004,T006,T007,T008,T009,T010,T011,T012,T013"
     }
   },
-  "currentTask": "T020",
+  "currentTask": "T022",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -384,6 +400,20 @@
     "T020": {
       "status": "DONE",
       "did": "All three pass; no production change needed; designers ruled out as a second cause"
+    },
+    "T013": {
+      "status": "DONE",
+      "did": "integrationTest from an empty out/: 16 tests, 2 skipped (no licence), all pass after rewording a spec line; IDEs came from the moved cache, no out/ created, 6 min",
+      "files": [
+        "specs/006-sandbox-ide-performance/sandbox-ide-performance.spec.md"
+      ]
+    },
+    "T022": {
+      "status": "DONE",
+      "did": "README: download cache, ADP_IDE_TESTS_HOME, sandbox folders and example project, exclusions",
+      "files": [
+        "README.md"
+      ]
     }
   }
 }

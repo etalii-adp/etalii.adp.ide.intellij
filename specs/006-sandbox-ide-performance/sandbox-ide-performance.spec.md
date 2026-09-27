@@ -92,7 +92,7 @@ A contributor who runs `./gradlew runIde` for the first time, or after a platfor
 - A feature worktree lives inside the repository (under `.claude/worktrees/`, as CLAUDE.md's worktree convention produces). Its contents, including any downloads it holds, must not be indexed either.
 - The contributor keeps real-IDE test downloads from several platform versions. Their size must not affect the sandbox.
 - A contributor on another machine has less memory than Peter's 64 GB. The sandbox must stay usable within the heap it is given.
-- The sandbox folder of an older clone path (the log still names `C:\git\EtAlii.Adp.Eclipse` and `C:\git\EtAlii.Adp.IntelliJ`) is reused. Stale recent-project entries must not reopen a project that no longer exists or is huge.
+- The sandbox folder is reused after the repository was moved (its log still names the repository's two former folder paths). Stale recent-project entries must not reopen a project that no longer exists or is huge.
 - Cloud sessions run no sandbox. Nothing here may make headless builds or the real-IDE tests slower.
 
 ## Requirements *(mandatory)*

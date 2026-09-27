@@ -64,6 +64,17 @@ These environment variables are optional:
 | `ADP_IT_PRODUCTS` | A comma-separated list of products to run, for example `IntelliJ IDEA,Rider`. All run when it is not set. |
 | `ADP_IDE_HOME_<CODE>` | Use an installed IDE instead of downloading it, for example `ADP_IDE_HOME_IU`. |
 | `ADP_IDEA_LICENSE` | An IntelliJ IDEA Ultimate licence key, or a path to one. Without it the licensed run is skipped. |
+| `ADP_IDE_TESTS_HOME` | Where the tests keep the IDEs they download and the folders they run in (also the Gradle property `adpIdeTestsHome`). |
+
+The downloaded IDEs take about 30 GB. They are kept in one per-user folder that every clone and worktree shares: `%LOCALAPPDATA%\etalii-adp\ide-tests-home` on Windows, `$XDG_CACHE_HOME/etalii-adp/ide-tests-home` (or `~/.cache/...`) elsewhere. Older checkouts kept them in `out/ide-tests` inside the repository; that folder can be deleted.
+
+### Trying the plug-in in a sandbox IDE
+
+`./gradlew runIde` starts IntelliJ IDEA with the plug-in installed and opens `example-project`, a folder with copies of the example maps and diagrams. The copies are refreshed on every run; other files you put there are kept. Edits never touch the vendored examples.
+
+The sandbox lives in `.intellijPlatform/sandbox/EtAlii.Adp.IntelliJ/<platform>/`: `config_runIde` (settings), `system_runIde` (indexes), `plugins_runIde`, `log_runIde` and `example-project`. `log_runIde` holds `idea.log`, freeze reports, and any heap dump (`java_pid*.hprof`) or crash log (`hs_err_pid*.log`). Delete the folder to reset the sandbox.
+
+The build excludes `out`, `.intellijPlatform` and `.claude/worktrees` from the IDE project, so opening this repository in an IDE does not index sandboxes, downloads or nested worktrees.
 
 ## Check compatibility with FreeMind 1.0.1
 
