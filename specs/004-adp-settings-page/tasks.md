@@ -155,15 +155,15 @@ Files: `core/…/settings/DesignerPagesSection.java`, `core/…/settings/Designe
 
 ### Tests
 
-- [ ] **T044** [US4] Designer pages: a page named after the designer, id `etalii.adp.settings.<designer id>`, with one editor per declared setting of the right kind; no page for a designer without settings; values stored under the designer's id, kept while it is off and after its provider is unregistered, and read back when it returns; a declaration that breaks a rule adds a problem and shows no page (FR-014, FR-015, acceptance 4.1–4.3) · `core/test/…/settings/DesignerSettingsConfigurableTest.java`, `core/test/…/sample/SettingSampleProvider.java`
+- [x] **T044** [US4] Designer pages: a page named after the designer, id `etalii.adp.settings.<designer id>`, with one editor per declared setting of the right kind; no page for a designer without settings; values stored under the designer's id, kept while it is off and after its provider is unregistered, and read back when it returns; a declaration that breaks a rule adds a problem and shows no page (FR-014, FR-015, acceptance 4.1–4.3) · `core/test/…/settings/DesignerSettingsConfigurableTest.java`, `core/test/…/sample/SettingSampleProvider.java`
 
 ### Implementation
 
 **⟶ Wait for the test above, then:**
 
-- [ ] **T045** [US4] `DesignerSettingsConfigurable`: check box, spinner or combo per setting, buffered until apply · `core/…/settings/DesignerSettingsConfigurable.java`
-- [ ] **T046** [US4] `DesignerPagesSection` (order 30): no component, one child page per designer with valid settings, labels for search · `core/…/settings/DesignerPagesSection.java`
-- [ ] **T047** [US4] Register `DesignerPagesSection` · `core/src/main/resources/META-INF/adp-settings-designer-pages.xml`
+- [x] **T045** [US4] `DesignerSettingsConfigurable`: check box, spinner or combo per setting, buffered until apply · `core/…/settings/DesignerSettingsConfigurable.java`
+- [x] **T046** [US4] `DesignerPagesSection` (order 30): no component, one child page per designer with valid settings, labels for search · `core/…/settings/DesignerPagesSection.java`
+- [x] **T047** [US4] Register `DesignerPagesSection` · `core/src/main/resources/META-INF/adp-settings-designer-pages.xml`
 
 **Checkpoint**: designer-specific settings have a home, and survive a designer being off or removed.
 

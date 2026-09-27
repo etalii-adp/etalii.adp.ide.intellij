@@ -402,6 +402,38 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-27T02:29:42.294Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T044",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:31:50.758Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T045",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:31:51.052Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T046",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:31:51.345Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T047",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:31:51.659Z"
     }
   ],
   "concerns": [
@@ -562,7 +594,7 @@
       "tasks": "T004"
     }
   },
-  "currentTask": "T043",
+  "currentTask": "T047",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -851,6 +883,35 @@
       "did": "Registered CanvasSection on etalii.adp.settingsSection",
       "files": [
         "core/src/main/resources/META-INF/adp-settings-canvas.xml"
+      ]
+    },
+    "T044": {
+      "status": "DONE",
+      "did": "Designer pages test: named page with the right editors, none without settings, values under the designer id kept while off and after uninstall, broken declaration gets no page (seen failing)",
+      "files": [
+        "core/src/test/java/etalii/adp/core/settings/DesignerSettingsConfigurableTest.java",
+        "core/src/test/java/etalii/adp/core/diagram/sample/SettingSampleProvider.java"
+      ]
+    },
+    "T045": {
+      "status": "DONE",
+      "did": "DesignerSettingsConfigurable: check box, spinner or combo per setting, buffered until apply, publishes the topic",
+      "files": [
+        "core/src/main/java/etalii/adp/core/settings/DesignerSettingsConfigurable.java"
+      ]
+    },
+    "T046": {
+      "status": "DONE",
+      "did": "DesignerPagesSection (order 30): no component, one child page per designer with valid settings",
+      "files": [
+        "core/src/main/java/etalii/adp/core/settings/DesignerPagesSection.java"
+      ]
+    },
+    "T047": {
+      "status": "DONE",
+      "did": "Registered DesignerPagesSection on etalii.adp.settingsSection",
+      "files": [
+        "core/src/main/resources/META-INF/adp-settings-designer-pages.xml"
       ]
     }
   }
