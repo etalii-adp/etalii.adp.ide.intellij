@@ -274,6 +274,62 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-27T02:14:58.566Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T003",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:22:37.190Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T029",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:22:37.483Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T030",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:23:54.380Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T031",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:23:54.660Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T032",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:24:04.777Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T033",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:24:05.040Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T034",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:24:05.314Z"
     }
   ],
   "concerns": [
@@ -434,7 +490,7 @@
       "tasks": "T004"
     }
   },
-  "currentTask": "T013",
+  "currentTask": "T034",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -613,6 +669,53 @@
       "files": [
         "core/src/test/java/etalii/adp/core/diagram/ViewOptionsTest.java",
         "core/src/test/java/etalii/adp/core/diagram/DefinitionValidationTest.java"
+      ]
+    },
+    "T003": {
+      "status": "DONE",
+      "did": "Baseline check on develop exited 1: NoPreviousHost (spec 005 text, fixed in 3176de3) and two draw.io tests red since spec 003 (fixed in 60b1b66)",
+      "files": [
+        "specs/005-continuous-integration/continuous-integration.spec.md",
+        "drawio/src/test/java/etalii/adp/drawio/DrawioDesignerTest.java"
+      ]
+    },
+    "T029": {
+      "status": "DONE",
+      "did": "gradlew test: core and freemind green with T004-T013; drawio green once its two develop failures were fixed"
+    },
+    "T030": {
+      "status": "DONE",
+      "did": "Designer list test: columns, rows, broken problems, conflict on both rows with the one used, unfollowed, File Types link, no combo boxes, buffered On (seen failing on stubs)",
+      "files": [
+        "core/src/test/java/etalii/adp/core/settings/DesignersSectionTest.java"
+      ]
+    },
+    "T031": {
+      "status": "DONE",
+      "did": "Off and on end to end through AdpConfigurable: text editor when off, open designer untouched, designer again when on (seen failing on stubs)",
+      "files": [
+        "core/src/test/java/etalii/adp/core/settings/TurnDesignerOffTest.java"
+      ]
+    },
+    "T032": {
+      "status": "DONE",
+      "did": "DesignerTableModel: rows from AdpDesigners, On column editable and buffered until apply",
+      "files": [
+        "core/src/main/java/etalii/adp/core/settings/DesignerTableModel.java"
+      ]
+    },
+    "T033": {
+      "status": "DONE",
+      "did": "DesignersSection (order 10): table, detail with problems, conflicts and unfollowed options, File Types link; apply writes offDesigners",
+      "files": [
+        "core/src/main/java/etalii/adp/core/settings/DesignersSection.java"
+      ]
+    },
+    "T034": {
+      "status": "DONE",
+      "did": "Registered DesignersSection on etalii.adp.settingsSection",
+      "files": [
+        "core/src/main/resources/META-INF/adp-settings-designers.xml"
       ]
     }
   }

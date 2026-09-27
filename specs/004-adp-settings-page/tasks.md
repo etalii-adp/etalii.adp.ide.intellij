@@ -23,7 +23,7 @@
 
 **⟶ Wait for Wave 1 to finish, then:**
 
-- [ ] **T003** Build the fresh worktree and run `./gradlew check`: green before any settings code exists · (no file)
+- [x] **T003** Build the fresh worktree and run `./gradlew check`: green before any settings code exists · (no file)
 
 ---
 
@@ -77,7 +77,7 @@ Files: `core/…/settings/{AdpSettings,AdpSettingsListener,CanvasOption,CanvasOp
 **⟶ Wait for Wave 5, then:**
 
 - [x] **T028** Register the service, configurable, option contributor, `ADP` notification group and the `etalii.adp.settingsSection` extension point (contracts/plugin-contributions.md) · `core/src/main/resources/META-INF/adp-settings.xml`
-- [ ] **T029** Run `./gradlew test`: T004–T013 green (T012 withdrawn), and every spec 001–003 test still green · (no file)
+- [x] **T029** Run `./gradlew test`: T004–T013 green (T012 withdrawn), and every spec 001–003 test still green · (no file)
 
 ---
 
@@ -93,19 +93,19 @@ Files: `core/…/settings/DesignersSection.java`, `core/…/settings/DesignerTab
 
 **Wave 1 — independent (different files):**
 
-- [ ] **T030** [P] [US1] Designer list: columns On, Name, File types, Version, Origin, Status; the broken sample shows `Not loaded` and each problem when selected; a conflict is shown on both rows; "File types and default editors…" opens the platform's File Types page and nothing on the page duplicates a default-editor choice; labels as in contracts/plugin-contributions.md (FR-004, FR-007, FR-008, FR-017, SC-004, acceptance 1.2–1.4) · `core/test/…/settings/DesignersSectionTest.java`
-- [ ] **T031** [P] [US2] Off and on end to end: untick the sample, apply, open a sample file and get the text editor with no sample designer offered; a sample file already open stays open, unmodified, with its designer; tick it, apply, and a newly opened file gets the designer (FR-009, FR-010, acceptance 2.1–2.3, SC-002) · `core/test/…/settings/TurnDesignerOffTest.java`
+- [x] **T030** [P] [US1] Designer list: columns On, Name, File types, Version, Origin, Status; the broken sample shows `Not loaded` and each problem when selected; a conflict is shown on both rows; "File types and default editors…" opens the platform's File Types page and nothing on the page duplicates a default-editor choice; labels as in contracts/plugin-contributions.md (FR-004, FR-007, FR-008, FR-017, SC-004, acceptance 1.2–1.4) · `core/test/…/settings/DesignersSectionTest.java`
+- [x] **T031** [P] [US2] Off and on end to end: untick the sample, apply, open a sample file and get the text editor with no sample designer offered; a sample file already open stays open, unmodified, with its designer; tick it, apply, and a newly opened file gets the designer (FR-009, FR-010, acceptance 2.1–2.3, SC-002) · `core/test/…/settings/TurnDesignerOffTest.java`
 
 ### Implementation
 
 **⟶ Wait for the tests above, then Wave 2 — independent (different files):**
 
-- [ ] **T032** [P] [US1] `DesignerTableModel`: rows from `AdpDesigners`, the On column editable and buffered until apply · `core/…/settings/DesignerTableModel.java`
+- [x] **T032** [P] [US1] `DesignerTableModel`: rows from `AdpDesigners`, the On column editable and buffered until apply · `core/…/settings/DesignerTableModel.java`
 
 **⟶ Wait for Wave 2, then:**
 
-- [ ] **T033** [US1] `DesignersSection` (order 10): the table, the detail area with problems and conflicts, the File Types link; `apply` writes `offDesigners` · `core/…/settings/DesignersSection.java`
-- [ ] **T034** [US1] Register `DesignersSection` · `core/src/main/resources/META-INF/adp-settings-designers.xml`
+- [x] **T033** [US1] `DesignersSection` (order 10): the table, the detail area with problems and conflicts, the File Types link; `apply` writes `offDesigners` · `core/…/settings/DesignersSection.java`
+- [x] **T034** [US1] Register `DesignersSection` · `core/src/main/resources/META-INF/adp-settings-designers.xml`
 
 **Checkpoint**: Settings > Tools > ADP lists designers, shows problems and conflicts, and turns designers off and on. This is a shippable MVP.
 
