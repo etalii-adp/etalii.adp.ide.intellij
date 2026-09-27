@@ -17,11 +17,11 @@
 
 **Wave 1 — independent:**
 
-- [ ] **T001** Create branch `features/006-sandbox-ide-performance` from `develop` in its own worktree beside the repository (not under `.claude/worktrees`, which the old spec 004 worktree shows costs a second full checkout inside the repo), copy `specs/006-sandbox-ide-performance/` and `.specify/feature.json` into it, and commit them · `specs/006-sandbox-ide-performance/`
+- [x] **T001** Create branch `features/006-sandbox-ide-performance` from `develop` in its own worktree beside the repository (not under `.claude/worktrees`, which the old spec 004 worktree shows costs a second full checkout inside the repo), copy `specs/006-sandbox-ide-performance/` and `.specify/feature.json` into it, and commit them · `specs/006-sandbox-ide-performance/`
 
 **⟶ Wait for Wave 1 to finish, then:**
 
-- [ ] **T002** Run `./gradlew check` in the new worktree: green before any change · (no file)
+- [x] **T002** Run `./gradlew check` in the new worktree: green before any change · (no file)
 - [ ] **T003** Baseline: follow quickstart steps 1 and 2 once in the original clone, where `out/ide-tests` and the spec 004 worktree are still present; stop the sandbox at the first out-of-memory error or after five minutes; add the row to Results · `specs/006-sandbox-ide-performance/quickstart.md`
 
 ---
@@ -32,11 +32,11 @@ Files: `build.gradle.kts`.
 
 **Wave 1 — one file:**
 
-- [ ] **T004** In one pass over the root build: (a) apply Gradle's `idea` plug-in and exclude `out`, `.intellijPlatform`, `.claude/worktrees` and every module's `build` (R3, FR-001); (b) register `prepareSandboxProject`, a Copy of `freemind/testdata/examples/*.mm` and `drawio/testdata/examples/*.drawio` into `<sandboxDirectory>/example-project`, and make `runIde` depend on it and pass that folder as its argument (R1, FR-002); (c) add a `jvmArgumentProviders` entry to `runIde` with `-XX:HeapDumpPath=<sandboxLogDirectory>` and `-XX:ErrorFile=<sandboxLogDirectory>/hs_err_pid%p.log` (R4, FR-003); (d) pass `adp.ideTests.home` to `integrationTest`, resolved from `adpIdeTestsHome`, `ADP_IDE_TESTS_HOME`, then the per-user default in data-model.md (R2, FR-009). No new Gradle deprecation warnings · `build.gradle.kts`
+- [x] **T004** In one pass over the root build: (a) apply Gradle's `idea` plug-in and exclude `out`, `.intellijPlatform`, `.claude/worktrees` and every module's `build` (R3, FR-001); (b) register `prepareSandboxProject`, a Copy of `freemind/testdata/examples/*.mm` and `drawio/testdata/examples/*.drawio` into `<sandboxDirectory>/example-project`, and make `runIde` depend on it and pass that folder as its argument (R1, FR-002); (c) add a `jvmArgumentProviders` entry to `runIde` with `-XX:HeapDumpPath=<sandboxLogDirectory>` and `-XX:ErrorFile=<sandboxLogDirectory>/hs_err_pid%p.log` (R4, FR-003); (d) pass `adp.ideTests.home` to `integrationTest`, resolved from `adpIdeTestsHome`, `ADP_IDE_TESTS_HOME`, then the per-user default in data-model.md (R2, FR-009). No new Gradle deprecation warnings · `build.gradle.kts`
 
 **⟶ Wait for Wave 1 to finish, then:**
 
-- [ ] **T005** `./gradlew help --warning-mode all` shows no new warnings, and `./gradlew prepareSandboxProject` produces the example folder with every example file · (no file)
+- [x] **T005** `./gradlew help --warning-mode all` shows no new warnings, and `./gradlew prepareSandboxProject` produces the example folder with every example file · (no file)
 
 ---
 
@@ -46,27 +46,29 @@ Files: `build.gradle.kts`.
 
 **Independent Test**: spec User Story 1.
 
-Files: `it/IdeTestsHome.java`, `it/IdeTestsHomeTest.java`, `it/EditUndoIntegrationTest.java`, `it/NoPreviousHostIntegrationTest.java`, `it/OpenDrawioTest.java`, `it/OpenMapIntegrationTest.java`, `it/SettingsPageIntegrationTest.java`.
+Files: `it/IdeTestsHome.java`, `it/IdeTestsHomeTest.java`, `src/integrationTest/resources/META-INF/services/org.junit.platform.launcher.LauncherSessionListener`.
+
+Implementation note: `IdeTestsHome` became a launcher session listener (research R2), so T008 to T012 no longer edit the test classes; they are closed as superseded.
 
 ### Tests
 
-- [ ] **T006** [US1] `IdeTestsHomeTest`: after `IdeTestsHome.install()`, the Starter framework's test home, installers, cache and tests folders all resolve below `adp.ideTests.home` and none is inside `adp.repository`; a missing property fails with a message naming it. See it fail (no class yet) · `it/IdeTestsHomeTest.java`
+- [x] **T006** [US1] `IdeTestsHomeTest`: after `IdeTestsHome.install()`, the Starter framework's test home, installers, cache and tests folders all resolve below `adp.ideTests.home` and none is inside `adp.repository`; a missing property fails with a message naming it. See it fail (no class yet) · `it/IdeTestsHomeTest.java`
 
 ### Implementation
 
 **Wave 1 — one file:**
 
-- [ ] **T007** [US1] `IdeTestsHome.install()`: replace the Starter `GlobalPaths` binding with one rooted at `adp.ideTests.home`, idempotently. First try Kodein's non-inline builder API from Java; if that is unreadable, use research R2's fallback and record the choice in research.md · `it/IdeTestsHome.java`
+- [x] **T007** [US1] `IdeTestsHome.install()`: replace the Starter `GlobalPaths` binding with one rooted at `adp.ideTests.home`, idempotently. First try Kodein's non-inline builder API from Java; if that is unreadable, use research R2's fallback and record the choice in research.md · `it/IdeTestsHome.java`
 
 **⟶ Wait for Wave 1 to finish, then:**
 
 **Wave 2 — independent (different files):**
 
-- [ ] **T008** [P] [US1] Call `IdeTestsHome.install()` before the IDE starts · `it/EditUndoIntegrationTest.java`
-- [ ] **T009** [P] [US1] Call `IdeTestsHome.install()` before the IDE starts · `it/NoPreviousHostIntegrationTest.java`
-- [ ] **T010** [P] [US1] Call `IdeTestsHome.install()` before the IDE starts · `it/OpenDrawioTest.java`
-- [ ] **T011** [P] [US1] Call `IdeTestsHome.install()` before the IDE starts · `it/OpenMapIntegrationTest.java`
-- [ ] **T012** [P] [US1] Call `IdeTestsHome.install()` before the IDE starts · `it/SettingsPageIntegrationTest.java`
+- [x] **T008** [P] [US1] Call `IdeTestsHome.install()` before the IDE starts · `it/EditUndoIntegrationTest.java`
+- [x] **T009** [P] [US1] Call `IdeTestsHome.install()` before the IDE starts · `it/NoPreviousHostIntegrationTest.java`
+- [x] **T010** [P] [US1] Call `IdeTestsHome.install()` before the IDE starts · `it/OpenDrawioTest.java`
+- [x] **T011** [P] [US1] Call `IdeTestsHome.install()` before the IDE starts · `it/OpenMapIntegrationTest.java`
+- [x] **T012** [P] [US1] Call `IdeTestsHome.install()` before the IDE starts · `it/SettingsPageIntegrationTest.java`
 
 **⟶ Wait for Wave 2 to finish, then:**
 

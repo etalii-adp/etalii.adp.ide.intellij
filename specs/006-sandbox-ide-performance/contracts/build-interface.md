@@ -13,7 +13,7 @@ What a contributor, CI and the tests can rely on after this feature.
 
 - Passes system property `adp.ideTests.home` to the test JVM.
 - Resolution order: Gradle property `adpIdeTestsHome`, then environment variable `ADP_IDE_TESTS_HOME`, then the per-user default in [data-model.md](../data-model.md).
-- Every test class installs the location with `IdeTestsHome.install()` before it starts an IDE. The Starter framework then keeps installers, unpacked IDEs and per-test folders below `<adp.ideTests.home>/out/ide-tests/`.
+- `IdeTestsHome`, a JUnit launcher session listener registered in `src/integrationTest/resources/META-INF/services`, installs the location once before any test runs. The Starter framework then keeps installers, unpacked IDEs and per-test folders below `<adp.ideTests.home>/out/ide-tests/`.
 - Nothing is written to `<repository>/out/ide-tests`.
 
 ## IDE project model

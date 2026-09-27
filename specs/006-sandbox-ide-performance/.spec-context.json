@@ -2,8 +2,8 @@
   "workflow": "companion",
   "specName": "A Fast Sandbox IDE",
   "branch": "features/006-sandbox-ide-performance",
-  "currentStep": "tasks",
-  "status": "ready-to-implement",
+  "currentStep": "implement",
+  "status": "implementing",
   "history": [
     {
       "step": "specify",
@@ -67,6 +67,101 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-27T18:04:14.841Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-09-27T18:07:21.263Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T001",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:07:30.923Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T002",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:09:58.380Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T004",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:11:15.354Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T005",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:11:16.093Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T006",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:11:16.727Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T007",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:11:17.321Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T008",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:11:17.988Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T009",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:11:18.583Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T010",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:11:19.264Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T011",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:11:19.804Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T012",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:11:20.366Z"
     }
   ],
   "concerns": [
@@ -156,6 +251,67 @@
     "FR-009": {
       "title": "Real-IDE test downloads live in a per-user cache outside the repository",
       "tasks": "T004,T006,T007,T008,T009,T010,T011,T012,T013"
+    }
+  },
+  "currentTask": "T012",
+  "task_summaries": {
+    "T001": {
+      "status": "DONE",
+      "did": "Created features/006 worktree beside the repo from origin/develop and committed the spec",
+      "files": [
+        "specs/006-sandbox-ide-performance/"
+      ]
+    },
+    "T002": {
+      "status": "DONE",
+      "did": "build -x integrationTest -x verifyPlugin green before changes"
+    },
+    "T004": {
+      "status": "DONE",
+      "did": "idea excludes, prepareSandboxProject + runIde project arg, dump/error paths, adp.ideTests.home",
+      "files": [
+        "build.gradle.kts"
+      ]
+    },
+    "T005": {
+      "status": "DONE",
+      "did": "no warnings with --warning-mode all; example-project holds all 14 examples"
+    },
+    "T006": {
+      "status": "DONE",
+      "did": "IdeTestsHomeTest seen failing at the home assertion without the listener",
+      "files": [
+        "src/integrationTest/java/etalii/adp/it/IdeTestsHomeTest.java"
+      ]
+    },
+    "T007": {
+      "status": "DONE",
+      "did": "IdeTestsHome as a LauncherSessionListener rebinding Starter GlobalPaths via Kodein from Java; test green, no out/ created",
+      "files": [
+        "src/integrationTest/java/etalii/adp/it/IdeTestsHome.java",
+        "src/integrationTest/resources/META-INF/services/org.junit.platform.launcher.LauncherSessionListener",
+        "build.gradle.kts"
+      ]
+    },
+    "T008": {
+      "status": "DONE",
+      "did": "Superseded: the launcher session listener covers every test class"
+    },
+    "T009": {
+      "status": "DONE",
+      "did": "Superseded: the launcher session listener covers every test class"
+    },
+    "T010": {
+      "status": "DONE",
+      "did": "Superseded: the launcher session listener covers every test class"
+    },
+    "T011": {
+      "status": "DONE",
+      "did": "Superseded: the launcher session listener covers every test class"
+    },
+    "T012": {
+      "status": "DONE",
+      "did": "Superseded: the launcher session listener covers every test class"
     }
   }
 }
