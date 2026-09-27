@@ -189,13 +189,13 @@ Files: `core/test/…/sample/BundledSampleProvider.java` and the test below. Ren
 
 **Wave 1 — independent (different files):**
 
-- [ ] **T049** [P] Author guide: a "Settings" section on `settings()`, `origin()` and `ViewOptions.fix`, with the FreeMind example · `docs/diagram-designer-guide.md`
-- [ ] **T050** [P] Page cost: with 20 registered designers (the real ones plus test-only fillers), creating and resetting the page takes under 100 ms (SC-006) · `core/test/…/settings/SettingsPagePerformanceTest.java`
+- [x] **T049** [P] Author guide: a "Settings" section on `settings()`, `origin()` and `ViewOptions.fix`, with the FreeMind example · `docs/diagram-designer-guide.md`
+- [x] **T050** [P] Page cost: with 20 registered designers (the real ones plus test-only fillers), creating and resetting the page takes under 100 ms (SC-006) · `core/test/…/settings/SettingsPagePerformanceTest.java`
 - [ ] **T051** [P] Integration: in a real IDE, open Settings, search "ADP" and "FreeMind Mind Map" and land on the ADP page both times (SC-001, FR-001) · `src/integrationTest/java/etalii/adp/it/SettingsPageIntegrationTest.java`
 
 **⟶ Wait for Wave 1 to finish, then:**
 
-- [ ] **T052** Trace every FR and SC to the test and file that shows it, against the code rather than this list, and read two traces back to their artefacts · (no file)
+- [x] **T052** Trace every FR and SC to the test and file that shows it, against the code rather than this list, and read two traces back to their artefacts · (no file)
 - [ ] **T053** Run `./gradlew check` and `./gradlew integrationTest`, each exit code captured, then walk [quickstart.md](quickstart.md) in `./gradlew runIde` · (no file)
 
 ---

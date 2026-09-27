@@ -92,7 +92,7 @@ What each part does:
 - **Anchors** are where connections attach. `at(fx, fy)` is a point on the bounds (0,0 is the top left, 1,1 the bottom right). `perimeter()` attaches where the line meets the outline. `accepts(type, direction)` says which connection types may start (`OUT`), end (`IN`) or both (`BOTH`) at it. In the example a state takes transitions in on its left and sends them out on its right, and the end state only takes the end of a transition. A perimeter anchor is taken hold of on the outline: a press in the middle of an element moves it instead. `DiagramDriver.connect` presses on the outline for you.
 - **Connection types** have a line (straight, orthogonal or curved), a dash, a thickness, a tone, an arrowhead at each end, and up to three labels (middle, source, target), each editable in place or not. `routed(true)` makes an orthogonal line go around other elements.
 - **Properties** have an editor kind: `EditorKind.TEXT`, `MULTILINE`, `BOOLEAN`, `COLOR`, `number(integer, min, max)` or `choice(option(value, label), ...)`. Input that does not fit is refused before any edit is made. Values are strings in your file's own notation.
-- **The toolbox** lists every type in declaration order unless you call `toolbox(...)`. **View options** switch pan and zoom and set a snap grid. **Sectors** (`sector(...)`) declare swimlanes in diagram or view space; see the sample designer.
+- **The toolbox** lists every type in declaration order unless you call `toolbox(...)`. **View options** switch pan and zoom and set the grid spacing (10 by default); whether the grid is shown and snapped to is the user's choice on the ADP settings page (see section 8). **Sectors** (`sector(...)`) declare swimlanes in diagram or view space; see the sample designer.
 
 Write a one-line test that the definition builds (`StatesDefinition.DEFINITION` is enough): a `DefinitionException` then fails the test with every problem listed.
 
@@ -384,6 +384,36 @@ Every rule has a default that allows, so you override only the ones you need. Th
 
 **A layout** is for formats that do not store positions, such as FreeMind. Give the definition a `DiagramLayout` that returns bounds for every element to show; its elements are then not moved freely but dropped onto other elements, which the mapping's `drop` turns into text. A definition with a layout may not declare movable element types. See `freemind/src/main/java/etalii/adp/freemind/ui/MindMapLayout.java`.
 
+## 8. Optional: settings
+
+Every designer is listed on the IDE's own settings page, Settings > Tools > ADP, with its file types, version, origin and whether it loaded. The user can turn it off there, and the IDE then opens its files as it would without ADP. You write nothing for this: the list is read from your provider.
+
+**Canvas options** apply to every diagram designer: Show grid, Snap to grid and the zoom a diagram opens at. When your format decides one of them itself, fix it in the definition and the page names your designer under that option as not following it. FreeMind lays nodes out rather than placing them, so it fixes both grid options off:
+
+```java
+.view(v -> v.fix(CanvasOption.SHOW_GRID, false).fix(CanvasOption.SNAP_TO_GRID, false))
+```
+
+`grid(spacing)` sets only the spacing of the grid. A designer that must not zoom turns zoom off with `zoom(false)`, and the opening zoom then does not apply to it.
+
+**Settings of your own** are declared, not coded. Override `settings()` on the provider, and the framework builds a page named after your designer under ADP, with a check box, a spinner or a list per setting. Values are stored for the user under your editor type id, so they survive your designer being turned off or uninstalled. Read them where you need them:
+
+```java
+public static final DesignerSetting DIRECTION = DesignerSetting.choice("direction", "Layout direction", "right", "left", "right", "both");
+
+@Override
+public List<DesignerSetting> settings() {
+    return List.of(DIRECTION);
+}
+
+// anywhere in the designer
+String direction = AdpSettings.getInstance().choice(getEditorTypeId(), DIRECTION);
+```
+
+A key starts with a letter and uses letters, digits, `_`, `.` and `-`; a label is not empty; a number's default lies in its range; a choice's default is one of its choices. A declaration that breaks a rule is listed as a problem of your designer, which then opens no files and gets no page. To repaint when the user applies the page, subscribe to `AdpSettingsListener.TOPIC` on the application message bus for the designer's lifetime; never change the document in response.
+
+**Origin** is where the page says your designer comes from: "Built into ADP", or "From plug-in <name>" when another plug-in registers it. `origin()` works this out from the plug-in that registered the provider; a designer interpreted from a bundled DEDL definition returns `DesignerOrigin.BundledDefinition` with the definition's name, DEDL version and the etalii.adp revision it was copied from.
+
 ## Checklist
 
 - The definition test passes: no `DefinitionException`.
@@ -391,3 +421,4 @@ Every rule has a default that allows, so you override only the ones you need. Th
 - Each edit kind changes only its own ranges.
 - The designer test opens an example, edits it, and undoes back to the original bytes.
 - The provider claims your files and no others.
+- On Settings > Tools > ADP your designer is listed as loaded, and any option your definition fixes names it under "Not followed by".
