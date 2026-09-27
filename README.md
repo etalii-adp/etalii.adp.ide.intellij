@@ -1,5 +1,7 @@
 # A Different Perspective (ADP)
 
+[![Build](https://github.com/etalii-adp/etalii.adp.ide.intellij/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/etalii-adp/etalii.adp.ide.intellij/actions/workflows/build.yml?query=branch%3Adevelop)
+
 ADP is an IntelliJ Platform plug-in that adds visual designers for text-based files. Each designer is a real editor in the IDE: it is registered for its file type, uses the IDE's own undo and redo, has the usual modified state and save behaviour, and sits next to the IDE's text editor on the same document. The text is always the source of truth: the designer re-reads it after every change, and every visual edit changes only the text it has to.
 
 Two file formats are supported. **FreeMind mind maps** (`.mm`):

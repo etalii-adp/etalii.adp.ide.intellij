@@ -1,0 +1,47 @@
+# Checks every pull request into develop and every change to develop (etalii.adp spec 001-ci-and-badges): the
+# plug-in builds, the headless and real-IDE tests pass, the plug-in verifies against the IDEs it declares, and
+# every shipped library has an allowed licence. `./gradlew build` runs all of these, because `check` depends on
+# integrationTest, verifyPlugin and verifyDependencyLicences. The real-IDE tests need a display, hence xvfb-run.
+# What else this repository's CI does (development builds, versioned releases) is spec 005's to decide.
+name: Build
+
+on:
+  pull_request:
+    branches: [develop]
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # javaVersion in gradle.properties.
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+      # Caches Gradle and the IntelliJ Platform downloads between runs.
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Build, test and verify the plug-in
+        run: xvfb-run --auto-servernum ./gradlew build
+      - name: Keep the test reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-reports
+          path: '**/build/reports/'
+      - name: Offer the plug-in for download
+        uses: actions/upload-artifact@v7
+        with:
+          name: etalii.adp.ide.intellij-plugin
+          path: build/distributions/*.zip
+          if-no-files-found: error
