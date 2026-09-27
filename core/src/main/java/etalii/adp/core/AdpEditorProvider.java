@@ -9,11 +9,11 @@ import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.intellij.ide.plugins.PluginManager;
 import com.intellij.ide.structureView.StructureViewBuilder;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.extensions.PluginAware;
 import com.intellij.openapi.extensions.PluginDescriptor;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorPolicy;
@@ -38,10 +38,16 @@ import etalii.adp.core.settings.DesignerSetting;
  * start of its content is the format, so other files with the same extension are left alone. A
  * designer the user turned off on the ADP page, or one with problems, claims nothing (spec 004).
  */
-public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware {
+public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware, PluginAware {
+
+    /** The ADP plug-in's id; its own designers read as built into it. */
+    public static final String ADP_PLUGIN_ID = "etalii.adp";
 
     /** How much of a file the sniff reads, at most. */
     public static final int SNIFF_LIMIT = 4096;
+
+    /** The plug-in that registered this provider; {@code null} for one a test registers itself. */
+    private PluginDescriptor plugin;
 
     /** File extensions this format may claim, lower case, without the dot. */
     protected abstract Set<String> extensions();
@@ -65,12 +71,16 @@ public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware
 
     /** Where this designer comes from (FR-007, FR-016): by default, the plug-in that registered it. */
     public DesignerOrigin origin() {
-        PluginDescriptor own = PluginManager.getPluginByClass(getClass());
-        PluginDescriptor adp = PluginManager.getPluginByClass(AdpEditorProvider.class);
-        if (own == null || own == adp) {
-            return new DesignerOrigin.Module(adp == null ? null : adp.getPluginId().getIdString());
+        if (plugin == null || ADP_PLUGIN_ID.equals(plugin.getPluginId().getIdString())) {
+            return new DesignerOrigin.Module(ADP_PLUGIN_ID);
         }
-        return new DesignerOrigin.OtherPlugin(own.getPluginId().getIdString(), own.getName());
+        return new DesignerOrigin.OtherPlugin(plugin.getPluginId().getIdString(), plugin.getName());
+    }
+
+    /** The platform tells each provider it creates from a plug-in descriptor which plug-in that is. */
+    @Override
+    public final void setPluginDescriptor(@NotNull PluginDescriptor pluginDescriptor) {
+        plugin = pluginDescriptor;
     }
 
     /** Problems found while loading; any problem makes the designer refuse every file (FR-008). By default, those of its settings. */
@@ -85,7 +95,6 @@ public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware
 
     /** Everything the ADP page shows about this designer. */
     public final DesignerInfo designerInfo() {
-        PluginDescriptor plugin = PluginManager.getPluginByClass(getClass());
         String version = plugin == null ? "" : Objects.requireNonNullElse(plugin.getVersion(), "");
         List<String> conflicts = AdpDesigners.providers().stream()
                 .filter(other -> other != this && other.extensions().stream().anyMatch(extensions()::contains))

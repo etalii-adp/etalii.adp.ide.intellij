@@ -7,8 +7,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.intellij.ide.plugins.PluginManager;
+import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.openapi.extensions.PluginDescriptor;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileEditor.FileEditorProvider;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
@@ -78,15 +79,25 @@ public class AdpDesignersTest extends BasePlatformTestCase {
         assertEquals(SampleProvider.EDITOR_TYPE_ID, info.id());
         assertEquals("Sample Designer", info.name());
         assertEquals(List.of("adpsample"), info.fileTypes());
-        PluginDescriptor plugin = PluginManager.getPluginByClass(SampleProvider.class);
-        assertEquals(plugin == null ? "" : plugin.getVersion(), info.version());
-        assertEquals(new DesignerOrigin.Module(plugin == null ? null : plugin.getPluginId().getIdString()), info.origin());
+        assertEquals("registered by the test, not by a plug-in descriptor", "", info.version());
+        assertEquals(new DesignerOrigin.Module(AdpEditorProvider.ADP_PLUGIN_ID), info.origin());
         assertEquals("Built into ADP", info.origin().describe());
         assertEquals(DesignerInfo.Status.LOADED, info.status());
         assertEquals(List.of(), info.problems());
         assertTrue(info.on());
         assertEquals(List.of(), info.conflictsWith());
         assertEquals(Set.of(), info.unfollowed());
+    }
+
+    @Test
+    public void theVersionAndOriginAreThoseOfThePluginThatRegisteredTheDesigner() {
+        PluginDescriptor platform = PluginManagerCore.getPlugin(PluginId.getId(PluginManagerCore.CORE_PLUGIN_ID));
+        Rival rival = new Rival();
+        rival.setPluginDescriptor(platform);
+        DesignerInfo info = rival.designerInfo();
+        assertEquals(platform.getVersion(), info.version());
+        assertEquals(new DesignerOrigin.OtherPlugin(PluginManagerCore.CORE_PLUGIN_ID, platform.getName()), info.origin());
+        assertEquals("From plug-in " + platform.getName(), info.origin().describe());
     }
 
     @Test
