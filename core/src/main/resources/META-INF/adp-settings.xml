@@ -1,0 +1,14 @@
+<!-- The ADP settings page (spec 004): its storage, the page, its search entries, its notices and the extension point its sections register on. -->
+<idea-plugin>
+    <extensionPoints>
+        <extensionPoint qualifiedName="etalii.adp.settingsSection" interface="etalii.adp.core.settings.SettingsSection" dynamic="true"/>
+    </extensionPoints>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="etalii.adp.core.settings.AdpSettings"/>
+        <applicationConfigurable parentId="tools" id="etalii.adp.settings" displayName="ADP" dynamic="true"
+                                 instance="etalii.adp.core.settings.AdpConfigurable"/>
+        <search.optionContributor implementation="etalii.adp.core.settings.AdpSearchableOptions"/>
+        <notificationGroup id="ADP" displayType="BALLOON"/>
+    </extensions>
+</idea-plugin>

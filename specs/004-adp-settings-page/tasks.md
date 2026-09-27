@@ -18,8 +18,8 @@
 
 **Wave 1 — independent (different files):**
 
-- [ ] **T001** [P] Include `adp-settings.xml`, `adp-settings-designers.xml`, `adp-settings-canvas.xml` and `adp-settings-designer-pages.xml`, each with an empty `xi:fallback` · `src/main/resources/META-INF/plugin.xml`
-- [ ] **T002** [P] Include the same four fragments in the core test descriptor · `core/src/test/resources/META-INF/plugin.xml`
+- [x] **T001** [P] Include `adp-settings.xml`, `adp-settings-designers.xml`, `adp-settings-canvas.xml` and `adp-settings-designer-pages.xml`, each with an empty `xi:fallback` · `src/main/resources/META-INF/plugin.xml`
+- [x] **T002** [P] Include the same four fragments in the core test descriptor · `core/src/test/resources/META-INF/plugin.xml`
 
 **⟶ Wait for Wave 1 to finish, then:**
 
@@ -35,48 +35,48 @@ Files: `core/…/settings/{AdpSettings,AdpSettingsListener,CanvasOption,CanvasOp
 
 **Wave 1 — independent (different files):**
 
-- [ ] **T004** [P] `AdpSettings`: defaults as in data-model.md; every setting user-level; typed reads; a damaged field falls back alone while the others keep their values; unknown stored fields are written back unchanged; one `ADP` notification per session when anything fell back; the service loads and answers in a headless application (FR-005, FR-018, FR-019) · `core/test/…/settings/AdpSettingsTest.java`
-- [ ] **T005** [P] State round trip: serialize `AdpSettings.State` with the platform's `XmlSerializer`, load it into a fresh service, and get every value back, including designer settings of a designer that is not installed (SC-005, FR-003, FR-015) · `core/test/…/settings/AdpSettingsStateRoundTripTest.java`
-- [ ] **T006** [P] `DesignerSetting`: each factory; key, label, range and choice rules from data-model.md each yield one problem naming the setting · `core/test/…/settings/DesignerSettingTest.java`
-- [ ] **T007** [P] `AdpDesigners` and `designerInfo()`: lists every registered `AdpEditorProvider` and nothing else; name, sorted file types, version of the registering plug-in, `Module` origin for this plug-in; overlapping file types reported as conflicts on both designers; the fixed canvas options reported per designer (FR-007, FR-017) · `core/test/…/settings/AdpDesignersTest.java`
-- [ ] **T008** [P] A provider built from an inconsistent definition does not throw: it keeps every `DefinitionException` problem, reports `NOT_LOADED`, and refuses every file (FR-008, research R5). Uses a new test-only broken sample definition · `core/test/…/sample/BrokenSampleProvider.java`, `core/test/…/sample/BrokenSampleProviderTest.java`
-- [ ] **T009** [P] Gating: a designer that is off, or has problems, accepts no file and `acceptedByAny` agrees; turned on again it accepts as before (FR-009, research R7) · `core/test/…/settings/DesignerGatingTest.java`
-- [ ] **T010** [P] `AdpConfigurable` with two fake sections: `isModified` is any section's; `apply` applies each and publishes `AdpSettingsListener.TOPIC` once, and not at all when nothing changed; `reset` and Cancel leave `AdpSettings` untouched; children come from the sections in `order()`; id `etalii.adp.settings`, name "ADP" (FR-001, FR-002) · `core/test/…/settings/AdpConfigurableTest.java`
-- [ ] **T011** [P] `AdpSearchableOptions`: contributes "ADP", every installed designer's name and every section's labels for `etalii.adp.settings`, and each child page's labels for its own id (FR-001, research R4) · `core/test/…/settings/AdpSearchableOptionsTest.java`
+- [x] **T004** [P] `AdpSettings`: defaults as in data-model.md; every setting user-level; typed reads; a damaged field falls back alone while the others keep their values; unknown stored fields are written back unchanged; one `ADP` notification per session when anything fell back; the service loads and answers in a headless application (FR-005, FR-018, FR-019) · `core/test/…/settings/AdpSettingsTest.java`
+- [x] **T005** [P] State round trip: serialize `AdpSettings.State` with the platform's `XmlSerializer`, load it into a fresh service, and get every value back, including designer settings of a designer that is not installed (SC-005, FR-003, FR-015) · `core/test/…/settings/AdpSettingsStateRoundTripTest.java`
+- [x] **T006** [P] `DesignerSetting`: each factory; key, label, range and choice rules from data-model.md each yield one problem naming the setting · `core/test/…/settings/DesignerSettingTest.java`
+- [x] **T007** [P] `AdpDesigners` and `designerInfo()`: lists every registered `AdpEditorProvider` and nothing else; name, sorted file types, version of the registering plug-in, `Module` origin for this plug-in; overlapping file types reported as conflicts on both designers; the fixed canvas options reported per designer (FR-007, FR-017) · `core/test/…/settings/AdpDesignersTest.java`
+- [x] **T008** [P] A provider built from an inconsistent definition does not throw: it keeps every `DefinitionException` problem, reports `NOT_LOADED`, and refuses every file (FR-008, research R5). Uses a new test-only broken sample definition · `core/test/…/sample/BrokenSampleProvider.java`, `core/test/…/sample/BrokenSampleProviderTest.java`
+- [x] **T009** [P] Gating: a designer that is off, or has problems, accepts no file and `acceptedByAny` agrees; turned on again it accepts as before (FR-009, research R7) · `core/test/…/settings/DesignerGatingTest.java`
+- [x] **T010** [P] `AdpConfigurable` with two fake sections: `isModified` is any section's; `apply` applies each and publishes `AdpSettingsListener.TOPIC` once, and not at all when nothing changed; `reset` and Cancel leave `AdpSettings` untouched; children come from the sections in `order()`; id `etalii.adp.settings`, name "ADP" (FR-001, FR-002) · `core/test/…/settings/AdpConfigurableTest.java`
+- [x] **T011** [P] `AdpSearchableOptions`: contributes "ADP", every installed designer's name and every section's labels for `etalii.adp.settings`, and each child page's labels for its own id (FR-001, research R4) · `core/test/…/settings/AdpSearchableOptionsTest.java`
 - ~~**T012**~~ withdrawn 2026-09-27: no reduced-motion check until a designer animates (FR-013 withdrawn, research R10)
-- [ ] **T013** [P] `ViewOptions`: grid spacing defaults to 10; `fix` records a value per `CanvasOption`; `AdpSettings.effective` returns the fixed value when present and the user's otherwise (FR-012, research R8) · `core/src/test/java/etalii/adp/core/diagram/ViewOptionsTest.java`
+- [x] **T013** [P] `ViewOptions`: grid spacing defaults to 10; `fix` records a value per `CanvasOption`; `AdpSettings.effective` returns the fixed value when present and the user's otherwise (FR-012, research R8) · `core/src/test/java/etalii/adp/core/diagram/ViewOptionsTest.java`
 
 ### Implementation
 
 **⟶ Wait for the tests above, then Wave 2 — independent (different files):**
 
-- [ ] **T014** [P] `CanvasOption` enum and the `CanvasOptions` record · `core/…/settings/CanvasOption.java`, `core/…/settings/CanvasOptions.java`
-- [ ] **T015** [P] `DesignerSetting` record, factories and validation · `core/…/settings/DesignerSetting.java`
-- [ ] **T016** [P] `DesignerOrigin` sealed interface with `Module`, `OtherPlugin`, `BundledDefinition` and `describe()` giving the texts in data-model.md · `core/…/settings/DesignerOrigin.java`
-- [ ] **T017** [P] `AdpSettingsListener` and its topic · `core/…/settings/AdpSettingsListener.java`
+- [x] **T014** [P] `CanvasOption` enum and the `CanvasOptions` record · `core/…/settings/CanvasOption.java`, `core/…/settings/CanvasOptions.java`
+- [x] **T015** [P] `DesignerSetting` record, factories and validation · `core/…/settings/DesignerSetting.java`
+- [x] **T016** [P] `DesignerOrigin` sealed interface with `Module`, `OtherPlugin`, `BundledDefinition` and `describe()` giving the texts in data-model.md · `core/…/settings/DesignerOrigin.java`
+- [x] **T017** [P] `AdpSettingsListener` and its topic · `core/…/settings/AdpSettingsListener.java`
 - ~~**T018**~~ withdrawn 2026-09-27: no `ReducedMotion` until a designer animates (FR-013 withdrawn, research R10)
-- [ ] **T019** [P] `SettingsSection` interface and extension point name · `core/…/settings/SettingsSection.java`
+- [x] **T019** [P] `SettingsSection` interface and extension point name · `core/…/settings/SettingsSection.java`
 
 **⟶ Wait for Wave 2, then Wave 3 — independent (different files):**
 
-- [ ] **T020** [P] `ViewOptions`: `grid` is spacing with default 10; `fixed` map and `Builder.fix` · `core/src/main/java/etalii/adp/core/diagram/ViewOptions.java`
-- [ ] **T021** [P] `DesignerInfo` record with status, conflicts and unfollowed options · `core/…/settings/DesignerInfo.java`
-- [ ] **T022** [P] `AdpSettings`: `@State` service, `State` bean, typed reads with field fallback, unknown fields kept, the once-per-session notice, `effective`, designer setting reads (research R2, R3) · `core/…/settings/AdpSettings.java`
+- [x] **T020** [P] `ViewOptions`: `grid` is spacing with default 10; `fixed` map and `Builder.fix` · `core/src/main/java/etalii/adp/core/diagram/ViewOptions.java`
+- [x] **T021** [P] `DesignerInfo` record with status, conflicts and unfollowed options · `core/…/settings/DesignerInfo.java`
+- [x] **T022** [P] `AdpSettings`: `@State` service, `State` bean, typed reads with field fallback, unknown fields kept, the once-per-session notice, `effective`, designer setting reads (research R2, R3) · `core/…/settings/AdpSettings.java`
 
 **⟶ Wait for Wave 3, then Wave 4 — independent (different files):**
 
-- [ ] **T023** [P] `AdpEditorProvider`: `settings()`, `origin()`, `problems()`, final `designerInfo()`; `accepts` refuses when off or with problems · `core/src/main/java/etalii/adp/core/AdpEditorProvider.java`
-- [ ] **T024** [P] `AdpConfigurable`: `SearchableConfigurable` and `Configurable.Composite` over the registered sections, publishing the topic once on a changing apply · `core/…/settings/AdpConfigurable.java`
+- [x] **T023** [P] `AdpEditorProvider`: `settings()`, `origin()`, `problems()`, final `designerInfo()`; `accepts` refuses when off or with problems · `core/src/main/java/etalii/adp/core/AdpEditorProvider.java`
+- [x] **T024** [P] `AdpConfigurable`: `SearchableConfigurable` and `Configurable.Composite` over the registered sections, publishing the topic once on a changing apply · `core/…/settings/AdpConfigurable.java`
 
 **⟶ Wait for Wave 4, then Wave 5 — independent (different files):**
 
-- [ ] **T025** [P] `DiagramEditorProvider`: the builder constructor catches `DefinitionException` and returns its problems from `problems()` · `core/src/main/java/etalii/adp/core/diagram/view/DiagramEditorProvider.java`
-- [ ] **T026** [P] `AdpDesigners`: registry over the platform's `fileEditorProvider` list, version from the registering plug-in, conflicts by overlapping file types (research R5, R11) · `core/…/settings/AdpDesigners.java`
-- [ ] **T027** [P] `AdpSearchableOptions` · `core/…/settings/AdpSearchableOptions.java`
+- [x] **T025** [P] `DiagramEditorProvider`: the builder constructor catches `DefinitionException` and returns its problems from `problems()` · `core/src/main/java/etalii/adp/core/diagram/view/DiagramEditorProvider.java`
+- [x] **T026** [P] `AdpDesigners`: registry over the platform's `fileEditorProvider` list, version from the registering plug-in, conflicts by overlapping file types (research R5, R11) · `core/…/settings/AdpDesigners.java`
+- [x] **T027** [P] `AdpSearchableOptions` · `core/…/settings/AdpSearchableOptions.java`
 
 **⟶ Wait for Wave 5, then:**
 
-- [ ] **T028** Register the service, configurable, option contributor, `ADP` notification group and the `etalii.adp.settingsSection` extension point (contracts/plugin-contributions.md) · `core/src/main/resources/META-INF/adp-settings.xml`
+- [x] **T028** Register the service, configurable, option contributor, `ADP` notification group and the `etalii.adp.settingsSection` extension point (contracts/plugin-contributions.md) · `core/src/main/resources/META-INF/adp-settings.xml`
 - [ ] **T029** Run `./gradlew test`: T004–T013 green (T012 withdrawn), and every spec 001–003 test still green · (no file)
 
 ---

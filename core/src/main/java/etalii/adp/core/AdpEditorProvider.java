@@ -2,14 +2,19 @@ package etalii.adp.core;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.intellij.ide.plugins.PluginManager;
 import com.intellij.ide.structureView.StructureViewBuilder;
 import com.intellij.ide.util.PropertiesComponent;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.extensions.PluginDescriptor;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorPolicy;
 import com.intellij.openapi.fileEditor.FileEditorProvider;
@@ -20,10 +25,18 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
+import etalii.adp.core.settings.AdpDesigners;
+import etalii.adp.core.settings.AdpSettings;
+import etalii.adp.core.settings.CanvasOption;
+import etalii.adp.core.settings.DesignerInfo;
+import etalii.adp.core.settings.DesignerOrigin;
+import etalii.adp.core.settings.DesignerSetting;
+
 /**
  * Opens a format's files in its designer, paired with the platform's text editor on the same
  * document (research R2, R3). A file is claimed only when its extension is the format's and the
- * start of its content is the format, so other files with the same extension are left alone.
+ * start of its content is the format, so other files with the same extension are left alone. A
+ * designer the user turned off on the ADP page, or one with problems, claims nothing (spec 004).
  */
 public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware {
 
@@ -45,6 +58,42 @@ public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware
     @Override
     public abstract @NotNull String getEditorTypeId();
 
+    /** Settings this designer shows on its own page under ADP; empty for none (FR-014). */
+    public List<DesignerSetting> settings() {
+        return List.of();
+    }
+
+    /** Where this designer comes from (FR-007, FR-016): by default, the plug-in that registered it. */
+    public DesignerOrigin origin() {
+        PluginDescriptor own = PluginManager.getPluginByClass(getClass());
+        PluginDescriptor adp = PluginManager.getPluginByClass(AdpEditorProvider.class);
+        if (own == null || own == adp) {
+            return new DesignerOrigin.Module(adp == null ? null : adp.getPluginId().getIdString());
+        }
+        return new DesignerOrigin.OtherPlugin(own.getPluginId().getIdString(), own.getName());
+    }
+
+    /** Problems found while loading; any problem makes the designer refuse every file (FR-008). By default, those of its settings. */
+    public List<String> problems() {
+        return DesignerSetting.problems(settings());
+    }
+
+    /** The canvas options this designer keeps whatever the user chose (FR-012); none by default. */
+    public Set<CanvasOption> fixedOptions() {
+        return Set.of();
+    }
+
+    /** Everything the ADP page shows about this designer. */
+    public final DesignerInfo designerInfo() {
+        PluginDescriptor plugin = PluginManager.getPluginByClass(getClass());
+        String version = plugin == null ? "" : Objects.requireNonNullElse(plugin.getVersion(), "");
+        List<String> conflicts = AdpDesigners.providers().stream()
+                .filter(other -> other != this && other.extensions().stream().anyMatch(extensions()::contains))
+                .map(AdpEditorProvider::getEditorTypeId).toList();
+        return new DesignerInfo(getEditorTypeId(), editorName(), extensions().stream().sorted().toList(), version, origin(), problems(),
+                !isOff(), conflicts, fixedOptions());
+    }
+
     @Override
     public boolean accept(@NotNull Project project, @NotNull VirtualFile file) {
         return accepts(file);
@@ -54,7 +103,12 @@ public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware
     public boolean accepts(VirtualFile file) {
         String extension = file.getExtension();
         return !file.isDirectory() && extension != null && extensions().contains(extension.toLowerCase(Locale.ROOT))
-                && sniff(head(file));
+                && !isOff() && problems().isEmpty() && sniff(head(file));
+    }
+
+    /** Off on the ADP page. Without an application, as in a format's plain unit tests, there are no settings and every designer is on. */
+    private boolean isOff() {
+        return ApplicationManager.getApplication() != null && AdpSettings.getInstance().isOff(getEditorTypeId());
     }
 
     @Override

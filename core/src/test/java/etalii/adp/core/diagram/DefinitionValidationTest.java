@@ -48,7 +48,7 @@ class DefinitionValidationTest {
         assertEquals(List.of("box", "line"), definition.toolbox());
         assertTrue(definition.view().zoom());
         assertTrue(definition.view().pan());
-        assertEquals(0, definition.view().grid());
+        assertEquals(10, definition.view().grid());
         assertNull(definition.layout());
         assertEquals(Map.of(), definition.sectors());
         Verdict verdict = definition.rules().canRemove(null, java.util.Set.of());
