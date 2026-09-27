@@ -144,7 +144,7 @@ Files: `README.md`, `specs/006-sandbox-ide-performance/quickstart.md`.
 
 **⟶ Wait for Wave 1 to finish, then:**
 
-- [ ] **T024** Validate against the Success Criteria: `./gradlew check` green with no new compiler or Gradle warnings, and every SC-001 to SC-006 met in the Results table · (no file)
+- [x] **T024** Validate against the Success Criteria: `./gradlew check` green with no new compiler or Gradle warnings, and every SC-001 to SC-006 met in the Results table · (no file)
 
 Manual clean-up for Peter, not a task: deleting `out/ide-tests` in the original clone (29 GB), and removing the merged spec 004 worktree at `.claude/worktrees/004-settings-page` (31 GB) as CLAUDE.md asks for merged branches. Both are his call.
 

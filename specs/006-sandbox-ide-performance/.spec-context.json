@@ -3,7 +3,7 @@
   "specName": "A Fast Sandbox IDE",
   "branch": "features/006-sandbox-ide-performance",
   "currentStep": "implement",
-  "status": "implementing",
+  "status": "completed",
   "history": [
     {
       "step": "specify",
@@ -258,6 +258,21 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-27T18:33:54.878Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T024",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:44:09.033Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:44:09.167Z"
     }
   ],
   "concerns": [
@@ -349,7 +364,7 @@
       "tasks": "T004,T006,T007,T008,T009,T010,T011,T012,T013"
     }
   },
-  "currentTask": "T023",
+  "currentTask": "T024",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -480,6 +495,10 @@
       "files": [
         "specs/006-sandbox-ide-performance/quickstart.md"
       ]
+    },
+    "T024": {
+      "status": "DONE",
+      "did": "./gradlew check green in 9m53s (tests, integrationTest, verifyPlugin, licences); no Gradle deprecations; one JNA native-access warning from the test runtime"
     }
   }
 }
