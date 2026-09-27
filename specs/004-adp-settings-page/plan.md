@@ -66,10 +66,13 @@ specs/004-adp-settings-page/
 ### Source Code (repository root, after the feature)
 
 ```text
-src/main/resources/META-INF/plugin.xml     # + xi:include of adp-settings.xml
+src/main/resources/META-INF/plugin.xml     # + xi:include of the four adp-settings*.xml fragments
 docs/diagram-designer-guide.md             # + "Settings" section: settings(), origin(), fixed options
 core/src/main/resources/META-INF/
-└── adp-settings.xml                       # configurable, service, option contributor, notification group
+├── adp-settings.xml                       # configurable, service, option contributor, notification group, section EP
+├── adp-settings-designers.xml             # US1/US2: the designer list section
+├── adp-settings-canvas.xml                # US3: the canvas section
+└── adp-settings-designer-pages.xml        # US4: the designer pages section
 core/src/main/java/etalii/adp/core/
 ├── AdpEditorProvider.java                 # accepts() honours off; designerInfo(), settings(), origin(), problems()
 ├── settings/                              # new
@@ -80,10 +83,12 @@ core/src/main/java/etalii/adp/core/
 │   ├── DesignerInfo.java, DesignerOrigin.java
 │   ├── AdpDesigners.java                  # registry over fileEditorProvider (R5, R11)
 │   ├── ReducedMotion.java                 # OS query (R10)
-│   ├── AdpConfigurable.java               # the ADP page (R1)
-│   ├── DesignerTableModel.java            # the designer list
-│   ├── DesignerSettingsConfigurable.java  # a designer's child page (R6)
-│   └── AdpSearchableOptions.java          # SearchableOptionContributor (R4)
+│   ├── SettingsSection.java               # extension point: one part of the page (R1)
+│   ├── AdpConfigurable.java               # the ADP page: delegates to sections (R1)
+│   ├── AdpSearchableOptions.java          # SearchableOptionContributor over sections (R4)
+│   ├── DesignersSection.java, DesignerTableModel.java      # US1/US2
+│   ├── CanvasSection.java                                  # US3
+│   └── DesignerPagesSection.java, DesignerSettingsConfigurable.java   # US4 (R6)
 └── diagram/
     ├── ViewOptions.java                   # grid is spacing (default 10); + fixed options (R8)
     └── view/

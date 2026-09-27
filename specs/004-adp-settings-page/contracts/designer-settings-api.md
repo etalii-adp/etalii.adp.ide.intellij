@@ -58,6 +58,24 @@ public String choice(String designerId, DesignerSetting setting);
 
 Writes happen only through the ADP page's `apply()`.
 
+## `settings.SettingsSection` (framework-internal extension point)
+
+```java
+public interface SettingsSection {
+    ExtensionPointName<SettingsSection> EP_NAME = ExtensionPointName.create("etalii.adp.settingsSection");
+    int order();                                  // designers 10, canvas 20, designer pages 30
+    @Nullable JComponent createComponent();       // null for a section that only adds child pages
+    boolean isModified();
+    void apply();                                 // writes AdpSettings; the page publishes the topic once
+    void reset();
+    List<String> searchableLabels();
+    default List<Configurable> children() { return List.of(); }
+    default void disposeUIResources() {}
+}
+```
+
+Designer authors do not implement it.
+
 ## `settings.AdpSettingsListener`
 
 ```java

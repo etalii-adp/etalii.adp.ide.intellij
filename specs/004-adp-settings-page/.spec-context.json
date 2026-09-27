@@ -2,8 +2,8 @@
   "workflow": "companion",
   "specName": "ADP Settings Page",
   "branch": "features/004-adp-settings-page",
-  "currentStep": "plan",
-  "status": "planned",
+  "currentStep": "tasks",
+  "status": "ready-to-implement",
   "history": [
     {
       "step": "specify",
@@ -46,6 +46,27 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-27T00:03:55.479Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "start",
+      "by": "extension",
+      "at": "2026-09-27T00:04:54.788Z"
+    },
+    {
+      "step": "tasks",
+      "substep": "generate",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T00:06:36.822Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T00:06:37.055Z"
     }
   ],
   "concerns": [
@@ -120,7 +141,88 @@
     "plan": {
       "summary": "Settings page as a platform configurable over one application settings service, a designer registry over editor providers, and a topic that repaints open designers",
       "key_finding": "Spec 003 throws DefinitionException from the provider constructor, so broken designers vanish; they must be caught to be listed. Nothing animates yet, so the animations option has no caller."
+    },
+    "tasks": {
+      "summary": "53 tasks in 7 phases: setup, foundational, US1+US2 MVP, US3, US4, US5, polish; page sections registered per story keep phases file-disjoint"
     }
   },
-  "approach": "A SearchableConfigurable under Tools reads designers from the platform's editor providers and stores every choice in one application PersistentStateComponent. Turning a designer off makes its provider refuse files; canvas options reach open designers through a message-bus topic and an effective-value check that respects options a definition fixes. Designers declare their own settings and origin as data."
+  "approach": "A SearchableConfigurable under Tools reads designers from the platform's editor providers and stores every choice in one application PersistentStateComponent. Turning a designer off makes its provider refuse files; canvas options reach open designers through a message-bus topic and an effective-value check that respects options a definition fixes. Designers declare their own settings and origin as data.",
+  "coverage": {
+    "FR-001": {
+      "title": "One ADP page under the IDE tools settings, found by search",
+      "tasks": "T010,T011,T024,T027,T051"
+    },
+    "FR-002": {
+      "title": "Apply/OK/Cancel/modified/reset like platform pages",
+      "tasks": "T010,T024,T035"
+    },
+    "FR-003": {
+      "title": "Stored, exported, imported and synced by platform mechanisms",
+      "tasks": "T005,T022"
+    },
+    "FR-004": {
+      "title": "No copy of platform choices; link to them",
+      "tasks": "T030,T033"
+    },
+    "FR-005": {
+      "title": "Every setting stored for the user across projects",
+      "tasks": "T004,T022"
+    },
+    "FR-006": {
+      "title": "Apply reaches open designers without touching files",
+      "tasks": "T036,T042"
+    },
+    "FR-007": {
+      "title": "List designers with name, file types, version, origin, status",
+      "tasks": "T007,T026,T030,T032,T033"
+    },
+    "FR-008": {
+      "title": "Show each definition problem",
+      "tasks": "T008,T025,T030"
+    },
+    "FR-009": {
+      "title": "Turn designers off and on",
+      "tasks": "T009,T023,T031"
+    },
+    "FR-010": {
+      "title": "Turning off never closes or changes an open editor",
+      "tasks": "T031"
+    },
+    "FR-011": {
+      "title": "Canvas options: grid, snap, opening zoom, animations",
+      "tasks": "T035,T036,T038,T039,T041,T042"
+    },
+    "FR-012": {
+      "title": "Designers fixing an option keep it and are named",
+      "tasks": "T013,T020,T035,T036,T037,T040"
+    },
+    "FR-013": {
+      "title": "No animations when off or reduced motion",
+      "tasks": "T012,T018,T022"
+    },
+    "FR-014": {
+      "title": "Designer-declared settings on their own page",
+      "tasks": "T006,T015,T044,T045,T046,T047"
+    },
+    "FR-015": {
+      "title": "Designer settings kept while off or uninstalled",
+      "tasks": "T005,T044"
+    },
+    "FR-016": {
+      "title": "Bundled DEDL definition name, version and source revision",
+      "tasks": "T016,T048"
+    },
+    "FR-017": {
+      "title": "Conflicting designers shown",
+      "tasks": "T007,T026,T030"
+    },
+    "FR-018": {
+      "title": "Unreadable settings fall back per field, told once",
+      "tasks": "T004,T022"
+    },
+    "FR-019": {
+      "title": "Settings read and applied headless",
+      "tasks": "T004"
+    }
+  }
 }

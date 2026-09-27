@@ -6,6 +6,8 @@ Phase 0 decisions for [plan.md](plan.md). Each entry records what was chosen, wh
 
 **Decision**: One `applicationConfigurable` with `parentId="tools"`, `id="etalii.adp.settings"` and `displayName="ADP"`, implemented in Java as a `SearchableConfigurable` that also implements `Configurable.Composite` for the designer subpages (R6). The form is plain Swing built with the platform's `FormBuilder`, `JBTable`, `JBCheckBox`, `ComboBox` and `ActionLink`.
 
+The page is made of sections. `AdpConfigurable` owns the dialog contract (`isModified`, `apply`, `reset`, publishing the topic, the child pages) and delegates to every `SettingsSection` registered on a new `etalii.adp.settingsSection` extension point: the designer list, the canvas options and the designer pages each register theirs from their own descriptor fragment. This is the seam spec 003 uses for canvas features (`DiagramFeature`), and it keeps each story's files its own.
+
 **Rationale**: `parentId="tools"` is the platform's own place for tool settings (FR-001, spec assumption). A configurable gets Apply, OK, Cancel, Reset and the modified marker from the Settings dialog for free, through `isModified`, `apply` and `reset` (FR-002). The code base is Java only; Kotlin's UI DSL would add Kotlin sources to `core` for one form.
 
 **Alternatives considered**: a top-level node beside "Tools" (the platform reserves top level for its own groups and large products); Kotlin UI DSL `BoundConfigurable` (a second language for one page); a tool window with settings (not where users look, and no Apply/Cancel, against principle I).

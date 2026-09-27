@@ -1,6 +1,6 @@
 # Contract: Plug-in Contributions
 
-What `core/src/main/resources/META-INF/adp-settings.xml` registers, included from `plugin.xml` with an empty fallback like every other fragment.
+What the settings fragments register, each included from `plugin.xml` with an empty fallback like every other fragment. `adp-settings.xml` holds everything below except the three sections, which `adp-settings-designers.xml`, `adp-settings-canvas.xml` and `adp-settings-designer-pages.xml` register as `<etalii.adp.settingsSection implementation="..."/>`.
 
 | Contribution | Registration | Identifier |
 |---|---|---|
@@ -8,6 +8,7 @@ What `core/src/main/resources/META-INF/adp-settings.xml` registers, included fro
 | Designer subpages | children of `etalii.adp.settings` via `Configurable.Composite` | `etalii.adp.settings.<designer id>`, display name = designer name |
 | Settings storage | `applicationService` | `etalii.adp.core.settings.AdpSettings`, file `adp.xml`, component `AdpSettings` |
 | Search | `search.optionContributor` | `etalii.adp.core.settings.AdpSearchableOptions` |
+| Page sections | `extensionPoint` | `etalii.adp.settingsSection`, interface `etalii.adp.core.settings.SettingsSection`, `dynamic="true"` |
 | Notices | `notificationGroup` | `id="ADP"`, `displayType="BALLOON"` |
 | Topic | application message bus | `AdpSettingsListener.TOPIC`, display name "ADP settings" |
 
