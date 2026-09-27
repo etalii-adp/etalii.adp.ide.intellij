@@ -162,6 +162,46 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-27T18:11:20.366Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T016",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:16:04.765Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T017",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:16:05.220Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T018",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:16:05.674Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T019",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:16:06.176Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T020",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T18:16:06.795Z"
     }
   ],
   "concerns": [
@@ -253,7 +293,7 @@
       "tasks": "T004,T006,T007,T008,T009,T010,T011,T012,T013"
     }
   },
-  "currentTask": "T012",
+  "currentTask": "T020",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -312,6 +352,38 @@
     "T012": {
       "status": "DONE",
       "did": "Superseded: the launcher session listener covers every test class"
+    },
+    "T016": {
+      "status": "DONE",
+      "did": "FreeMind typing latency on 2,000 nodes: 44 ms median, 96 ms max",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/ui/TypingLatencyTest.java"
+      ]
+    },
+    "T017": {
+      "status": "DONE",
+      "did": "Generator for draw.io files with N cells",
+      "files": [
+        "drawio/src/test/java/etalii/adp/drawio/GeneratedDiagrams.java"
+      ]
+    },
+    "T018": {
+      "status": "DONE",
+      "did": "Leak test; proven to fail with a deliberate Disposer-held designer, passes on the real code",
+      "files": [
+        "core/src/test/java/etalii/adp/core/DesignerLeakTest.java"
+      ]
+    },
+    "T019": {
+      "status": "DONE",
+      "did": "draw.io typing latency on 500 cells: 33 ms median, 53 ms max",
+      "files": [
+        "drawio/src/test/java/etalii/adp/drawio/TypingLatencyTest.java"
+      ]
+    },
+    "T020": {
+      "status": "DONE",
+      "did": "All three pass; no production change needed; designers ruled out as a second cause"
     }
   }
 }

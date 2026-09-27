@@ -105,17 +105,17 @@ Files: `freemind/src/test/java/etalii/adp/freemind/ui/TypingLatencyTest.java`, `
 
 **Wave 1 — independent (different files):**
 
-- [ ] **T016** [P] [US3] Type a burst of characters into a node's text in the text editor beside a designer showing `FreeMindAsserts.generatedMap(2000)`; time each keystroke until the designer shows it; print `SC-004 typing map ... ms` and assert the median within 100 ms, using `EditPerformanceTest`'s warm-up and CI headroom convention · `freemind/src/test/java/etalii/adp/freemind/ui/TypingLatencyTest.java`
-- [ ] **T017** [P] [US3] A generator for a valid draw.io file with a given number of cells, laid out on a grid with edges between neighbours · `drawio/src/test/java/etalii/adp/drawio/GeneratedDiagrams.java`
-- [ ] **T018** [P] [US3] Open and close a designer many times on `FakeFormat` and check that no editor, document listener or view stays reachable, with the platform test framework's leak checks (FR-006) · `core/src/test/java/etalii/adp/core/DesignerLeakTest.java`
+- [x] **T016** [P] [US3] Type a burst of characters into a node's text in the text editor beside a designer showing `FreeMindAsserts.generatedMap(2000)`; time each keystroke until the designer shows it; print `SC-004 typing map ... ms` and assert the median within 100 ms, using `EditPerformanceTest`'s warm-up and CI headroom convention · `freemind/src/test/java/etalii/adp/freemind/ui/TypingLatencyTest.java`
+- [x] **T017** [P] [US3] A generator for a valid draw.io file with a given number of cells, laid out on a grid with edges between neighbours · `drawio/src/test/java/etalii/adp/drawio/GeneratedDiagrams.java`
+- [x] **T018** [P] [US3] Open and close a designer many times on `FakeFormat` and check that no editor, document listener or view stays reachable, with the platform test framework's leak checks (FR-006) · `core/src/test/java/etalii/adp/core/DesignerLeakTest.java`
 
 **⟶ Wait for Wave 1 to finish, then:**
 
-- [ ] **T019** [US3] The same typing measurement as T016 on `GeneratedDiagrams` with 500 cells, printing `SC-004 typing diagram ... ms` · `drawio/src/test/java/etalii/adp/drawio/TypingLatencyTest.java`
+- [x] **T019** [US3] The same typing measurement as T016 on `GeneratedDiagrams` with 500 cells, printing `SC-004 typing diagram ... ms` · `drawio/src/test/java/etalii/adp/drawio/TypingLatencyTest.java`
 
 ### Implementation
 
-- [ ] **T020** [US3] Run the three tests. If one fails, fix the cause in the file it points at and record the change and its reason in research.md R6; if all pass, record the measured figures in the quickstart Results row · (file named by the failing test, or `specs/006-sandbox-ide-performance/quickstart.md`)
+- [x] **T020** [US3] Run the three tests. If one fails, fix the cause in the file it points at and record the change and its reason in research.md R6; if all pass, record the measured figures in the quickstart Results row · (file named by the failing test, or `specs/006-sandbox-ide-performance/quickstart.md`)
 
 **Checkpoint**: Story 3 verified; the designers are ruled in or out as a second cause.
 
