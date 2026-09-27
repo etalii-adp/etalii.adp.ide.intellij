@@ -4,10 +4,12 @@
 # verifies against the IDEs it declares, and every shipped library has an allowed licence. That is `./gradlew build`
 # without integrationTest, which `check` otherwise depends on.
 #
+# Some headless tests draw on a Swing canvas, so this job also runs under xvfb-run.
+#
 # The real-IDE tests run in their own job. They are not yet stable on hosted runners (a different IntelliJ IDEA
 # test fails from run to run), so that job reports its result but cannot fail the workflow (continue-on-error).
-# Making them stable, and moving them back into the build job, is spec 005's work. They need a display, hence
-# xvfb-run with a full-size screen: its default 640x480x8 screen leaves editor components "not showing".
+# Making them stable, and moving them back into the build job, is spec 005's work. Both jobs give xvfb-run a
+# full-size screen: its default 640x480x8 screen leaves editor components "not showing".
 #
 # What else this repository's CI does (development builds, versioned releases) is spec 005's to decide.
 name: Build
@@ -40,7 +42,7 @@ jobs:
       # Caches Gradle and the IntelliJ Platform downloads between runs.
       - uses: gradle/actions/setup-gradle@v6
       - name: Build, test and verify the plug-in
-        run: ./gradlew build -x integrationTest
+        run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' ./gradlew build -x integrationTest
       - name: Keep the test reports
         if: failure()
         uses: actions/upload-artifact@v7
