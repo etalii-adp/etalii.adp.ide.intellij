@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <!-- ADP mark "two perspectives", rounded variant, redrawn at 40 x 40 without its bevel and emboss filters, which do not survive at this size. Source: etalii-adp/etalii.adp.site src/assets/brand/adp-icon.svg. Light theme variant. -->
+  <!-- ADP mark "two perspectives", rounded variant, redrawn at 40 x 40 without its bevel and emboss filters, which do not survive at this size. Source: etalii-adp/etalii.adp.site src/assets/brand/adp-icon.svg. Dark theme variant: a lighter rim separates the tile from a dark background. -->
   <defs>
     <radialGradient id="bg" cx="42%" cy="35%" r="80%">
       <stop offset="0" stop-color="#0c9a0c"/>
@@ -25,6 +25,6 @@
         <circle cx="45" cy="45" r="18"/>
       </g>
     </g>
-    <rect x="3" y="3" width="494" height="494" rx="97" stroke="#003a00" stroke-opacity="0.6" stroke-width="6"/>
+    <rect x="3" y="3" width="494" height="494" rx="97" stroke="#5fbf5f" stroke-opacity="0.7" stroke-width="6"/>
   </g>
 </svg>
