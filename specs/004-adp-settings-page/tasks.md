@@ -123,23 +123,23 @@ Files: `core/…/settings/CanvasSection.java`, `core/src/main/resources/META-INF
 
 **Wave 1 — independent (different files):**
 
-- [ ] **T035** [P] [US3] Canvas section: the three options with their defaults; opening zoom choices as in the contract; "Not followed by" lists designers that fix an option; "Reset to defaults" resets the page and nothing is stored until Apply (FR-011, FR-012, acceptance 3.2, 3.3) · `core/test/…/settings/CanvasSectionTest.java`
-- [ ] **T036** [P] [US3] Live apply with `DiagramDriver` on two open sample files: grid shown after apply without reopening; snapping off moves by unsnapped amounts and on snaps to the spacing; opening zoom applies to a file with no remembered state and a remembered zoom wins; a designer fixing an option ignores the user's; in every case the document text, its modified state and its undo stack are unchanged (FR-006, FR-011, FR-012, acceptance 3.1, 3.2, SC-003) · `core/src/test/java/etalii/adp/core/diagram/view/CanvasOptionsLiveTest.java`
-- [ ] **T037** [P] [US3] FreeMind fixes Show grid and Snap to grid off, so the page lists it under both (FR-012) · `freemind/src/test/java/etalii/adp/freemind/ui/FreeMindDefinitionTest.java`
+- [x] **T035** [P] [US3] Canvas section: the three options with their defaults; opening zoom choices as in the contract; "Not followed by" lists designers that fix an option; "Reset to defaults" resets the page and nothing is stored until Apply (FR-011, FR-012, acceptance 3.2, 3.3) · `core/test/…/settings/CanvasSectionTest.java`
+- [x] **T036** [P] [US3] Live apply with `DiagramDriver` on two open sample files: grid shown after apply without reopening; snapping off moves by unsnapped amounts and on snaps to the spacing; opening zoom applies to a file with no remembered state and a remembered zoom wins; a designer fixing an option ignores the user's; in every case the document text, its modified state and its undo stack are unchanged (FR-006, FR-011, FR-012, acceptance 3.1, 3.2, SC-003) · `core/src/test/java/etalii/adp/core/diagram/view/CanvasOptionsLiveTest.java`
+- [x] **T037** [P] [US3] FreeMind fixes Show grid and Snap to grid off, so the page lists it under both (FR-012) · `freemind/src/test/java/etalii/adp/freemind/ui/FreeMindDefinitionTest.java`
 
 ### Implementation
 
 **⟶ Wait for the tests above, then Wave 2 — independent (different files):**
 
-- [ ] **T038** [P] [US3] `GridLayer`: dots at the grid spacing, scaled with zoom, in a `JBColor` tone readable in light and dark themes · `core/src/main/java/etalii/adp/core/diagram/view/GridLayer.java`
-- [ ] **T039** [P] [US3] `MoveTool.snap` snaps only when `AdpSettings.effective(SNAP_TO_GRID, view)` is true · `core/src/main/java/etalii/adp/core/diagram/edit/MoveTool.java`
-- [ ] **T040** [P] [US3] FreeMind definition fixes grid and snap off · `freemind/src/main/java/etalii/adp/freemind/ui/FreeMindDefinition.java`
-- [ ] **T041** [P] [US3] `CanvasSection` (order 20) · `core/…/settings/CanvasSection.java`
+- [x] **T038** [P] [US3] `GridLayer`: dots at the grid spacing, scaled with zoom, in a `JBColor` tone readable in light and dark themes · `core/src/main/java/etalii/adp/core/diagram/view/GridLayer.java`
+- [x] **T039** [P] [US3] `MoveTool.snap` snaps only when `AdpSettings.effective(SNAP_TO_GRID, view)` is true · `core/src/main/java/etalii/adp/core/diagram/edit/MoveTool.java`
+- [x] **T040** [P] [US3] FreeMind definition fixes grid and snap off · `freemind/src/main/java/etalii/adp/freemind/ui/FreeMindDefinition.java`
+- [x] **T041** [P] [US3] `CanvasSection` (order 20) · `core/…/settings/CanvasSection.java`
 
 **⟶ Wait for Wave 2, then:**
 
-- [ ] **T042** [US3] `DiagramDesigner`: installs `GridLayer` when showing is effectively on, subscribes to `AdpSettingsListener.TOPIC` for its lifetime and repaints, applies the opening zoom when no `DesignerState` was restored · `core/src/main/java/etalii/adp/core/diagram/view/DiagramDesigner.java`
-- [ ] **T043** [US3] Register `CanvasSection` · `core/src/main/resources/META-INF/adp-settings-canvas.xml`
+- [x] **T042** [US3] `DiagramDesigner`: installs `GridLayer` when showing is effectively on, subscribes to `AdpSettingsListener.TOPIC` for its lifetime and repaints, applies the opening zoom when no `DesignerState` was restored · `core/src/main/java/etalii/adp/core/diagram/view/DiagramDesigner.java`
+- [x] **T043** [US3] Register `CanvasSection` · `core/src/main/resources/META-INF/adp-settings-canvas.xml`
 
 **Checkpoint**: canvas options apply to every open and new diagram designer, and designers that fix an option are named.
 

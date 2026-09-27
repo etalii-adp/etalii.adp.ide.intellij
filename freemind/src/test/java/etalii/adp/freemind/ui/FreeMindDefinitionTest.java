@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +18,13 @@ import etalii.adp.core.diagram.ElementType;
 import etalii.adp.core.diagram.LineStyle;
 import etalii.adp.core.diagram.Outline;
 import etalii.adp.core.diagram.PropertyDecl;
+import etalii.adp.core.settings.CanvasOption;
 
-/** T087: the FreeMind definition holds together (FR-002) and declares what research R19 lists. */
+/**
+ * T087: the FreeMind definition holds together (FR-002) and declares what research R19 lists.
+ * Spec 004 T037 (FR-012): its positions come from its layout, so it keeps the grid hidden and
+ * snapping off, and the ADP page lists it under both options.
+ */
 class FreeMindDefinitionTest {
 
     @Test
@@ -60,5 +67,11 @@ class FreeMindDefinitionTest {
         assertTrue(link.userConnectable());
         assertEquals(LineStyle.CURVED, branch.line());
         assertEquals(LineStyle.CURVED, link.line());
+    }
+
+    @Test
+    void theGridIsHiddenAndSnappingOffWhateverTheUserChose() {
+        assertEquals(Map.of(CanvasOption.SHOW_GRID, false, CanvasOption.SNAP_TO_GRID, false), FreeMindDefinition.DEFINITION.view().fixed());
+        assertEquals(Set.of(CanvasOption.SHOW_GRID, CanvasOption.SNAP_TO_GRID), new MindMapEditorProvider().fixedOptions());
     }
 }

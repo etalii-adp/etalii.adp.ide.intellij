@@ -330,6 +330,78 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-27T02:24:05.314Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T035",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:29:39.908Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T036",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:29:40.217Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T037",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:29:40.522Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T038",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:29:40.834Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T039",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:29:41.108Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T040",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:29:41.402Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T041",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:29:41.706Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T042",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:29:41.997Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T043",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-27T02:29:42.294Z"
     }
   ],
   "concerns": [
@@ -490,7 +562,7 @@
       "tasks": "T004"
     }
   },
-  "currentTask": "T034",
+  "currentTask": "T043",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -716,6 +788,69 @@
       "did": "Registered DesignersSection on etalii.adp.settingsSection",
       "files": [
         "core/src/main/resources/META-INF/adp-settings-designers.xml"
+      ]
+    },
+    "T035": {
+      "status": "DONE",
+      "did": "Canvas section test: three options and defaults, zoom choices, Not followed by, Reset to defaults, stored only on Apply (seen failing on stubs)",
+      "files": [
+        "core/src/test/java/etalii/adp/core/settings/CanvasSectionTest.java"
+      ]
+    },
+    "T036": {
+      "status": "DONE",
+      "did": "Live apply on open sample files: grid dots after apply, snap only when on, opening zoom unless remembered, a fixing designer keeps its option, documents untouched (seen failing on stubs)",
+      "files": [
+        "core/src/test/java/etalii/adp/core/diagram/view/CanvasOptionsLiveTest.java"
+      ]
+    },
+    "T037": {
+      "status": "DONE",
+      "did": "FreeMind fixes Show grid and Snap to grid off, reported by fixedOptions (seen failing)",
+      "files": [
+        "freemind/src/test/java/etalii/adp/freemind/ui/FreeMindDefinitionTest.java"
+      ]
+    },
+    "T038": {
+      "status": "DONE",
+      "did": "GridLayer: dots at the spacing above sectors and under elements, screen-sized, thinned when crowded, JBColor tone",
+      "files": [
+        "core/src/main/java/etalii/adp/core/diagram/view/GridLayer.java"
+      ]
+    },
+    "T039": {
+      "status": "DONE",
+      "did": "MoveTool.snap snaps only when snapping is effectively on",
+      "files": [
+        "core/src/main/java/etalii/adp/core/diagram/edit/MoveTool.java"
+      ]
+    },
+    "T040": {
+      "status": "DONE",
+      "did": "FreeMind definition fixes grid and snap off",
+      "files": [
+        "freemind/src/main/java/etalii/adp/freemind/ui/FreeMindDefinition.java"
+      ]
+    },
+    "T041": {
+      "status": "DONE",
+      "did": "CanvasSection (order 20): check boxes, opening zoom combo, Not followed by labels, Reset to defaults link",
+      "files": [
+        "core/src/main/java/etalii/adp/core/settings/CanvasSection.java"
+      ]
+    },
+    "T042": {
+      "status": "DONE",
+      "did": "DiagramDesigner installs GridLayer, repaints on the settings topic for its lifetime, opens at the opening zoom before any remembered state",
+      "files": [
+        "core/src/main/java/etalii/adp/core/diagram/view/DiagramDesigner.java"
+      ]
+    },
+    "T043": {
+      "status": "DONE",
+      "did": "Registered CanvasSection on etalii.adp.settingsSection",
+      "files": [
+        "core/src/main/resources/META-INF/adp-settings-canvas.xml"
       ]
     }
   }

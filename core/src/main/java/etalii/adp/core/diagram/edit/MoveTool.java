@@ -21,12 +21,15 @@ import com.intellij.util.ui.JBUI;
 
 import etalii.adp.core.diagram.Placement;
 import etalii.adp.core.diagram.Verdict;
+import etalii.adp.core.diagram.ViewOptions;
 import etalii.adp.core.diagram.view.CanvasLayer;
 import etalii.adp.core.diagram.view.CanvasTool;
 import etalii.adp.core.diagram.view.DiagramCanvas;
 import etalii.adp.core.diagram.view.DiagramDesigner;
 import etalii.adp.core.diagram.view.ElementPainter;
 import etalii.adp.core.diagram.view.Scene.ElementRender;
+import etalii.adp.core.settings.AdpSettings;
+import etalii.adp.core.settings.CanvasOption;
 
 /**
  * Dragging the selected elements (FR-017). Past a 3 pixel threshold the selection follows the
@@ -69,10 +72,11 @@ public final class MoveTool implements CanvasTool, CanvasLayer {
         this.feedback = feedback;
     }
 
-    /** A diagram coordinate on the designer's grid; unchanged when the designer has no grid. */
+    /** A diagram coordinate on the designer's grid when snapping is effectively on (spec 004); unchanged otherwise. */
     public static double snap(DiagramDesigner designer, double value) {
-        int grid = designer.definition().view().grid();
-        return grid <= 0 ? value : Math.round(value / grid) * (double) grid;
+        ViewOptions view = designer.definition().view();
+        int grid = view.grid();
+        return grid <= 0 || !AdpSettings.getInstance().effective(CanvasOption.SNAP_TO_GRID, view) ? value : Math.round(value / grid) * (double) grid;
     }
 
     @Override
