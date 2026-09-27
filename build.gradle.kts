@@ -62,7 +62,6 @@ intellijPlatform {
             select {
                 types = listOf(
                     IntelliJPlatformType.IntellijIdea,
-                    IntelliJPlatformType.Rider,
                     IntelliJPlatformType.WebStorm,
                     IntelliJPlatformType.PyCharm,
                     IntelliJPlatformType.CLion,
@@ -72,6 +71,10 @@ intellijPlatform {
                 )
                 sinceBuild = providers.gradleProperty("pluginSinceBuild").map { "$it.3" }
                 untilBuild = providers.gradleProperty("pluginSinceBuild").map { "$it.*" }
+            }
+            // select {} can only fetch installers, which Rider does not support; Rider comes from its Maven archive.
+            create(IntelliJPlatformType.Rider, providers.gradleProperty("riderVerifyVersion")) {
+                useInstaller = false
             }
         }
     }
