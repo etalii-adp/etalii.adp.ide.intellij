@@ -1,14 +1,23 @@
 <idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
     <id>etalii.adp</id>
-    <name>A Different Perspective (ADP)</name>
-    <vendor>EtAlii</vendor>
+    <name>ADP: A Different Perspective</name>
+    <vendor url="https://etalii.net/adp">EtAlii</vendor>
     <idea-version since-build="262"/>
 
     <description><![CDATA[
-    Visual designers for text-based files. Each designer is an editor on the file's own text,
-    with the IDE's undo, redo, save and text view. The formats are FreeMind mind maps (<code>.mm</code>)
-    and draw.io diagrams (<code>.drawio</code>), edited with a shared toolbox and property panel.
-    Licensed under the Apache License, Version 2.0.
+    <p><img src="https://etalii.net/adp/favicon.svg" width="96" height="96" alt="The ADP mark: one model seen as text and as a diagram"></p>
+    <p><b>The right view for every task.</b> ADP (A Different Perspective) is a family of specialized
+    diagram, designer and text editors, each tuned for one task where a specialized visualization beats
+    a generic diagram or plain text.</p>
+    <p>Each designer is an editor on the file's own text, with the IDE's undo, redo, save and text view,
+    so what it shows stays in plain files that can be reviewed, branched and merged like any other text.
+    This plug-in brings two designers, edited with a shared toolbox and property panel:</p>
+    <ul>
+      <li>FreeMind mind maps (<code>.mm</code>)</li>
+      <li>draw.io diagrams (<code>.drawio</code>)</li>
+    </ul>
+    <p>Documentation and the other ADP hosts: <a href="https://etalii.net/adp">etalii.net/adp</a>.
+    Licensed under the Apache License, Version 2.0.</p>
     ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
