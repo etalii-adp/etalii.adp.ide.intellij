@@ -1,7 +1,8 @@
 # Checks every pull request into develop and every change to develop (etalii.adp spec 001-ci-and-badges): the
 # plug-in builds, the headless and real-IDE tests pass, the plug-in verifies against the IDEs it declares, and
 # every shipped library has an allowed licence. `./gradlew build` runs all of these, because `check` depends on
-# integrationTest, verifyPlugin and verifyDependencyLicences. The real-IDE tests need a display, hence xvfb-run.
+# integrationTest, verifyPlugin and verifyDependencyLicences. The real-IDE tests need a display, hence xvfb-run,
+# with a full-size screen: its default 640x480x8 screen leaves editor components "not showing".
 # What else this repository's CI does (development builds, versioned releases) is spec 005's to decide.
 name: Build
 
@@ -24,8 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      # javaVersion in gradle.properties. Not Temurin: the jar manifest records the JDK's vendor, and
-      # "Eclipse Adoptium" there fails NoPreviousHostIntegrationTest, which forbids the previous host's name.
+      # javaVersion in gradle.properties. Not Temurin: the jar manifest records the JDK's vendor, and Temurin's
+      # vendor name contains the previous host's name, which NoPreviousHostIntegrationTest forbids.
       - uses: actions/setup-java@v6
         with:
           distribution: zulu
@@ -33,7 +34,7 @@ jobs:
       # Caches Gradle and the IntelliJ Platform downloads between runs.
       - uses: gradle/actions/setup-gradle@v6
       - name: Build, test and verify the plug-in
-        run: xvfb-run --auto-servernum ./gradlew build
+        run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' ./gradlew build
       - name: Keep the test reports
         if: failure()
         uses: actions/upload-artifact@v7
