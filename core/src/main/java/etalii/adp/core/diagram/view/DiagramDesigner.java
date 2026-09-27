@@ -51,6 +51,8 @@ import etalii.adp.core.diagram.edit.DiagramDiff;
 import etalii.adp.core.diagram.model.Connection;
 import etalii.adp.core.diagram.model.Diagram;
 import etalii.adp.core.diagram.model.Element;
+import etalii.adp.core.settings.AdpSettings;
+import etalii.adp.core.settings.AdpSettingsListener;
 import etalii.adp.core.diagram.view.ElementMeasure.PlacedText;
 import etalii.adp.core.diagram.view.Scene.ConnectionRender;
 import etalii.adp.core.diagram.view.Scene.ElementRender;
@@ -63,6 +65,8 @@ import etalii.adp.core.diagram.view.Scene.PlacedLabel;
  * the result on a {@link DiagramCanvas}. After each re-read it diffs with the diagram shown before
  * and tells the definition's listener what changed, so edits, undo, redo and external changes take
  * one path. Every registered {@link DiagramFeature} adds its tools and layers to the canvas.
+ * The ADP settings apply live (spec 004): the grid is painted when it is effectively on, a file
+ * opens at the opening zoom unless it remembers its own, and Apply repaints without reopening.
  * <p>
  * Its {@link #model()} is the diagram itself, unless a subclass parses the text into a model of its
  * own and shows it as a diagram through {@link #diagramOf} (FreeMind's map, research R19). The
@@ -120,9 +124,15 @@ public class DiagramDesigner extends AdpDesignerEditor<Object> implements Diagra
 
     @Override
     protected JComponent createView() {
+        if (definition.view().zoom()) {
+            // a zoom the file remembers comes later, through setState, and wins
+            viewState().setZoom(AdpSettings.getInstance().openingZoom());
+        }
         canvas = createCanvas();
         measure = new ElementMeasure(fontRenderContext());
         canvas.addTool(new ArrowKeys());
+        canvas.addLayer(new GridLayer(this));
+        ApplicationManager.getApplication().getMessageBus().connect(this).subscribe(AdpSettingsListener.TOPIC, canvas::repaint);
         viewState().addSelectionListener(canvas::repaint);
         if (ApplicationManager.getApplication().getExtensionArea().hasExtensionPoint(DiagramFeature.EP_NAME)) {
             for (DiagramFeature feature : DiagramFeature.EP_NAME.getExtensionList()) {

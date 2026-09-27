@@ -1,0 +1,6 @@
+<!-- The ADP page's canvas options (spec 004, US3). -->
+<idea-plugin>
+    <extensions defaultExtensionNs="etalii.adp">
+        <settingsSection implementation="etalii.adp.core.settings.CanvasSection"/>
+    </extensions>
+</idea-plugin>

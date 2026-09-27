@@ -183,17 +183,19 @@ public class DrawioDesignerTest extends FileEditorManagerTestCase {
     @Test
     public void aListsRowsReadOnTheListsFillInEitherTheme() {
         String list = "21ea969265ad0168-14";
-        for (boolean dark : new boolean[] { false, true }) {
-            JBColor.setDark(dark);
-            try (var d = open("data_flow_1")) {
+        try (var d = open("data_flow_1")) {
+            for (boolean dark : new boolean[] { false, true }) {
+                JBColor.setDark(dark);
+                // as a theme change does: the canvas takes its colours again
+                d.designer().canvas().updateUI();
                 java.awt.Color body = d.elementView(list).fill();
                 for (String row : List.of("21ea969265ad0168-15", "21ea969265ad0168-16", "21ea969265ad0168-17")) {
                     double contrast = ElementPainter.contrast(d.elementView(row).text(), body);
                     assertTrue((dark ? "dark: " : "light: ") + row + " is drawn on the list's white body, contrast " + contrast, contrast >= 4.5);
                 }
-            } finally {
-                JBColor.setDark(false);
             }
+        } finally {
+            JBColor.setDark(false);
         }
     }
 
