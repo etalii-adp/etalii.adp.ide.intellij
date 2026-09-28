@@ -133,13 +133,13 @@ class OpenMapIntegrationTest {
 
             // remote references stay valid only inside a context
             driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
-                EditorsKt.openFile(d, "map.mm", opened, true, false);
+                EditorsKt.openFile(d, "map.mm", opened, false, false);
                 VirtualFile map = EditorsKt.findOpenFile(d, "map.mm", opened, false);
                 assertNotNull(map, product + ": the map is open");
                 assertTrue(editorTypes(d, opened, map).contains(DESIGNER), product + ": the designer is offered for the map");
                 assertEquals(DESIGNER_NAME, selectedEditorName(d, opened, map), product + ": the map opens in the designer");
 
-                EditorsKt.openFile(d, "main.mm", opened, true, false);
+                EditorsKt.openFile(d, "main.mm", opened, false, false);
                 VirtualFile source = EditorsKt.findOpenFile(d, "main.mm", opened, false);
                 assertNotNull(source, product + ": the Objective-C++ file is open");
                 assertFalse(editorTypes(d, opened, source).contains(DESIGNER), product + ": the designer is not offered for other .mm files");

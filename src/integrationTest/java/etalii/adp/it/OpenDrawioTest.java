@@ -86,7 +86,7 @@ class OpenDrawioTest {
             String[] texts = new String[3];
 
             driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
-                EditorsKt.openFile(d, FILE, opened, true, false);
+                EditorsKt.openFile(d, FILE, opened, false, false);
                 VirtualFile file = EditorsKt.findOpenFile(d, FILE, opened, false);
                 assertNotNull(file, "the diagram is open");
                 path[0] = file.getPath();

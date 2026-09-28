@@ -82,11 +82,22 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
     }
 
     private DiagramDriver open(String name) {
-        return DiagramDriver.open(myFixture, SampleFiles.directory().resolve(name));
+        return followed(DiagramDriver.open(myFixture, SampleFiles.directory().resolve(name)));
     }
 
     private DiagramDriver three() {
-        return DiagramDriver.openText(myFixture, "three.adpsample", THREE);
+        return followed(DiagramDriver.openText(myFixture, "three.adpsample", THREE));
+    }
+
+    /** The panel follows a newly opened designer after the queue first drains, so wait for it before reading rows. */
+    private DiagramDriver followed(DiagramDriver d) {
+        try {
+            d.driver().settleUntil("the panel follows the newly opened designer", () -> panel().designer() == d.designer());
+        } catch (RuntimeException | AssertionError e) {
+            d.close();
+            throw e;
+        }
+        return d;
     }
 
     private PropertyPanel panel() {
@@ -101,6 +112,16 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
 
     private static List<String> ids(PropertyRows rows) {
         return rows.rows().stream().map(PropertyRow::id).toList();
+    }
+
+    private boolean hasRow(String propertyId) {
+        JTable table = panel().table();
+        for (int row = 0; row < table.getRowCount(); row++) {
+            if (propertyId.equals(panel().propertyId(row))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int rowOf(String propertyId) {
@@ -172,6 +193,8 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
     private void roundTrip(String property, String value, String expected) {
         try (var d = DiagramDriver.openText(myFixture, property + ".adpsample", SampleFiles.read("two-tasks.adpsample"))) {
             d.driver().select("a");
+            d.driver().settleUntil("the panel shows " + property + " for the new designer",
+                    () -> panel().designer() == d.designer() && hasRow(property));
             String before = d.driver().text();
             String was = d.properties().row(property).value();
 
