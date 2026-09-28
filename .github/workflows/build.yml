@@ -94,7 +94,7 @@ jobs:
             echo "=== $f"
             awk '/^"AWT-EventQueue/{p=1} p{print; n++} p&&(/^$/||n>80){exit}' "$f"
           done
-          for f in "$tests"/EditUndo*/**/log/idea.log; do
+          for f in "$tests"/*/EditUndo*/log/idea.log; do
             echo "=== $f"
             grep -n -E 'ERROR|WARN .*(Undo|undo|Modal|modal|Dialog)' "$f" | head -80
           done
