@@ -188,6 +188,8 @@ public final class ConnectionPainter {
     /**
      * Two control points per segment of a smooth curve through the route: leaving and entering the
      * ends in their exit directions, and through inner points along the line joining their neighbours.
+     * An end reaches no further along its exit than half the way to the next point, when that point
+     * lies ahead of it.
      */
     private static List<Point2D> controls(List<Point2D> route, Point2D sourceExit, Point2D targetExit) {
         int n = route.size();
@@ -198,6 +200,12 @@ public final class ConnectionPainter {
                 Point2D other = route.get(i == 0 ? 1 : n - 2);
                 Point2D exit = i == 0 ? sourceExit : targetExit;
                 double reach = Math.max(p.distance(other) * 0.4, JBUIScale.scale(20f));
+                double length = Math.hypot(exit.getX(), exit.getY());
+                double ahead = length == 0 ? 0 : ((other.getX() - p.getX()) * exit.getX() + (other.getY() - p.getY()) * exit.getY()) / length;
+                if (ahead > 0) {
+                    // at most half the way toward the other point along the exit, so the curve never bends back on itself
+                    reach = Math.min(reach, ahead / 2);
+                }
                 double sign = i == 0 ? 1 : -1;
                 tangents[i] = exit.getX() == 0 && exit.getY() == 0
                         ? new Point2D.Double(sign * (other.getX() - p.getX()) / 3, sign * (other.getY() - p.getY()) / 3)

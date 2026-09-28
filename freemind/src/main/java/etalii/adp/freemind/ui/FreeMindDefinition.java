@@ -36,7 +36,8 @@ import etalii.adp.freemind.ui.actions.MindMapAction;
  * FreeMind maps as a diagram (research R19): the root, nodes drawn as forks or bubbles by their
  * {@code STYLE}, the branches the tree draws and the arrow links the user draws. Nodes are laid
  * out by {@link MindMapLayout}, never placed, so a node moves by being dropped onto another; the
- * grid is neither shown nor snapped to, whatever the user chose (spec 004, FR-012).
+ * grid is neither shown nor snapped to, whatever the user chose (spec 004, FR-012). As in FreeMind,
+ * dragging the empty canvas pans the map.
  */
 public final class FreeMindDefinition {
 
@@ -75,7 +76,7 @@ public final class FreeMindDefinition {
                         .arrows(ArrowHead.NONE, ArrowHead.FILLED))
                 .toolbox(NODE, ARROW_LINK)
                 .rules(new Rules())
-                .view(v -> v.fix(CanvasOption.SHOW_GRID, false).fix(CanvasOption.SNAP_TO_GRID, false))
+                .view(v -> v.backgroundPan(true).fix(CanvasOption.SHOW_GRID, false).fix(CanvasOption.SNAP_TO_GRID, false))
                 .layout(new MindMapLayout());
     }
 

@@ -10,20 +10,22 @@ import etalii.adp.core.settings.CanvasOption;
  * and snapped to is the user's choice, unless the definition fixes it.
  *
  * @param grid the grid spacing in unscaled pixels
+ * @param backgroundPan whether a plain left drag on empty canvas pans instead of dragging a marquee
  * @param fixed canvas options this designer keeps whatever the user chose
  */
-public record ViewOptions(boolean zoom, boolean pan, int grid, Map<CanvasOption, Boolean> fixed) {
+public record ViewOptions(boolean zoom, boolean pan, int grid, boolean backgroundPan, Map<CanvasOption, Boolean> fixed) {
 
     public ViewOptions {
         fixed = Map.copyOf(fixed);
     }
 
-    /** Defaults: zoom and pan on, a grid of 10, nothing fixed. */
+    /** Defaults: zoom and pan on, a grid of 10, a drag on empty canvas drags a marquee, nothing fixed. */
     public static final class Builder {
 
         private boolean zoom = true;
         private boolean pan = true;
         private int grid = 10;
+        private boolean backgroundPan;
         private final Map<CanvasOption, Boolean> fixed = new EnumMap<>(CanvasOption.class);
 
         Builder() {
@@ -44,6 +46,12 @@ public record ViewOptions(boolean zoom, boolean pan, int grid, Map<CanvasOption,
             return this;
         }
 
+        /** Pan with a plain left drag on empty canvas; the marquee is then dragged with Ctrl or Shift held. */
+        public Builder backgroundPan(boolean backgroundPan) {
+            this.backgroundPan = backgroundPan;
+            return this;
+        }
+
         /** Keep {@code option} at {@code value} in this designer, whatever the user chose. */
         public Builder fix(CanvasOption option, boolean value) {
             fixed.put(option, value);
@@ -51,7 +59,7 @@ public record ViewOptions(boolean zoom, boolean pan, int grid, Map<CanvasOption,
         }
 
         ViewOptions build() {
-            return new ViewOptions(zoom, pan, grid, fixed);
+            return new ViewOptions(zoom, pan, grid, backgroundPan, fixed);
         }
     }
 }

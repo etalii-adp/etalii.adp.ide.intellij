@@ -5,11 +5,16 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+import java.util.List;
 
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
+
+import com.intellij.ui.scale.JBUIScale;
 
 import etalii.adp.core.diagram.view.CanvasTool;
 import etalii.adp.core.diagram.view.DiagramCanvas;
@@ -20,14 +25,20 @@ import etalii.adp.core.diagram.view.DiagramDesigner;
  * scrolls the designer's scroll pane so the diagram follows the pointer. It claims the press
  * before selection and move, so a Space-drag over an element pans rather than moves it. With the
  * designer's pan off it does nothing and lets every event through. The scroll bars and the plain
- * wheel keep working either way.
+ * wheel keep working either way. A designer whose view asks for background panning also pans on a
+ * plain left drag that starts on empty canvas; a click there, without a drag, clears the selection.
  */
 public final class PanTool implements CanvasTool {
+
+    /** How far, before scaling, the pointer moves before a press on empty canvas is a drag rather than a click. */
+    private static final int THRESHOLD = 3;
 
     private final DiagramDesigner designer;
     private final DiagramCanvas canvas;
     private boolean space;
     private JViewport viewport;
+    private boolean background;
+    private boolean moved;
     private Point pressedAt;
     private Point startPosition;
     private Cursor cursorBefore;
@@ -67,13 +78,16 @@ public final class PanTool implements CanvasTool {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (!enabled() || !(SwingUtilities.isMiddleMouseButton(e) || space && SwingUtilities.isLeftMouseButton(e))) {
+        boolean onBackground = !space && onBackground(e);
+        if (!enabled() || !(SwingUtilities.isMiddleMouseButton(e) || space && SwingUtilities.isLeftMouseButton(e) || onBackground)) {
             return;
         }
         viewport = viewportOf(canvas);
         if (viewport == null) {
             return;
         }
+        background = onBackground;
+        moved = false;
         startPosition = viewport.getViewPosition();
         pressedAt = inViewport(e.getPoint(), startPosition);
         cursorBefore = canvas.isCursorSet() ? canvas.getCursor() : null;
@@ -88,6 +102,7 @@ public final class PanTool implements CanvasTool {
         }
         // the canvas moves under the pointer as it scrolls, so the pointer is measured in the viewport
         Point at = inViewport(e.getPoint(), viewport.getViewPosition());
+        moved |= at.distance(pressedAt) >= JBUIScale.scale(THRESHOLD);
         scrollTo(viewport, new Point(startPosition.x - (at.x - pressedAt.x), startPosition.y - (at.y - pressedAt.y)));
         e.consume();
     }
@@ -95,9 +110,23 @@ public final class PanTool implements CanvasTool {
     @Override
     public void mouseReleased(MouseEvent e) {
         if (pressedAt != null) {
+            if (background && !moved && !designer.selection().isEmpty()) {
+                // a click on empty canvas still clears the selection, as it does without background panning
+                designer.select(List.of());
+            }
             end();
             e.consume();
         }
+    }
+
+    /** A plain left press on empty canvas, with the designer's background panning on. */
+    private boolean onBackground(MouseEvent e) {
+        if (!designer.definition().view().backgroundPan() || designer.diagram() == null || !SwingUtilities.isLeftMouseButton(e) || e.isPopupTrigger()
+                || (e.getModifiersEx() & (InputEvent.CTRL_DOWN_MASK | InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK)) != 0) {
+            return false;
+        }
+        Point2D point = canvas.toDiagram(e.getPoint());
+        return canvas.itemAt(point) == null && canvas.anchorAt(point) == null;
     }
 
     @Override
@@ -112,6 +141,7 @@ public final class PanTool implements CanvasTool {
             return;
         }
         pressedAt = null;
+        background = false;
         startPosition = null;
         viewport = null;
         canvas.setCursor(cursorBefore);
