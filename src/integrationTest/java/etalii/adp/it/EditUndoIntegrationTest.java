@@ -171,6 +171,7 @@ class EditUndoIntegrationTest {
     private static void invoke(Driver driver, Project project, String path, String actionId, boolean now) {
         driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
             VirtualFile map = EditorsKt.findOpenFile(d, "map.mm", project, false);
+            DesignerTab.front(d, project, map, "EditUndo");
             DesignerRemote designer = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT)
                     .getSelectedEditor(map).designer();
             ActionManagerKt.invokeAction(d, actionId, now, designer.view(), null, RdTarget.DEFAULT);

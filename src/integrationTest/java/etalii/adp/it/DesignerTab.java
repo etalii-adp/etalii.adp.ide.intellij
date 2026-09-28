@@ -21,8 +21,8 @@ import kotlin.jvm.JvmClassMappingKt;
 /**
  * Brings an open file's designer to the front before a test acts on it, as someone clicks its tab.
  * <p>
- * On CI, IntelliJ IDEA sometimes selected another editor tab a little after the project opened, so
- * the designer's canvas was no longer showing: the action system then refuses to run an action with
+ * IntelliJ IDEA without a licence opens its "Trial" page as an editor tab a little after a project
+ * opens, and selects it, so the designer's canvas is no longer showing: the action system then refuses to run an action with
  * it ("target component is not showing") and the toolbox, which follows the selected editor, lists
  * nothing. {@link #select} selects the file's tab again until its canvas shows, and notes what was
  * selected instead in {@code reselections.txt} in {@code ADP_IDE_TESTS_HOME}.
@@ -62,6 +62,25 @@ final class DesignerTab {
                 throw new AssertionError(fileName + "'s designer canvas is not showing after half a minute of selecting its tab: " + state[0]);
             }
             Thread.sleep(250);
+        }
+    }
+
+    /**
+     * Selects the file's tab again when its canvas is not showing, on the event dispatch thread the caller is on, so
+     * an action invoked next in the same call runs with a showing canvas: between two Driver calls the IDE can still
+     * select another tab.
+     */
+    static void front(Driver d, Project project, VirtualFile file, String test) {
+        EditorsRemote editors = d.service(JvmClassMappingKt.getKotlinClass(EditorsRemote.class), project, RdTarget.DEFAULT);
+        if (!editors.getSelectedEditor(file).designer().view().isShowing()) {
+            String state;
+            try {
+                state = describe(d, editors);
+            } catch (RuntimeException e) {
+                state = "not described: " + e;
+            }
+            editors.openFile(file, true);
+            note(test + ": " + file.getName() + "'s canvas was not showing just before an action; " + state);
         }
     }
 

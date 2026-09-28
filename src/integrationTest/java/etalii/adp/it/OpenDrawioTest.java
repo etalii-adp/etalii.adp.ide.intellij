@@ -104,6 +104,7 @@ class OpenDrawioTest {
 
             DesignerTab.select(driver, opened, FILE, "OpenDrawio");
             driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
+                DesignerTab.front(d, opened, EditorsKt.findOpenFile(d, FILE, opened, false), "OpenDrawio");
                 ToolWindowRemote toolbox = d.service(JvmClassMappingKt.getKotlinClass(ToolWindowManagerRemote.class), opened, RdTarget.DEFAULT)
                         .getToolWindow("ADP Toolbox");
                 assertNotNull(toolbox, "the ADP Toolbox is registered");
@@ -141,6 +142,7 @@ class OpenDrawioTest {
     private static void invoke(Driver driver, Project project, String actionId) {
         driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
             VirtualFile file = EditorsKt.findOpenFile(d, FILE, project, false);
+            DesignerTab.front(d, project, file, "OpenDrawio");
             DesignerRemote designer = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT)
                     .getSelectedEditor(file).designer();
             ActionManagerKt.invokeAction(d, actionId, true, designer.view(), null, RdTarget.DEFAULT);
