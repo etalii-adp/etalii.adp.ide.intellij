@@ -84,6 +84,7 @@ class OpenDrawioTest {
         try {
             Driver driver = run.getDriver();
             Project opened = waitForProject(driver);
+            awaitIgnoreFile(project);
             String[] path = new String[1];
             String[] texts = new String[3];
 
@@ -153,6 +154,19 @@ class OpenDrawioTest {
 
     private static Document document(Driver driver, VirtualFile file) {
         return driver.service(JvmClassMappingKt.getKotlinClass(FileDocumentManagerRemote.class), RdTarget.DEFAULT).getDocument(file);
+    }
+
+    /**
+     * Waits, for at most a minute, until the IDE has written {@code .idea/.gitignore} into the new project,
+     * which it does on its own shortly after opening it. That write is a global undoable change: an edit made
+     * before it lands under it on the undo stack, and Undo then asks whether to undo the new file first.
+     */
+    private static void awaitIgnoreFile(Path project) throws InterruptedException {
+        Path file = project.resolve(".idea").resolve(".gitignore");
+        long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.MINUTES.toNanos(1);
+        while (!Files.exists(file) && System.nanoTime() < deadline) {
+            Thread.sleep(250);
+        }
     }
 
     /** The project the IDE opens on start, once it is open. */
