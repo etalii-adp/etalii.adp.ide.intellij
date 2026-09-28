@@ -241,6 +241,7 @@ public final class DiagramDriver implements AutoCloseable {
 
     /** Drag a toolbox entry onto the canvas at a diagram point. */
     public DesignerDriver dragFromToolbox(String typeId, double x, double y) {
+        awaitListed(typeId);
         toolbox().dragTo(typeId, canvas(), canvas().toCanvas(new Point2D.Double(x, y)));
         driver.settle();
         return driver;
@@ -248,6 +249,7 @@ public final class DiagramDriver implements AutoCloseable {
 
     /** Drag a toolbox entry onto an element. */
     public DesignerDriver dragFromToolboxOnto(String typeId, Object targetKey) {
+        awaitListed(typeId);
         toolbox().dragTo(typeId, canvas(), canvas().toCanvas(centre(bounds(targetKey))));
         driver.settle();
         return driver;
@@ -255,9 +257,19 @@ public final class DiagramDriver implements AutoCloseable {
 
     /** Enter on a toolbox entry. */
     public DesignerDriver addFromToolboxWithKeyboard(String typeId) {
+        awaitListed(typeId);
         toolbox().activate(typeId);
         driver.settle();
         return driver;
+    }
+
+    /**
+     * Wait for the toolbox to list an entry before using it. The toolbox follows the selected
+     * editor on a selection event that can arrive after the editor opened, and until then it
+     * ignores a drag or Enter on the entry, so the gesture would silently do nothing.
+     */
+    private void awaitListed(String typeId) {
+        driver.settleUntil("the toolbox lists " + typeId, () -> toolbox().entries().contains(typeId));
     }
 
     // Property panel

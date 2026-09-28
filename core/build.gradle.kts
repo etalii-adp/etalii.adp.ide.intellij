@@ -27,6 +27,11 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    // A failure's message and causes in the console: on CI that is the only place they can be read without the reports.
+    testLogging {
+        events("failed")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
     // Hand-written sample designer files, read by the diagram tests.
     systemProperty("adp.testdata", layout.projectDirectory.dir("testdata").asFile.absolutePath)
     inputs.dir("testdata")
