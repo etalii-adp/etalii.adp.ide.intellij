@@ -142,12 +142,27 @@ val integrationTestTask = tasks.register<Test>("integrationTest") {
     group = "verification"
     testClassesDirs = integrationTest.output.classesDirs
     classpath = integrationTest.runtimeClasspath
-    useJUnitPlatform()
+    useJUnitPlatform { excludeTags("capture") }
     dependsOn(tasks.buildPlugin)
     systemProperty("adp.plugin.zip", tasks.buildPlugin.flatMap { it.archiveFile }.get().asFile.absolutePath)
     systemProperty("adp.repository", rootDir.absolutePath)
     systemProperty("adp.ideTests.home", ideTestsHome.get())
     shouldRunAfter(tasks.test)
+}
+
+// Retakes the images in docs/screenshots/ in a real IntelliJ IDEA (docs/screenshots/readme.md). Not part of check.
+tasks.register<Test>("captureScreenshots") {
+    description = "Opens each example in its designer in a real IntelliJ IDEA and writes the IDE window to docs/screenshots/."
+    group = "documentation"
+    testClassesDirs = integrationTest.output.classesDirs
+    classpath = integrationTest.runtimeClasspath
+    useJUnitPlatform { includeTags("capture") }
+    dependsOn(tasks.buildPlugin)
+    systemProperty("adp.plugin.zip", tasks.buildPlugin.flatMap { it.archiveFile }.get().asFile.absolutePath)
+    systemProperty("adp.repository", rootDir.absolutePath)
+    systemProperty("adp.ideTests.home", ideTestsHome.get())
+    systemProperty("adp.screenshots", layout.projectDirectory.dir("docs/screenshots").asFile.absolutePath)
+    outputs.upToDateWhen { false }
 }
 
 // Every third-party library the plug-in ships must have an Apache-2.0-compatible licence (research R21, SC-006).

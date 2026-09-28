@@ -4,6 +4,8 @@
 
 ADP is an IntelliJ Platform plug-in that adds visual designers for text-based files. Each designer is a real editor in the IDE: it is registered for its file type, uses the IDE's own undo and redo, has the usual modified state and save behaviour, and sits next to the IDE's text editor on the same document. The text is always the source of truth: the designer re-reads it after every change, and every visual edit changes only the text it has to.
 
+![A draw.io activity diagram in the ADP designer, with the ADP Toolbox on the right](docs/screenshots/drawio-activity.png)
+
 Two file formats are supported. **FreeMind mind maps** (`.mm`):
 
 - A FreeMind `.mm` file opens in the designer. Other `.mm` files, such as Objective-C++ source, open with whatever editor would otherwise apply.
@@ -43,6 +45,7 @@ You need a JDK to start Gradle; the Java toolchain the platform requires is down
 ./gradlew test             # format layer and headless platform tests
 ./gradlew integrationTest  # the plug-in installed into real IDEs (slow)
 ./gradlew runIde           # a sandbox IntelliJ IDEA with the plug-in installed
+./gradlew captureScreenshots  # retakes docs/screenshots/ in a real IntelliJ IDEA (see its readme)
 ```
 
 The installable plug-in is `build/distributions/etalii-adp-<version>.zip`. On Windows use `gradlew.bat`.
