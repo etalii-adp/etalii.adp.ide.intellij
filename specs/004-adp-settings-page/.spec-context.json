@@ -1111,7 +1111,7 @@
       "did": "gradlew check (integrationTest included) exited 0 on 5cdda70; manual quickstart walk in runIde confirmed by Peter on 2026-09-28"
     }
   },
-  "last_action": "All tasks but T053 done; gradlew check and integrationTest exit 0; merged into develop by PR #7; T053, the manual quickstart walk in runIde, is left for Peter",
+  "last_action": "All tasks but T053 done; gradlew check and integrationTest exit 0; merged into develop by PR #7; T053, the manual quickstart walk, passed for Peter on 2026-09-28",
   "verified": [
     {
       "what": "headless tests, plug-in verifier and licence check",

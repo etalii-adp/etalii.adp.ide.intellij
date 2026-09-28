@@ -3,7 +3,7 @@
   "specName": "Diagram Designer Framework",
   "branch": "003-diagram-designer-framework",
   "currentStep": "implement",
-  "status": "implementing",
+  "status": "completed",
   "history": [
     {
       "step": "specify",
@@ -1002,6 +1002,13 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-25T19:53:38.879Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-09-26T20:29:45.565Z"
     }
   ],
   "telemetryInstanceId": "fe9a38cf-fa48-4b51-befc-9309bda3ac3f",
@@ -1315,9 +1322,12 @@
     {
       "note": "T117 is manual (quickstart walkthrough in light/dark themes and at 200% scale, plus the SC-002 timed run by a developer new to the framework). It needs a human, so it was left unchecked and the spec was not marked complete.",
       "step": "implement"
+    },
+    {
+      "note": "This change resolved no living-spec capability, so nothing was loaded before it and nothing was folded after it. Either the areas it touched belong to no capability yet, or a capability claims them and no requirement describes them — `living-validate` names which."
     }
   ],
-  "currentTask": "T116",
+  "currentTask": "T109",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -2134,10 +2144,12 @@
     },
     "T109": {
       "status": "DONE",
-      "did": "Mapping on XmlTree.reread, XmlElement.child, XmlEdits.attributes/updateNumber, StyleOverride.colour; pools shown as sectors; perimeter anchor declared again; explicit imports",
+      "did": "runIde fixes: painting order from file order, html=1 flag, lists as elements with rows as non-movable parts (E/W anchors), groups hidden with members as ordinary elements, invisible fixed anchors, umlFrame and trapezoid shapes; drawio suite green, SC-001 342",
       "files": [
         "drawio/src/main/java/etalii/adp/drawio/DrawioMapping.java",
-        "drawio/src/main/java/etalii/adp/drawio/DrawioDefinition.java"
+        "drawio/src/main/java/etalii/adp/drawio/DrawioDefinition.java",
+        "drawio/src/test/java/etalii/adp/drawio/DrawioMappingTest.java",
+        "drawio/src/test/java/etalii/adp/drawio/DrawioDesignerTest.java"
       ]
     },
     "T110": {

@@ -73,7 +73,7 @@ Implementation note: `IdeTestsHome` became a launcher session listener (research
 **⟶ Wait for Wave 2 to finish, then:**
 
 - [x] **T013** [US1] Run `./gradlew integrationTest` with an empty `out/` in the worktree: every test passes, the downloads appear under `adp.ideTests.home`, and `out/ide-tests` is not created · (no file)
-- [ ] **T014** [US1] (Done except the thirty-minute session, which is Peter's; the first start took 78 s with first-run dialogs, 21 s after.) Quickstart steps 2 and 3: the sandbox opens `example-project` (not the repository), indexes fewer than 5,000 files within 30 seconds, and logs no memory event in thirty minutes; also open the repository itself in the sandbox and confirm `out`, `.intellijPlatform` and `.claude/worktrees` are excluded (SC-001, SC-002, SC-003) · (no file)
+- [x] **T014** [US1] (The first start took 78 s with first-run dialogs, 21 s after; Peter's manual checks passed on 2026-09-28.) Quickstart steps 2 and 3: the sandbox opens `example-project` (not the repository), indexes fewer than 5,000 files within 30 seconds, and logs no memory event in thirty minutes; also open the repository itself in the sandbox and confirm `out`, `.intellijPlatform` and `.claude/worktrees` are excluded (SC-001, SC-002, SC-003) · (no file)
 
 **Checkpoint**: the reported slowdown is gone; Story 1 is independently usable.
 
@@ -144,7 +144,7 @@ Files: `README.md`, `specs/006-sandbox-ide-performance/quickstart.md`.
 
 **⟶ Wait for Wave 1 to finish, then:**
 
-- [ ] **T024** (Open until T014: `check` is green, but SC-001 took 78 s on a fresh sandbox, SC-002 was met only for the project's own files, and SC-003 is unmeasured.) Validate against the Success Criteria: `./gradlew check` green with no new compiler or Gradle warnings, and every SC-001 to SC-006 met in the Results table · (no file)
+- [x] **T024** (SC-002 is met for the project's own files; the rest confirmed by Peter's manual checks on 2026-09-28.) Validate against the Success Criteria: `./gradlew check` green with no new compiler or Gradle warnings, and every SC-001 to SC-006 met in the Results table · (no file)
 
 Manual clean-up for Peter, not a task: deleting `out/ide-tests` in the original clone (29 GB), and removing the merged spec 004 worktree at `.claude/worktrees/004-settings-page` (31 GB) as CLAUDE.md asks for merged branches. Both are his call.
 

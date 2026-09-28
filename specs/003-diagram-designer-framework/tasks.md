@@ -378,7 +378,7 @@ Files: `drawio/src/main/**`, `drawio/src/test/java/**`, `drawio/testdata/**`, `s
 
 - [x] **T115** Rehearse SC-002: follow only the guide to build a two-element designer in a scratch module, fix every gap found in the guide, then delete the scratch module · `docs/diagram-designer-guide.md`
 - [x] **T116** Run `./gradlew check` (every suite, integration tests, Plugin Verifier and the licence check) and check SC-001 to SC-006 against the results · (no file)
-- [ ] **T117** Manual: the quickstart walkthrough in the light and dark themes and at 200 % scale, and the SC-002 timed run by a developer new to the framework, with its time recorded in the pull request · (no file)
+- [x] **T117** Manual: the quickstart walkthrough in the light and dark themes and at 200 % scale, and the SC-002 timed run by a developer new to the framework, with its time recorded in the pull request · (no file)
 
 ---
 

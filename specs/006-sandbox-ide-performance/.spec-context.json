@@ -3,7 +3,7 @@
   "specName": "A Fast Sandbox IDE",
   "branch": "features/006-sandbox-ide-performance",
   "currentStep": "implement",
-  "status": "implementing",
+  "status": "completed",
   "history": [
     {
       "step": "specify",
@@ -280,7 +280,7 @@
       "note": "Cause inferred from the sandbox log of 2026-09-27 10:46-10:50; the after-runs were measured later (quickstart Results), but the thirty-minute session (SC-003) is still unmeasured"
     },
     {
-      "note": "Merged into develop by PR #13; T014's thirty-minute session and T024's SC check stay open for Peter"
+      "note": "Merged into develop by PR #13; Peter's manual checks for T014 and T024 passed on 2026-09-28"
     }
   ],
   "decisions": [
@@ -364,7 +364,7 @@
       "tasks": "T004,T006,T007,T013"
     }
   },
-  "currentTask": "T014",
+  "currentTask": "T024",
   "task_summaries": {
     "T001": {
       "status": "DONE",
