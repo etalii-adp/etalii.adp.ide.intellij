@@ -111,17 +111,18 @@ public class ToolboxTest extends FileEditorManagerTestCase {
             VirtualFile notes = DesignerDriver.createFile(myFixture, "notes.txt", "plain text\n".getBytes(UTF_8));
             FileEditorManager editors = FileEditorManager.getInstance(getProject());
             editors.openFile(notes, true);
-            d.driver().settle();
+            d.driver().settleUntil("the toolbox leaves the designer for a text file", () -> panel().designer() == null);
             assertEquals(List.of(), panel().entries());
             assertTrue("empty after switching to a non-ADP file", panel().emptyStateShown());
 
             editors.openFile(d.driver().file(), true);
-            d.driver().settle();
+            d.driver().settleUntil("the toolbox follows back to the sample designer", () -> panel().designer() == d.designer());
             assertEquals(List.of("task", "decision", "flow", "note"), panel().entries());
             assertSame(d.designer(), panel().designer());
 
             try (var other = DiagramDriver.openText(myFixture, "other.adpother", SampleFiles.read("two-tasks.adpsample"))) {
                 assertNotNull(other.designer());
+                other.driver().settleUntil("the toolbox follows the other designer", () -> panel().designer() == other.designer());
                 assertEquals(List.of("decision", "task"), panel().entries());
                 assertSame(other.designer(), panel().designer());
             }

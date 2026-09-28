@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.UnaryOperator;
 
 import javax.swing.Action;
@@ -441,6 +442,16 @@ public final class DesignerDriver implements AutoCloseable {
     /** Runs pending event-dispatch work: the coalesced re-parse, repaints, invokeLater. */
     public void settle() {
         PlatformTestUtil.dispatchAllInvocationEventsInIdeEventQueue();
+    }
+
+    /**
+     * Runs event-dispatch work until a condition holds, failing after ten seconds. For work the IDE
+     * finishes after the queue first drains, such as following a newly selected editor: selection
+     * events can arrive after {@link #settle()} returns, so assert the state they lead to, not the timing.
+     */
+    public void settleUntil(String what, BooleanSupplier condition) {
+        settle();
+        PlatformTestUtil.waitWithEventsDispatching("never happened: " + what, condition, 10);
     }
 
     /** Close the editor without saving. */

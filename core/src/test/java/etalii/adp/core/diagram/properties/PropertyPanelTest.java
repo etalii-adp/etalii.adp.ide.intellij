@@ -299,6 +299,7 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
             assertSame(d.designer(), panel().designer());
 
             try (var other = DiagramDriver.openText(myFixture, "gadgets.adpgadget", SampleFiles.read("unknown-type.adpsample"))) {
+                other.driver().settleUntil("the panel follows the gadget designer", () -> panel().designer() == other.designer());
                 assertSame(other.designer(), panel().designer());
                 assertEquals(PropertyPanel.NOTHING_SELECTED, panel().emptyText());
                 other.driver().select("z");
@@ -315,12 +316,12 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
             VirtualFile notes = DesignerDriver.createFile(myFixture, "notes.txt", "plain text\n".getBytes(UTF_8));
             FileEditorManager editors = FileEditorManager.getInstance(getProject());
             editors.openFile(notes, true);
-            d.driver().settle();
+            d.driver().settleUntil("the panel leaves the designer for a text file", () -> panel().designer() == null);
             assertNull(panel().designer());
             assertEquals(PropertyPanel.NO_DESIGNER, panel().emptyText());
 
             editors.openFile(d.driver().file(), true);
-            d.driver().settle();
+            d.driver().settleUntil("the panel follows back to the sample designer", () -> panel().designer() == d.designer());
             assertSame(d.designer(), panel().designer());
             assertEquals(List.of(PropertyTableModel.KEY), ids(d.properties()));
             editors.closeFile(notes);
