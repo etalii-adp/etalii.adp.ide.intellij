@@ -19,6 +19,7 @@ import org.junit.runners.JUnit4;
 
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys;
 import com.intellij.testFramework.FileEditorManagerTestCase;
+import com.intellij.testFramework.PlatformTestUtil;
 
 import etalii.adp.core.AdpDataKeys;
 import etalii.adp.core.ViewState;
@@ -154,12 +155,62 @@ public class ViewerInteractionTest extends FileEditorManagerTestCase {
     }
 
     @Test
+    public void opensCentredOnTheRoot() {
+        try (var d = DesignerDriver.open(myFixture, example("freeplane-large-map.mm"))) {
+            MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+            JScrollPane scroll = (JScrollPane) SwingUtilities.getAncestorOfClass(JScrollPane.class, canvas);
+            scroll.setSize(300, 200);
+            scroll.doLayout();
+            scroll.getViewport().doLayout();
+            PlatformTestUtil.dispatchAllEventsInIdeEventQueue();
+
+            Rectangle root = canvas.boundsOf(LayoutTest.designer(d).model().root().key());
+            Rectangle view = scroll.getViewport().getViewRect();
+            int x = Math.max(0, Math.min((int) root.getCenterX() - view.width / 2, canvas.getWidth() - view.width));
+            int y = Math.max(0, Math.min((int) root.getCenterY() - view.height / 2, canvas.getHeight() - view.height));
+            assertEquals("the root is in the middle, as far as the canvas allows", new Point(x, y), view.getLocation());
+        }
+    }
+
+    @Test
+    public void draggingEmptySpacePansAndKeepsTheSelection() {
+        try (var d = DesignerDriver.open(myFixture, example("freeplane-large-map.mm"))) {
+            MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+            JScrollPane scroll = (JScrollPane) SwingUtilities.getAncestorOfClass(JScrollPane.class, canvas);
+            scroll.setSize(300, 200);
+            scroll.doLayout();
+            scroll.getViewport().doLayout();
+            // the canvas centres on the root once it is laid out
+            PlatformTestUtil.dispatchAllEventsInIdeEventQueue();
+            Point before = new Point(100, 100);
+            scroll.getViewport().setViewPosition(before);
+            d.select(LayoutTest.designer(d).model().root().key());
+            List<Object> selected = d.selectedKeys();
+
+            Point from = null;
+            for (int y = before.y + 50; from == null && y < before.y + 200; y += 2) {
+                for (int x = before.x + 50; from == null && x < before.x + 300; x += 2) {
+                    Point at = new Point(x, y);
+                    from = canvas.itemAt(canvas.toDiagram(at)) == null && canvas.anchorAt(canvas.toDiagram(at)) == null ? at : null;
+                }
+            }
+            assertNotNull("some of the view is empty canvas", from);
+            press(canvas, from, new Point(from.x - 40, from.y - 30), 0);
+            // the events are in canvas coordinates, which move as the view scrolls, so only the direction is certain
+            Point after = scroll.getViewport().getViewPosition();
+            assertTrue("the map follows the pointer: " + after, after.x > before.x && after.y > before.y);
+            assertEquals(selected, d.selectedKeys());
+        }
+    }
+
+    @Test
     public void marqueeSelectsTheNodesInside() {
         try (var d = open()) {
             MindMapCanvas canvas = LayoutTest.designer(d).canvas();
             Rectangle area = canvas.boundsOf(key("C")).union(canvas.boundsOf(key("E")));
             area.grow(3, 3);
-            press(canvas, area.getLocation(), new Point((int) area.getMaxX(), (int) area.getMaxY()), 0);
+            // a plain drag on empty canvas pans, so the marquee is dragged with Shift held
+            press(canvas, area.getLocation(), new Point((int) area.getMaxX(), (int) area.getMaxY()), InputEvent.SHIFT_DOWN_MASK);
             assertEquals(Set.of(key("C"), key("E")), Set.copyOf(d.selectedKeys()));
             assertNull("the marquee is gone after release", canvas.marquee());
         }

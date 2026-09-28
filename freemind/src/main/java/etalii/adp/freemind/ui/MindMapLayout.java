@@ -1,5 +1,7 @@
 package etalii.adp.freemind.ui;
 
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
@@ -28,15 +30,16 @@ import etalii.adp.freemind.model.NodeKey;
  * folded, by the file or for display only ({@link ViewState#foldOverride}), hides its children.
  * One pass, linear in the number of drawn nodes.
  * <p>
- * The boxes are in whole pixels, moved so that every box lies inside the canvas with a margin. All
- * distances go through {@link JBUI#scale(int)}.
+ * The boxes are in whole pixels, moved so that every box lies inside the canvas with {@link #room()}
+ * around the map. All distances go through {@link JBUI#scale(int)}.
  */
 public final class MindMapLayout implements DiagramLayout {
 
-    public static final int DEFAULT_HGAP = 20;
+    /** Wider than FreeMind's 20, so a branch fanning out to many children has room to curve. */
+    public static final int DEFAULT_HGAP = 50;
     public static final int DEFAULT_VGAP = 3;
 
-    /** Space around the map, before scaling. */
+    /** Space around the map, before scaling, where there is no screen to size it by. */
     static final int MARGIN = 24;
 
     /** An arrow link between two drawn nodes, with an arrowhead at each end the file asks for one. */
@@ -50,6 +53,18 @@ public final class MindMapLayout implements DiagramLayout {
     @Override
     public Map<Object, Rectangle2D> layout(Diagram diagram, ViewState view, Function<Element, Dimension2D> measure) {
         return diagram.elements().isEmpty() ? Map.of() : new Run(diagram, view, measure).run();
+    }
+
+    /**
+     * The empty space kept on every side of the map, in diagram pixels: a screen's worth, so that any
+     * node, the root included, can be panned to the middle of the view however small the map is.
+     */
+    static Dimension room() {
+        if (GraphicsEnvironment.isHeadless()) {
+            return new Dimension(JBUI.scale(MARGIN), JBUI.scale(MARGIN));
+        }
+        Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+        return new Dimension(Math.max(JBUI.scale(MARGIN), screen.width), Math.max(JBUI.scale(MARGIN), screen.height));
     }
 
     /** Whether an element with children is drawn collapsed: the file's {@code FOLDED}, unless folded or unfolded for display only. */
@@ -100,8 +115,9 @@ public final class MindMapLayout implements DiagramLayout {
             for (Rectangle box : placed.values()) {
                 extent = extent == null ? new Rectangle(box) : extent.union(box);
             }
-            int dx = JBUI.scale(MARGIN) - extent.x;
-            int dy = JBUI.scale(MARGIN) - extent.y;
+            Dimension room = room();
+            int dx = room.width - extent.x;
+            int dy = room.height - extent.y;
             Map<Object, Rectangle2D> moved = new LinkedHashMap<>();
             placed.forEach((key, box) -> moved.put(key, new Rectangle(box.x + dx, box.y + dy, box.width, box.height)));
             return moved;

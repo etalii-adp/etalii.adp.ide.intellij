@@ -1,8 +1,12 @@
 package etalii.adp.freemind.ui;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Point2D;
@@ -11,6 +15,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
 import com.intellij.ui.scale.JBUIScale;
@@ -27,16 +33,99 @@ import etalii.adp.freemind.model.NodeKey;
 
 /**
  * The shared canvas with what only a mind map shows: a tooltip for a node's note, link, fold
- * marker and icons, and where its indicators are, in this component's (zoomed) coordinates.
+ * marker and icons, and where its indicators are, in this component's (zoomed) coordinates. It
+ * opens centred on the root and keeps the map in place on screen as it is laid out again.
  */
 public final class MindMapCanvas extends DiagramCanvas {
 
     private final MindMapDesigner designer;
 
+    private final ComponentListener followRoot = new ComponentAdapter() {
+        @Override
+        public void componentResized(ComponentEvent e) {
+            // after the viewport has laid the canvas out at its new size
+            SwingUtilities.invokeLater(MindMapCanvas.this::followRoot);
+        }
+    };
+    private JViewport watched;
+    private boolean centred;
+    /** Where centring on the root left the view, until the view is scrolled from there. */
+    private Point centredAt;
+    private Point shownRoot;
+    private double shownZoom;
+
     MindMapCanvas(MindMapDesigner designer) {
         super(designer);
         this.designer = designer;
         ToolTipManager.sharedInstance().registerComponent(this);
+        addComponentListener(followRoot);
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        JViewport viewport = viewport();
+        if (viewport != watched) {
+            if (watched != null) {
+                watched.removeComponentListener(followRoot);
+            }
+            watched = viewport;
+            if (viewport != null) {
+                viewport.addComponentListener(followRoot);
+            }
+        }
+    }
+
+    /** The map with {@link MindMapLayout#room()} on its right and below, as the layout keeps it on its left and above. */
+    @Override
+    public Dimension getPreferredSize() {
+        Dimension size = super.getPreferredSize();
+        if (isPreferredSizeSet()) {
+            return size;
+        }
+        Rectangle2D extent = scene().extent();
+        Dimension room = MindMapLayout.room();
+        double zoom = zoom();
+        return new Dimension(Math.max(size.width, (int) Math.ceil((Math.max(0, extent.getMaxX()) + room.width) * zoom)),
+                Math.max(size.height, (int) Math.ceil((Math.max(0, extent.getMaxY()) + room.height) * zoom)));
+    }
+
+    /**
+     * When the map is first shown, scroll so the root is in the middle of the view, and keep it there
+     * as the view is resized until the user scrolls. After that, scroll along when the root moves
+     * because the map grew or shrank on its left or above, so the map stays where it was on screen.
+     * A zoom scrolls itself, so then the root is only noted.
+     */
+    private void followRoot() {
+        JViewport viewport = viewport();
+        MindMap map = designer.model();
+        Rectangle root = map == null ? null : boundsOf(map.root().key());
+        if (viewport == null || root == null || viewport.getExtentSize().width <= 0 || viewport.getExtentSize().height <= 0) {
+            return;
+        }
+        Point centre = new Point((int) root.getCenterX(), (int) root.getCenterY());
+        Dimension extent = viewport.getExtentSize();
+        Point position = viewport.getViewPosition();
+        boolean centring = !centred || position.equals(centredAt);
+        Point target = null;
+        if (centring) {
+            target = new Point(centre.x - extent.width / 2, centre.y - extent.height / 2);
+        } else if (shownRoot != null && zoom() == shownZoom && !centre.equals(shownRoot)) {
+            target = new Point(position.x + centre.x - shownRoot.x, position.y + centre.y - shownRoot.y);
+        }
+        if (target != null) {
+            Dimension view = viewport.getViewSize();
+            viewport.setViewPosition(new Point(Math.max(0, Math.min(target.x, view.width - extent.width)),
+                    Math.max(0, Math.min(target.y, view.height - extent.height))));
+        }
+        centred = true;
+        centredAt = centring ? viewport.getViewPosition() : null;
+        shownRoot = centre;
+        shownZoom = zoom();
+    }
+
+    private JViewport viewport() {
+        return (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, this);
     }
 
     /** The drawn nodes in document order, as the designer shows them. */
