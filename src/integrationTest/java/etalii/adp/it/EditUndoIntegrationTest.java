@@ -140,6 +140,7 @@ class EditUndoIntegrationTest {
             assertTrue(texts[1].contains("TEXT=\"New Node\""), product + ": the new node is in the text");
 
             String before = undoState(driver, opened);
+            awaitDesignerShowing(driver, opened);
             invoke(driver, opened, path[0], "$Undo", false);
             texts[2] = awaitText(driver, opened, texts[0], product, before);
             assertEquals(texts[0], texts[2], product + ": Undo returns the text");
@@ -195,6 +196,67 @@ class EditUndoIntegrationTest {
                     + "\nundo state before Undo:" + before + "\nundo state after:" + after);
         }
         return current;
+    }
+
+    /**
+     * Waits, for at most half a minute, until the designer's canvas is showing, which the action system requires of
+     * the component an action runs with; on CI in IntelliJ IDEA it was sometimes not showing after Add Child Node.
+     * Otherwise fails with what the IDE shows instead.
+     */
+    private static void awaitDesignerShowing(Driver driver, Project project) throws InterruptedException {
+        long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(30);
+        String[] state = new String[1];
+        while (true) {
+            boolean[] showing = new boolean[1];
+            driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
+                VirtualFile map = EditorsKt.findOpenFile(d, "map.mm", project, false);
+                FileEditorManagerRemote editors = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT);
+                CompositeRemote composite = editors.getSelectedEditor(map);
+                showing[0] = composite.designer().view().isShowing();
+                if (!showing[0]) {
+                    try {
+                        state[0] = describe(d, editors, composite);
+                    } catch (RuntimeException e) {
+                        state[0] = "not described: " + e;
+                    }
+                }
+                return Unit.INSTANCE;
+            });
+            if (showing[0]) {
+                return;
+            }
+            if (System.nanoTime() > deadline) {
+                throw new AssertionError("the designer's canvas is not showing after half a minute: " + state[0]);
+            }
+            Thread.sleep(250);
+        }
+    }
+
+    /** What the IDE shows instead of the map's canvas: its editor tabs, its windows, and which of the editor's ancestors is hidden. */
+    private static String describe(Driver d, FileEditorManagerRemote editors, CompositeRemote composite) {
+        ObjectsStatics objects = d.utility(JvmClassMappingKt.getKotlinClass(ObjectsStatics.class), RdTarget.DEFAULT);
+        StringBuilder text = new StringBuilder("selected files [");
+        for (VirtualFile each : editors.getSelectedFiles()) {
+            text.append(each.getName()).append(' ');
+        }
+        text.append("], open files [");
+        for (VirtualFile each : editors.getOpenFiles()) {
+            text.append(each.getName()).append(' ');
+        }
+        text.append("], windows showing [");
+        for (WindowRemote window : d.utility(JvmClassMappingKt.getKotlinClass(WindowStatics.class), RdTarget.DEFAULT).getWindows()) {
+            if (window.isShowing()) {
+                text.append(window.getAccessibleContext().getAccessibleName()).append(" | ");
+            }
+        }
+        text.append("], editor and its ancestors:");
+        AwtComponentRemote component = composite.getComponent();
+        for (int depth = 0; component != null && depth < 30; depth++, component = component.getParent()) {
+            String name = objects.toString(component);
+            text.append("\n  ").append(component.isVisible() ? "visible " : "HIDDEN ").append(component.isShowing() ? "showing " : "not showing ")
+                    .append(name.length() > 160 ? name.substring(0, 160) : name);
+        }
+        return text.toString();
     }
 
     /** The IDE's undo stacks as it dumps them for its own diagnostics, or why they could not be read. */
@@ -287,6 +349,10 @@ class EditUndoIntegrationTest {
     @Remote("com.intellij.openapi.fileEditor.FileEditorManager")
     public interface FileEditorManagerRemote {
         CompositeRemote getSelectedEditor(VirtualFile file);
+
+        VirtualFile[] getSelectedFiles();
+
+        VirtualFile[] getOpenFiles();
     }
 
     @Remote("com.intellij.openapi.fileEditor.FileDocumentManager")
@@ -327,8 +393,24 @@ class EditUndoIntegrationTest {
         String getAccessibleName();
     }
 
+    @Remote("java.awt.Component")
+    public interface AwtComponentRemote {
+        boolean isVisible();
+
+        boolean isShowing();
+
+        AwtComponentRemote getParent();
+    }
+
+    @Remote("java.util.Objects")
+    public interface ObjectsStatics {
+        String toString(Object object);
+    }
+
     @Remote(value = "etalii.adp.core.AdpEditorProvider$Composite", plugin = PLUGIN)
     public interface CompositeRemote {
+        AwtComponentRemote getComponent();
+
         DesignerRemote designer();
     }
 
