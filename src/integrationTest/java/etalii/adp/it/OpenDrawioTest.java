@@ -102,9 +102,9 @@ class OpenDrawioTest {
                 return Unit.INSTANCE;
             });
 
-            DesignerTab.select(driver, opened, FILE, "OpenDrawio");
+            DesignerTab.select(driver, opened, FILE);
             driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
-                DesignerTab.front(d, opened, EditorsKt.findOpenFile(d, FILE, opened, false), "OpenDrawio");
+                DesignerTab.front(d, opened, EditorsKt.findOpenFile(d, FILE, opened, false));
                 ToolWindowRemote toolbox = d.service(JvmClassMappingKt.getKotlinClass(ToolWindowManagerRemote.class), opened, RdTarget.DEFAULT)
                         .getToolWindow("ADP Toolbox");
                 assertNotNull(toolbox, "the ADP Toolbox is registered");
@@ -120,7 +120,7 @@ class OpenDrawioTest {
             assertNotEquals(texts[0], texts[1], "adding from the toolbox changed the diagram");
             assertTrue(texts[1].contains("<mxCell id=\"adp-1\" value=\"\" style=\"rounded=1;whiteSpace=wrap;html=1;\""), "the new shape is in the text");
 
-            DesignerTab.select(driver, opened, FILE, "OpenDrawio");
+            DesignerTab.select(driver, opened, FILE);
             invoke(driver, opened, "$Undo");
             texts[2] = text(driver, opened);
             assertEquals(texts[0], texts[2], "Undo returns the text");
@@ -142,7 +142,7 @@ class OpenDrawioTest {
     private static void invoke(Driver driver, Project project, String actionId) {
         driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
             VirtualFile file = EditorsKt.findOpenFile(d, FILE, project, false);
-            DesignerTab.front(d, project, file, "OpenDrawio");
+            DesignerTab.front(d, project, file);
             DesignerRemote designer = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT)
                     .getSelectedEditor(file).designer();
             ActionManagerKt.invokeAction(d, actionId, true, designer.view(), null, RdTarget.DEFAULT);

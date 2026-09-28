@@ -134,14 +134,14 @@ class EditUndoIntegrationTest {
                 return Unit.INSTANCE;
             });
 
-            DesignerTab.select(driver, opened, "map.mm", "EditUndo " + product);
+            DesignerTab.select(driver, opened, "map.mm");
             invoke(driver, opened, path[0], "etalii.adp.freemind.AddChild");
             texts[1] = text(driver, opened);
             assertNotEquals(texts[0], texts[1], product + ": Add Child Node changed the map");
             assertTrue(texts[1].contains("TEXT=\"New Node\""), product + ": the new node is in the text");
 
             String before = undoState(driver, opened);
-            DesignerTab.select(driver, opened, "map.mm", "EditUndo " + product);
+            DesignerTab.select(driver, opened, "map.mm");
             invoke(driver, opened, path[0], "$Undo", false);
             texts[2] = awaitText(driver, opened, texts[0], product, before);
             assertEquals(texts[0], texts[2], product + ": Undo returns the text");
@@ -171,7 +171,7 @@ class EditUndoIntegrationTest {
     private static void invoke(Driver driver, Project project, String path, String actionId, boolean now) {
         driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
             VirtualFile map = EditorsKt.findOpenFile(d, "map.mm", project, false);
-            DesignerTab.front(d, project, map, "EditUndo");
+            DesignerTab.front(d, project, map);
             DesignerRemote designer = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT)
                     .getSelectedEditor(map).designer();
             ActionManagerKt.invokeAction(d, actionId, now, designer.view(), null, RdTarget.DEFAULT);
