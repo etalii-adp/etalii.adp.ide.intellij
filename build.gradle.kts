@@ -4,11 +4,20 @@ import java.util.Properties
 
 plugins {
     id("java")
+    id("idea")
     id("org.jetbrains.intellij.platform")
 }
 
 group = "etalii.adp"
 version = providers.gradleProperty("pluginVersion").get()
+
+// Generated folders no IDE should index when it imports this build (spec 006 FR-001): the real-IDE
+// tests' former download folder, the sandboxes, and worktrees kept inside the repository.
+idea {
+    module {
+        excludeDirs.addAll(files("out", ".intellijPlatform", ".claude/worktrees"))
+    }
+}
 
 val javaRelease = providers.gradleProperty("javaVersion").get().toInt()
 
@@ -43,7 +52,10 @@ dependencies {
     // The platform plug-in strips Kotlin from the classpath; the Starter framework needs it.
     integrationTestImplementation("org.jetbrains.kotlin:kotlin-stdlib:2.4.0")
     integrationTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2")
-    integrationTestRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // IdeTestsHome is a launcher session listener.
+    integrationTestImplementation("org.junit.platform:junit-platform-launcher")
+    // The Starter framework's dependency injection, which IdeTestsHome rebinds; the version Starter uses.
+    integrationTestImplementation("org.kodein.di:kodein-di-jvm:7.26.1")
     integrationTestRuntimeOnly("junit:junit:4.13.2")
     integrationTestRuntimeOnly("org.jetbrains.teamcity:serviceMessages:2026.3-dsl6")
 }
@@ -88,6 +100,43 @@ tasks.assemble {
     dependsOn(tasks.buildPlugin)
 }
 
+// runIde opens copies of the example files, not this repository (spec 006 R1). Copies are refreshed on
+// every run and files a contributor added are kept.
+val prepareSandboxProject = tasks.register<Copy>("prepareSandboxProject") {
+    description = "Copies the example mind maps and diagrams into the project runIde opens."
+    group = "intellij platform"
+    from("freemind/testdata/examples") { include("*.mm") }
+    from("drawio/testdata/examples") { include("*.drawio") }
+    into(tasks.runIde.flatMap { it.sandboxDirectory.dir("example-project") })
+}
+
+tasks.runIde {
+    dependsOn(prepareSandboxProject)
+    val exampleProject = prepareSandboxProject.map { it.destinationDir.absolutePath }
+    argumentProviders += CommandLineArgumentProvider { listOf(exampleProject.get()) }
+    // The JVM writes dumps to its working directory, which runIde sets to the platform inside the
+    // Gradle cache; keep them with the sandbox's other logs instead (spec 006 R4).
+    val logs = sandboxLogDirectory.map { it.asFile.absolutePath }
+    jvmArgumentProviders += CommandLineArgumentProvider {
+        listOf(
+            "-XX:+HeapDumpOnOutOfMemoryError",
+            "-XX:HeapDumpPath=${logs.get()}",
+            "-XX:ErrorFile=${logs.get()}${File.separator}hs_err_pid%p.log",
+        )
+    }
+}
+
+// Where the real-IDE tests keep the IDEs they download and the folders they run in: one per-user
+// cache shared by every clone and worktree, never the repository (spec 006 R2, FR-009).
+val ideTestsHome: Provider<String> = providers.gradleProperty("adpIdeTestsHome")
+    .orElse(providers.environmentVariable("ADP_IDE_TESTS_HOME"))
+    .orElse(
+        providers.environmentVariable("LOCALAPPDATA")
+            .orElse(providers.environmentVariable("XDG_CACHE_HOME"))
+            .orElse(providers.systemProperty("user.home").map { "$it${File.separator}.cache" })
+            .map { "$it${File.separator}etalii-adp${File.separator}ide-tests-home" }
+    )
+
 val integrationTestTask = tasks.register<Test>("integrationTest") {
     description = "Runs the Starter + Driver suite in real IntelliJ Platform IDEs."
     group = "verification"
@@ -97,6 +146,7 @@ val integrationTestTask = tasks.register<Test>("integrationTest") {
     dependsOn(tasks.buildPlugin)
     systemProperty("adp.plugin.zip", tasks.buildPlugin.flatMap { it.archiveFile }.get().asFile.absolutePath)
     systemProperty("adp.repository", rootDir.absolutePath)
+    systemProperty("adp.ideTests.home", ideTestsHome.get())
     shouldRunAfter(tasks.test)
 }
 
