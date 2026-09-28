@@ -117,7 +117,7 @@ class EditUndoIntegrationTest {
             String[] texts = new String[3];
 
             driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
-                EditorsKt.openFile(d, "map.mm", opened, true, false);
+                EditorsKt.openFile(d, "map.mm", opened, false, false);
                 VirtualFile map = EditorsKt.findOpenFile(d, "map.mm", opened, false);
                 assertNotNull(map, product + ": the map is open");
                 path[0] = map.getPath();
