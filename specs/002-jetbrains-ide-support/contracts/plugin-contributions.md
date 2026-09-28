@@ -8,11 +8,11 @@ shortcuts; changing any of them is a contract change.
 | Element | Value |
 |---|---|
 | `id` | `etalii.adp` |
-| `name` | A Different Perspective (ADP) |
-| `vendor` | EtAlii |
+| `name` | ADP: A Different Perspective |
+| `vendor` | EtAlii, website `https://etalii.net/adp` (`vendor url`) |
 | `idea-version` | `since-build="262"`, no `until-build` |
 | `depends` | `com.intellij.modules.platform` only |
-| `description` | Visual designers for text-based files; first format: FreeMind mind maps. Apache-2.0. |
+| `description` | A family of specialised designers, each an editor on the file's own text: FreeMind mind maps (`.mm`) and draw.io diagrams (`.drawio`), with a shared toolbox and property panel. Links to etalii.net/adp. Apache-2.0. |
 
 ## Editor registration (FR-002, FR-003)
 
@@ -55,7 +55,7 @@ Line separator: the project's default line separator setting. The file opens in 
 ## Actions, keymap and context menu (FR-012, FR-013)
 
 Every action is registered in `plugin.xml` with a default shortcut in the `$default` keymap, so
-it appears under Settings > Keymap > Plug-ins > A Different Perspective (ADP) and can be
+it appears under Settings > Keymap > Plug-ins > ADP: A Different Perspective and can be
 rebound. The canvas also registers each action's current shortcut set on itself
 (`registerCustomShortcutSet`), so the shortcut works while the canvas has focus and never
 elsewhere; outside the designer each action's `update` disables it, so text editors keep their

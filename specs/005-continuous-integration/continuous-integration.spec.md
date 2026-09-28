@@ -11,6 +11,8 @@ The plug-in is built and tested only on a developer's own machine today. The con
 
 This feature adds continuous integration on GitHub that builds, tests and verifies the plug-in for every pull request and every change to `develop`, and makes the installable plug-in available as a download on the repository's GitHub page, so anyone can install it from disk without building it.
 
+**Where it stands (2026-09-28).** Part of this has landed. The Build workflow, `.github/workflows/build.yml` from PR #10 (org spec 001-ci-and-badges), runs on every pull request into `develop`, every push to `develop` and on demand, and the readme shows its badge. Its gating job builds the plug-in, runs the headless tests under a virtual display (some draw on a Swing canvas) and runs plug-in verification, and offers the zip as a run download. The real-IDE tests run in a second job that reports but cannot fail the run (`continue-on-error`) until they are stable on hosted runners. Still to come: the real-IDE tests deciding the result, skip reasons visible on passing runs, the development build, versioned releases, and the readme pointing to Releases. The plan extends `build.yml` rather than replacing it, and keeps its decisions: Zulu rather than Temurin, whose vendor name trips NoPreviousHostIntegrationTest, and Rider verified from its Maven archive (PR #11).
+
 Three roles appear below. A **contributor** is a person or agent who opens a pull request. A **maintainer** reviews and merges pull requests and decides when a version is released. A **user** installs the plug-in in their IDE.
 
 ## User Scenarios & Testing *(mandatory)*
@@ -87,7 +89,7 @@ A maintainer decides that `develop` is ready to be a version, for example 0.1.0.
 
 - Checks for the same pull request are started twice in quick succession: only the latest commit's result counts, and the earlier run may be stopped.
 - A pull request comes from a fork: the checks still run, but they have no access to secrets such as licence keys, and nothing is published from them.
-- Tests that need something CI does not have (the IntelliJ IDEA Ultimate licence key, a FreeMind installation) are skipped, and the skip is visible in the output rather than silent; they never turn a run red or green on their own.
+- Tests that need something CI does not have (an IntelliJ IDEA Ultimate licence in `ADP_IDEA_LICENSE`, a FreeMind installation in `FREEMIND_HOME`) are skipped, and the skip and its reason are visible in the run's output or reports, also on a passing run; a skip never turns a run red or green on its own.
 - A download from JetBrains' servers fails for reasons outside the change: the failure says so in its output, so it is not mistaken for a broken change.
 - Two changes are merged into `develop` close together: the development build ends as the one built from the later commit, never the earlier.
 - The version in the plug-in is not changed between two versioned releases: the second release is refused, since the version already exists.
@@ -102,7 +104,7 @@ A maintainer decides that `develop` is ready to be a version, for example 0.1.0.
 - **FR-001**: Every pull request into `develop` MUST be checked on its latest commit automatically, and on every new commit pushed to it.
 - **FR-002**: Every change that reaches `develop` MUST be checked the same way.
 - **FR-003**: The checks MUST build the plug-in, run the headless test suite and the real-IDE test suite, and verify the plug-in against the IDEs it declares support for, as the constitution's merge rule requires.
-- **FR-004**: The result MUST be shown on the pull request as pass or fail. A failure MUST name the step that failed and link to its output, including test reports.
+- **FR-004**: The result MUST be shown on the pull request as pass or fail. A failure MUST name the step that failed and link to its output, including test reports. Skip reasons MUST be readable on a passing run too.
 - **FR-005**: Tests that cannot run in CI because a secret or local installation is absent MUST be reported as skipped with the reason, not as passed.
 - **FR-006**: A newer commit on the same pull request MUST supersede the result of an older one.
 - **FR-007**: A maintainer MUST be able to run the checks again for a commit without pushing a change.
@@ -154,10 +156,12 @@ A maintainer decides that `develop` is ready to be a version, for example 0.1.0.
 ## Assumptions
 
 - "Available as a download in GitHub" means the repository's Releases page, which users can reach without an account, plus downloads attached to each check run for reviewers. Publishing to the JetBrains Marketplace is out of scope and can follow in its own specification.
+- A pull request's checks build GitHub's merge of the pull request into `develop` (the default checkout), so they test what merging would produce.
+- The run download arrives as a GitHub artifact zip that wraps `etalii-adp-<version>.zip`; the plan decides whether to accept the extra unzip or upload the plug-in unwrapped. Release assets are the bare `etalii-adp-<version>.zip`.
 - The CI is GitHub's own, attached to this repository, because the repository and its pull requests live on GitHub and the org uses no other CI service.
 - There is no branch protection in the org (Peter declined the paid plan), so a failing check cannot block a merge; the checks inform the maintainer, who merges. This matches how every repository in the org already delivers.
 - The version a release carries comes from the plug-in's declared version, which a maintainer raises in a pull request before marking the release; this feature does not bump versions automatically.
 - Signing the plug-in is out of scope; the IDE installs unsigned plug-ins from disk. Signing comes with Marketplace publishing.
-- The real-IDE tests that need an IntelliJ IDEA Ultimate licence run only when the repository has the licence key as a secret; without it they are skipped as FR-005 describes. Whether to add that secret is the maintainer's choice.
-- The full check run downloads the IntelliJ Platform and several IDEs; runs are allowed to cache those downloads between runs, and SC-004's 60 minutes assumes that cache.
+- The real-IDE tests that need an IntelliJ IDEA Ultimate licence run only when the repository has the licence as a secret passed to the tests as `ADP_IDEA_LICENSE`; without it they are skipped as FR-005 describes. Today the workflow passes none. Whether to add that secret is the maintainer's choice.
+- The full check run downloads the IntelliJ Platform and several IDEs; runs are allowed to cache those downloads between runs, and SC-004's 60 minutes assumes that cache. Today setup-gradle caches Gradle and the IntelliJ Platform; the IDEs the real-IDE tests download (`ide-tests-home`) are not cached yet.
 - The same CI approach is expected in the other ADP IDE repositories later; this specification covers only this repository.

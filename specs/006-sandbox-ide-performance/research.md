@@ -6,7 +6,7 @@ Phase 0 of [plan.md](plan.md). Evidence for the cause is in the spec's Context; 
 
 **Decision**: `runIde` passes one project path as a program argument: a folder `example-project` inside the runIde sandbox (`intellijPlatform` sandbox directory). A `prepareSandboxProject` Copy task, run before `runIde`, copies `freemind/testdata/examples/*.mm` and `drawio/testdata/examples/*.drawio` into it on every run, overwriting those files and leaving anything else a contributor added.
 
-**Rationale**: an IntelliJ IDE opens a project path given on its command line instead of reopening the last one, which is what brought this repository back (spec Context 1). Copies keep the vendored test data clean: the working tree currently has sandbox edits to `drawio/testdata/examples/uml_1.drawio` and `workflow_1.drawio`, which is what opening the repository invites. `RunIdeTask` is a `JavaExec`, so `args(...)` and `dependsOn` are all it takes (checked in the IntelliJ Platform Gradle Plugin 2.19.0 sources). `freeplane-large-map.mm` (625 nodes, 97 KB) comes along, so a large map is at hand for a manual check.
+**Rationale**: an IntelliJ IDE opens a project path given on its command line instead of reopening the last one, which is what brought this repository back (spec Context 1). Copies keep the vendored test data clean: the working tree currently has sandbox edits to `drawio/testdata/examples/uml_1.drawio` and `workflow_1.drawio`, which is what opening the repository invites. `RunIdeTask` is a `JavaExec`, so an argument provider and `dependsOn` are all it takes (checked in the IntelliJ Platform Gradle Plugin 2.19.0 sources). `freeplane-large-map.mm` (625 nodes, 97 KB) comes along, so a large map is at hand for a manual check.
 
 **Alternatives considered**: opening `freemind/testdata/examples` directly, rejected because sandbox edits would change test data; a committed `sandbox-project/` folder, rejected because it duplicates vendored examples and their licences; the welcome screen, rejected by Peter.
 
@@ -24,7 +24,7 @@ Phase 0 of [plan.md](plan.md). Evidence for the cause is in the spec's Context; 
 
 ## R3. Excluding generated folders from any project the sandbox opens
 
-**Decision**: apply Gradle's built-in `idea` plug-in in the root build and add `out`, `.intellijPlatform`, `.claude/worktrees` and `build` of every module to `idea.module.excludeDirs`.
+**Decision**: apply Gradle's built-in `idea` plug-in in the root build and add `out`, `.intellijPlatform` and `.claude/worktrees` to `idea.module.excludeDirs`. Module `build` folders are left to the IDE's Gradle import, which excludes them itself.
 
 **Rationale**: FR-001 applies to any project the sandbox opens, including this repository opened on purpose. `.claude/worktrees` is included because worktrees are created there and each is a full checkout; the merged spec 004 worktree there holds 31 GB today. IntelliJ's Gradle import reads `excludeDirs` from the `idea` plug-in model, so the exclusion travels with the build and needs no committed `.idea` files (only local, untracked ones exist). It also protects a contributor's main IDE. `idea` ships with Gradle, so no dependency is added (principle V).
 
@@ -32,7 +32,7 @@ Phase 0 of [plan.md](plan.md). Evidence for the cause is in the spec's Context; 
 
 ## R4. Heap dumps and crash logs
 
-**Decision**: `runIde` gets two JVM arguments through a `jvmArgumentProviders` entry: `-XX:HeapDumpPath=<sandboxLogDirectory>` and `-XX:ErrorFile=<sandboxLogDirectory>/hs_err_pid%p.log`. The existing `-XX:+HeapDumpOnOutOfMemoryError` stays (Peter: keep them).
+**Decision**: `runIde` gets two JVM arguments through a `jvmArgumentProviders` entry: `-XX:HeapDumpPath=<sandboxLogDirectory>` and `-XX:ErrorFile=<sandboxLogDirectory>/hs_err_pid%p.log`. The same provider also passes `-XX:+HeapDumpOnOutOfMemoryError` (Peter: keep them).
 
 **Rationale**: the JVM writes a dump without a path into its working directory, and `RunIdeTask` sets the working directory to the unpacked platform in the Gradle cache (`workingDir = platformPath.toFile()` in `RunIdeTask.kt`). That is how a 3 GB dump reached the Gradle cache. A directory as `HeapDumpPath` gives `java_pid<pid>.hprof` inside it. The log folder is where freeze reports and `idea.log` already are, so all evidence of one failure is in one place (US2), and it is outside the Gradle cache (SC-005).
 

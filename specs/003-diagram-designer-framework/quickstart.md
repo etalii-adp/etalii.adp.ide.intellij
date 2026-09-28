@@ -20,14 +20,14 @@ How to check that the feature works. The automated parts run with `./gradlew che
 
 | Story | Steps | Expected |
 |---|---|---|
-| US1 view | Open `drawio/testdata/examples/flowchart_1.drawio`. | Shapes, dashed and curved edges, arrows and labels as in draw.io. Switch the theme: colours stay readable. |
-| US1 fallback | Open `drawio/testdata/examples/compressed.drawio`. | The text view, with a banner explaining that compressed pages are not supported. |
-| US2 edit | Open View > Tool Windows > ADP Toolbox. Drag "Rectangle" onto the canvas. Drag between two anchors. Move, resize, delete. Press Undo until the file is unchanged. | Each step is one Undo entry, and the file is marked modified. After undoing everything, `git diff` is empty. |
+| US1 view | In the `example-project` that runIde opens (copies of `drawio/testdata/examples/` and `freemind/testdata/examples/`), open `flowchart_1.drawio`. | Shapes, dashed and curved edges, arrows and labels as in draw.io. Switch the theme: colours stay readable. |
+| US1 fallback | Open `compressed.drawio`. | The text view, with a banner explaining that compressed pages are not supported. |
+| US2 edit | Open View > Tool Windows > ADP Toolbox. Drag "Rectangle" onto the canvas. Drag between two anchors. Move, resize, delete. Press Undo until the file is unchanged. | Each step is one Undo entry, and the file is marked modified. After undoing everything, the copy equals the original (`git diff --no-index` against `drawio/testdata/examples/` is empty). |
 | US2 refusal | In FreeMind, drag "Node" from the toolbox onto empty canvas. | Nothing is added. A balloon says "a node needs a parent". |
 | US3 panel | Open ADP Properties. Select a draw.io shape and change its fill colour. Select two shapes and change the label. | The canvas updates. Each edit is one Undo. The Id row is read-only. |
 | US3 in place | Double-click an edge label. | An in-place field opens. Enter commits, Escape cancels. |
-| US4 lanes | Open `drawio/testdata/examples/cross_functional_flowchart_1.drawio`. Zoom in with Ctrl+wheel. Drag a shape into another lane. | Lanes scale with the content. The shape's `parent` in the file changes and its coordinates become relative to the new lane, in one Undo step. |
-| FreeMind | Open any `freemind/testdata/examples/*.mm`. Use the existing actions, the toolbox and the panel. | Behaviour and saved bytes are as before the migration. The panel edits text, colour, folded and link. |
+| US4 lanes | Open `cross_functional_flowchart_1.drawio`. Zoom in with Ctrl+wheel. Drag a shape into another lane. | Lanes scale with the content. The shape's `parent` in the file changes and its coordinates become relative to the new lane, in one Undo step. |
+| FreeMind | Open any `*.mm` in `example-project`. Use the existing actions, the toolbox and the panel. | Behaviour and saved bytes are as before the migration. The panel edits text, colour, folded and link. |
 
 ## 3. Manual checks
 
