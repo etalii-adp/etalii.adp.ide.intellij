@@ -103,6 +103,16 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
         return rows.rows().stream().map(PropertyRow::id).toList();
     }
 
+    private boolean hasRow(String propertyId) {
+        JTable table = panel().table();
+        for (int row = 0; row < table.getRowCount(); row++) {
+            if (propertyId.equals(panel().propertyId(row))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private int rowOf(String propertyId) {
         JTable table = panel().table();
         for (int row = 0; row < table.getRowCount(); row++) {
@@ -172,6 +182,8 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
     private void roundTrip(String property, String value, String expected) {
         try (var d = DiagramDriver.openText(myFixture, property + ".adpsample", SampleFiles.read("two-tasks.adpsample"))) {
             d.driver().select("a");
+            d.driver().settleUntil("the panel shows " + property + " for the new designer",
+                    () -> panel().designer() == d.designer() && hasRow(property));
             String before = d.driver().text();
             String was = d.properties().row(property).value();
 
