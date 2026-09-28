@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -110,9 +111,11 @@ class EditUndoIntegrationTest {
         }
 
         BackgroundRun run = runIdeWithDriver(context);
+        Throwable failure = null;
         try {
             Driver driver = run.getDriver();
             Project opened = waitForProject(driver);
+            awaitIgnoreFile(project);
             String[] path = new String[1];
             String[] texts = new String[3];
 
@@ -131,13 +134,16 @@ class EditUndoIntegrationTest {
                 return Unit.INSTANCE;
             });
 
+            DesignerTab.select(driver, opened, "map.mm");
             invoke(driver, opened, path[0], "etalii.adp.freemind.AddChild");
             texts[1] = text(driver, opened);
             assertNotEquals(texts[0], texts[1], product + ": Add Child Node changed the map");
             assertTrue(texts[1].contains("TEXT=\"New Node\""), product + ": the new node is in the text");
 
-            invoke(driver, opened, path[0], "$Undo");
-            texts[2] = text(driver, opened);
+            String before = undoState(driver, opened);
+            DesignerTab.select(driver, opened, "map.mm");
+            invoke(driver, opened, path[0], "$Undo", false);
+            texts[2] = awaitText(driver, opened, texts[0], product, before);
             assertEquals(texts[0], texts[2], product + ": Undo returns the text");
 
             driver.withContext(OnDispatcher.EDT, LockSemantics.WRITE_ACTION, d -> {
@@ -145,20 +151,88 @@ class EditUndoIntegrationTest {
                 return Unit.INSTANCE;
             });
             assertArrayEquals(original, Files.readAllBytes(Path.of(path[0])), product + ": the saved file has its original bytes");
+        } catch (Throwable t) {
+            failure = t;
+            throw t;
         } finally {
-            closeIdeAndWait(run);
+            closeIdeAndWait(run, failure);
         }
     }
 
     /** Runs an action through the action system with the designer's canvas as its context, as its shortcut would. */
     private static void invoke(Driver driver, Project project, String path, String actionId) {
+        invoke(driver, project, path, actionId, true);
+    }
+
+    /**
+     * The same, with {@code now} false for an action that may ask something: it is then queued as a key press
+     * queues it, and a modal dialog it opens cannot hold the Driver's call until the IDE is killed.
+     */
+    private static void invoke(Driver driver, Project project, String path, String actionId, boolean now) {
         driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
             VirtualFile map = EditorsKt.findOpenFile(d, "map.mm", project, false);
+            DesignerTab.front(d, project, map);
             DesignerRemote designer = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT)
                     .getSelectedEditor(map).designer();
-            ActionManagerKt.invokeAction(d, actionId, true, designer.view(), null, RdTarget.DEFAULT);
+            ActionManagerKt.invokeAction(d, actionId, now, designer.view(), null, RdTarget.DEFAULT);
             return Unit.INSTANCE;
         });
+    }
+
+    /**
+     * The map's text once it is {@code expected}, or after a minute whatever it is then. When the text has not
+     * come back, the failure names the dialogs the IDE is showing and its undo state before and after, and closes
+     * the dialogs so the IDE can still be shut down.
+     */
+    private static String awaitText(Driver driver, Project project, String expected, String product, String before) throws InterruptedException {
+        long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.MINUTES.toNanos(1);
+        String current = text(driver, project);
+        while (!expected.equals(current) && System.nanoTime() < deadline) {
+            Thread.sleep(500);
+            current = text(driver, project);
+        }
+        if (!expected.equals(current)) {
+            String after = undoState(driver, project);
+            List<String> dialogs = closeDialogs(driver);
+            throw new AssertionError(product + ": Undo did not return the text within a minute; dialogs showing: " + dialogs
+                    + "\nundo state before Undo:" + before + "\nundo state after:" + after);
+        }
+        return current;
+    }
+
+    /** The IDE's undo stacks as it dumps them for its own diagnostics, or why they could not be read. */
+    private static String undoState(Driver driver, Project project) {
+        try {
+            String[] state = new String[1];
+            driver.withContext(OnDispatcher.EDT, LockSemantics.READ_ACTION, d -> {
+                state[0] = d.utility(JvmClassMappingKt.getKotlinClass(UndoManagerStatics.class), RdTarget.DEFAULT).getInstance(project)
+                        .dumpState(null, "real-IDE test");
+                return Unit.INSTANCE;
+            });
+            return state[0];
+        } catch (RuntimeException e) {
+            return " not read: " + e;
+        }
+    }
+
+    /** Closes every showing window with an owner, which leaves the IDE frame, and gives their titles. */
+    private static List<String> closeDialogs(Driver driver) {
+        List<String> titles = new java.util.ArrayList<>();
+        try {
+            driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
+                for (WindowRemote window : d.utility(JvmClassMappingKt.getKotlinClass(WindowStatics.class), RdTarget.DEFAULT).getWindows()) {
+                    // a dialog has an owner, the IDE frame has none
+                    if (window.isShowing() && window.getOwner() != null) {
+                        titles.add(window.getAccessibleContext().getAccessibleName());
+                        window.dispose();
+                    }
+                }
+                return Unit.INSTANCE;
+            });
+        } catch (RuntimeException e) {
+            titles.add("not read: " + e);
+        }
+        return titles;
     }
 
     private static String text(Driver driver, Project project) {
@@ -172,6 +246,19 @@ class EditUndoIntegrationTest {
 
     private static Document document(Driver driver, VirtualFile file) {
         return driver.service(JvmClassMappingKt.getKotlinClass(FileDocumentManagerRemote.class), RdTarget.DEFAULT).getDocument(file);
+    }
+
+    /**
+     * Waits, for at most a minute, until the IDE has written {@code .idea/.gitignore} into the new project,
+     * which it does on its own shortly after opening it. That write is a global undoable change: an edit made
+     * before it lands under it on the undo stack, and Undo then asks whether to undo the new file first.
+     */
+    private static void awaitIgnoreFile(Path project) throws InterruptedException {
+        Path file = project.resolve(".idea").resolve(".gitignore");
+        long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.MINUTES.toNanos(1);
+        while (!Files.exists(file) && System.nanoTime() < deadline) {
+            Thread.sleep(250);
+        }
     }
 
     /** The project the IDE opens on start, once it is open. */
@@ -210,6 +297,37 @@ class EditUndoIntegrationTest {
         Document getDocument(VirtualFile file);
 
         void saveAllDocuments();
+    }
+
+    @Remote("com.intellij.openapi.command.undo.UndoManager")
+    public interface UndoManagerStatics {
+        UndoManagerImplRemote getInstance(Project project);
+    }
+
+    @Remote("com.intellij.openapi.command.impl.UndoManagerImpl")
+    public interface UndoManagerImplRemote {
+        String dumpState(Object editor, String title);
+    }
+
+    @Remote("java.awt.Window")
+    public interface WindowStatics {
+        WindowRemote[] getWindows();
+    }
+
+    @Remote("java.awt.Window")
+    public interface WindowRemote {
+        boolean isShowing();
+
+        WindowRemote getOwner();
+
+        AccessibleContextRemote getAccessibleContext();
+
+        void dispose();
+    }
+
+    @Remote("javax.accessibility.AccessibleContext")
+    public interface AccessibleContextRemote {
+        String getAccessibleName();
     }
 
     @Remote(value = "etalii.adp.core.AdpEditorProvider$Composite", plugin = PLUGIN)
@@ -269,11 +387,22 @@ class EditUndoIntegrationTest {
         return (BackgroundRun) method.invoke(null, arguments);
     }
 
-    private static void closeIdeAndWait(BackgroundRun run) throws ReflectiveOperationException {
+    /**
+     * Closes the IDE. When the test already failed, a failure to close is added to that failure rather than
+     * replacing it: an IDE killed at the end of its run reports only the kill, which hides what the test was doing.
+     */
+    private static void closeIdeAndWait(BackgroundRun run, Throwable failure) throws ReflectiveOperationException {
         Method close = Arrays.stream(BackgroundRun.class.getMethods())
                 .filter(m -> m.getName().startsWith("closeIdeAndWait") && !m.getName().endsWith("$default") && m.getParameterCount() == 2)
                 .findFirst().orElseThrow(() -> new NoSuchMethodException("closeIdeAndWait"));
-        close.invoke(run, DurationKt.toDuration(2, DurationUnit.MINUTES), false);
+        try {
+            close.invoke(run, DurationKt.toDuration(2, DurationUnit.MINUTES), false);
+        } catch (InvocationTargetException e) {
+            if (failure == null) {
+                throw e;
+            }
+            failure.addSuppressed(e.getCause());
+        }
     }
 
     private static Object defaultValue(Class<?> type) {

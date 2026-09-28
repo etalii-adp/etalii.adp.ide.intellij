@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -79,9 +80,11 @@ class OpenDrawioTest {
         context.getPluginConfigurator().installPluginFromPath(zip);
 
         BackgroundRun run = runIdeWithDriver(context);
+        Throwable failure = null;
         try {
             Driver driver = run.getDriver();
             Project opened = waitForProject(driver);
+            awaitIgnoreFile(project);
             String[] path = new String[1];
             String[] texts = new String[3];
 
@@ -96,7 +99,12 @@ class OpenDrawioTest {
                 assertEquals("draw.io Designer", composite.getName());
                 assertTrue(composite.designer().isEditable(), "the diagram can be edited");
                 texts[0] = document(d, file).getText();
+                return Unit.INSTANCE;
+            });
 
+            DesignerTab.select(driver, opened, FILE);
+            driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
+                DesignerTab.front(d, opened, EditorsKt.findOpenFile(d, FILE, opened, false));
                 ToolWindowRemote toolbox = d.service(JvmClassMappingKt.getKotlinClass(ToolWindowManagerRemote.class), opened, RdTarget.DEFAULT)
                         .getToolWindow("ADP Toolbox");
                 assertNotNull(toolbox, "the ADP Toolbox is registered");
@@ -112,6 +120,7 @@ class OpenDrawioTest {
             assertNotEquals(texts[0], texts[1], "adding from the toolbox changed the diagram");
             assertTrue(texts[1].contains("<mxCell id=\"adp-1\" value=\"\" style=\"rounded=1;whiteSpace=wrap;html=1;\""), "the new shape is in the text");
 
+            DesignerTab.select(driver, opened, FILE);
             invoke(driver, opened, "$Undo");
             texts[2] = text(driver, opened);
             assertEquals(texts[0], texts[2], "Undo returns the text");
@@ -121,8 +130,11 @@ class OpenDrawioTest {
                 return Unit.INSTANCE;
             });
             assertArrayEquals(original, Files.readAllBytes(Path.of(path[0])), "the saved file has its original bytes");
+        } catch (Throwable t) {
+            failure = t;
+            throw t;
         } finally {
-            closeIdeAndWait(run);
+            closeIdeAndWait(run, failure);
         }
     }
 
@@ -130,6 +142,7 @@ class OpenDrawioTest {
     private static void invoke(Driver driver, Project project, String actionId) {
         driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
             VirtualFile file = EditorsKt.findOpenFile(d, FILE, project, false);
+            DesignerTab.front(d, project, file);
             DesignerRemote designer = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT)
                     .getSelectedEditor(file).designer();
             ActionManagerKt.invokeAction(d, actionId, true, designer.view(), null, RdTarget.DEFAULT);
@@ -148,6 +161,19 @@ class OpenDrawioTest {
 
     private static Document document(Driver driver, VirtualFile file) {
         return driver.service(JvmClassMappingKt.getKotlinClass(FileDocumentManagerRemote.class), RdTarget.DEFAULT).getDocument(file);
+    }
+
+    /**
+     * Waits, for at most a minute, until the IDE has written {@code .idea/.gitignore} into the new project,
+     * which it does on its own shortly after opening it. That write is a global undoable change: an edit made
+     * before it lands under it on the undo stack, and Undo then asks whether to undo the new file first.
+     */
+    private static void awaitIgnoreFile(Path project) throws InterruptedException {
+        Path file = project.resolve(".idea").resolve(".gitignore");
+        long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.MINUTES.toNanos(1);
+        while (!Files.exists(file) && System.nanoTime() < deadline) {
+            Thread.sleep(250);
+        }
     }
 
     /** The project the IDE opens on start, once it is open. */
@@ -259,11 +285,22 @@ class OpenDrawioTest {
         return (BackgroundRun) method.invoke(null, arguments);
     }
 
-    private static void closeIdeAndWait(BackgroundRun run) throws ReflectiveOperationException {
+    /**
+     * Closes the IDE. When the test already failed, a failure to close is added to that failure rather than
+     * replacing it: an IDE killed at the end of its run reports only the kill, which hides what the test was doing.
+     */
+    private static void closeIdeAndWait(BackgroundRun run, Throwable failure) throws ReflectiveOperationException {
         Method close = Arrays.stream(BackgroundRun.class.getMethods())
                 .filter(m -> m.getName().startsWith("closeIdeAndWait") && !m.getName().endsWith("$default") && m.getParameterCount() == 2)
                 .findFirst().orElseThrow(() -> new NoSuchMethodException("closeIdeAndWait"));
-        close.invoke(run, DurationKt.toDuration(2, DurationUnit.MINUTES), false);
+        try {
+            close.invoke(run, DurationKt.toDuration(2, DurationUnit.MINUTES), false);
+        } catch (InvocationTargetException e) {
+            if (failure == null) {
+                throw e;
+            }
+            failure.addSuppressed(e.getCause());
+        }
     }
 
     private static Object defaultValue(Class<?> type) {

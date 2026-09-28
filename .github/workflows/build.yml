@@ -6,10 +6,9 @@
 #
 # Some headless tests draw on a Swing canvas, so this job also runs under xvfb-run.
 #
-# The real-IDE tests run in their own job. They are not yet stable on hosted runners (a different IntelliJ IDEA
-# test fails from run to run), so that job reports its result but cannot fail the workflow (continue-on-error).
-# Making them stable, and moving them back into the build job, is spec 005's work. Both jobs give xvfb-run a
-# full-size screen: its default 640x480x8 screen leaves editor components "not showing".
+# The real-IDE tests run in their own job, beside the build job rather than after it, and fail the workflow like it
+# does. When they fail, the job keeps each IDE's log. Both jobs give xvfb-run a full-size screen: its default
+# 640x480x8 screen leaves editor components "not showing".
 #
 # What else this repository's CI does (development builds, versioned releases) is spec 005's to decide.
 name: Build
@@ -58,7 +57,6 @@ jobs:
 
   real-ide-tests:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v6
@@ -67,6 +65,9 @@ jobs:
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v6
       - name: Run the real-IDE tests
+        # The IDEs the tests download and the folders they run in, where the IDE logs are kept from.
+        env:
+          ADP_IDE_TESTS_HOME: ${{ runner.temp }}/ide-tests-home
         run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' ./gradlew integrationTest
       - name: Keep the test reports
         if: failure()
@@ -74,3 +75,11 @@ jobs:
         with:
           name: real-ide-test-reports
           path: '**/build/reports/'
+      # Each IDE's own log, and the thread dumps the Starter framework takes before it kills a hung IDE.
+      - name: Keep the IDE logs
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: real-ide-logs
+          path: ${{ runner.temp }}/ide-tests-home/out/ide-tests/tests/**/log/
+          if-no-files-found: ignore
