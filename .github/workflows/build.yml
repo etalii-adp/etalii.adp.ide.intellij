@@ -82,6 +82,22 @@ jobs:
         with:
           name: real-ide-test-reports-${{ matrix.attempt }}
           path: '**/build/reports/'
+      # TEMPORARY: where each IDE's event dispatch thread was when it was dumped, readable in the job log.
+      - name: Show the IDEs' event dispatch threads
+        if: failure()
+        run: |
+          shopt -s globstar nullglob
+          tests="$RUNNER_TEMP/ide-tests-home/out/ide-tests/tests"
+          find "$tests" -path '*/log/*' -type f -printf '%s %p\n' | grep -v '/log/jbr/' | head -400
+          for f in "$tests"/**/log/**/*[Tt]hread*; do
+            [ -f "$f" ] || continue
+            echo "=== $f"
+            awk '/^"AWT-EventQueue/{p=1} p{print; n++} p&&(/^$/||n>80){exit}' "$f"
+          done
+          for f in "$tests"/EditUndo*/**/log/idea.log; do
+            echo "=== $f"
+            grep -n -E 'ERROR|WARN .*(Undo|undo|Modal|modal|Dialog)' "$f" | head -80
+          done
       # Each IDE's own log, and the thread dumps the Starter framework takes before it kills a hung IDE.
       - name: Keep the IDE logs
         if: failure()
