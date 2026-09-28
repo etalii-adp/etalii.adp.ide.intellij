@@ -3,7 +3,7 @@
   "specName": "ADP Settings Page",
   "branch": "features/004-adp-settings-page",
   "currentStep": "implement",
-  "status": "implementing",
+  "status": "completed",
   "history": [
     {
       "step": "specify",
@@ -474,6 +474,21 @@
       "kind": "complete",
       "by": "ai",
       "at": "2026-09-27T08:13:17.867Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "task": "T053",
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-28T19:05:55.645Z"
+    },
+    {
+      "step": "implement",
+      "substep": null,
+      "kind": "complete",
+      "by": "ai",
+      "at": "2026-09-28T19:05:55.877Z"
     }
   ],
   "concerns": [
@@ -738,7 +753,7 @@
       "tests": "core/src/test/java/etalii/adp/core/settings/SettingsPagePerformanceTest.java"
     }
   },
-  "currentTask": "T051",
+  "currentTask": "T053",
   "task_summaries": {
     "T001": {
       "status": "DONE",
@@ -1090,6 +1105,10 @@
       "files": [
         "src/integrationTest/java/etalii/adp/it/SettingsPageIntegrationTest.java"
       ]
+    },
+    "T053": {
+      "status": "DONE",
+      "did": "gradlew check (integrationTest included) exited 0 on 5cdda70; manual quickstart walk in runIde confirmed by Peter on 2026-09-28"
     }
   },
   "last_action": "All tasks but T051 and T053 done; gradlew test, verifyPlugin and verifyDependencyLicences exit 0; integrationTest awaiting permission",

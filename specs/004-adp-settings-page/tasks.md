@@ -196,7 +196,7 @@ Files: `core/test/…/sample/BundledSampleProvider.java` and the test below. Ren
 **⟶ Wait for Wave 1 to finish, then:**
 
 - [x] **T052** Trace every FR and SC to the test and file that shows it, against the code rather than this list, and read two traces back to their artefacts · (no file)
-- [ ] **T053** Run `./gradlew check` and `./gradlew integrationTest`, each exit code captured, then walk [quickstart.md](quickstart.md) in `./gradlew runIde` · (no file)
+- [x] **T053** Run `./gradlew check` and `./gradlew integrationTest`, each exit code captured, then walk [quickstart.md](quickstart.md) in `./gradlew runIde` · (no file) · manual walk confirmed by Peter on 2026-09-28
 
 ---
 
