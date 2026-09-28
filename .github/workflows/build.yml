@@ -82,6 +82,15 @@ jobs:
         with:
           name: real-ide-test-reports-${{ matrix.attempt }}
           path: '**/build/reports/'
+      # TEMPORARY: which editor tab the IDEs selected instead of a test's designer, readable in the job log.
+      - name: Show the editor tabs the tests had to select again
+        if: always()
+        run: |
+          cat "$RUNNER_TEMP/ide-tests-home/reselections.txt" 2>/dev/null | sort | uniq -c | head -40 || true
+          for f in "$RUNNER_TEMP"/ide-tests-home/out/ide-tests/tests/IU-*/*/log/idea.log; do
+            echo "=== $f"
+            grep -n -i -E 'whats.?new|onboarding|welcome|tip of the day|FileEditorManager' "$f" | head -20 || true
+          done
       # TEMPORARY: where each IDE's event dispatch thread was when it was dumped, readable in the job log.
       - name: Show the IDEs' event dispatch threads
         if: failure()

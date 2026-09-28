@@ -99,7 +99,11 @@ class OpenDrawioTest {
                 assertEquals("draw.io Designer", composite.getName());
                 assertTrue(composite.designer().isEditable(), "the diagram can be edited");
                 texts[0] = document(d, file).getText();
+                return Unit.INSTANCE;
+            });
 
+            DesignerTab.select(driver, opened, FILE, "OpenDrawio");
+            driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
                 ToolWindowRemote toolbox = d.service(JvmClassMappingKt.getKotlinClass(ToolWindowManagerRemote.class), opened, RdTarget.DEFAULT)
                         .getToolWindow("ADP Toolbox");
                 assertNotNull(toolbox, "the ADP Toolbox is registered");
@@ -115,7 +119,7 @@ class OpenDrawioTest {
             assertNotEquals(texts[0], texts[1], "adding from the toolbox changed the diagram");
             assertTrue(texts[1].contains("<mxCell id=\"adp-1\" value=\"\" style=\"rounded=1;whiteSpace=wrap;html=1;\""), "the new shape is in the text");
 
-            awaitDesignerShowing(driver, opened);
+            DesignerTab.select(driver, opened, FILE, "OpenDrawio");
             invoke(driver, opened, "$Undo");
             texts[2] = text(driver, opened);
             assertEquals(texts[0], texts[2], "Undo returns the text");
@@ -142,40 +146,6 @@ class OpenDrawioTest {
             ActionManagerKt.invokeAction(d, actionId, true, designer.view(), null, RdTarget.DEFAULT);
             return Unit.INSTANCE;
         });
-    }
-
-    /**
-     * Waits, for at most half a minute, until the designer's canvas is showing, which the action system requires of
-     * the component an action runs with; on CI it was sometimes not showing right after the toolbox added a shape.
-     * Otherwise fails with what the IDE shows instead.
-     */
-    private static void awaitDesignerShowing(Driver driver, Project project) throws InterruptedException {
-        long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(30);
-        String[] state = new String[1];
-        while (true) {
-            boolean[] showing = new boolean[1];
-            driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
-                VirtualFile file = EditorsKt.findOpenFile(d, FILE, project, false);
-                FileEditorManagerRemote editors = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT);
-                CompositeRemote composite = editors.getSelectedEditor(file);
-                Component view = composite.designer().view();
-                showing[0] = view.isShowing();
-                List<String> selected = new java.util.ArrayList<>();
-                for (VirtualFile each : editors.getSelectedFiles()) {
-                    selected.add(each.getName());
-                }
-                state[0] = "selected files " + selected + ", composite " + composite.getName() + " showing " + composite.getComponent().isShowing()
-                        + ", canvas displayable " + view.isDisplayable() + ", canvas parent showing " + view.getParent().isShowing();
-                return Unit.INSTANCE;
-            });
-            if (showing[0]) {
-                return;
-            }
-            if (System.nanoTime() > deadline) {
-                throw new AssertionError("the designer's canvas is not showing after half a minute: " + state[0]);
-            }
-            Thread.sleep(250);
-        }
     }
 
     private static String text(Driver driver, Project project) {
@@ -233,8 +203,6 @@ class OpenDrawioTest {
     @Remote("com.intellij.openapi.fileEditor.FileEditorManager")
     public interface FileEditorManagerRemote {
         CompositeRemote getSelectedEditor(VirtualFile file);
-
-        VirtualFile[] getSelectedFiles();
     }
 
     @Remote("com.intellij.openapi.fileEditor.FileDocumentManager")
@@ -278,8 +246,6 @@ class OpenDrawioTest {
     @Remote(value = "etalii.adp.core.AdpEditorProvider$Composite", plugin = PLUGIN)
     public interface CompositeRemote {
         String getName();
-
-        Component getComponent();
 
         DesignerRemote designer();
     }
