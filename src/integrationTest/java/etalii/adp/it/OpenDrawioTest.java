@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -79,6 +80,7 @@ class OpenDrawioTest {
         context.getPluginConfigurator().installPluginFromPath(zip);
 
         BackgroundRun run = runIdeWithDriver(context);
+        Throwable failure = null;
         try {
             Driver driver = run.getDriver();
             Project opened = waitForProject(driver);
@@ -121,8 +123,11 @@ class OpenDrawioTest {
                 return Unit.INSTANCE;
             });
             assertArrayEquals(original, Files.readAllBytes(Path.of(path[0])), "the saved file has its original bytes");
+        } catch (Throwable t) {
+            failure = t;
+            throw t;
         } finally {
-            closeIdeAndWait(run);
+            closeIdeAndWait(run, failure);
         }
     }
 
@@ -259,11 +264,22 @@ class OpenDrawioTest {
         return (BackgroundRun) method.invoke(null, arguments);
     }
 
-    private static void closeIdeAndWait(BackgroundRun run) throws ReflectiveOperationException {
+    /**
+     * Closes the IDE. When the test already failed, a failure to close is added to that failure rather than
+     * replacing it: an IDE killed at the end of its run reports only the kill, which hides what the test was doing.
+     */
+    private static void closeIdeAndWait(BackgroundRun run, Throwable failure) throws ReflectiveOperationException {
         Method close = Arrays.stream(BackgroundRun.class.getMethods())
                 .filter(m -> m.getName().startsWith("closeIdeAndWait") && !m.getName().endsWith("$default") && m.getParameterCount() == 2)
                 .findFirst().orElseThrow(() -> new NoSuchMethodException("closeIdeAndWait"));
-        close.invoke(run, DurationKt.toDuration(2, DurationUnit.MINUTES), false);
+        try {
+            close.invoke(run, DurationKt.toDuration(2, DurationUnit.MINUTES), false);
+        } catch (InvocationTargetException e) {
+            if (failure == null) {
+                throw e;
+            }
+            failure.addSuppressed(e.getCause());
+        }
     }
 
     private static Object defaultValue(Class<?> type) {
