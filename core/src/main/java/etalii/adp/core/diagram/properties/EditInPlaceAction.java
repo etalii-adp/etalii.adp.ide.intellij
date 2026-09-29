@@ -12,7 +12,7 @@ import com.intellij.openapi.project.DumbAware;
 
 import etalii.adp.core.AdpDataKeys;
 import etalii.adp.core.diagram.properties.InPlaceEditor.Target;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 
 /**
  * {@code etalii.adp.core.EditInPlace} (F2): edits the selected item's first editable text in
@@ -32,7 +32,7 @@ public final class EditInPlaceAction extends AnAction implements DumbAware {
     public void actionPerformed(@NotNull AnActionEvent event) {
         Target target = target(event);
         if (target != null) {
-            InPlaceEditor.open((DiagramDesigner) event.getData(AdpDataKeys.ADP_DESIGNER), target);
+            InPlaceEditor.open((DiagramFileEditor) event.getData(AdpDataKeys.ADP_TOOL), target);
         }
     }
 
@@ -43,15 +43,15 @@ public final class EditInPlaceAction extends AnAction implements DumbAware {
 
     /** The first editable text of the first selected item that has one, in a focused canvas of an editable file, or {@code null}. */
     private static Target target(AnActionEvent event) {
-        if (!(event.getData(AdpDataKeys.ADP_DESIGNER) instanceof DiagramDesigner designer) || !designer.isEditable()) {
+        if (!(event.getData(AdpDataKeys.ADP_TOOL) instanceof DiagramFileEditor tool) || !tool.isEditable()) {
             return null;
         }
         Component focused = event.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT);
-        if (focused != designer.canvas()) {
+        if (focused != tool.canvas()) {
             return null;
         }
-        for (Object key : designer.selection()) {
-            Target target = InPlaceEditor.first(designer, key);
+        for (Object key : tool.selection()) {
+            Target target = InPlaceEditor.first(tool, key);
             if (target != null) {
                 return target;
             }

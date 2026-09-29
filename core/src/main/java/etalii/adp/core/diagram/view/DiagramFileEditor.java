@@ -31,7 +31,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ui.JBFont;
 import com.intellij.util.ui.JBUI;
 
-import etalii.adp.core.AdpDesignerEditor;
+import etalii.adp.core.AdpToolFileEditor;
 import etalii.adp.core.FormatProblem;
 import etalii.adp.core.NodeView;
 import etalii.adp.core.TextChanges;
@@ -59,9 +59,9 @@ import etalii.adp.core.diagram.view.Scene.ElementRender;
 import etalii.adp.core.diagram.view.Scene.PlacedLabel;
 
 /**
- * A diagram designer made of a {@link DiagramDefinition} and a {@link DiagramMapping} (FR-001,
+ * A diagram made of a {@link DiagramDefinition} and a {@link DiagramMapping} (FR-001,
  * research R5 to R8): it reads the document through the mapping, lays it out from the file's
- * bounds, the designer's {@link DiagramLayout} or measurement, routes the connections and shows
+ * bounds, the diagram's {@link DiagramLayout} or measurement, routes the connections and shows
  * the result on a {@link DiagramCanvas}. After each re-read it diffs with the diagram shown before
  * and tells the definition's listener what changed, so edits, undo, redo and external changes take
  * one path. Every registered {@link DiagramFeature} adds its tools and layers to the canvas.
@@ -72,7 +72,7 @@ import etalii.adp.core.diagram.view.Scene.PlacedLabel;
  * own and shows it as a diagram through {@link #diagramOf} (FreeMind's map, research R19). The
  * framework works on {@link #diagram()} only.
  */
-public class DiagramDesigner extends AdpDesignerEditor<Object> implements DiagramCommands.Host {
+public class DiagramFileEditor extends AdpToolFileEditor<Object> implements DiagramCommands.Host {
 
     /** The canvas context menu; the editing fragment registers it, and until then there is none. */
     public static final String POPUP_GROUP = "etalii.adp.core.DiagramPopup";
@@ -99,7 +99,7 @@ public class DiagramDesigner extends AdpDesignerEditor<Object> implements Diagra
     private List<DiagramChange> lastChanges = List.of();
     private String armedConnectionType;
 
-    public DiagramDesigner(Project project, VirtualFile file, Document document, DiagramDefinition definition, DiagramMapping mapping) {
+    public DiagramFileEditor(Project project, VirtualFile file, Document document, DiagramDefinition definition, DiagramMapping mapping) {
         super(project, file, document);
         this.definition = definition;
         this.mapping = mapping;
@@ -384,7 +384,7 @@ public class DiagramDesigner extends AdpDesignerEditor<Object> implements Diagra
         return new Point2D.Double(at.x - origin.x, at.y - origin.y);
     }
 
-    /** Every gesture of this designer: permissions, rules, then the mapping, as one command. */
+    /** Every gesture of this diagram: permissions, rules, then the mapping, as one command. */
     public DiagramCommands commands() {
         return commands;
     }
@@ -483,7 +483,7 @@ public class DiagramDesigner extends AdpDesignerEditor<Object> implements Diagra
         this.armedConnectionType = connectionType;
     }
 
-    /** A designer-specific edit (FreeMind's fold) as one named command; {@code edit} gets the current text. */
+    /** A diagram-specific edit (FreeMind's fold) as one named command; {@code edit} gets the current text. */
     public void runCommand(String label, Function<CharSequence, TextChanges> edit, Runnable reselect) {
         if (model() == null) {
             return;

@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
  * Decides from the start of a file whether it is a FreeMind map (FR-002, research R3): after an
  * optional UTF-8 byte order mark, an optional XML declaration, whitespace and comments, the root
  * start tag is {@code <map} with a {@code version} attribute. A DOCTYPE before it is skipped too, so
- * the designer can explain why it refuses one (FR-009) rather than leave the map unclaimed.
+ * the diagram can explain why it refuses one (FR-009) rather than leave the map unclaimed.
  * Anything else, such as Objective-C++ source, is rejected, so it opens as it would without the
  * plug-in. Only the first {@link #LIMIT} bytes are looked at; this never throws.
  */

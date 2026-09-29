@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.fileTypes.FileType;
 
 /**
- * A text file type for a designer's own extension, so its files open as text too. A format
+ * A text file type for a tool's own extension, so its files open as text too. A format
  * subclasses it with an {@code INSTANCE} field for its {@code fileType} registration.
  */
 public abstract class AdpFileType implements FileType {

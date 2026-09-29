@@ -1,7 +1,7 @@
 package etalii.adp.core.settings;
 
 /**
- * The user's canvas options for every diagram designer (FR-011).
+ * The user's canvas options for every diagram (FR-011).
  *
  * @param openingZoom the zoom a diagram opens at, 1.0 being 100%
  */

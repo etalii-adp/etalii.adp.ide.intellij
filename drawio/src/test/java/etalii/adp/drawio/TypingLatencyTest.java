@@ -16,7 +16,7 @@ import etalii.adp.testing.DiagramDriver;
 
 /**
  * Spec 006 SC-004 on a generated 500-cell diagram: a character typed in the text editor shows in the
- * designer within 0.1 s. Each keystroke is one document change; the measurement covers the
+ * diagram within 0.1 s. Each keystroke is one document change; the measurement covers the
  * coalesced re-parse, layout, routing and painting what a window shows.
  */
 @RunWith(JUnit4.class)
@@ -30,7 +30,7 @@ public class TypingLatencyTest extends FileEditorManagerTestCase {
     private static final String TYPED = "typed in the text view";
 
     @Test
-    public void typingInAFiveHundredCellDiagramShowsInTheDesignerWithinBudget() {
+    public void typingInAFiveHundredCellDiagramShowsInTheToolWithinBudget() {
         try (var warmUp = DiagramDriver.openText(myFixture, "warm-up.drawio", generated(50))) {
             type(warmUp, "Cell 10", "warm up");
         }
@@ -66,7 +66,7 @@ public class TypingLatencyTest extends FileEditorManagerTestCase {
 
     /** Paints what a 1600 by 1000 window would show, now instead of when the event loop gets to it. */
     private static void paint(DiagramDriver d) {
-        DiagramCanvas canvas = d.designer().canvas();
+        DiagramCanvas canvas = d.tool().canvas();
         canvas.setSize(canvas.getPreferredSize());
         BufferedImage image = new BufferedImage(1600, 1000, BufferedImage.TYPE_INT_RGB);
         var graphics = image.createGraphics();

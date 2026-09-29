@@ -40,5 +40,5 @@ A table in `quickstart.md`, one row per measurement run.
 | Indexed files, indexing (s) | from `indexing-diagnostic` (SC-002) |
 | Used heap after GC / max | after thirty minutes of use (SC-003) |
 | Memory events | count of `OutOfMemoryError`, low-memory signals and freeze folders (SC-003) |
-| Designer latency (ms) | printed by the `TypingLatencyTest` classes (SC-004) |
+| Tool latency (ms) | printed by the `TypingLatencyTest` classes (SC-004) |
 | Gradle cache growth (MB) | after a forced out-of-memory run (SC-005) |

@@ -36,14 +36,14 @@ A contributor opens a pull request into `develop`. Without anyone doing anything
 
 A maintainer reviewing a pull request wants to try the change in their own IDE. From the pull request's checks they download the installable plug-in that was built and tested for that commit, and install it from disk.
 
-**Why this priority**: reviewing a visual designer means looking at it; downloading the tested build is faster and more trustworthy than checking out and building the branch.
+**Why this priority**: reviewing a visual tool means looking at it; downloading the tested build is faster and more trustworthy than checking out and building the branch.
 
 **Independent Test**: from a passing pull request, download the plug-in, install it from disk into a clean IntelliJ IDEA and open a FreeMind example map.
 
 **Acceptance Scenarios**:
 
 1. **Given** checks have passed for a pull request, **When** the maintainer opens the checks, **Then** the installable plug-in for that commit can be downloaded.
-2. **Given** the downloaded plug-in, **When** it is installed from disk as the readme describes, **Then** the IDE accepts it and the designers work.
+2. **Given** the downloaded plug-in, **When** it is installed from disk as the readme describes, **Then** the IDE accepts it and the tools work.
 3. **Given** checks failed at the build step, **When** the maintainer opens the checks, **Then** no plug-in is offered for download for that commit.
 
 ---

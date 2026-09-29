@@ -62,7 +62,7 @@ class FreeMindSnifferTest {
         assertTrue(sniff("<?xml version=\"1.0\"?>\r\n<!-- To view this file, download FreeMind -->\r\n" + MAP));
     }
 
-    /** A DOCTYPE is claimed so the designer can explain why it refuses it (FR-009), rather than hiding the map. */
+    /** A DOCTYPE is claimed so the diagram can explain why it refuses it (FR-009), rather than hiding the map. */
     @Test
     void aDoctypeBeforeTheMapIsClaimedForItsExplanation() {
         assertTrue(sniff("<!DOCTYPE map [ <!ENTITY e \"x\"> ]>\n" + MAP));

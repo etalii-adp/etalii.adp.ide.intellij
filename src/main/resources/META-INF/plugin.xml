@@ -7,11 +7,11 @@
     <description><![CDATA[
     <p><img src="https://etalii.net/adp/favicon.svg" width="96" height="96" alt="The ADP mark: one model seen as text and as a diagram"></p>
     <p><b>The right view for every task.</b> ADP (A Different Perspective) is a family of specialized
-    diagram, designer and text editors, each tuned for one task where a specialized visualization beats
+    tools: diagrams, designers and editors, each tuned for one task where a specialized visualization beats
     a generic diagram or plain text.</p>
-    <p>Each designer is an editor on the file's own text, with the IDE's undo, redo, save and text view,
+    <p>Each tool opens in an editor on the file's own text, with the IDE's undo, redo, save and text view,
     so what it shows stays in plain files that can be reviewed, branched and merged like any other text.
-    This plug-in brings two designers, edited with a shared toolbox and property panel:</p>
+    This plug-in brings two diagrams, edited with a shared toolbox and property panel:</p>
     <ul>
       <li>FreeMind mind maps (<code>.mm</code>)</li>
       <li>draw.io diagrams (<code>.drawio</code>)</li>
@@ -19,6 +19,13 @@
     <p>Documentation and the other ADP hosts: <a href="https://etalii.net/adp">etalii.net/adp</a>.
     Licensed under the Apache License, Version 2.0.</p>
     ]]></description>
+
+    <change-notes><![CDATA[
+    <p>ADP now uses one vocabulary: its diagrams, designers and editors are together called <b>tools</b>, and the settings page under Settings &gt; Tools &gt; ADP lists them as Tools.
+    Your ADP settings are kept: settings stored by an earlier version are read and stored again under the new names.
+    The mind map's editor id changed from <code>etalii.adp.freemind.editor</code> to <code>etalii.adp.freemind</code>, so a mind map that was open when the IDE closed may reopen once in the text view,
+    and the mind map's split layout (text, both, or the map alone) starts again from its default. Choose the mind map again and the IDE remembers it as before.</p>
+    ]]></change-notes>
 
     <depends>com.intellij.modules.platform</depends>
 
@@ -33,7 +40,7 @@
     <xi:include href="/META-INF/adp-diagram-navigation.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
     <xi:include href="/META-INF/adp-drawio.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
     <xi:include href="/META-INF/adp-settings.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
-    <xi:include href="/META-INF/adp-settings-designers.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-settings-tools.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
     <xi:include href="/META-INF/adp-settings-canvas.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
-    <xi:include href="/META-INF/adp-settings-designer-pages.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-settings-tool-pages.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
 </idea-plugin>

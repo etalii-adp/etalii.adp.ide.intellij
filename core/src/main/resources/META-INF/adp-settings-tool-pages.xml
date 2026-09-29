@@ -1,0 +1,6 @@
+<!-- The tools' own settings pages under ADP (spec 004, US4). -->
+<idea-plugin>
+    <extensions defaultExtensionNs="etalii.adp">
+        <settingsSection implementation="etalii.adp.core.settings.ToolPagesSection"/>
+    </extensions>
+</idea-plugin>

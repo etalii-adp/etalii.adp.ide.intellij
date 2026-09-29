@@ -12,7 +12,7 @@
     <xi:include href="/META-INF/adp-diagram-properties.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
     <xi:include href="/META-INF/adp-diagram-navigation.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
     <xi:include href="/META-INF/adp-settings.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
-    <xi:include href="/META-INF/adp-settings-designers.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-settings-tools.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
     <xi:include href="/META-INF/adp-settings-canvas.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
-    <xi:include href="/META-INF/adp-settings-designer-pages.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
+    <xi:include href="/META-INF/adp-settings-tool-pages.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>
 </idea-plugin>

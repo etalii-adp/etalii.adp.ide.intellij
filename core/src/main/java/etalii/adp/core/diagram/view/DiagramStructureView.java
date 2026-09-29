@@ -12,7 +12,7 @@ import etalii.adp.core.diagram.model.Sector;
 
 /**
  * A diagram in the Structure view: its sectors with the elements in them, then the elements in
- * none, each element with the connections that start at it. It follows the designer's selection
+ * none, each element with the connections that start at it. It follows the diagram's selection
  * and reveals what is chosen, through {@link AdpStructureView}.
  */
 public final class DiagramStructureView extends AdpStructureView {
@@ -26,26 +26,26 @@ public final class DiagramStructureView extends AdpStructureView {
     private record SectorNode(Object key) {
     }
 
-    private final DiagramDesigner designer;
+    private final DiagramFileEditor tool;
 
-    public DiagramStructureView(DiagramDesigner designer) {
-        super(designer);
-        this.designer = designer;
+    public DiagramStructureView(DiagramFileEditor tool) {
+        super(tool);
+        this.tool = tool;
     }
 
     @Override
     protected Object rootKey() {
-        return designer.diagram() == null ? null : Root.DIAGRAM;
+        return tool.diagram() == null ? null : Root.DIAGRAM;
     }
 
     @Override
     protected String text(Object key) {
-        Diagram diagram = designer.diagram();
+        Diagram diagram = tool.diagram();
         if (diagram == null) {
             return "";
         }
         if (key == Root.DIAGRAM) {
-            return designer.getFile().getName();
+            return tool.getFile().getName();
         }
         if (key instanceof SectorNode node) {
             Sector sector = diagram.sector(node.key());
@@ -53,12 +53,12 @@ public final class DiagramStructureView extends AdpStructureView {
         }
         var element = diagram.element(key);
         if (element != null) {
-            ElementType type = designer.definition().elementType(element.type());
+            ElementType type = tool.definition().elementType(element.type());
             return named(type == null ? element.type() : type.label(), firstText(key));
         }
         Connection connection = diagram.connection(key);
         if (connection != null) {
-            ConnectionType type = designer.definition().connectionType(connection.type());
+            ConnectionType type = tool.definition().connectionType(connection.type());
             String target = firstText(connection.target().elementKey());
             String label = type == null ? connection.type() : type.label();
             return named(label, target.isEmpty() ? "" : "→ " + target);
@@ -68,7 +68,7 @@ public final class DiagramStructureView extends AdpStructureView {
 
     @Override
     protected List<?> children(Object key) {
-        Diagram diagram = designer.diagram();
+        Diagram diagram = tool.diagram();
         if (diagram == null) {
             return List.of();
         }
@@ -89,7 +89,7 @@ public final class DiagramStructureView extends AdpStructureView {
     }
 
     private String firstText(Object key) {
-        ElementView view = designer.elementView(key);
+        ElementView view = tool.elementView(key);
         if (view == null) {
             return "";
         }

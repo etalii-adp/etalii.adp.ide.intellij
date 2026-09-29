@@ -101,7 +101,7 @@ public class FreeMindToolboxTest extends FileEditorManagerTestCase {
     public void aBranchIsRemovedOnlyWithItsNode() {
         try (var d = open()) {
             assertNotNull("branches are drawn from the tree", d.connectionView(new BranchKey(key("B"))));
-            Verdict verdict = d.designer().commands().remove(List.of(new BranchKey(key("B"))));
+            Verdict verdict = d.tool().commands().remove(List.of(new BranchKey(key("B"))));
             assertFalse(verdict.allowed());
             assertEquals("remove the node to remove its branch", verdict.reason());
             assertEquals(FreeMindDefinition.BRANCH_GOES_WITH_NODE, d.refusal());

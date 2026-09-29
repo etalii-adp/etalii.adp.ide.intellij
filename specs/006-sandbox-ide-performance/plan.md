@@ -4,7 +4,7 @@
 
 ## Summary
 
-The sandbox slows down because it reopens this repository, which holds 29 GB of IDEs downloaded by the real-IDE tests, and indexes them until its 2 GB heap runs out. The fix is in the build, not the plug-in: `runIde` opens a freshly copied example project in the sandbox folder, the real-IDE tests keep their downloads in a per-user cache outside the repository, the build excludes generated folders from any IDE project, and the sandbox writes heap dumps and crash logs to its own log folder. New headless tests time the designers on large files, and a quickstart procedure measures the sandbox before and after. No new dependency: the `idea` plug-in ships with Gradle and the IDE Starter framework is already on the integration test classpath.
+The sandbox slows down because it reopens this repository, which holds 29 GB of IDEs downloaded by the real-IDE tests, and indexes them until its 2 GB heap runs out. The fix is in the build, not the plug-in: `runIde` opens a freshly copied example project in the sandbox folder, the real-IDE tests keep their downloads in a per-user cache outside the repository, the build excludes generated folders from any IDE project, and the sandbox writes heap dumps and crash logs to its own log folder. New headless tests time the tools on large files, and a quickstart procedure measures the sandbox before and after. No new dependency: the `idea` plug-in ships with Gradle and the IDE Starter framework is already on the integration test classpath.
 
 ## Technical Context
 
@@ -19,9 +19,9 @@ The sandbox slows down because it reopens this repository, which holds 29 GB of 
 
 | Principle | Assessment |
 |---|---|
-| I. Native IntelliJ Platform citizenship | PASS. No designer behaviour changes. Exclusions use the platform's own Gradle import. |
+| I. Native IntelliJ Platform citizenship | PASS. No tool behaviour changes. Exclusions use the platform's own Gradle import. |
 | II. The text file is the source of truth | PASS. The sandbox edits copies, so vendored example files are never rewritten by hand trials. |
-| III. One framework, many designers | PASS. No change to `core`; each format adds only its own latency test. |
+| III. One framework, many tools | PASS. No change to `core`; each format adds only its own latency test. |
 | IV. Test-first, against real files | PASS. The latency tests and the download-location test are written first and seen failing. The latency tests use generated files, like the existing performance tests; the sandbox project uses the real published examples. |
 | V. Simplicity | PASS. Build configuration and one test helper; no new library; the heap stays at its default. |
 | Platform constraints | PASS. Headless build unchanged; no runtime network access added. |
@@ -72,7 +72,7 @@ README.md                                 # sandbox folders, reset, test downloa
 3. **Exclusions** (R3, FR-001). Apply the `idea` plug-in and exclude `out`, `.intellijPlatform`, `.claude/worktrees` and every `build` folder.
 4. **Sandbox project** (R1, FR-002). Add `prepareSandboxProject` and pass its folder to `runIde`.
 5. **Dumps** (R4, FR-003). Add the two JVM arguments to `runIde`.
-6. **Designer latency** (R5, R6, FR-006). Write the two `TypingLatencyTest` classes and the leak check; fix only what fails.
+6. **Tool latency** (R5, R6, FR-006). Write the two `TypingLatencyTest` classes and the leak check; fix only what fails.
 7. **Documentation** (FR-007). README section on the sandbox and on the test download cache, including how to delete the old `out/ide-tests`.
 8. **Measure after** with the same quickstart procedure and record the figures next to the baseline. Adjust a success-criteria number only with a reason recorded in `quickstart.md`.
 

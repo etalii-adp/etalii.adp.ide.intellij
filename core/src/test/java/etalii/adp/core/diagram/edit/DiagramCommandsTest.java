@@ -34,7 +34,7 @@ import etalii.adp.core.diagram.sample.SampleMapping;
 
 class DiagramCommandsTest {
 
-    /** A designer without an IDE: the text in memory, re-read after every command, and a log of what ran. */
+    /** A diagram without an IDE: the text in memory, re-read after every command, and a log of what ran. */
     static final class FakeHost extends UserDataHolderBase implements DiagramCommands.Host {
 
         final List<String> log;

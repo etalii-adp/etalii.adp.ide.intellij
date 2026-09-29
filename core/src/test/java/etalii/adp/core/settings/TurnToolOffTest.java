@@ -15,16 +15,16 @@ import com.intellij.util.ui.UIUtil;
 import etalii.adp.core.AdpEditorProvider;
 import etalii.adp.core.diagram.sample.SampleFiles;
 import etalii.adp.core.diagram.sample.SampleProvider;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /**
  * T031 (FR-009, FR-010, SC-002, acceptance 2.1 to 2.3), end to end through the ADP page: untick
- * the sample designer and apply, and a sample file opens in the text editor with the designer not
- * offered, while one already open stays open, unmodified, in its designer; tick it and apply, and a
- * newly opened file gets the designer again.
+ * the sample tool and apply, and a sample file opens in the text editor with the tool not
+ * offered, while one already open stays open, unmodified, in its tool; tick it and apply, and a
+ * newly opened file gets the tool again.
  */
 @RunWith(JUnit4.class)
-public class TurnDesignerOffTest extends FileEditorManagerTestCase {
+public class TurnToolOffTest extends FileEditorManagerTestCase {
 
     private AdpConfigurable page;
     private JComponent component;
@@ -47,11 +47,11 @@ public class TurnDesignerOffTest extends FileEditorManagerTestCase {
         }
     }
 
-    private DesignerDriver open(String name) {
-        return DesignerDriver.openText(myFixture, name, SampleFiles.read("lanes.adpsample"));
+    private ToolDriver open(String name) {
+        return ToolDriver.openText(myFixture, name, SampleFiles.read("lanes.adpsample"));
     }
 
-    /** Open the ADP page as the Settings dialog does, set the sample designer's check box, and apply. */
+    /** Open the ADP page as the Settings dialog does, set the sample tool's check box, and apply. */
     private void setSampleOn(boolean on) {
         page = new AdpConfigurable();
         component = page.createComponent();
@@ -59,7 +59,7 @@ public class TurnDesignerOffTest extends FileEditorManagerTestCase {
         JBTable table = UIUtil.findComponentOfType(component, JBTable.class);
         TableModel model = table.getModel();
         for (int row = 0; row < model.getRowCount(); row++) {
-            if ("Sample Designer".equals(model.getValueAt(row, 1))) {
+            if ("Sample Diagram".equals(model.getValueAt(row, 1))) {
                 model.setValueAt(on, row, 0);
             }
         }
@@ -70,7 +70,7 @@ public class TurnDesignerOffTest extends FileEditorManagerTestCase {
     }
 
     @Test
-    public void offOpensFilesWithoutTheDesignerAndOnAgainRestoresIt() {
+    public void offOpensFilesWithoutTheToolAndOnAgainRestoresIt() {
         try (var open = open("open.adpsample")) {
             assertEquals(SampleProvider.EDITOR_TYPE_ID, open.editorTypeIdUsed());
             String before = open.text();
@@ -78,12 +78,12 @@ public class TurnDesignerOffTest extends FileEditorManagerTestCase {
             setSampleOn(false);
 
             try (var later = open("later.adpsample")) {
-                assertNull("no designer", later.designer());
+                assertNull("no tool", later.tool());
                 assertFalse(later.editorTypeIdsOffered().contains(SampleProvider.EDITOR_TYPE_ID));
                 assertFalse(AdpEditorProvider.acceptedByAny(later.file()));
             }
             assertInstanceOf(FileEditorManager.getInstance(getProject()).getSelectedEditor(open.file()), AdpEditorProvider.Composite.class);
-            assertNotNull("the open designer stays", open.designer());
+            assertNotNull("the open tool stays", open.tool());
             assertFalse(open.isModified());
             assertEquals(before, open.text());
 

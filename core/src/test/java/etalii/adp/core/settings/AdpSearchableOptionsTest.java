@@ -22,7 +22,7 @@ import etalii.adp.core.diagram.view.DiagramEditorProvider;
 
 /**
  * T011 (FR-001, research R4): the settings search finds the ADP page by "ADP", by every installed
- * designer's name and by every section's labels, and each designer's own page by its labels.
+ * tool's name and by every section's labels, and each tool's own page by its labels.
  */
 @RunWith(JUnit4.class)
 public class AdpSearchableOptionsTest extends BasePlatformTestCase {
@@ -31,7 +31,7 @@ public class AdpSearchableOptionsTest extends BasePlatformTestCase {
     record Option(String text, String configurableId, String displayName) {
     }
 
-    /** A designer with one setting of its own. */
+    /** A tool with one setting of its own. */
     static final class Configured extends DiagramEditorProvider {
 
         Configured() {
@@ -49,8 +49,8 @@ public class AdpSearchableOptionsTest extends BasePlatformTestCase {
         }
 
         @Override
-        protected String editorName() {
-            return "Configured Designer";
+        protected String toolName() {
+            return "Configured Tool";
         }
 
         @Override
@@ -59,8 +59,8 @@ public class AdpSearchableOptionsTest extends BasePlatformTestCase {
         }
 
         @Override
-        public List<DesignerSetting> settings() {
-            return List.of(DesignerSetting.yesNo("compact", "Compact rows", false));
+        public List<ToolSetting> settings() {
+            return List.of(ToolSetting.yesNo("compact", "Compact rows", false));
         }
     }
 
@@ -111,19 +111,19 @@ public class AdpSearchableOptionsTest extends BasePlatformTestCase {
     }
 
     @Test
-    public void thePageIsFoundByItsNameEveryDesignerAndEveryLabel() {
+    public void thePageIsFoundByItsNameEveryToolAndEveryLabel() {
         SampleProvider.register(getTestRootDisposable());
         List<Option> options = contributed();
-        for (String text : List.of("ADP", "Sample Designer", "Show grid", "Opening zoom")) {
+        for (String text : List.of("ADP", "Sample Diagram", "Show grid", "Opening zoom")) {
             assertTrue(text + " in " + options, options.contains(new Option(text, "etalii.adp.settings", "ADP")));
         }
     }
 
     @Test
-    public void aDesignersOwnPageIsFoundByItsLabels() {
+    public void aToolsOwnPageIsFoundByItsLabels() {
         FileEditorProvider.EP_FILE_EDITOR_PROVIDER.getPoint().registerExtension(new Configured(), getTestRootDisposable());
         List<Option> options = contributed();
-        assertTrue(options.toString(), options.contains(new Option("Compact rows", "etalii.adp.settings.etalii.adp.configured", "Configured Designer")));
+        assertTrue(options.toString(), options.contains(new Option("Compact rows", "etalii.adp.settings.etalii.adp.configured", "Configured Tool")));
         assertFalse(options.toString(), options.contains(new Option("Compact rows", "etalii.adp.settings", "ADP")));
     }
 }

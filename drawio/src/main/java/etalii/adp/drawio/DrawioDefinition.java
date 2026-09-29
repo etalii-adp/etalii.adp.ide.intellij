@@ -26,7 +26,7 @@ import etalii.adp.core.diagram.model.Diagram;
 import etalii.adp.core.xml.XmlEdits;
 
 /**
- * The draw.io designer (research R20, data-model.md "draw.io mapping"): the vertex shapes the spec
+ * The draw.io diagram (research R20, data-model.md "draw.io mapping"): the vertex shapes the spec
  * lists, draw.io lists (a stacked swimlane, such as a UML class) with their rows as parts, one
  * {@code edge} connection type whose looks are per-edge properties, and other swimlanes as
  * diagram-space sectors. Anchors sit at the quarter points of each side, where draw.io's own

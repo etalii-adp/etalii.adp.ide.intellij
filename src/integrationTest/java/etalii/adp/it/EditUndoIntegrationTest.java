@@ -56,7 +56,7 @@ import kotlin.time.DurationUnit;
 /**
  * US2 in real IDEs (SC-003 automated part, research R9): with the built plug-in zip installed in
  * IntelliJ IDEA, Rider, WebStorm and PyCharm 2026.2, the root of an example map is selected in the
- * designer, Add Child Node runs through the action system as its shortcut would, and the IDE's own
+ * tool, Add Child Node runs through the action system as its shortcut would, and the IDE's own
  * Undo then returns the file to its original bytes.
  * <p>
  * The products, {@code ADP_IT_PRODUCTS}, {@code ADP_IDE_HOME_<CODE>} and {@code ADP_IDEA_LICENSE}
@@ -127,21 +127,21 @@ class EditUndoIntegrationTest {
                 CompositeRemote composite = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), opened, RdTarget.DEFAULT)
                         .getSelectedEditor(map);
                 assertNotNull(composite, product + ": the map opens in an editor");
-                DesignerRemote designer = composite.designer();
-                assertTrue(designer.isEditable(), product + ": the map can be edited");
-                designer.reveal(designer.model().root().key());
+                ToolRemote tool = composite.tool();
+                assertTrue(tool.isEditable(), product + ": the map can be edited");
+                tool.reveal(tool.model().root().key());
                 texts[0] = document(d, map).getText();
                 return Unit.INSTANCE;
             });
 
-            DesignerTab.select(driver, opened, "map.mm");
+            ToolTab.select(driver, opened, "map.mm");
             invoke(driver, opened, path[0], "etalii.adp.freemind.AddChild");
             texts[1] = text(driver, opened);
             assertNotEquals(texts[0], texts[1], product + ": Add Child Node changed the map");
             assertTrue(texts[1].contains("TEXT=\"New Node\""), product + ": the new node is in the text");
 
             String before = undoState(driver, opened);
-            DesignerTab.select(driver, opened, "map.mm");
+            ToolTab.select(driver, opened, "map.mm");
             invoke(driver, opened, path[0], "$Undo", false);
             texts[2] = awaitText(driver, opened, texts[0], product, before);
             assertEquals(texts[0], texts[2], product + ": Undo returns the text");
@@ -159,7 +159,7 @@ class EditUndoIntegrationTest {
         }
     }
 
-    /** Runs an action through the action system with the designer's canvas as its context, as its shortcut would. */
+    /** Runs an action through the action system with the tool's canvas as its context, as its shortcut would. */
     private static void invoke(Driver driver, Project project, String path, String actionId) {
         invoke(driver, project, path, actionId, true);
     }
@@ -171,10 +171,10 @@ class EditUndoIntegrationTest {
     private static void invoke(Driver driver, Project project, String path, String actionId, boolean now) {
         driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
             VirtualFile map = EditorsKt.findOpenFile(d, "map.mm", project, false);
-            DesignerTab.front(d, project, map);
-            DesignerRemote designer = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT)
-                    .getSelectedEditor(map).designer();
-            ActionManagerKt.invokeAction(d, actionId, now, designer.view(), null, RdTarget.DEFAULT);
+            ToolTab.front(d, project, map);
+            ToolRemote tool = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT)
+                    .getSelectedEditor(map).tool();
+            ActionManagerKt.invokeAction(d, actionId, now, tool.view(), null, RdTarget.DEFAULT);
             return Unit.INSTANCE;
         });
     }
@@ -285,7 +285,7 @@ class EditUndoIntegrationTest {
                 info.getQodanaProductCode(), info.getFullName(), ignored -> new ExistingIdeInstaller(installed));
     }
 
-    // The IDE's services and the plug-in's designer, as the Driver sees them.
+    // The IDE's services and the plug-in's tool, as the Driver sees them.
 
     @Remote("com.intellij.openapi.fileEditor.FileEditorManager")
     public interface FileEditorManagerRemote {
@@ -332,11 +332,11 @@ class EditUndoIntegrationTest {
 
     @Remote(value = "etalii.adp.core.AdpEditorProvider$Composite", plugin = PLUGIN)
     public interface CompositeRemote {
-        DesignerRemote designer();
+        ToolRemote tool();
     }
 
-    @Remote(value = "etalii.adp.freemind.ui.MindMapDesigner", plugin = PLUGIN)
-    public interface DesignerRemote {
+    @Remote(value = "etalii.adp.freemind.ui.MindMapFileEditor", plugin = PLUGIN)
+    public interface ToolRemote {
         boolean isEditable();
 
         MindMapRemote model();

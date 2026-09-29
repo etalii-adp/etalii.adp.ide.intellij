@@ -52,7 +52,7 @@ import etalii.adp.freemind.ui.actions.MindMapAction;
  * are the catalogue's, so they change what spec 001's edits change and nothing else.
  * <p>
  * The edits FreeMind names itself (a rename, a move, a delete) keep their spec 001 names:
- * {@link #labelOf} gives the name of the last edit built here, which the designer uses for the
+ * {@link #labelOf} gives the name of the last edit built here, which the diagram uses for the
  * command.
  */
 public final class FreeMindMapping implements DiagramMapping {

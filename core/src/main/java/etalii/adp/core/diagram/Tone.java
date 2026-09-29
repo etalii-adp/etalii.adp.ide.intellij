@@ -39,7 +39,7 @@ public final class Tone {
                 new JBColor(new Color(LIGHT_TEXT), new Color(DARK_TEXT)));
     }
 
-    /** A tone of the designer's own; the designer answers for its contrast. */
+    /** A tone of the diagram's own; the diagram answers for its contrast. */
     public static Tone custom(JBColor fill, JBColor border, JBColor text) {
         return new Tone("custom", fill, border, text);
     }

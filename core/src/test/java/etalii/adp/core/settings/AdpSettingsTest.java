@@ -51,8 +51,8 @@ public class AdpSettingsTest extends BasePlatformTestCase {
         AdpSettings settings = new AdpSettings();
         assertEquals(new CanvasOptions(false, true, 1.0), settings.canvas());
         assertEquals(CanvasOptions.DEFAULTS, settings.canvas());
-        assertFalse(settings.isOff("any.designer"));
-        assertTrue(settings.offDesigners().isEmpty());
+        assertFalse(settings.isOff("any.tool"));
+        assertTrue(settings.offTools().isEmpty());
         assertEquals(1.0, settings.openingZoom(), 1e-9);
     }
 
@@ -70,7 +70,7 @@ public class AdpSettingsTest extends BasePlatformTestCase {
     public void readsAreTyped() throws Exception {
         AdpSettings settings = loaded("""
                 <state>
-                  <option name="offDesigners"><set><option value="etalii.adp.sample"/></set></option>
+                  <option name="offTools"><set><option value="etalii.adp.sample"/></set></option>
                   <option name="showGrid" value="true"/>
                   <option name="snapToGrid" value="false"/>
                   <option name="openingZoom" value="150"/>
@@ -85,7 +85,7 @@ public class AdpSettingsTest extends BasePlatformTestCase {
     public void aDamagedFieldFallsBackAloneAndTheOthersKeepTheirValues() throws Exception {
         AdpSettings settings = loaded("""
                 <state>
-                  <option name="offDesigners"><set><option value="etalii.adp.sample"/></set></option>
+                  <option name="offTools"><set><option value="etalii.adp.sample"/></set></option>
                   <option name="showGrid" value="true"/>
                   <option name="snapToGrid" value="sometimes"/>
                   <option name="openingZoom" value="9000"/>
@@ -144,8 +144,8 @@ public class AdpSettingsTest extends BasePlatformTestCase {
     public void aFieldOfTheWrongShapeDoesNotStopTheOthers() throws Exception {
         AdpSettings settings = loaded("""
                 <state>
-                  <option name="offDesigners"><map><entry key="1" value="2"/></map></option>
-                  <option name="designerSettings" value="flat"/>
+                  <option name="offTools"><map><entry key="1" value="2"/></map></option>
+                  <option name="toolSettings" value="flat"/>
                   <option name="showGrid" value="true"/>
                 </state>""");
         assertTrue(settings.canvas().showGrid());

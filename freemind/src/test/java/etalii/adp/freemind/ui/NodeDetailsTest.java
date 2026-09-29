@@ -29,7 +29,7 @@ import com.intellij.testFramework.ServiceContainerUtil;
 
 import etalii.adp.core.NodeView;
 import etalii.adp.freemind.model.MindMap;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /** Spec 001 FR-014, FR-018: the details each node shows, and following its link. */
 @RunWith(JUnit4.class)
@@ -71,15 +71,15 @@ public class NodeDetailsTest extends FileEditorManagerTestCase {
                 getTestRootDisposable());
     }
 
-    private DesignerDriver open() {
-        return DesignerDriver.openText(myFixture, "details.mm", MAP);
+    private ToolDriver open() {
+        return ToolDriver.openText(myFixture, "details.mm", MAP);
     }
 
     @Test
     public void plainAndRichTextAreReadable() {
         try (var d = open()) {
             assertEquals("Plain & simple", view(d, "PLAIN").text());
-            MindMap model = LayoutTest.designer(d).model();
+            MindMap model = LayoutTest.tool(d).model();
             String rich = view(d, "RICH").text();
             assertEquals(model.node(key("RICH")).text(), rich);
             assertTrue(rich, rich.contains("Hello rich world"));
@@ -118,7 +118,7 @@ public class NodeDetailsTest extends FileEditorManagerTestCase {
     @Test
     public void aNoteIsAnIndicatorWithItsTextAsTooltip() {
         try (var d = open()) {
-            MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+            MindMapCanvas canvas = LayoutTest.tool(d).canvas();
             assertTrue(view(d, "NOTED").hasNote());
             assertFalse(view(d, "PLAIN").hasNote());
             Rectangle note = canvas.indicatorBounds(key("NOTED"), NodePainter.Indicator.NOTE);
@@ -131,7 +131,7 @@ public class NodeDetailsTest extends FileEditorManagerTestCase {
     @Test
     public void aLinkIndicatorOpensAMapRelativeFile() {
         try (var d = open()) {
-            var other = DesignerDriver.createFile(myFixture, "other.mm", OTHER.getBytes(UTF_8));
+            var other = ToolDriver.createFile(myFixture, "other.mm", OTHER.getBytes(UTF_8));
             assertFalse(view(d, "PLAIN").hasLink());
             assertTrue(view(d, "WEB").hasLink());
 
@@ -174,8 +174,8 @@ public class NodeDetailsTest extends FileEditorManagerTestCase {
         assertNull(LinkOpener.asUrl("file:/tmp/other.mm"));
     }
 
-    private void clickIndicator(DesignerDriver d, String id) {
-        MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+    private void clickIndicator(ToolDriver d, String id) {
+        MindMapCanvas canvas = LayoutTest.tool(d).canvas();
         Rectangle link = canvas.indicatorBounds(key(id), NodePainter.Indicator.LINK);
         assertNotNull(id + " has a link indicator", link);
         assertEquals(canvas.linkOf(key(id)), canvas.getToolTipText(mouse(canvas, MouseEvent.MOUSE_MOVED, centre(link), 0)));
@@ -186,7 +186,7 @@ public class NodeDetailsTest extends FileEditorManagerTestCase {
         d.settle();
     }
 
-    static NodeView view(DesignerDriver d, String id) {
+    static NodeView view(ToolDriver d, String id) {
         NodeView view = d.viewOf(key(id));
         assertNotNull(id + " is drawn", view);
         return view;

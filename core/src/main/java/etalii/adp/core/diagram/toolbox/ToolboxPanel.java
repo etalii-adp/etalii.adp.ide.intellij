@@ -52,11 +52,11 @@ import etalii.adp.core.diagram.Dash;
 import etalii.adp.core.diagram.DiagramDefinition;
 import etalii.adp.core.diagram.ElementType;
 import etalii.adp.core.diagram.toolbox.ToolboxDragSource.ToolboxDrag;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 import etalii.adp.core.diagram.view.ToolboxContent;
 
 /**
- * The ADP Toolbox's content (research R13, FR-016): the selected diagram designer's toolbox
+ * The ADP Toolbox's content (research R13, FR-016): the selected diagram's toolbox
  * entries in declared order, grouped into elements and connections, each with its type's outline
  * and tone, or line and dash, as its icon. It follows the selected editor. An element entry is
  * dragged onto the canvas, or added at the centre of the visible canvas with Enter; a connection
@@ -79,7 +79,7 @@ public final class ToolboxPanel extends JPanel implements ToolboxContent, Dispos
     private final CollectionListModel<Entry> model = new CollectionListModel<>();
     private final JBList<Entry> list = new JBList<>(model);
     private final ToolboxDragSource dragSource;
-    private DiagramDesigner designer;
+    private DiagramFileEditor tool;
 
     public ToolboxPanel(Project project) {
         super(new BorderLayout());
@@ -131,12 +131,12 @@ public final class ToolboxPanel extends JPanel implements ToolboxContent, Dispos
         follow(project.isDisposed() ? null : FileEditorManager.getInstance(project).getSelectedEditor());
     }
 
-    /** The designer whose toolbox is listed, or {@code null}. */
-    public DiagramDesigner designer() {
-        return designer;
+    /** The diagram whose toolbox is listed, or {@code null}. */
+    public DiagramFileEditor tool() {
+        return tool;
     }
 
-    /** True while no diagram designer is selected and the empty state is shown. */
+    /** True while no diagram is selected and the empty state is shown. */
     public boolean emptyStateShown() {
         return model.isEmpty() && EMPTY_TEXT.equals(list.getEmptyText().getText());
     }
@@ -164,14 +164,14 @@ public final class ToolboxPanel extends JPanel implements ToolboxContent, Dispos
 
     @Override
     public void activate(String typeId) {
-        if (designer == null || entry(typeId) == null) {
+        if (tool == null || entry(typeId) == null) {
             return;
         }
-        if (designer.definition().connectionType(typeId) != null) {
-            designer.armConnectionType(typeId);
+        if (tool.definition().connectionType(typeId) != null) {
+            tool.armConnectionType(typeId);
             list.repaint();
         } else {
-            ToolboxDropTarget.addAtCentre(designer, typeId);
+            ToolboxDropTarget.addAtCentre(tool, typeId);
         }
     }
 
@@ -190,16 +190,16 @@ public final class ToolboxPanel extends JPanel implements ToolboxContent, Dispos
 
     @Override
     public void dispose() {
-        designer = null;
+        tool = null;
     }
 
     private void follow(FileEditor editor) {
-        DiagramDesigner next = editor instanceof TextEditorWithPreview composite && composite.getPreviewEditor() instanceof DiagramDesigner d ? d
-                : editor instanceof DiagramDesigner d ? d : null;
-        if (next == designer && (next != null || model.isEmpty())) {
+        DiagramFileEditor next = editor instanceof TextEditorWithPreview composite && composite.getPreviewEditor() instanceof DiagramFileEditor d ? d
+                : editor instanceof DiagramFileEditor d ? d : null;
+        if (next == tool && (next != null || model.isEmpty())) {
             return;
         }
-        designer = next;
+        tool = next;
         model.replaceAll(next == null ? List.of() : entriesOf(next.definition()));
     }
 
@@ -242,7 +242,7 @@ public final class ToolboxPanel extends JPanel implements ToolboxContent, Dispos
             @Override
             protected void customizeCellRenderer(@NotNull JList<? extends Entry> list, Entry entry, int index, boolean selected, boolean hasFocus) {
                 setIcon(entry.icon());
-                boolean armed = designer != null && entry.typeId().equals(designer.armedConnectionType());
+                boolean armed = tool != null && entry.typeId().equals(tool.armedConnectionType());
                 append(entry.label(), armed ? SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES : SimpleTextAttributes.REGULAR_ATTRIBUTES);
                 if (armed) {
                     append("  armed", SimpleTextAttributes.GRAYED_ATTRIBUTES);

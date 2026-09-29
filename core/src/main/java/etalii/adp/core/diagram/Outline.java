@@ -67,7 +67,7 @@ public final class Outline {
         this.shape = shape;
     }
 
-    /** An outline of the designer's own, as a shape for the given bounds. */
+    /** An outline of the diagram's own, as a shape for the given bounds. */
     public static Outline custom(Function<Rectangle2D, Shape> shape) {
         return new Outline("custom", true, shape);
     }

@@ -21,13 +21,13 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 import com.intellij.ui.PopupHandler;
 
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
-/** Spec 001 FR-024, FR-012: every editing action is in the designer's context menu, in the contract's order. */
+/** Spec 001 FR-024, FR-012: every editing action is in the diagram's context menu, in the contract's order. */
 @RunWith(JUnit4.class)
 public class ContextMenuTest extends FileEditorManagerTestCase {
 
-    static final String POPUP = MindMapDesigner.POPUP_GROUP;
+    static final String POPUP = MindMapFileEditor.POPUP_GROUP;
     static final String SEPARATOR = "---";
 
     /** The popup group as contracts/plugin-contributions.md lists it. */
@@ -43,7 +43,7 @@ public class ContextMenuTest extends FileEditorManagerTestCase {
 
     @Test
     public void theContextMenuListsEveryCommandInTableOrder() {
-        try (var d = DesignerDriver.openText(myFixture, "menu.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "menu.mm", MAP)) {
             assertEquals(CONTRACT_ORDER, contents());
             List<String> texts = new ArrayList<>();
             for (String id : CONTRACT_ORDER) {
@@ -53,7 +53,7 @@ public class ContextMenuTest extends FileEditorManagerTestCase {
                     "Move Node Down", "Move Under Previous Sibling", "Move Up a Level", SEPARATOR, "Fold / Unfold Branch", "Zoom In", "Zoom Out",
                     "Actual Size"), texts);
 
-            MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+            MindMapCanvas canvas = LayoutTest.tool(d).canvas();
             boolean popup = false;
             for (MouseListener listener : canvas.getMouseListeners()) {
                 popup |= listener instanceof PopupHandler;
@@ -64,7 +64,7 @@ public class ContextMenuTest extends FileEditorManagerTestCase {
 
     @Test
     public void menuItemsFollowTheSelection() {
-        try (var d = DesignerDriver.openText(myFixture, "menu.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "menu.mm", MAP)) {
             d.select(key("R"));
             Map<String, Boolean> enabled = enablement(d);
             assertTrue(enabled.get("Add Child Node"));
@@ -92,10 +92,10 @@ public class ContextMenuTest extends FileEditorManagerTestCase {
     }
 
     @Test
-    public void everyCommandHasItsKeyInTheDesignerContext() {
-        try (var d = DesignerDriver.openText(myFixture, "menu.mm", MAP)) {
+    public void everyCommandHasItsKeyInTheToolContext() {
+        try (var d = ToolDriver.openText(myFixture, "menu.mm", MAP)) {
             List<String> registered = new ArrayList<>();
-            for (AnAction action : ActionUtil.getActions(LayoutTest.designer(d).canvas())) {
+            for (AnAction action : ActionUtil.getActions(LayoutTest.tool(d).canvas())) {
                 registered.add(ActionManager.getInstance().getId(action));
             }
             for (String id : CONTRACT_ORDER) {
@@ -118,8 +118,8 @@ public class ContextMenuTest extends FileEditorManagerTestCase {
         return ids;
     }
 
-    /** Each menu item's enablement after an update in the designer's context, by its text. */
-    private static Map<String, Boolean> enablement(DesignerDriver d) {
+    /** Each menu item's enablement after an update in the diagram's context, by its text. */
+    private static Map<String, Boolean> enablement(ToolDriver d) {
         Map<String, Boolean> enabled = new HashMap<>();
         for (String id : CONTRACT_ORDER) {
             if (!SEPARATOR.equals(id)) {

@@ -45,12 +45,12 @@ import com.intellij.testFramework.FileEditorManagerTestCase;
 import etalii.adp.freemind.FreeMindAsserts;
 import etalii.adp.freemind.model.NodeKey;
 import etalii.adp.freemind.ui.actions.MindMapAction;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 import etalii.adp.testing.DropPosition;
 
 /**
  * Spec 001 FR-004, SC-002; FR-004, FR-008, SC-003: every action is one named step in the IDE's own
- * Undo and Redo, and every reference scenario, run through the designer as a user would, saves the
+ * Undo and Redo, and every reference scenario, run through the diagram as a user would, saves the
  * bytes recorded under spec 001.
  */
 @RunWith(JUnit4.class)
@@ -65,8 +65,8 @@ public class UndoRedoTest extends FileEditorManagerTestCase {
     }
 
     /** Each action type on {@link AddNodeTest#MAP} ({@link #FOLDED_MAP} for Unfold Branch), by the label its undo shows. */
-    private static Map<String, Consumer<DesignerDriver>> actions() {
-        Map<String, Consumer<DesignerDriver>> actions = new LinkedHashMap<>();
+    private static Map<String, Consumer<ToolDriver>> actions() {
+        Map<String, Consumer<ToolDriver>> actions = new LinkedHashMap<>();
         actions.put("Add Child Node", d -> {
             d.select(key("B")).run(ADD_CHILD);
             cancelInPlace(d);
@@ -94,10 +94,10 @@ public class UndoRedoTest extends FileEditorManagerTestCase {
             String label = "Undo " + name.replaceAll(" \\(.*\\)", "");
             String before = name.equals("Unfold Branch") ? FOLDED_MAP : MAP;
             String file = "undo-" + name.replaceAll("[^A-Za-z]", "") + ".mm";
-            // The designer has focus, as when the user presses the shortcut: the IDE then records
+            // The diagram has focus, as when the user presses the shortcut: the IDE then records
             // its view state with each step, and one Ctrl+Z must still undo the edit.
             UndoManagerImpl undo = (UndoManagerImpl) UndoManager.getInstance(getProject());
-            try (var d = DesignerDriver.openText(myFixture, file, before)) {
+            try (var d = ToolDriver.openText(myFixture, file, before)) {
                 undo.setOverriddenEditorProvider(new CurrentEditorProvider() {
                     @Override
                     public FileEditor getCurrentEditor(Project project) {
@@ -128,7 +128,7 @@ public class UndoRedoTest extends FileEditorManagerTestCase {
 
     @Test
     public void undoGoesBackInReverseOrderAndRedoReapplies() {
-        try (var d = DesignerDriver.openText(myFixture, "undo.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "undo.mm", MAP)) {
             List<String> texts = new ArrayList<>();
             List<String> labels = new ArrayList<>();
             texts.add(d.text());
@@ -168,12 +168,12 @@ public class UndoRedoTest extends FileEditorManagerTestCase {
     }
 
     /**
-     * Every scenario of {@code scenarios.json} through the designer: select and run the action, or
+     * Every scenario of {@code scenarios.json} through the diagram: select and run the action, or
      * drag, with the recorded clock and random seed. The saved file is the recorded result, and
      * undoing returns the original bytes.
      */
     @Test
-    public void everyReferenceScenarioThroughTheDesignerMatchesItsRecordedResult() throws IOException {
+    public void everyReferenceScenarioThroughTheToolMatchesItsRecordedResult() throws IOException {
         TestDialogManager.setTestDialog(message -> Messages.OK, getTestRootDisposable());
         List<String> failures = new ArrayList<>();
         int run = 0;
@@ -188,7 +188,7 @@ public class UndoRedoTest extends FileEditorManagerTestCase {
 
             var clock = Disposer.newDisposable("scenario clock");
             MindMapAction.useClock(() -> now, () -> new Random(seed), clock);
-            try (var d = DesignerDriver.openBytes(myFixture, stem + "-" + result, original)) {
+            try (var d = ToolDriver.openBytes(myFixture, stem + "-" + result, original)) {
                 int steps = perform(d, scenario);
                 byte[] saved = d.savedBytes();
                 if (!Arrays.equals(expected, saved)) {
@@ -211,7 +211,7 @@ public class UndoRedoTest extends FileEditorManagerTestCase {
     }
 
     /** Runs one scenario as a user would; returns the number of undo steps it made. */
-    private static int perform(DesignerDriver d, JsonObject s) {
+    private static int perform(ToolDriver d, JsonObject s) {
         String action = s.get("action").getAsString();
         switch (action) {
         case "add-child", "add-child-root", "add-child-leaf" -> {
@@ -239,8 +239,8 @@ public class UndoRedoTest extends FileEditorManagerTestCase {
         case "drag-to-first-level", "drag-from-first-level" -> {
             NodeKey node = node(s, "node");
             NodeKey target = node(s, "target");
-            d.designer().reveal(node);
-            d.designer().reveal(target);
+            d.tool().reveal(node);
+            d.tool().reveal(target);
             d.settle();
             d.dragOnto(node, target, DropPosition.ONTO);
         }

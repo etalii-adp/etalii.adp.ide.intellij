@@ -14,12 +14,12 @@ import org.junit.runners.JUnit4;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 
 import etalii.adp.freemind.model.NodeKey;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /**
  * Spec 006 SC-004 on a generated 2,000-node map: a character typed in the text editor shows in the
- * designer within 0.1 s. Each keystroke is one document change; the measurement covers the
- * coalesced re-parse, the designer's update and painting the visible part of the map.
+ * diagram within 0.1 s. Each keystroke is one document change; the measurement covers the
+ * coalesced re-parse, the diagram's update and painting the visible part of the map.
  */
 @RunWith(JUnit4.class)
 public class TypingLatencyTest extends FileEditorManagerTestCase {
@@ -32,12 +32,12 @@ public class TypingLatencyTest extends FileEditorManagerTestCase {
     private static final String TYPED = "typed in the text view";
 
     @Test
-    public void typingInATwoThousandNodeMapShowsInTheDesignerWithinBudget() {
-        try (var warmUp = DesignerDriver.openText(myFixture, "warm-up.mm", generatedMap(50))) {
+    public void typingInATwoThousandNodeMapShowsInTheToolWithinBudget() {
+        try (var warmUp = ToolDriver.openText(myFixture, "warm-up.mm", generatedMap(50))) {
             type(warmUp, "Node 40", "warm up");
         }
 
-        try (var d = DesignerDriver.openText(myFixture, "large.mm", generatedMap(2000))) {
+        try (var d = ToolDriver.openText(myFixture, "large.mm", generatedMap(2000))) {
             paint(d);
             long[] elapsedMs = type(d, "Node 1500", TYPED);
             Arrays.sort(elapsedMs);
@@ -45,13 +45,13 @@ public class TypingLatencyTest extends FileEditorManagerTestCase {
             long max = elapsedMs[elapsedMs.length - 1];
             System.out.printf("SC-004 typing map %5d ms median, %5d ms max (budget %d ms, CI limit %d ms)%n", median, max,
                     KEYSTROKE_BUDGET_MS, KEYSTROKE_BUDGET_MS * CI_HEADROOM);
-            assertEquals("Node 1500" + TYPED, designerText(d, key("ID_1500")));
+            assertEquals("Node 1500" + TYPED, toolText(d, key("ID_1500")));
             assertTrue("median keystroke took " + median + " ms", median <= KEYSTROKE_BUDGET_MS * CI_HEADROOM);
         }
     }
 
     /** Types {@code text} one character at a time after the node text {@code after}; returns each keystroke's time. */
-    private static long[] type(DesignerDriver d, String after, String text) {
+    private static long[] type(ToolDriver d, String after, String text) {
         long[] elapsedMs = new long[text.length()];
         String typed = "";
         for (int i = 0; i < text.length(); i++) {
@@ -66,13 +66,13 @@ public class TypingLatencyTest extends FileEditorManagerTestCase {
         return elapsedMs;
     }
 
-    private static String designerText(DesignerDriver d, NodeKey key) {
-        return LayoutTest.designer(d).model().node(key).text();
+    private static String toolText(ToolDriver d, NodeKey key) {
+        return LayoutTest.tool(d).model().node(key).text();
     }
 
     /** Paints what a 1600 by 1000 window would show, now instead of when the event loop gets to it. */
-    private static void paint(DesignerDriver d) {
-        MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+    private static void paint(ToolDriver d) {
+        MindMapCanvas canvas = LayoutTest.tool(d).canvas();
         canvas.setSize(canvas.getPreferredSize());
         BufferedImage image = new BufferedImage(1600, 1000, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();

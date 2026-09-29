@@ -22,7 +22,7 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.util.Disposer;
 
 import etalii.adp.core.AdpDataKeys;
-import etalii.adp.core.AdpDesignerEditor;
+import etalii.adp.core.AdpToolFileEditor;
 import etalii.adp.core.ui.ReadOnlyBanner;
 import etalii.adp.freemind.edit.FreeMindConventions;
 import etalii.adp.freemind.edit.MindMapEdits;
@@ -31,13 +31,13 @@ import etalii.adp.freemind.edit.MindMapEdits.Placement;
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
 import etalii.adp.freemind.model.NodeKey;
-import etalii.adp.freemind.ui.MindMapDesigner;
+import etalii.adp.freemind.ui.MindMapFileEditor;
 
 /**
  * Base of the FreeMind editing actions (contracts/plugin-contributions.md). It reads the focused
- * designer ({@link AdpDataKeys#ADP_DESIGNER}) and its selected nodes from the action's
+ * diagram ({@link AdpDataKeys#ADP_TOOL}) and its selected nodes from the action's
  * {@code DataContext}; a subclass says why it does not apply ({@link #disabledReason}) and what it
- * does ({@link #perform}). Outside a designer the action is disabled, so its shortcut keeps its
+ * does ({@link #perform}). Outside a diagram the action is disabled, so its shortcut keeps its
  * meaning in text editors. When it is disabled for a reason the user can act on, such as the root
  * or a read-only file, the presentation's description states it, and the status bar and tooltip
  * show it.
@@ -63,13 +63,13 @@ public abstract class MindMapAction extends AnAction implements DumbAware {
 
     /**
      * Why the action does not apply to these selected nodes, or {@code null} when it does. Called
-     * only with a designer showing a map, and, unless {@link #needsEditable()} is false, an editable
+     * only with a diagram showing a map, and, unless {@link #needsEditable()} is false, an editable
      * one, with at least one node selected.
      */
-    protected abstract String disabledReason(MindMapDesigner designer, MindMap map, List<MapNode> nodes);
+    protected abstract String disabledReason(MindMapFileEditor tool, MindMap map, List<MapNode> nodes);
 
     /** Do the action. Only called when {@link #disabledReason} returned {@code null}. */
-    protected abstract void perform(MindMapDesigner designer, MindMap map, List<MapNode> nodes);
+    protected abstract void perform(MindMapFileEditor tool, MindMap map, List<MapNode> nodes);
 
     /** Whether the action edits the file, and so needs a writable one. */
     protected boolean needsEditable() {
@@ -79,18 +79,18 @@ public abstract class MindMapAction extends AnAction implements DumbAware {
     @Override
     public void update(@NotNull AnActionEvent event) {
         Presentation presentation = event.getPresentation();
-        MindMapDesigner designer = designer(event);
-        String reason = designer == null ? null : reason(designer);
-        presentation.setEnabled(designer != null && reason == null);
+        MindMapFileEditor tool = tool(event);
+        String reason = tool == null ? null : reason(tool);
+        presentation.setEnabled(tool != null && reason == null);
         presentation.setDescription(reason != null ? reason : getTemplatePresentation().getDescription());
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        MindMapDesigner designer = designer(event);
-        if (designer != null && reason(designer) == null) {
-            MindMap map = designer.model();
-            perform(designer, map, selectedNodes(designer, map));
+        MindMapFileEditor tool = tool(event);
+        if (tool != null && reason(tool) == null) {
+            MindMap map = tool.model();
+            perform(tool, map, selectedNodes(tool, map));
         }
     }
 
@@ -99,35 +99,35 @@ public abstract class MindMapAction extends AnAction implements DumbAware {
         return ActionUpdateThread.EDT;
     }
 
-    /** Why the action is disabled in this designer, or {@code null}. */
-    private String reason(MindMapDesigner designer) {
-        MindMap map = designer.model();
+    /** Why the action is disabled in this diagram, or {@code null}. */
+    private String reason(MindMapFileEditor tool) {
+        MindMap map = tool.model();
         if (map == null) {
             return NOT_SHOWN;
         }
-        if (needsEditable() && !designer.isEditable()) {
+        if (needsEditable() && !tool.isEditable()) {
             return ReadOnlyBanner.MESSAGE;
         }
-        List<MapNode> nodes = selectedNodes(designer, map);
-        return nodes.isEmpty() ? NOTHING_SELECTED : disabledReason(designer, map, nodes);
+        List<MapNode> nodes = selectedNodes(tool, map);
+        return nodes.isEmpty() ? NOTHING_SELECTED : disabledReason(tool, map, nodes);
     }
 
     /**
-     * The focused designer, or {@code null}. While a text field on its canvas (the in-place editor)
+     * The focused diagram, or {@code null}. While a text field on its canvas (the in-place editor)
      * has focus, Enter, Space, Delete and Tab are that field's, so there is none.
      */
-    private static MindMapDesigner designer(AnActionEvent event) {
+    private static MindMapFileEditor tool(AnActionEvent event) {
         if (event.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT) instanceof JTextComponent) {
             return null;
         }
-        AdpDesignerEditor<?> designer = event.getData(AdpDataKeys.ADP_DESIGNER);
-        return designer instanceof MindMapDesigner mindMap ? mindMap : null;
+        AdpToolFileEditor<?> tool = event.getData(AdpDataKeys.ADP_TOOL);
+        return tool instanceof MindMapFileEditor mindMap ? mindMap : null;
     }
 
     /** The selected nodes in the latest parse, in selection order. */
-    static List<MapNode> selectedNodes(MindMapDesigner designer, MindMap map) {
+    static List<MapNode> selectedNodes(MindMapFileEditor tool, MindMap map) {
         List<MapNode> nodes = new ArrayList<>();
-        for (Object key : designer.selection()) {
+        for (Object key : tool.selection()) {
             MapNode node = key instanceof NodeKey nodeKey ? map.node(nodeKey) : null;
             if (node != null) {
                 nodes.add(node);
@@ -136,9 +136,9 @@ public abstract class MindMapAction extends AnAction implements DumbAware {
         return nodes;
     }
 
-    /** One named step in the IDE's Undo, as a designer command; {@code andThen} (the selection it leaves) is part of it. */
-    static void execute(MindMapDesigner designer, Edit edit, Runnable andThen) {
-        designer.runCommand(edit.label(), text -> edit.changes(), andThen);
+    /** One named step in the IDE's Undo, as a diagram command; {@code andThen} (the selection it leaves) is part of it. */
+    static void execute(MindMapFileEditor tool, Edit edit, Runnable andThen) {
+        tool.runCommand(edit.label(), text -> edit.changes(), andThen);
     }
 
     /**
@@ -162,17 +162,17 @@ public abstract class MindMapAction extends AnAction implements DumbAware {
      * target open for display only, and keeps the moved node selected when its key survives the
      * move (an {@code ID}; an index path names another node afterwards).
      */
-    static void move(MindMapDesigner designer, MindMap map, MapNode node, MapNode target, Placement placement) {
+    static void move(MindMapFileEditor tool, MindMap map, MapNode node, MapNode target, Placement placement) {
         Edit edit = MindMapEdits.move(map, node.key(), target.key(), placement);
         if (edit == null) {
             return;
         }
-        if (placement == Placement.INTO && designer.isShownFolded(target)) {
-            designer.setShownFolded(target, false);
+        if (placement == Placement.INTO && tool.isShownFolded(target)) {
+            tool.setShownFolded(target, false);
         }
-        execute(designer, edit, () -> designer.select(node.id() != null ? List.of(node.key()) : List.of()));
+        execute(tool, edit, () -> tool.select(node.id() != null ? List.of(node.key()) : List.of()));
         if (node.id() != null) {
-            designer.canvas().scrollTo(node.key());
+            tool.canvas().scrollTo(node.key());
         }
     }
 
@@ -188,7 +188,7 @@ public abstract class MindMapAction extends AnAction implements DumbAware {
 
     /**
      * Use a fixed clock and random source until {@code parent} is disposed, so the reference
-     * scenarios run through the designer give their recorded bytes.
+     * scenarios run through the diagram give their recorded bytes.
      */
     @TestOnly
     public static void useClock(LongSupplier fixedClock, Supplier<RandomGenerator> fixedRandom, Disposable parent) {

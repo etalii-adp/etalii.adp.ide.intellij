@@ -23,7 +23,7 @@ import com.intellij.util.ui.JBUI;
 import etalii.adp.core.diagram.view.CanvasLayer;
 import etalii.adp.core.diagram.view.CanvasTool;
 import etalii.adp.core.diagram.view.DiagramCanvas;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 import etalii.adp.core.diagram.view.ElementPainter;
 import etalii.adp.core.diagram.view.Scene.ElementRender;
 
@@ -38,7 +38,7 @@ public final class SelectionTool implements CanvasTool, CanvasLayer {
 
     private static final int THRESHOLD = 3;
 
-    private final DiagramDesigner designer;
+    private final DiagramFileEditor fileEditor;
     private final DiagramCanvas canvas;
     private Point pressedAt;
     private Object pendingCollapse;
@@ -46,20 +46,20 @@ public final class SelectionTool implements CanvasTool, CanvasLayer {
     private Point2D marqueeEnd;
     private List<Object> base = List.of();
 
-    public SelectionTool(DiagramDesigner designer) {
-        this.designer = designer;
-        this.canvas = designer.canvas();
+    public SelectionTool(DiagramFileEditor fileEditor) {
+        this.fileEditor = fileEditor;
+        this.canvas = fileEditor.canvas();
     }
 
     /** The topmost selectable element at a diagram point, else the topmost connection there, or {@code null}. */
-    public static Object itemAt(DiagramDesigner designer, Point2D point) {
-        Object element = elementAt(designer, point);
-        return element != null ? element : designer.canvas().connectionAt(point);
+    public static Object itemAt(DiagramFileEditor fileEditor, Point2D point) {
+        Object element = elementAt(fileEditor, point);
+        return element != null ? element : fileEditor.canvas().connectionAt(point);
     }
 
     /** The topmost selectable element at a diagram point, or {@code null}; placeholders are selectable. */
-    public static Object elementAt(DiagramDesigner designer, Point2D point) {
-        List<ElementRender> renders = new ArrayList<>(designer.canvas().scene().elements().values());
+    public static Object elementAt(DiagramFileEditor fileEditor, Point2D point) {
+        List<ElementRender> renders = new ArrayList<>(fileEditor.canvas().scene().elements().values());
         for (int i = renders.size() - 1; i >= 0; i--) {
             ElementRender render = renders.get(i);
             Rectangle2D box = render.bounds();
@@ -80,19 +80,19 @@ public final class SelectionTool implements CanvasTool, CanvasLayer {
     @Override
     public void mousePressed(MouseEvent e) {
         reset();
-        if (!SwingUtilities.isLeftMouseButton(e) || e.isPopupTrigger() || designer.diagram() == null) {
+        if (!SwingUtilities.isLeftMouseButton(e) || e.isPopupTrigger() || fileEditor.diagram() == null) {
             return;
         }
         Point2D point = canvas.toDiagram(e.getPoint());
-        Object item = itemAt(designer, point);
+        Object item = itemAt(fileEditor, point);
         boolean toggle = (e.getModifiersEx() & (InputEvent.CTRL_DOWN_MASK | InputEvent.META_DOWN_MASK)) != 0;
         boolean extend = (e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0;
         pressedAt = e.getPoint();
-        List<Object> selection = new ArrayList<>(designer.selection());
+        List<Object> selection = new ArrayList<>(fileEditor.selection());
         if (item == null) {
             base = toggle || extend ? selection : List.of();
             if (!toggle && !extend && !selection.isEmpty()) {
-                designer.select(List.of());
+                fileEditor.select(List.of());
             }
             marqueeStart = point;
             e.consume();
@@ -100,16 +100,16 @@ public final class SelectionTool implements CanvasTool, CanvasLayer {
             if (!selection.remove(item)) {
                 selection.add(item);
             }
-            designer.select(selection);
+            fileEditor.select(selection);
             e.consume();
         } else if (extend) {
             if (!selection.contains(item)) {
                 selection.add(item);
-                designer.select(selection);
+                fileEditor.select(selection);
             }
             e.consume();
         } else if (!selection.contains(item)) {
-            designer.select(List.of(item));
+            fileEditor.select(List.of(item));
         } else if (selection.size() > 1) {
             pendingCollapse = item;
         }
@@ -140,11 +140,11 @@ public final class SelectionTool implements CanvasTool, CanvasLayer {
                     }
                 }
                 selected.addAll(canvas.connectionsIn(area));
-                designer.select(List.copyOf(selected));
+                fileEditor.select(List.copyOf(selected));
             }
             e.consume();
         } else if (pendingCollapse != null) {
-            designer.select(List.of(pendingCollapse));
+            fileEditor.select(List.of(pendingCollapse));
         }
         reset();
     }

@@ -56,7 +56,7 @@ import kotlin.time.DurationUnit;
  * The proving test for installation (FR-001, SC-001 automated part, research R9 and R12): the built
  * plug-in zip is installed into real IntelliJ IDEA, Rider, WebStorm and PyCharm 2026.2 instances,
  * and in a project with one example map and one Objective-C++ {@code .mm} file, the map opens in the
- * FreeMind designer and the other file does not.
+ * Mind map and the other file does not.
  * <p>
  * IntelliJ IDEA runs twice: as installed, and with an Ultimate licence when the environment names
  * one in {@code ADP_IDEA_LICENSE} (a licence key, or a path to one); without it that run is skipped.
@@ -69,8 +69,8 @@ import kotlin.time.DurationUnit;
  */
 class OpenMapIntegrationTest {
 
-    private static final String DESIGNER = "etalii.adp.freemind.editor";
-    private static final String DESIGNER_NAME = "FreeMind Mind Map";
+    private static final String TOOL = "etalii.adp.freemind";
+    private static final String TOOL_NAME = "Mind map";
     private static final String MAP = "freemind-1.0.1-rich-notes.mm";
     private static final String OBJECTIVE_CPP = """
             #import <Foundation/Foundation.h>
@@ -96,7 +96,7 @@ class OpenMapIntegrationTest {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("products")
-    void aMapOpensInTheDesignerAndAnotherMmFileDoesNot(String product, Supplier<IdeInfo> ide, String version, boolean licensed, @TempDir Path project)
+    void aMapOpensInTheToolAndAnotherMmFileDoesNot(String product, Supplier<IdeInfo> ide, String version, boolean licensed, @TempDir Path project)
             throws Exception {
         String selected = System.getenv("ADP_IT_PRODUCTS");
         assumeTrue(selected == null || selected.isBlank() || Arrays.stream(selected.split(",")).map(String::strip).anyMatch(product::equals),
@@ -138,14 +138,14 @@ class OpenMapIntegrationTest {
                 EditorsKt.openFile(d, "map.mm", opened, false, false);
                 VirtualFile map = EditorsKt.findOpenFile(d, "map.mm", opened, false);
                 assertNotNull(map, product + ": the map is open");
-                assertTrue(editorTypes(d, opened, map).contains(DESIGNER), product + ": the designer is offered for the map");
-                assertEquals(DESIGNER_NAME, selectedEditorName(d, opened, map), product + ": the map opens in the designer");
+                assertTrue(editorTypes(d, opened, map).contains(TOOL), product + ": the tool is offered for the map");
+                assertEquals(TOOL_NAME, selectedEditorName(d, opened, map), product + ": the map opens in the tool");
 
                 EditorsKt.openFile(d, "main.mm", opened, false, false);
                 VirtualFile source = EditorsKt.findOpenFile(d, "main.mm", opened, false);
                 assertNotNull(source, product + ": the Objective-C++ file is open");
-                assertFalse(editorTypes(d, opened, source).contains(DESIGNER), product + ": the designer is not offered for other .mm files");
-                assertNotEquals(DESIGNER_NAME, selectedEditorName(d, opened, source), product + ": the other file opens as without the plug-in");
+                assertFalse(editorTypes(d, opened, source).contains(TOOL), product + ": the tool is not offered for other .mm files");
+                assertNotEquals(TOOL_NAME, selectedEditorName(d, opened, source), product + ": the other file opens as without the plug-in");
                 return Unit.INSTANCE;
             });
         } catch (Throwable t) {

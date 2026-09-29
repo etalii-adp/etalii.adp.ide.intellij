@@ -15,22 +15,22 @@ import kotlin.Unit;
 import kotlin.jvm.JvmClassMappingKt;
 
 /**
- * Brings an open file's designer to the front before a test acts on it, as someone clicks its tab.
+ * Brings an open file's tool to the front before a test acts on it, as someone clicks its tab.
  * <p>
  * IntelliJ IDEA without a licence opens its "Trial" page as an editor tab a little after a project
- * opens, and selects it, so the designer's canvas is no longer showing: the action system then
+ * opens, and selects it, so the tool's canvas is no longer showing: the action system then
  * refuses to run an action with it ("target component is not showing") and the toolbox, which
  * follows the selected editor, lists nothing. {@link #select} and {@link #front} select the file's
  * tab again, as someone clicks it.
  */
-final class DesignerTab {
+final class ToolTab {
 
     private static final String PLUGIN = "etalii.adp";
 
-    private DesignerTab() {
+    private ToolTab() {
     }
 
-    /** Waits, for at most half a minute, until the file's designer canvas shows, selecting its tab when another one is. */
+    /** Waits, for at most half a minute, until the file's tool canvas shows, selecting its tab when another one is. */
     static void select(Driver driver, Project project, String fileName) throws InterruptedException {
         long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
         String[] state = new String[1];
@@ -39,7 +39,7 @@ final class DesignerTab {
             driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
                 VirtualFile file = EditorsKt.findOpenFile(d, fileName, project, false);
                 EditorsRemote editors = d.service(JvmClassMappingKt.getKotlinClass(EditorsRemote.class), project, RdTarget.DEFAULT);
-                showing[0] = editors.getSelectedEditor(file).designer().view().isShowing();
+                showing[0] = editors.getSelectedEditor(file).tool().view().isShowing();
                 if (!showing[0]) {
                     try {
                         state[0] = describe(d, editors);
@@ -54,7 +54,7 @@ final class DesignerTab {
                 return;
             }
             if (System.nanoTime() > deadline) {
-                throw new AssertionError(fileName + "'s designer canvas is not showing after half a minute of selecting its tab: " + state[0]);
+                throw new AssertionError(fileName + "'s tool canvas is not showing after half a minute of selecting its tab: " + state[0]);
             }
             Thread.sleep(250);
         }
@@ -67,7 +67,7 @@ final class DesignerTab {
      */
     static void front(Driver d, Project project, VirtualFile file) {
         EditorsRemote editors = d.service(JvmClassMappingKt.getKotlinClass(EditorsRemote.class), project, RdTarget.DEFAULT);
-        if (!editors.getSelectedEditor(file).designer().view().isShowing()) {
+        if (!editors.getSelectedEditor(file).tool().view().isShowing()) {
             editors.openFile(file, true);
         }
     }
@@ -104,11 +104,11 @@ final class DesignerTab {
 
     @Remote(value = "etalii.adp.core.AdpEditorProvider$Composite", plugin = PLUGIN)
     public interface CompositeRemote {
-        DesignerRemote designer();
+        ToolRemote tool();
     }
 
-    @Remote(value = "etalii.adp.core.diagram.view.DiagramDesigner", plugin = PLUGIN)
-    public interface DesignerRemote {
+    @Remote(value = "etalii.adp.core.diagram.view.DiagramFileEditor", plugin = PLUGIN)
+    public interface ToolRemote {
         ComponentRemote view();
     }
 

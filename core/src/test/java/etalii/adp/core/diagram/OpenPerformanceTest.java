@@ -63,7 +63,7 @@ public class OpenPerformanceTest extends FileEditorManagerTestCase {
 
     /** Paints what a 1600 by 1000 window would show, now instead of when the event loop gets to it. */
     private static void paint(DiagramDriver d) {
-        DiagramCanvas canvas = d.designer().canvas();
+        DiagramCanvas canvas = d.tool().canvas();
         canvas.setSize(canvas.getPreferredSize());
         BufferedImage image = new BufferedImage(1600, 1000, BufferedImage.TYPE_INT_RGB);
         var graphics = image.createGraphics();

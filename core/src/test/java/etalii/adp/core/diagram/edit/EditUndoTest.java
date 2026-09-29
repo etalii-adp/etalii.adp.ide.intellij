@@ -81,7 +81,7 @@ public class EditUndoTest extends FileEditorManagerTestCase {
     public void reconnect() {
         assertOneStep("Reconnect Flow", d -> {
             d.driver().select("f1");
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             List<Point> route = d.connectionView("f1").route();
             Point end = route.get(route.size() - 1);
             java.awt.geom.Point2D to = d.anchorsOf("a").stream().filter(a -> a.id().equals("in")).findFirst().orElseThrow().position();

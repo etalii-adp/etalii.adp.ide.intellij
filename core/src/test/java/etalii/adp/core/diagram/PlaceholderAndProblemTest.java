@@ -39,7 +39,7 @@ public class PlaceholderAndProblemTest extends FileEditorManagerTestCase {
         try (var d = open("broken.adpsample")) {
             assertTrue(d.driver().problemShown());
             assertEquals(Layout.TEXT, d.driver().layout());
-            assertNull(d.designer().diagram());
+            assertNull(d.tool().diagram());
             assertEquals(List.of(), d.elementKeys());
             assertEquals(SampleFiles.read("broken.adpsample"), d.driver().text());
             assertFalse(d.driver().isModified());
@@ -86,7 +86,7 @@ public class PlaceholderAndProblemTest extends FileEditorManagerTestCase {
     public void placeholdersAreNeverMovedEditedOrConnectedAndAreKept() {
         String original = SampleFiles.read("unknown-type.adpsample");
         try (var d = open("unknown-type.adpsample")) {
-            var commands = d.designer().commands();
+            var commands = d.tool().commands();
 
             assertFalse(commands.move(Map.of("z", new Rectangle2D.Double(300, 300, 80, 40))).allowed());
             assertEquals("unknown type is kept as it is", d.refusal());

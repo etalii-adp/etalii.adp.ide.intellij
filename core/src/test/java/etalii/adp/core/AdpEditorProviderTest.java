@@ -17,10 +17,10 @@ import com.intellij.openapi.fileEditor.TextEditorWithPreview;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 import com.intellij.ui.EditorNotificationPanel;
 
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 import etalii.adp.testing.Layout;
 
-/** The provider and the designer base, driven through the format-agnostic {@link FakeFormat}. */
+/** The provider and the tool base, driven through the format-agnostic {@link FakeFormat}. */
 @RunWith(JUnit4.class)
 public class AdpEditorProviderTest extends FileEditorManagerTestCase {
 
@@ -34,39 +34,39 @@ public class AdpEditorProviderTest extends FileEditorManagerTestCase {
         provider = FakeFormat.register(getTestRootDisposable());
     }
 
-    private DesignerDriver open(String text) {
-        return DesignerDriver.openText(myFixture, "items.txt", text);
+    private ToolDriver open(String text) {
+        return ToolDriver.openText(myFixture, "items.txt", text);
     }
 
-    private static FakeFormat.Designer fake(DesignerDriver d) {
-        return (FakeFormat.Designer) d.designer();
+    private static FakeFormat.Tool fake(ToolDriver d) {
+        return (FakeFormat.Tool) d.tool();
     }
 
     @Test
     public void theTextPageIsATextEditorOnTheSameDocument() {
         try (var d = open(TEXT)) {
             assertInstanceOf(d.editor(), TextEditorWithPreview.class);
-            assertSame(d.designer().document(), d.composite().getTextEditor().getEditor().getDocument());
+            assertSame(d.tool().document(), d.composite().getTextEditor().getEditor().getDocument());
             assertEquals(FakeFormat.EDITOR_TYPE_ID, d.editorTypeIdUsed());
-            assertEquals(Layout.DESIGNER, d.layout());
+            assertEquals(Layout.TOOL, d.layout());
             assertEquals("beta", d.viewOf(1).text());
         }
     }
 
     @Test
     public void acceptsOnlyWithTheExtensionAndTheSniff() {
-        try (var plain = DesignerDriver.openText(myFixture, "plain.txt", "alpha\n");
-                var other = DesignerDriver.openText(myFixture, "items.md", TEXT)) {
-            assertNull(plain.designer());
+        try (var plain = ToolDriver.openText(myFixture, "plain.txt", "alpha\n");
+                var other = ToolDriver.openText(myFixture, "items.md", TEXT)) {
+            assertNull(plain.tool());
             assertFalse(plain.editorTypeIdsOffered().contains(FakeFormat.EDITOR_TYPE_ID));
-            assertNull(other.designer());
+            assertNull(other.tool());
             assertFalse(other.editorTypeIdsOffered().contains(FakeFormat.EDITOR_TYPE_ID));
         }
     }
 
     @Test
     public void theSniffReadsAtMostFourKilobytes() {
-        var file = DesignerDriver.createFile(myFixture, "big.txt", (TEXT + "x".repeat(20_000)).getBytes(UTF_8));
+        var file = ToolDriver.createFile(myFixture, "big.txt", (TEXT + "x".repeat(20_000)).getBytes(UTF_8));
 
         assertTrue(provider.accept(getProject(), file));
         assertEquals(AdpEditorProvider.SNIFF_LIMIT, provider.sniffedBytes);
@@ -117,13 +117,13 @@ public class AdpEditorProviderTest extends FileEditorManagerTestCase {
             d.editText(t -> t.replace("beta", "!x"));
 
             assertTrue(d.problemShown());
-            assertNull(d.designer().model());
-            assertFalse(d.designer().isEditable());
-            String message = d.designer().problemMessage();
+            assertNull(d.tool().model());
+            assertFalse(d.tool().isEditable());
+            String message = d.tool().problemMessage();
             assertTrue(message, message.contains("Line 3, column 1"));
             assertEquals(FakeFormat.HEADER + "alpha\n!x\ngamma\n", d.text());
 
-            d.designer().showText();
+            d.tool().showText();
             assertEquals(Layout.TEXT, d.layout());
         }
     }
@@ -145,21 +145,21 @@ public class AdpEditorProviderTest extends FileEditorManagerTestCase {
 
             d.setReadOnly(true);
             assertTrue(d.readOnlyBannerShown());
-            assertFalse(d.designer().isEditable());
-            d.designer().execute("Insert Line", TextChanges.of(insert(FakeFormat.HEADER.length(), "zero\n")));
+            assertFalse(d.tool().isEditable());
+            d.tool().execute("Insert Line", TextChanges.of(insert(FakeFormat.HEADER.length(), "zero\n")));
             assertEquals(TEXT, d.text());
             assertFalse(d.isModified());
 
             d.setReadOnly(false);
             assertFalse(d.readOnlyBannerShown());
-            assertTrue(d.designer().isEditable());
+            assertTrue(d.tool().isEditable());
         }
     }
 
     @Test
     public void executeLandsOneLabelledUndoEntry() {
         try (var d = open(TEXT)) {
-            d.designer().execute("Insert Line", TextChanges.of(insert(FakeFormat.HEADER.length(), "zero\n")));
+            d.tool().execute("Insert Line", TextChanges.of(insert(FakeFormat.HEADER.length(), "zero\n")));
 
             assertEquals(FakeFormat.HEADER + "zero\nalpha\nbeta\ngamma\n", d.text());
             assertEquals("zero", d.viewOf(0).text());
@@ -179,15 +179,15 @@ public class AdpEditorProviderTest extends FileEditorManagerTestCase {
     @Test
     public void stateKeepsZoomAndSelection() {
         try (var d = open(TEXT)) {
-            d.designer().zoomIn();
+            d.tool().zoomIn();
             d.select(2);
-            var state = d.designer().getState(FileEditorStateLevel.FULL);
+            var state = d.tool().getState(FileEditorStateLevel.FULL);
 
-            d.designer().resetZoom();
+            d.tool().resetZoom();
             d.select(0);
-            d.designer().setState(state);
+            d.tool().setState(state);
 
-            assertEquals(1.25, d.designer().viewState().zoom(), 1e-9);
+            assertEquals(1.25, d.tool().viewState().zoom(), 1e-9);
             assertEquals(List.of(2), d.selectedKeys());
             assertEquals(TEXT, d.text());
         }
@@ -201,7 +201,7 @@ public class AdpEditorProviderTest extends FileEditorManagerTestCase {
             String text = ((EditorNotificationPanel) banner).getText();
             assertTrue(text, text.contains("Line 3, column 1"));
         }
-        try (var d = DesignerDriver.openText(myFixture, "fine.txt", TEXT)) {
+        try (var d = ToolDriver.openText(myFixture, "fine.txt", TEXT)) {
             assertNull(new AdpProblemNotifications().collectNotificationData(getProject(), d.file()).apply(d.composite()));
         }
     }

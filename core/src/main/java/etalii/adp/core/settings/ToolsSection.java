@@ -21,19 +21,19 @@ import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.JBUI;
 
 /**
- * The designer list at the top of the ADP page (US1, US2, FR-007 to FR-010, FR-017): every
- * installed designer with its file types, version, origin and status, and an On check box.
- * Selecting a designer shows its problems, its conflicts and the canvas options it does not
+ * The tool list at the top of the ADP page (US1, US2, FR-007 to FR-010, FR-017): every
+ * installed tool with its file types, version, origin and status, and an On check box.
+ * Selecting a tool shows its problems, its conflicts and the canvas options it does not
  * follow. File types and default editors stay the platform's: a link opens its page (FR-004).
  */
-public final class DesignersSection implements SettingsSection {
+public final class ToolsSection implements SettingsSection {
 
-    static final String TITLE = "Designers";
+    static final String TITLE = "Tools";
     static final String FILE_TYPES_LINK = "File types and default editors…";
     /** The platform's File Types page. */
     static final String FILE_TYPES_ID = "preferences.fileTypes";
 
-    private final DesignerTableModel model = new DesignerTableModel();
+    private final ToolTableModel model = new ToolTableModel();
     private JBTable table;
     private JBTextArea detail;
 
@@ -91,7 +91,7 @@ public final class DesignersSection implements SettingsSection {
     @Override
     public void reset() {
         int selected = table == null ? -1 : table.getSelectedRow();
-        model.load(AdpDesigners.all());
+        model.load(AdpTools.all());
         if (table != null && selected >= 0 && selected < model.getRowCount()) {
             table.setRowSelectionInterval(selected, selected);
         }
@@ -101,7 +101,7 @@ public final class DesignersSection implements SettingsSection {
     @Override
     public List<String> searchableLabels() {
         List<String> labels = new ArrayList<>(List.of(TITLE, FILE_TYPES_LINK));
-        labels.addAll(DesignerTableModel.COLUMNS);
+        labels.addAll(ToolTableModel.COLUMNS);
         return labels;
     }
 
@@ -111,7 +111,7 @@ public final class DesignersSection implements SettingsSection {
         detail = null;
     }
 
-    /** What the area below the list says about the selected designer. */
+    /** What the area below the list says about the selected tool. */
     String detail() {
         return detail == null ? "" : detail.getText();
     }
@@ -125,24 +125,24 @@ public final class DesignersSection implements SettingsSection {
         detail.setCaretPosition(0);
     }
 
-    /** Problems, conflicts and unfollowed options of one designer, in sentences. */
-    static String describe(DesignerInfo designer, List<DesignerInfo> all) {
+    /** Problems, conflicts and unfollowed options of one tool, in sentences. */
+    static String describe(ToolInfo tool, List<ToolInfo> all) {
         List<String> lines = new ArrayList<>();
-        if (!designer.problems().isEmpty()) {
-            lines.add(DesignerInfo.Status.NOT_LOADED.label() + ":");
-            designer.problems().forEach(problem -> lines.add("  • " + problem));
+        if (!tool.problems().isEmpty()) {
+            lines.add(ToolInfo.Status.NOT_LOADED.label() + ":");
+            tool.problems().forEach(problem -> lines.add("  • " + problem));
         }
-        if (!designer.conflictsWith().isEmpty()) {
-            Map<String, DesignerInfo> byId = all.stream().collect(Collectors.toMap(DesignerInfo::id, d -> d));
-            String others = designer.conflictsWith().stream().map(id -> byId.containsKey(id) ? byId.get(id).name() : id)
+        if (!tool.conflictsWith().isEmpty()) {
+            Map<String, ToolInfo> byId = all.stream().collect(Collectors.toMap(ToolInfo::id, d -> d));
+            String others = tool.conflictsWith().stream().map(id -> byId.containsKey(id) ? byId.get(id).name() : id)
                     .collect(Collectors.joining(", "));
             // the platform asks the providers in extension order: the first that accepts a file is used
-            DesignerInfo used = all.stream().filter(d -> d == designer || designer.conflictsWith().contains(d.id())).findFirst().orElse(designer);
+            ToolInfo used = all.stream().filter(d -> d == tool || tool.conflictsWith().contains(d.id())).findFirst().orElse(tool);
             lines.add("Shares file types with " + others + ". For a file both can open, " + used.name()
                     + " is used; turn it off here to use the other instead.");
         }
-        if (!designer.unfollowed().isEmpty()) {
-            lines.add("Does not follow: " + designer.unfollowed().stream().sorted().map(CanvasOption::label).collect(Collectors.joining(", "))
+        if (!tool.unfollowed().isEmpty()) {
+            lines.add("Does not follow: " + tool.unfollowed().stream().sorted().map(CanvasOption::label).collect(Collectors.joining(", "))
                     + ". Its definition fixes them.");
         }
         return String.join("\n", lines);

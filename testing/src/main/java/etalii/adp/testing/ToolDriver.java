@@ -61,30 +61,30 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.testFramework.PlatformTestUtil;
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture;
 
-import etalii.adp.core.AdpDesignerEditor;
+import etalii.adp.core.AdpToolFileEditor;
 import etalii.adp.core.AdpEditorProvider;
 import etalii.adp.core.NodeView;
 
 /**
- * Drives a designer as a user would, inside a headless IDE (contracts/test-kit.md). The test case
+ * Drives a tool as a user would, inside a headless IDE (contracts/test-kit.md). The test case
  * must install a real file editor manager, as {@code FileEditorManagerTestCase} does, so files open
  * through the IDE's own providers and editor-opened events fire. Runs on the event dispatch thread
  * and knows nothing about any format.
  */
-public final class DesignerDriver implements AutoCloseable {
+public final class ToolDriver implements AutoCloseable {
 
     private final CodeInsightTestFixture fixture;
     private final Project project;
     private final VirtualFile file;
     private final Document document;
-    private final Disposable disposable = Disposer.newDisposable("DesignerDriver");
+    private final Disposable disposable = Disposer.newDisposable("ToolDriver");
     private final FileEditor opened;
 
-    private DesignerDriver(CodeInsightTestFixture fixture, VirtualFile file) {
+    private ToolDriver(CodeInsightTestFixture fixture, VirtualFile file) {
         this.fixture = fixture;
         this.project = fixture.getProject();
         this.file = file;
-        // Actions read the designer from the component tree, as in the IDE, not from a test data provider.
+        // Actions read the tool from the component tree, as in the IDE, not from a test data provider.
         if (!HeadlessDataManager.isFallbackProductionDataManagerEnabled()) {
             HeadlessDataManager.fallbackToProductionDataManager(fixture.getTestRootDisposable());
         }
@@ -95,7 +95,7 @@ public final class DesignerDriver implements AutoCloseable {
     }
 
     /** Copy an example file into the test project, byte for byte, and open it as the IDE would. */
-    public static DesignerDriver open(CodeInsightTestFixture fixture, Path exampleFile) {
+    public static ToolDriver open(CodeInsightTestFixture fixture, Path exampleFile) {
         try {
             return openBytes(fixture, exampleFile.getFileName().toString(), Files.readAllBytes(exampleFile));
         } catch (IOException e) {
@@ -104,14 +104,14 @@ public final class DesignerDriver implements AutoCloseable {
     }
 
     /** Same, for an in-memory text (generated maps, edge cases), written as UTF-8. */
-    public static DesignerDriver openText(CodeInsightTestFixture fixture, String fileName, String content) {
+    public static ToolDriver openText(CodeInsightTestFixture fixture, String fileName, String content) {
         return openBytes(fixture, fileName, content.getBytes(UTF_8));
     }
 
     /** Same, for exact bytes (line separator and encoding tests). */
-    public static DesignerDriver openBytes(CodeInsightTestFixture fixture, String fileName, byte[] content) {
+    public static ToolDriver openBytes(CodeInsightTestFixture fixture, String fileName, byte[] content) {
         VirtualFile file = createFile(fixture, fileName, content);
-        return new DesignerDriver(fixture, file);
+        return new ToolDriver(fixture, file);
     }
 
     /** Create a file in the test project without opening it. */
@@ -125,12 +125,12 @@ public final class DesignerDriver implements AutoCloseable {
         }
     }
 
-    /** The designer, or {@code null} when the IDE opened another editor. */
-    public AdpDesignerEditor<?> designer() {
-        return opened instanceof AdpEditorProvider.Composite composite ? composite.designer() : null;
+    /** The tool, or {@code null} when the IDE opened another editor. */
+    public AdpToolFileEditor<?> tool() {
+        return opened instanceof AdpEditorProvider.Composite composite ? composite.tool() : null;
     }
 
-    /** The composite editor (text and designer), or {@code null} when the IDE opened another editor. */
+    /** The composite editor (text and tool), or {@code null} when the IDE opened another editor. */
     public AdpEditorProvider.Composite composite() {
         return opened instanceof AdpEditorProvider.Composite composite ? composite : null;
     }
@@ -166,13 +166,13 @@ public final class DesignerDriver implements AutoCloseable {
     // Acting
 
     /** Select these items by the format's keys, as clicks would. */
-    public DesignerDriver select(Object... keys) {
-        designer().select(List.of(keys));
+    public ToolDriver select(Object... keys) {
+        tool().select(List.of(keys));
         return this;
     }
 
-    /** Run an action through the action system with the designer's data context, as keys and menus do. */
-    public DesignerDriver run(String actionId) {
+    /** Run an action through the action system with the tool's data context, as keys and menus do. */
+    public ToolDriver run(String actionId) {
         AnAction action = action(actionId);
         AnActionEvent event = event(action);
         ActionUtil.updateAction(action, event);
@@ -183,7 +183,7 @@ public final class DesignerDriver implements AutoCloseable {
         return this;
     }
 
-    /** The action's presentation after an update in the designer's context: enablement and description. */
+    /** The action's presentation after an update in the tool's context: enablement and description. */
     public Presentation presentation(String actionId) {
         AnAction action = action(actionId);
         AnActionEvent event = event(action);
@@ -192,10 +192,10 @@ public final class DesignerDriver implements AutoCloseable {
     }
 
     /**
-     * A key press while the designer's view has focus: an action whose shortcut the view registered
+     * A key press while the tool's view has focus: an action whose shortcut the view registered
      * runs; otherwise the view handles the key itself.
      */
-    public DesignerDriver press(String keystroke) {
+    public ToolDriver press(String keystroke) {
         KeyStroke stroke = KeyStroke.getKeyStroke(keystroke);
         if (stroke == null) {
             throw new IllegalArgumentException("Not a keystroke: " + keystroke);
@@ -246,7 +246,7 @@ public final class DesignerDriver implements AutoCloseable {
     }
 
     /** Click an item, as the mouse would; {@code clickCount} 2 is a double-click. */
-    public DesignerDriver click(Object key, int clickCount, int modifiers) {
+    public ToolDriver click(Object key, int clickCount, int modifiers) {
         Point at = center(key);
         mouse(MouseEvent.MOUSE_PRESSED, at, clickCount, modifiers);
         mouse(MouseEvent.MOUSE_RELEASED, at, clickCount, modifiers);
@@ -256,9 +256,9 @@ public final class DesignerDriver implements AutoCloseable {
     }
 
     /** Drag an item onto another with the mouse, dropping before, onto or after it. */
-    public DesignerDriver dragOnto(Object key, Object targetKey, DropPosition where) {
+    public ToolDriver dragOnto(Object key, Object targetKey, DropPosition where) {
         Point from = center(key);
-        Rectangle target = zoomed(designer().viewOf(targetKey).bounds());
+        Rectangle target = zoomed(tool().viewOf(targetKey).bounds());
         int y = switch (where) {
         case BEFORE -> target.y + Math.max(1, target.height / 10);
         case ONTO -> target.y + target.height / 2;
@@ -274,7 +274,7 @@ public final class DesignerDriver implements AutoCloseable {
     }
 
     /** Type into the open in-place text field and press Enter, which finishes it. */
-    public DesignerDriver typeInPlace(String text) {
+    public ToolDriver typeInPlace(String text) {
         JTextField field = inPlaceField();
         if (field == null) {
             throw new IllegalStateException("No in-place editor is open");
@@ -290,20 +290,20 @@ public final class DesignerDriver implements AutoCloseable {
         return find(view(), JTextField.class);
     }
 
-    /** The IDE's own Undo with the designer focused. */
-    public DesignerDriver undo() {
+    /** The IDE's own Undo with the tool focused. */
+    public ToolDriver undo() {
         return run("$Undo");
     }
 
-    /** The IDE's own Redo with the designer focused. */
-    public DesignerDriver redo() {
+    /** The IDE's own Redo with the tool focused. */
+    public ToolDriver redo() {
         return run("$Redo");
     }
 
     /** Switch the layout as the editor's toolbar does. The choice is not remembered past this driver. */
-    public DesignerDriver showLayout(Layout layout) {
+    public ToolDriver showLayout(Layout layout) {
         composite().setLayoutUnremembered(switch (layout) {
-        case DESIGNER -> TextEditorWithPreview.Layout.SHOW_PREVIEW;
+        case TOOL -> TextEditorWithPreview.Layout.SHOW_PREVIEW;
         case TEXT -> TextEditorWithPreview.Layout.SHOW_EDITOR;
         case SPLIT -> TextEditorWithPreview.Layout.SHOW_EDITOR_AND_PREVIEW;
         });
@@ -314,14 +314,14 @@ public final class DesignerDriver implements AutoCloseable {
     /** The composite's current layout. */
     public Layout layout() {
         return switch (composite().getLayout()) {
-        case SHOW_PREVIEW -> Layout.DESIGNER;
+        case SHOW_PREVIEW -> Layout.TOOL;
         case SHOW_EDITOR -> Layout.TEXT;
         case SHOW_EDITOR_AND_PREVIEW -> Layout.SPLIT;
         };
     }
 
     /** A change typed in the text editor: only the changed middle of the text is replaced. */
-    public DesignerDriver editText(UnaryOperator<String> change) {
+    public ToolDriver editText(UnaryOperator<String> change) {
         String before = document.getText();
         String after = change.apply(before);
         int prefix = 0;
@@ -342,7 +342,7 @@ public final class DesignerDriver implements AutoCloseable {
     }
 
     /** Change the file behind the IDE's back, as version control does, then let the IDE notice. */
-    public DesignerDriver changeOnDisk(String newContent) {
+    public ToolDriver changeOnDisk(String newContent) {
         try {
             WriteAction.runAndWait(() -> file.setBinaryContent(newContent.getBytes(UTF_8), -1, System.currentTimeMillis() + 2000, this));
         } catch (IOException e) {
@@ -352,7 +352,7 @@ public final class DesignerDriver implements AutoCloseable {
         return this;
     }
 
-    public DesignerDriver setReadOnly(boolean readOnly) {
+    public ToolDriver setReadOnly(boolean readOnly) {
         try {
             WriteAction.runAndWait(() -> file.setWritable(!readOnly));
         } catch (IOException e) {
@@ -403,29 +403,29 @@ public final class DesignerDriver implements AutoCloseable {
     }
 
     public NodeView viewOf(Object key) {
-        return designer().viewOf(key);
+        return tool().viewOf(key);
     }
 
     public List<Object> selectedKeys() {
-        return designer().selection();
+        return tool().selection();
     }
 
     public boolean problemShown() {
-        return designer().problemMessage() != null;
+        return tool().problemMessage() != null;
     }
 
     public boolean readOnlyBannerShown() {
-        return designer().readOnlyBannerShown();
+        return tool().readOnlyBannerShown();
     }
 
-    /** The Structure view model for the open designer; disposed with the driver. */
+    /** The Structure view model for the open tool; disposed with the driver. */
     public StructureViewModel structure() {
         StructureViewModel model = ((TreeBasedStructureViewBuilder) composite().getStructureViewBuilder()).createStructureViewModel(null);
         Disposer.register(disposable, model);
         return model;
     }
 
-    /** The designer's data context, as actions see it. */
+    /** The tool's data context, as actions see it. */
     public DataContext dataContext() {
         return SimpleDataContext.builder().setParent(DataManager.getInstance().getDataContext(view()))
                 .add(CommonDataKeys.PROJECT, project).add(PlatformCoreDataKeys.FILE_EDITOR, opened)
@@ -466,7 +466,7 @@ public final class DesignerDriver implements AutoCloseable {
     }
 
     private JComponent view() {
-        return designer().view();
+        return tool().view();
     }
 
     private AnAction action(String actionId) {
@@ -482,12 +482,12 @@ public final class DesignerDriver implements AutoCloseable {
     }
 
     private Point center(Object key) {
-        Rectangle box = zoomed(designer().viewOf(key).bounds());
+        Rectangle box = zoomed(tool().viewOf(key).bounds());
         return new Point(box.x + box.width / 2, box.y + box.height / 2);
     }
 
     private Rectangle zoomed(Rectangle box) {
-        double zoom = designer().viewState().zoom();
+        double zoom = tool().viewState().zoom();
         return new Rectangle((int) Math.round(box.x * zoom), (int) Math.round(box.y * zoom), (int) Math.round(box.width * zoom),
                 (int) Math.round(box.height * zoom));
     }

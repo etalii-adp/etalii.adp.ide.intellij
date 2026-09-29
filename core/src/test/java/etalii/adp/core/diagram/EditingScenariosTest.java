@@ -19,7 +19,7 @@ import etalii.adp.core.diagram.toolbox.ToolboxTest;
 import etalii.adp.core.diagram.view.Handle;
 import etalii.adp.testing.DiagramDriver;
 
-/** T054, US2-1 to US2-5 on the sample designer: build and edit a diagram from the toolbox and the canvas. */
+/** T054, US2-1 to US2-5 on the sample diagram: build and edit a diagram from the toolbox and the canvas. */
 @RunWith(JUnit4.class)
 public class EditingScenariosTest extends FileEditorManagerTestCase {
 
@@ -64,7 +64,7 @@ public class EditingScenariosTest extends FileEditorManagerTestCase {
             assertEquals(before, d.driver().text());
             assertEquals(List.of("f1"), d.connectionKeys());
             assertEquals("the reason is shown", "'flow' may not start at anchor 'in' of 'task'",
-                    RefusalFeedback.of(d.designer().canvas()).lastBalloon());
+                    RefusalFeedback.of(d.tool().canvas()).lastBalloon());
             assertNull(d.driver().undoLabel());
         }
     }
@@ -81,7 +81,7 @@ public class EditingScenariosTest extends FileEditorManagerTestCase {
             assertEquals(List.of("b"), d.elementKeys());
             assertEquals(before, d.driver().text());
             assertEquals("a diagram needs at least one task", d.refusal());
-            assertEquals("a diagram needs at least one task", RefusalFeedback.of(d.designer().canvas()).lastBalloon());
+            assertEquals("a diagram needs at least one task", RefusalFeedback.of(d.tool().canvas()).lastBalloon());
         }
     }
 

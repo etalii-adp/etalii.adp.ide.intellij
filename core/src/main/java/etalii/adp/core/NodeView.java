@@ -6,7 +6,7 @@ import java.awt.Rectangle;
 import java.util.List;
 
 /**
- * One laid-out item as the designer draws it, in unzoomed view coordinates. The test kit reads it
+ * One laid-out item as the tool draws it, in unzoomed view coordinates. The test kit reads it
  * to check what is shown without a screen.
  *
  * @param key the format's key for the item

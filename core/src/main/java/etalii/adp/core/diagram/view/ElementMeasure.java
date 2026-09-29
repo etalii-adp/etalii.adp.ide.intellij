@@ -172,7 +172,7 @@ public final class ElementMeasure {
     }
 
     /** One slot in its cell; slots sharing a cell are stacked in declaration order. */
-    // simplified: stacked slots share the cell's height first come, first served; weigh them when a designer needs it
+    // simplified: stacked slots share the cell's height first come, first served; weigh them when a diagram needs it
     private PlacedText placeInCell(TextSlot slot, Element element, Rectangle2D cell, List<TextSlot> slots) {
         List<TextSlot> sharing = slots.stream().filter(s -> row(s.position()) == row(slot.position()) && column(s.position()) == column(slot.position()))
                 .toList();

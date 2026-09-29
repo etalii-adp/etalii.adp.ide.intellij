@@ -7,16 +7,16 @@ import com.intellij.openapi.fileEditor.FileEditorProvider;
 
 import etalii.adp.core.diagram.DiagramDefinition;
 import etalii.adp.core.diagram.view.DiagramEditorProvider;
-import etalii.adp.core.settings.DesignerOrigin;
+import etalii.adp.core.settings.ToolOrigin;
 
 /**
- * A test-only designer that reports what the DEDL interpreter's designers will: a definition
+ * A test-only diagram that reports what the DISL interpreter's diagrams will: a specification
  * bundled with the plug-in, copied out of etalii.adp at a known revision. It claims
- * {@code .adpbundled} and sample files, so it shares a file type with the sample designer.
+ * {@code .adpbundled} and sample files, so it shares a file type with the sample diagram.
  */
 public final class BundledSampleProvider extends DiagramEditorProvider {
 
-    public static final DesignerOrigin.BundledDefinition ORIGIN = new DesignerOrigin.BundledDefinition("sample-flow", "0.3", "a1b2c3d");
+    public static final ToolOrigin.BundledSpecification ORIGIN = new ToolOrigin.BundledSpecification("sample-flow", "0.3", "a1b2c3d");
 
     private final String id;
     private final String name;
@@ -27,14 +27,14 @@ public final class BundledSampleProvider extends DiagramEditorProvider {
         this.name = name;
     }
 
-    /** The bundled sample designer, until {@code disposable} goes. */
+    /** The bundled sample diagram, until {@code disposable} goes. */
     public static BundledSampleProvider register(Disposable disposable) {
-        return register(disposable, new BundledSampleProvider("etalii.adp.sample.bundled", "Bundled Sample Designer", SampleDefinition.builder()));
+        return register(disposable, new BundledSampleProvider("etalii.adp.sample.bundled", "Bundled Sample Diagram", SampleDefinition.builder()));
     }
 
     /** A bundled definition the plug-in cannot interpret: its toolbox names a type nobody declares. */
     public static BundledSampleProvider registerBroken(Disposable disposable) {
-        return register(disposable, new BundledSampleProvider("etalii.adp.sample.bundled.broken", "Broken Bundled Designer",
+        return register(disposable, new BundledSampleProvider("etalii.adp.sample.bundled.broken", "Broken Bundled Diagram",
                 SampleDefinition.builder().toolbox("task", "nothing")));
     }
 
@@ -44,7 +44,7 @@ public final class BundledSampleProvider extends DiagramEditorProvider {
     }
 
     @Override
-    public DesignerOrigin origin() {
+    public ToolOrigin origin() {
         return ORIGIN;
     }
 
@@ -59,7 +59,7 @@ public final class BundledSampleProvider extends DiagramEditorProvider {
     }
 
     @Override
-    protected String editorName() {
+    protected String toolName() {
         return name;
     }
 

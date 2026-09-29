@@ -41,13 +41,13 @@ import etalii.adp.core.diagram.view.Scene.ConnectionRender;
 import etalii.adp.core.diagram.view.Scene.ElementRender;
 
 /**
- * The drawing surface of a diagram designer (research R10, R16): one Swing component that paints
- * the designer's {@link Scene} under the zoom, culled to the clip. It paints diagram-space layers
+ * The drawing surface of a diagram (research R10, R16): one Swing component that paints
+ * the diagram's {@link Scene} under the zoom, culled to the clip. It paints diagram-space layers
  * below the content, then connections, then elements in document order, then diagram-space layers
  * above the content, then view-space layers in viewport pixels. It offers mouse and key events to
  * its tools in order until one consumes them, converts coordinates and hit-tests. It changes
  * nothing itself; tools may put children (such as an in-place editor) on it, so it has no layout
- * manager. A designer may extend it, through {@link DiagramDesigner#createCanvas()}, for what only
+ * manager. A diagram may extend it, through {@link DiagramFileEditor#createCanvas()}, for what only
  * it shows, such as tooltips.
  */
 public class DiagramCanvas extends JComponent {
@@ -59,14 +59,14 @@ public class DiagramCanvas extends JComponent {
     public record AnchorHit(Object key, AnchorView anchor) {
     }
 
-    private final DiagramDesigner designer;
+    private final DiagramFileEditor fileEditor;
     private final List<CanvasLayer> layers = new CopyOnWriteArrayList<>();
     private final List<CanvasTool> tools = new CopyOnWriteArrayList<>();
     private final Map<Object, Shape> hitShapes = new HashMap<>();
     private Scene scene = Scene.EMPTY;
 
-    protected DiagramCanvas(DiagramDesigner designer) {
-        this.designer = designer;
+    protected DiagramCanvas(DiagramFileEditor fileEditor) {
+        this.fileEditor = fileEditor;
         setLayout(null);
         setOpaque(true);
         setFocusable(true);
@@ -89,8 +89,8 @@ public class DiagramCanvas extends JComponent {
         });
     }
 
-    public DiagramDesigner designer() {
-        return designer;
+    public DiagramFileEditor tool() {
+        return fileEditor;
     }
 
     /** What is drawn now. */
@@ -130,7 +130,7 @@ public class DiagramCanvas extends JComponent {
     }
 
     public double zoom() {
-        return designer.viewState().zoom();
+        return fileEditor.viewState().zoom();
     }
 
     // simplified: diagram (0, 0) is the canvas's top left, so content at negative coordinates is cut off;
@@ -280,9 +280,9 @@ public class DiagramCanvas extends JComponent {
     @Override
     public void updateUI() {
         super.updateUI();
-        if (designer != null) {
+        if (fileEditor != null) {
             // the theme or the scale changed: colours, fonts and sizes are taken again
-            designer.relayoutAll();
+            fileEditor.relayoutAll();
         }
     }
 
@@ -300,7 +300,7 @@ public class DiagramCanvas extends JComponent {
             g.scale(zoom, zoom);
             Rectangle2D visible = new Rectangle2D.Double(clip.x / zoom - 1, clip.y / zoom - 1, clip.width / zoom + 2, clip.height / zoom + 2);
             paintLayers(g, visible, layer -> layer.space() == Space.DIAGRAM && layer.order() < 0);
-            Set<Object> selection = Set.copyOf(designer.selection());
+            Set<Object> selection = Set.copyOf(fileEditor.selection());
             List<Object> order = scene.order().isEmpty() ? new ArrayList<>(scene.connections().keySet()) : scene.order();
             if (scene.order().isEmpty()) {
                 order.addAll(scene.elements().keySet());

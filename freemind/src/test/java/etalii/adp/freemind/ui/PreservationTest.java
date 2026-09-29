@@ -25,10 +25,10 @@ import etalii.adp.freemind.model.NodeKey;
 import etalii.adp.freemind.model.NodeRanges;
 import etalii.adp.core.xml.Range;
 import etalii.adp.freemind.parse.MindMapParser;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /**
- * Spec 001 FR-010, SC-004; FR-007: after a mix of edits and a save, everything the designer does
+ * Spec 001 FR-010, SC-004; FR-007: after a mix of edits and a save, everything the diagram does
  * not display (notes, icons, attributes, clouds, edges, hooks, unknown elements) is unchanged, and
  * only the edited nodes' start tags and the moved nodes' places differ.
  */
@@ -43,11 +43,11 @@ public class PreservationTest extends FileEditorManagerTestCase {
     @Test
     public void mixedEditsChangeOnlyTheEditedNodes() throws Exception {
         for (Path example : FreeMindAsserts.examples()) {
-            try (var d = DesignerDriver.open(myFixture, example)) {
-                MindMapDesigner designer = LayoutTest.designer(d);
-                MindMap before = designer.model();
+            try (var d = ToolDriver.open(myFixture, example)) {
+                MindMapFileEditor tool = LayoutTest.tool(d);
+                MindMap before = tool.model();
                 assertNotNull(example.toString(), before);
-                List<NodeKey> drawn = designer.canvas().mapLayout().views().keySet().stream().toList();
+                List<NodeKey> drawn = tool.canvas().mapLayout().views().keySet().stream().toList();
                 MapNode root = before.root();
 
                 // Add a child to the root: the root's MODIFIED changes, the new node is its last child.
@@ -104,7 +104,7 @@ public class PreservationTest extends FileEditorManagerTestCase {
         }
     }
 
-    /** The node's element without its start tag and its child nodes: what the designer does not edit. */
+    /** The node's element without its start tag and its child nodes: what the diagram does not edit. */
     private static String ownContent(String text, MapNode node) {
         NodeRanges ranges = node.ranges();
         StringBuilder content = new StringBuilder();

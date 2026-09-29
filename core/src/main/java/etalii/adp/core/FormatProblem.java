@@ -1,7 +1,7 @@
 package etalii.adp.core;
 
 /**
- * The document cannot be shown by the designer. The editor turns {@link #getOffset()} into a line
+ * The document cannot be shown by the tool. The editor turns {@link #getOffset()} into a line
  * and column for the problem panel, and never modifies the document because of it.
  */
 public class FormatProblem extends Exception {

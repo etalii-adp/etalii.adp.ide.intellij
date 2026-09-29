@@ -19,7 +19,7 @@ import etalii.adp.core.diagram.TextSlot;
 import etalii.adp.core.diagram.Tone;
 
 /**
- * The test-only sample designer (data-model.md): two element types, two connection types, lanes
+ * The test-only sample diagram (data-model.md): two element types, two connection types, lanes
  * in diagram space, a legend in view space, and every editor kind, so each framework capability
  * is exercised in isolation.
  */

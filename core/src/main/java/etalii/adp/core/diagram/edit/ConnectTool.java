@@ -27,7 +27,7 @@ import etalii.adp.core.diagram.view.CanvasLayer;
 import etalii.adp.core.diagram.view.CanvasTool;
 import etalii.adp.core.diagram.view.DiagramCanvas;
 import etalii.adp.core.diagram.view.DiagramCanvas.AnchorHit;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 import etalii.adp.core.diagram.view.ElementPainter;
 import etalii.adp.core.diagram.view.Scene.ConnectionRender;
 import etalii.adp.core.diagram.view.Scene.ElementRender;
@@ -45,7 +45,7 @@ public final class ConnectTool implements CanvasTool, CanvasLayer {
     private static final int THRESHOLD = 3;
     private static final int END_REACH = 6;
 
-    private final DiagramDesigner designer;
+    private final DiagramFileEditor fileEditor;
     private final DiagramCanvas canvas;
     private final RefusalFeedback feedback;
     private String type;
@@ -59,16 +59,16 @@ public final class ConnectTool implements CanvasTool, CanvasLayer {
     private End target;
     private Verdict verdict;
 
-    public ConnectTool(DiagramDesigner designer, RefusalFeedback feedback) {
-        this.designer = designer;
-        this.canvas = designer.canvas();
+    public ConnectTool(DiagramFileEditor fileEditor, RefusalFeedback feedback) {
+        this.fileEditor = fileEditor;
+        this.canvas = fileEditor.canvas();
         this.feedback = feedback;
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         reset();
-        if (!SelectionTool.plainLeftPress(e) || !designer.isEditable() || designer.diagram() == null) {
+        if (!SelectionTool.plainLeftPress(e) || !fileEditor.isEditable() || fileEditor.diagram() == null) {
             return;
         }
         Point2D point = canvas.toDiagram(e.getPoint());
@@ -82,9 +82,9 @@ public final class ConnectTool implements CanvasTool, CanvasLayer {
     /** A press on an end of a selected connection. */
     private boolean startReconnect(Point2D point) {
         double reach = JBUIScale.scale(END_REACH) / canvas.zoom();
-        for (Object key : designer.selection()) {
+        for (Object key : fileEditor.selection()) {
             ConnectionRender render = canvas.scene().connections().get(key);
-            Connection connection = designer.diagram().connection(key);
+            Connection connection = fileEditor.diagram().connection(key);
             if (render == null || connection == null || render.route().isEmpty()) {
                 continue;
             }
@@ -109,7 +109,7 @@ public final class ConnectTool implements CanvasTool, CanvasLayer {
         if (hit == null) {
             return false;
         }
-        String connectionType = designer.armedConnectionType();
+        String connectionType = fileEditor.armedConnectionType();
         if (connectionType == null) {
             ElementRender render = canvas.scene().elements().get(hit.key());
             Anchor anchor = render == null || render.type() == null ? null : render.type().anchor(hit.anchor().id());
@@ -151,8 +151,8 @@ public final class ConnectTool implements CanvasTool, CanvasLayer {
             if (target == null) {
                 return;
             }
-            Verdict result = reconnecting != null ? designer.commands().reconnect(reconnecting, side, target)
-                    : designer.commands().connect(type, source, target);
+            Verdict result = reconnecting != null ? fileEditor.commands().reconnect(reconnecting, side, target)
+                    : fileEditor.commands().connect(type, source, target);
             if (!result.allowed()) {
                 feedback.balloon(e.getPoint(), result.reason());
             }
@@ -210,8 +210,8 @@ public final class ConnectTool implements CanvasTool, CanvasLayer {
         if (!Objects.equals(over, target)) {
             target = over;
             verdict = over == null ? null
-                    : reconnecting != null ? RefusalFeedback.preview(designer).reconnect(reconnecting, side, over)
-                            : RefusalFeedback.preview(designer).connect(type, source, over);
+                    : reconnecting != null ? RefusalFeedback.preview(fileEditor).reconnect(reconnecting, side, over)
+                            : RefusalFeedback.preview(fileEditor).connect(type, source, over);
         }
         if (verdict != null && !verdict.allowed()) {
             feedback.showRefused(area(target), verdict.reason());

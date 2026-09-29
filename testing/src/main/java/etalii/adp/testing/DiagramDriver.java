@@ -38,15 +38,15 @@ import etalii.adp.core.diagram.view.AnchorGeometry;
 import etalii.adp.core.diagram.view.AnchorView;
 import etalii.adp.core.diagram.view.ConnectionView;
 import etalii.adp.core.diagram.view.DiagramCanvas;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 import etalii.adp.core.diagram.view.ElementView;
 import etalii.adp.core.diagram.view.Handle;
 import etalii.adp.core.diagram.view.PropertiesContent;
 import etalii.adp.core.diagram.view.ToolboxContent;
 
 /**
- * Drives a diagram designer as a user would, inside a headless IDE (contracts/test-kit.md). It
- * wraps a {@link DesignerDriver} for everything that is not diagram-specific. Positions are in
+ * Drives a diagram as a user would, inside a headless IDE (contracts/test-kit.md). It
+ * wraps a {@link ToolDriver} for everything that is not diagram-specific. Positions are in
  * unzoomed diagram coordinates; the driver converts them to the canvas at the current zoom and
  * dispatches real mouse events to it, so the canvas's own tools run. The toolbox and property
  * panel methods use the real tool window content, found by tool window id.
@@ -58,77 +58,77 @@ public final class DiagramDriver implements AutoCloseable {
 
     private static final int DRAG_STEPS = 4;
 
-    private final DesignerDriver driver;
+    private final ToolDriver driver;
 
-    private DiagramDriver(DesignerDriver driver) {
+    private DiagramDriver(ToolDriver driver) {
         this.driver = driver;
     }
 
     /** Copy a file into the test project, byte for byte, and open it as the IDE would. */
     public static DiagramDriver open(CodeInsightTestFixture fixture, Path file) {
-        return new DiagramDriver(DesignerDriver.open(fixture, file));
+        return new DiagramDriver(ToolDriver.open(fixture, file));
     }
 
     /** Same, for an in-memory text, written as UTF-8. */
     public static DiagramDriver openText(CodeInsightTestFixture fixture, String fileName, String content) {
-        return new DiagramDriver(DesignerDriver.openText(fixture, fileName, content));
+        return new DiagramDriver(ToolDriver.openText(fixture, fileName, content));
     }
 
     /** The wrapped driver: select, undo, redo, text, save and the rest. */
-    public DesignerDriver driver() {
+    public ToolDriver driver() {
         return driver;
     }
 
-    /** The diagram designer, or {@code null} when the IDE opened another editor. */
-    public DiagramDesigner designer() {
-        return driver.designer() instanceof DiagramDesigner designer ? designer : null;
+    /** The diagram, or {@code null} when the IDE opened another editor. */
+    public DiagramFileEditor tool() {
+        return driver.tool() instanceof DiagramFileEditor tool ? tool : null;
     }
 
     // Observing the diagram
 
     /** How an element is drawn, or {@code null} when it is not shown. */
     public ElementView elementView(Object key) {
-        return designer().elementView(key);
+        return tool().elementView(key);
     }
 
     public ConnectionView connectionView(Object key) {
-        return designer().connectionView(key);
+        return tool().connectionView(key);
     }
 
     /** The shown elements, in painting order. */
     public List<Object> elementKeys() {
-        return designer().elementKeys();
+        return tool().elementKeys();
     }
 
     public List<Object> connectionKeys() {
-        return designer().connectionKeys();
+        return tool().connectionKeys();
     }
 
     /** The resize handles offered for a selected element. */
     public List<Handle> handlesOf(Object key) {
-        return designer().handlesOf(key);
+        return tool().handlesOf(key);
     }
 
     public List<AnchorView> anchorsOf(Object key) {
-        return designer().anchorsOf(key);
+        return tool().anchorsOf(key);
     }
 
     /** The reason of the last refused gesture, or {@code null}. */
     public String refusal() {
-        Verdict refusal = designer().lastRefusal();
+        Verdict refusal = tool().lastRefusal();
         return refusal == null ? null : refusal.reason();
     }
 
-    /** What the designer's listener received last. */
+    /** What the diagram's listener received last. */
     public List<DiagramChange> lastChanges() {
-        return designer().lastChanges();
+        return tool().lastChanges();
     }
 
     // Acting on the canvas
 
     /** Select the elements and drag the first by {@code dx}, {@code dy}. */
-    public DesignerDriver moveBy(double dx, double dy, Object... keys) {
-        designer().select(List.of(keys));
+    public ToolDriver moveBy(double dx, double dy, Object... keys) {
+        tool().select(List.of(keys));
         driver.settle();
         Point2D from = centre(bounds(keys[0]));
         drag(from, new Point2D.Double(from.getX() + dx, from.getY() + dy), 0);
@@ -136,8 +136,8 @@ public final class DiagramDriver implements AutoCloseable {
     }
 
     /** Select the element and drag one of its resize handles by {@code dx}, {@code dy}. */
-    public DesignerDriver resize(Object key, Handle handle, double dx, double dy) {
-        designer().select(List.of(key));
+    public ToolDriver resize(Object key, Handle handle, double dx, double dy) {
+        tool().select(List.of(key));
         driver.settle();
         Point2D from = handle.at(bounds(key));
         drag(from, new Point2D.Double(from.getX() + dx, from.getY() + dy), 0);
@@ -145,7 +145,7 @@ public final class DiagramDriver implements AutoCloseable {
     }
 
     /** Drag from one anchor to another, with the armed connection type or the first the anchor accepts. */
-    public DesignerDriver connect(Object fromKey, String fromAnchor, Object toKey, String toAnchor) {
+    public ToolDriver connect(Object fromKey, String fromAnchor, Object toKey, String toAnchor) {
         Point2D from = anchor(fromKey, fromAnchor);
         Point2D to = anchor(toKey, toAnchor);
         drag(grip(fromKey, fromAnchor, from, to), grip(toKey, toAnchor, to, from), 0);
@@ -153,24 +153,24 @@ public final class DiagramDriver implements AutoCloseable {
     }
 
     /** The same with {@code connectionType} armed, as choosing it in the toolbox does. */
-    public DesignerDriver connect(String connectionType, Object fromKey, String fromAnchor, Object toKey, String toAnchor) {
-        String armed = designer().armedConnectionType();
-        designer().armConnectionType(connectionType);
+    public ToolDriver connect(String connectionType, Object fromKey, String fromAnchor, Object toKey, String toAnchor) {
+        String armed = tool().armedConnectionType();
+        tool().armConnectionType(connectionType);
         try {
             return connect(fromKey, fromAnchor, toKey, toAnchor);
         } finally {
-            designer().armConnectionType(armed);
+            tool().armConnectionType(armed);
         }
     }
 
     /** Drag the element across its sector's bands into another sector: along y for horizontal bands, along x for vertical ones. */
-    public DesignerDriver dragToSector(Object key, Object sectorKey) {
-        DiagramDesigner designer = designer();
-        Sector sector = designer.diagram().sector(sectorKey);
+    public ToolDriver dragToSector(Object key, Object sectorKey) {
+        DiagramFileEditor tool = tool();
+        Sector sector = tool.diagram().sector(sectorKey);
         if (sector == null) {
             throw new IllegalArgumentException("No sector " + sectorKey);
         }
-        SectorDecl decl = designer.definition().sectors().get(sector.declId());
+        SectorDecl decl = tool.definition().sectors().get(sector.declId());
         Rectangle2D area = sector.bounds();
         Point2D centre = new Point2D.Double(area.getCenterX(), area.getCenterY());
         if (decl != null && decl.space() == Space.VIEW) {
@@ -178,7 +178,7 @@ public final class DiagramDriver implements AutoCloseable {
             double zoom = canvas().zoom();
             centre = new Point2D.Double((origin.x + centre.getX()) / zoom, (origin.y + centre.getY()) / zoom);
         }
-        designer.select(List.of(key));
+        tool.select(List.of(key));
         driver.settle();
         Point2D from = centre(bounds(key));
         boolean horizontal = decl == null || decl.orientation() == Orientation.HORIZONTAL;
@@ -188,8 +188,8 @@ public final class DiagramDriver implements AutoCloseable {
     }
 
     /** Double-click an element's text slot, or a connection's label by slot name or property. */
-    public DesignerDriver doubleClickText(Object key, String slotOrLabel) {
-        Rectangle2D box = designer().textBounds(key, slotOrLabel);
+    public ToolDriver doubleClickText(Object key, String slotOrLabel) {
+        Rectangle2D box = tool().textBounds(key, slotOrLabel);
         if (box == null) {
             throw new IllegalArgumentException(key + " shows no text " + slotOrLabel);
         }
@@ -209,13 +209,13 @@ public final class DiagramDriver implements AutoCloseable {
     }
 
     /** Drag a selection rectangle from one diagram point to another. */
-    public DesignerDriver marquee(double x1, double y1, double x2, double y2) {
+    public ToolDriver marquee(double x1, double y1, double x2, double y2) {
         drag(new Point2D.Double(x1, y1), new Point2D.Double(x2, y2), 0);
         return driver;
     }
 
     /** Ctrl+wheel over the middle of the visible canvas; negative steps zoom out. */
-    public DesignerDriver zoom(int steps) {
+    public ToolDriver zoom(int steps) {
         DiagramCanvas canvas = canvas();
         Rectangle visible = canvas.getVisibleRect();
         Point at = visible.isEmpty() ? new Point(canvas.getWidth() / 2, canvas.getHeight() / 2)
@@ -229,7 +229,7 @@ public final class DiagramDriver implements AutoCloseable {
     }
 
     public double zoomLevel() {
-        return designer().viewState().zoom();
+        return tool().viewState().zoom();
     }
 
     // Toolbox
@@ -240,7 +240,7 @@ public final class DiagramDriver implements AutoCloseable {
     }
 
     /** Drag a toolbox entry onto the canvas at a diagram point. */
-    public DesignerDriver dragFromToolbox(String typeId, double x, double y) {
+    public ToolDriver dragFromToolbox(String typeId, double x, double y) {
         awaitListed(typeId);
         toolbox().dragTo(typeId, canvas(), canvas().toCanvas(new Point2D.Double(x, y)));
         driver.settle();
@@ -248,7 +248,7 @@ public final class DiagramDriver implements AutoCloseable {
     }
 
     /** Drag a toolbox entry onto an element. */
-    public DesignerDriver dragFromToolboxOnto(String typeId, Object targetKey) {
+    public ToolDriver dragFromToolboxOnto(String typeId, Object targetKey) {
         awaitListed(typeId);
         toolbox().dragTo(typeId, canvas(), canvas().toCanvas(centre(bounds(targetKey))));
         driver.settle();
@@ -256,7 +256,7 @@ public final class DiagramDriver implements AutoCloseable {
     }
 
     /** Enter on a toolbox entry. */
-    public DesignerDriver addFromToolboxWithKeyboard(String typeId) {
+    public ToolDriver addFromToolboxWithKeyboard(String typeId) {
         awaitListed(typeId);
         toolbox().activate(typeId);
         driver.settle();
@@ -291,7 +291,7 @@ public final class DiagramDriver implements AutoCloseable {
     }
 
     /** Edit a property through its cell editor, then commit, as a user does. */
-    public DesignerDriver setProperty(String propertyId, String value) {
+    public ToolDriver setProperty(String propertyId, String value) {
         driver.settle();
         PropertiesContent content = properties(PROPERTIES);
         JTable table = content.table();
@@ -339,7 +339,7 @@ public final class DiagramDriver implements AutoCloseable {
     }
 
     private DiagramCanvas canvas() {
-        return designer().canvas();
+        return tool().canvas();
     }
 
     private Rectangle2D bounds(Object key) {
@@ -358,7 +358,7 @@ public final class DiagramDriver implements AutoCloseable {
     /** Where a user takes hold of an anchor: its point, or for a perimeter anchor the outline toward the other end. */
     private Point2D grip(Object key, String anchorId, Point2D at, Point2D toward) {
         ElementView view = elementView(key);
-        ElementType type = designer().definition().elementType(view.type());
+        ElementType type = tool().definition().elementType(view.type());
         Anchor anchor = type == null ? null : type.anchor(anchorId);
         return anchor == null || !anchor.perimeter() ? at : AnchorGeometry.perimeter(view.outline().shape(view.bounds()), at, toward);
     }
@@ -396,7 +396,7 @@ public final class DiagramDriver implements AutoCloseable {
     }
 
     private <T> T content(String toolWindowId, Class<T> type) {
-        ToolWindow window = ToolWindowManager.getInstance(designer().project()).getToolWindow(toolWindowId);
+        ToolWindow window = ToolWindowManager.getInstance(tool().project()).getToolWindow(toolWindowId);
         if (window == null) {
             throw new IllegalStateException("No tool window " + toolWindowId);
         }

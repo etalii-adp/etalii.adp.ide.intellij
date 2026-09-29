@@ -26,7 +26,7 @@ import etalii.adp.core.diagram.DiagramMapping;
 import etalii.adp.core.diagram.model.Diagram;
 import etalii.adp.core.diagram.view.CanvasLayer;
 import etalii.adp.core.diagram.view.DiagramCanvas;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 
 /**
  * How the canvas shows a refused gesture (research R9, FR-018). During a drag, a refused target
@@ -65,9 +65,9 @@ public final class RefusalFeedback implements CanvasLayer {
         return canvas.getClientProperty(KEY) instanceof RefusalFeedback feedback ? feedback : null;
     }
 
-    /** Commands on the designer that check everything a gesture would and change nothing: the drag feedback's verdicts. */
-    public static DiagramCommands preview(DiagramDesigner designer) {
-        return new DiagramCommands(new DryRun(designer));
+    /** Commands on the diagram that check everything a gesture would and change nothing: the drag feedback's verdicts. */
+    public static DiagramCommands preview(DiagramFileEditor fileEditor) {
+        return new DiagramCommands(new DryRun(fileEditor));
     }
 
     /** Show that dropping on {@code area}, in diagram coordinates, is refused. */
@@ -140,33 +140,33 @@ public final class RefusalFeedback implements CanvasLayer {
                 refusedArea.getHeight() + 2 * margin, arc, arc));
     }
 
-    /** The designer as it is, where a command changes nothing and records its refusal apart. */
+    /** The diagram as it is, where a command changes nothing and records its refusal apart. */
     private static final class DryRun extends UserDataHolderBase implements DiagramCommands.Host {
 
-        private final DiagramDesigner designer;
+        private final DiagramFileEditor fileEditor;
 
-        DryRun(DiagramDesigner designer) {
-            this.designer = designer;
+        DryRun(DiagramFileEditor fileEditor) {
+            this.fileEditor = fileEditor;
         }
 
         @Override
         public DiagramDefinition definition() {
-            return designer.definition();
+            return fileEditor.definition();
         }
 
         @Override
         public DiagramMapping mapping() {
-            return designer.mapping();
+            return fileEditor.mapping();
         }
 
         @Override
         public Diagram diagram() {
-            return designer.diagram();
+            return fileEditor.diagram();
         }
 
         @Override
         public CharSequence text() {
-            return designer.text();
+            return fileEditor.text();
         }
 
         @Override
@@ -179,7 +179,7 @@ public final class RefusalFeedback implements CanvasLayer {
 
         @Override
         public Point2D toViewport(Point2D diagramPoint) {
-            return designer.toViewport(diagramPoint);
+            return fileEditor.toViewport(diagramPoint);
         }
     }
 }

@@ -157,7 +157,7 @@ val integrationTestTask = tasks.register<Test>("integrationTest") {
 
 // Retakes the images in docs/screenshots/ in a real IntelliJ IDEA (docs/screenshots/readme.md). Not part of check.
 tasks.register<Test>("captureScreenshots") {
-    description = "Opens each example in its designer in a real IntelliJ IDEA and writes the IDE window to docs/screenshots/."
+    description = "Opens each example in its tool in a real IntelliJ IDEA and writes the IDE window to docs/screenshots/."
     group = "documentation"
     testClassesDirs = integrationTest.output.classesDirs
     classpath = integrationTest.runtimeClasspath

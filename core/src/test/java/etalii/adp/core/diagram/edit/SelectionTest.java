@@ -44,7 +44,7 @@ public class SelectionTest extends FileEditorManagerTestCase {
             d.driver().click("b", 1, 0);
             assertEquals("a plain click on a selected item selects only it", List.of("b"), d.driver().selectedKeys());
 
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             click(canvas, canvas.toCanvas(new java.awt.geom.Point2D.Double(700, 400)), 0);
             assertEquals("a click on empty canvas clears the selection", List.of(), d.driver().selectedKeys());
         }
@@ -57,7 +57,7 @@ public class SelectionTest extends FileEditorManagerTestCase {
             List<Point> route = d.connectionView("f1").route();
             Point p = route.get(0);
             Point q = route.get(1);
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             click(canvas, canvas.toCanvas(new java.awt.geom.Point2D.Double((p.x + q.x) / 2.0, (p.y + q.y) / 2.0)), 0);
             assertEquals(List.of("f1"), d.driver().selectedKeys());
             d.driver().click("a", 1, InputEvent.CTRL_DOWN_MASK);
@@ -75,7 +75,7 @@ public class SelectionTest extends FileEditorManagerTestCase {
             d.marquee(30, 30, 170, 110);
             assertEquals("only a lies wholly inside", List.of("a"), d.driver().selectedKeys());
 
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             var b = d.elementView("b").bounds();
             drag(canvas, canvas.toCanvas(new java.awt.geom.Point2D.Double(b.x - 5, b.y - 5)),
                     canvas.toCanvas(new java.awt.geom.Point2D.Double(b.getMaxX() + 5, b.getMaxY() + 5)), InputEvent.CTRL_DOWN_MASK);

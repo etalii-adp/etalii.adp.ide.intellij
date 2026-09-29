@@ -8,39 +8,39 @@ import java.util.stream.Collectors;
 import javax.swing.table.AbstractTableModel;
 
 /**
- * The designer list's rows (FR-007): one per installed designer, with the On column editable and
+ * The tool list's rows (FR-007): one per installed tool, with the On column editable and
  * kept here until the page applies (FR-002).
  */
-final class DesignerTableModel extends AbstractTableModel {
+final class ToolTableModel extends AbstractTableModel {
 
     static final List<String> COLUMNS = List.of("On", "Name", "File types", "Version", "Origin", "Status");
 
-    private List<DesignerInfo> rows = List.of();
+    private List<ToolInfo> rows = List.of();
     private final Map<String, Boolean> on = new HashMap<>();
 
-    /** Show these designers, each on or off as stored. */
-    void load(List<DesignerInfo> designers) {
-        rows = List.copyOf(designers);
+    /** Show these tools, each on or off as stored. */
+    void load(List<ToolInfo> tools) {
+        rows = List.copyOf(tools);
         on.clear();
-        designers.forEach(designer -> on.put(designer.id(), designer.on()));
+        tools.forEach(tool -> on.put(tool.id(), tool.on()));
         fireTableDataChanged();
     }
 
-    List<DesignerInfo> rows() {
+    List<ToolInfo> rows() {
         return rows;
     }
 
-    DesignerInfo row(int index) {
+    ToolInfo row(int index) {
         return rows.get(index);
     }
 
-    /** Each designer's On column as the user left it. */
+    /** Each tool's On column as the user left it. */
     Map<String, Boolean> on() {
         return Map.copyOf(on);
     }
 
     boolean isModified() {
-        return rows.stream().anyMatch(designer -> on.get(designer.id()) != designer.on());
+        return rows.stream().anyMatch(tool -> on.get(tool.id()) != tool.on());
     }
 
     @Override
@@ -70,14 +70,14 @@ final class DesignerTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int row, int column) {
-        DesignerInfo designer = rows.get(row);
+        ToolInfo tool = rows.get(row);
         return switch (column) {
-        case 0 -> on.get(designer.id());
-        case 1 -> designer.name();
-        case 2 -> designer.fileTypes().stream().map(type -> "." + type).collect(Collectors.joining(", "));
-        case 3 -> designer.version();
-        case 4 -> designer.origin().describe();
-        case 5 -> designer.status().label();
+        case 0 -> on.get(tool.id());
+        case 1 -> tool.name();
+        case 2 -> tool.fileTypes().stream().map(type -> "." + type).collect(Collectors.joining(", "));
+        case 3 -> tool.version();
+        case 4 -> tool.origin().describe();
+        case 5 -> tool.status().label();
         default -> throw new IndexOutOfBoundsException(column);
         };
     }

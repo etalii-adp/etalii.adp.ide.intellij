@@ -27,9 +27,9 @@ import com.intellij.openapi.keymap.Keymap;
 import com.intellij.openapi.keymap.KeymapManager;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
-/** FR-013, US2-AS7: every designer action is in the IDE's keymap, can be rebound, and stays out of text editors. */
+/** FR-013, US2-AS7: every diagram action is in the IDE's keymap, can be rebound, and stays out of text editors. */
 @RunWith(JUnit4.class)
 public class KeymapTest extends FileEditorManagerTestCase {
 
@@ -80,7 +80,7 @@ public class KeymapTest extends FileEditorManagerTestCase {
         Keymap keymap = KeymapManager.getInstance().getActiveKeymap();
         KeyboardShortcut rebound = new KeyboardShortcut(KeyStroke.getKeyStroke("alt shift R"), null);
         keymap.addShortcut("etalii.adp.freemind.Rename", rebound);
-        try (var d = DesignerDriver.openText(myFixture, "keys.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "keys.mm", MAP)) {
             d.select(key("B")).press("alt shift R");
             assertNotNull("the new shortcut opens the in-place editor", d.inPlaceField());
             d.typeInPlace("Rebound");
@@ -92,7 +92,7 @@ public class KeymapTest extends FileEditorManagerTestCase {
 
     @Test
     public void textEditorsKeepTheirOwnMeaningForTheKeys() {
-        try (var d = DesignerDriver.openText(myFixture, "keys.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "keys.mm", MAP)) {
             d.select(key("A2"));
             TextEditor text = (TextEditor) d.composite().getTextEditor();
             List<AnAction> local = ActionUtil.getActions(text.getEditor().getContentComponent());
@@ -104,7 +104,7 @@ public class KeymapTest extends FileEditorManagerTestCase {
                 ActionUtil.updateAction(action, event);
                 assertFalse(id + " is disabled in a text editor, so Tab, Enter, Space and Delete type there", event.getPresentation().isEnabled());
             }
-            assertTrue("while the designer has focus the same action is enabled", d.presentation("etalii.adp.freemind.AddChild").isEnabled());
+            assertTrue("while the diagram has focus the same action is enabled", d.presentation("etalii.adp.freemind.AddChild").isEnabled());
         }
     }
 }

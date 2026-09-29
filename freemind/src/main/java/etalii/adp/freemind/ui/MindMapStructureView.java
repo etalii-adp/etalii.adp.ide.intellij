@@ -10,16 +10,16 @@ import etalii.adp.freemind.model.NodeKey;
 /** The node tree in the Structure view: each node's text after its first icon, children in document order (FR-015). */
 public final class MindMapStructureView extends AdpStructureView {
 
-    private final MindMapDesigner designer;
+    private final MindMapFileEditor tool;
 
-    public MindMapStructureView(MindMapDesigner designer) {
-        super(designer);
-        this.designer = designer;
+    public MindMapStructureView(MindMapFileEditor tool) {
+        super(tool);
+        this.tool = tool;
     }
 
     @Override
     protected Object rootKey() {
-        MindMap map = designer.model();
+        MindMap map = tool.model();
         return map == null ? null : map.root().key();
     }
 
@@ -39,7 +39,7 @@ public final class MindMapStructureView extends AdpStructureView {
     }
 
     private MapNode node(Object key) {
-        MindMap map = designer.model();
+        MindMap map = tool.model();
         return map == null || !(key instanceof NodeKey nodeKey) ? null : map.node(nodeKey);
     }
 }

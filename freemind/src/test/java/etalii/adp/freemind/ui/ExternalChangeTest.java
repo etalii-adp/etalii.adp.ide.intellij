@@ -19,7 +19,7 @@ import com.intellij.openapi.fileEditor.impl.MemoryDiskConflictResolver;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 import etalii.adp.testing.Layout;
 
 /**
@@ -49,8 +49,8 @@ public class ExternalChangeTest extends FileEditorManagerTestCase {
         });
     }
 
-    private DesignerDriver open() {
-        return DesignerDriver.openText(myFixture, "external.mm", MAP);
+    private ToolDriver open() {
+        return ToolDriver.openText(myFixture, "external.mm", MAP);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class ExternalChangeTest extends FileEditorManagerTestCase {
             assertEquals(ON_DISK, d.text());
             assertFalse(d.isModified());
             assertTrue("a clean file is not asked about", asked.isEmpty());
-            assertEquals("the designer follows", "Changed on disk", d.viewOf(key("B")).text());
+            assertEquals("the diagram follows", "Changed on disk", d.viewOf(key("B")).text());
         }
     }
 
@@ -71,7 +71,7 @@ public class ExternalChangeTest extends FileEditorManagerTestCase {
             d.changeOnDisk(ON_DISK);
             assertEquals(ON_DISK, d.text());
             assertFalse(d.isModified());
-            d.showLayout(Layout.DESIGNER);
+            d.showLayout(Layout.TOOL);
             assertEquals("Changed on disk", d.viewOf(key("B")).text());
         }
     }
@@ -100,7 +100,7 @@ public class ExternalChangeTest extends FileEditorManagerTestCase {
             assertEquals("asked once", List.of("external.mm"), asked);
             assertEquals("the answer loads the file", ON_DISK, d.text());
             assertFalse(d.isModified());
-            d.showLayout(Layout.DESIGNER);
+            d.showLayout(Layout.TOOL);
             assertEquals("Changed on disk", d.viewOf(key("B")).text());
             assertEquals("A1", d.viewOf(key("A1")).text());
         }
@@ -118,18 +118,18 @@ public class ExternalChangeTest extends FileEditorManagerTestCase {
             assertEquals("asked once", List.of("external.mm"), asked);
             assertEquals("the user's text stays", mine, d.text());
             assertTrue(d.isModified());
-            d.showLayout(Layout.DESIGNER);
+            d.showLayout(Layout.TOOL);
             assertEquals("Mine", d.viewOf(key("A1")).text());
         }
     }
 
-    /** Both answers, in the split layout where the text and the designer are both showing. */
+    /** Both answers, in the split layout where the text and the diagram are both showing. */
     @Test
     public void aDirtyEditorAsksOnceItsTextPageHasBeenActivated() {
         for (boolean load : new boolean[] { true, false }) {
             loadFromDisk = load;
             asked.clear();
-            try (var d = DesignerDriver.openText(myFixture, "external-" + load + ".mm", MAP)) {
+            try (var d = ToolDriver.openText(myFixture, "external-" + load + ".mm", MAP)) {
                 d.showLayout(Layout.SPLIT);
                 d.editText(text -> text.replace("TEXT=\"A1\"", "TEXT=\"Mine\""));
                 String mine = d.text();
@@ -148,11 +148,11 @@ public class ExternalChangeTest extends FileEditorManagerTestCase {
         loadFromDisk = true;
         try (var d = open()) {
             d.select(key("A1")).run(RENAME).typeInPlace("Mine");
-            assertEquals(Layout.DESIGNER, d.layout());
+            assertEquals(Layout.TOOL, d.layout());
             assertTrue(d.isModified());
             d.changeOnDisk(ON_DISK);
 
-            assertEquals("a modified file showing the designer asks as well", List.of("external.mm"), asked);
+            assertEquals("a modified file showing the diagram asks as well", List.of("external.mm"), asked);
             assertEquals(ON_DISK, d.text());
             assertFalse(d.isModified());
             assertEquals("Changed on disk", d.viewOf(key("B")).text());

@@ -69,7 +69,7 @@ This file lists every spec 001 test method with the behaviour it verifies and th
 | `AddNodeTest.cancellingTheInPlaceEditorKeepsTheDefaultText` | Cancelling the in-place editor keeps the default text. | `AddNodeTest.cancellingTheInPlaceEditorKeepsTheDefaultText` |
 | `ContextMenuTest.theContextMenuListsEveryCommandInTableOrder` | The context menu lists every command in command table order. | `ContextMenuTest.theContextMenuListsEveryCommandInTableOrder` |
 | `ContextMenuTest.menuItemsFollowTheSelection` | Menu item enablement follows the selection. | `ContextMenuTest.menuItemsFollowTheSelection` |
-| `ContextMenuTest.everyCommandHasItsKeyInTheDesignerContext` | Every command has its key binding in the designer context. | `ContextMenuTest.everyCommandHasItsKeyInTheDesignerContext` |
+| `ContextMenuTest.everyCommandHasItsKeyInTheDesignerContext` | Every command has its key binding in the designer context. | `ContextMenuTest.everyCommandHasItsKeyInTheToolContext` |
 | `DeleteTest.deleteOneNode` | Deleting one node removes it. | `DeleteTest.deleteOneNode` |
 | `DeleteTest.deleteSeveralNodesWithTheirDescendants` | Deleting several nodes removes them with their descendants. | `DeleteTest.deleteSeveralNodesWithTheirDescendants` |
 | `DeleteTest.theRootAloneCannotBeDeleted` | The root on its own cannot be deleted. | `DeleteTest.theRootAloneCannotBeDeleted` |
@@ -96,7 +96,7 @@ This file lists every spec 001 test method with the behaviour it verifies and th
 | `FoldTest.revealExpandsCollapsedAncestorsWithoutAnEdit` | Revealing a node expands its collapsed ancestors without an edit. | `FoldTest.revealExpandsCollapsedAncestorsWithoutAnEdit` |
 | `FormatProblemTest.aTextEditIntoAnInvalidMapIsExplainedAndKept` | A text edit that makes the map invalid is explained and kept. | `FormatProblemTest.aTextEditIntoAnInvalidMapIsExplainedAndKept` |
 | `FormatProblemTest.aMalformedFileOpensOnTheTextPageUnmodified` | A malformed map file opens on the text page without being modified. | `FormatProblemTest.aMalformedFileOpensOnTheTextPageUnmodified` |
-| `FreeMindCompatibilityTest.freeMindReadsWhatTheDesignerSaved` | FreeMind reads the files the designer saved. | `FreeMindCompatibilityTest.freeMindReadsWhatTheDesignerSaved` |
+| `FreeMindCompatibilityTest.freeMindReadsWhatTheDesignerSaved` | FreeMind reads the files the designer saved. | `FreeMindCompatibilityTest.freeMindReadsWhatTheToolSaved` |
 | `InterleavedUndoTest.undoRevertsVisualAndTextEditsInReverseOrderOnEitherPage` | Undo reverts visual and text edits in reverse order on either page. | `InterleavedUndoTest.undoRevertsVisualAndTextEditsInReverseOrderOnEitherPage` |
 | `InterleavedUndoTest.theVisualPageFollowsEachUndoOfATextEdit` | The visual page follows each undo of a text edit. | `InterleavedUndoTest.theVisualPageFollowsEachUndoOfATextEdit` |
 | `LayoutTest.theRootIsCentredWithBranchesOnTheirSides` | The root is centred and branches are drawn on their sides. | `LayoutTest.theRootIsCentredWithBranchesOnTheirSides` |
@@ -110,7 +110,7 @@ This file lists every spec 001 test method with the behaviour it verifies and th
 | `MoveNodeTest.indentingAFirstLevelNodeDropsItsSide` | Indenting a first-level node drops its side. | `MoveNodeTest.indentingAFirstLevelNodeDropsItsSide` |
 | `MoveNodeTest.firstLevelNodesMoveAmongTheirOwnSide` | First-level nodes move among the nodes on their own side. | `MoveNodeTest.firstLevelNodesMoveAmongTheirOwnSide` |
 | `MoveNodeTest.enablementFollowsTheCommandTable` | Move command enablement follows the command table. | `MoveNodeTest.enablementFollowsTheCommandTable` |
-| `NewWizardTest.createsANewMapAndOpensItInTheDesigner` | Creating a new map writes the file and opens it in the designer. | `NewMapTest.createsANewMapAndOpensItInTheDesigner` |
+| `NewWizardTest.createsANewMapAndOpensItInTheDesigner` | Creating a new map writes the file and opens it in the designer. | `NewMapTest.createsANewMapAndOpensItInTheTool` |
 | `NewWizardTest.eachNewMapGetsAFreshId` | Each new map gets a fresh root id. | `NewMapTest.eachNewMapGetsAFreshId` |
 | `NodeDetailsTest.plainAndRichTextAreReadable` | Plain and rich node text are shown readably. | `NodeDetailsTest.plainAndRichTextAreReadable` |
 | `NodeDetailsTest.iconsAreGlyphsOrBadges` | Node icons are shown as glyphs or badges. | `NodeDetailsTest.iconsAreGlyphsOrBadges` |
@@ -121,7 +121,7 @@ This file lists every spec 001 test method with the behaviour it verifies and th
 | `OutlineTest.listsTheNodeTreeOfALargeMap` | The outline lists the node tree of a large map. | `StructureViewTest.listsTheNodeTreeOfALargeMap` |
 | `OutlineTest.followsEdits` | The outline follows edits to the map. | `StructureViewTest.followsEdits` |
 | `OutlineTest.selectingInTheOutlineRevealsTheNodeWithoutAnEdit` | Selecting in the outline reveals the node without an edit. | `StructureViewTest.selectingInTheOutlineRevealsTheNodeWithoutAnEdit` |
-| `OutlineTest.selectingInTheDesignerSelectsInTheOutline` | Selecting in the designer selects the same node in the outline. | `StructureViewTest.selectingInTheDesignerSelectsInTheOutline` |
+| `OutlineTest.selectingInTheDesignerSelectsInTheOutline` | Selecting in the designer selects the same node in the outline. | `StructureViewTest.selectingInTheToolSelectsInTheOutline` |
 | `PerformanceTest.aThousandNodeMapOpensAndEditsWithinBudget` | A generated 1,000-node map opens and draws within its time budget. | `OpenPerformanceTest.aThousandNodeMapOpensAndEditsWithinBudget` |
 | `PerformanceTest.aThousandNodeMapOpensAndEditsWithinBudget` | Add, rename, fold and delete on a 1,000-node map show within their time budget. | `EditPerformanceTest.aThousandNodeMapOpensAndEditsWithinBudget` |
 | `PreservationTest.mixedEditsChangeOnlyTheEditedNodes` | A mix of edits changes only the bytes of the edited nodes. | `PreservationTest.mixedEditsChangeOnlyTheEditedNodes` |
@@ -129,8 +129,8 @@ This file lists every spec 001 test method with the behaviour it verifies and th
 | `ReadOnlyTest.doubleClickDoesNotOpenAnEditor` | Double-click does not open an in-place editor on a read-only file. | `ReadOnlyTest.doubleClickDoesNotOpenAnEditor` |
 | `ReadOnlyTest.foldingIsViewOnly` | Folding on a read-only file changes only the view. | `ReadOnlyTest.foldingIsViewOnly` |
 | `ReadOnlyTest.theSameCommandsRunOnceWritableAgain` | The same commands run once the file is writable again. | `ReadOnlyTest.theSameCommandsRunOnceWritableAgain` |
-| `RegistrationTest.aFreeMindMapOpensInTheDesignerByDefault` | A FreeMind map opens in the designer by default. | `RegistrationTest.aFreeMindMapOpensInTheDesignerByDefault` |
-| `RegistrationTest.openWithListsTheDesignerAndTheTextEditor` | Open With lists both the designer and the text editor. | `RegistrationTest.openWithListsTheDesignerAndTheTextEditor` |
+| `RegistrationTest.aFreeMindMapOpensInTheDesignerByDefault` | A FreeMind map opens in the designer by default. | `RegistrationTest.aFreeMindMapOpensInTheToolByDefault` |
+| `RegistrationTest.openWithListsTheDesignerAndTheTextEditor` | Open With lists both the designer and the text editor. | `RegistrationTest.openWithListsTheToolAndTheTextEditor` |
 | `RegistrationTest.anObjectiveCppFileIsNotClaimed` | An Objective-C++ file with the same extension is not claimed. | `RegistrationTest.anObjectiveCppFileIsNotClaimed` |
 | `RegistrationTest.theTextEditorCanBeMadeTheDefault` | The text editor can be made the default for maps. | `RegistrationTest.theTextEditorCanBeMadeTheDefault` |
 | `RenameTest.renameByF2` | F2 renames the selected node. | `RenameTest.renameByF2` |

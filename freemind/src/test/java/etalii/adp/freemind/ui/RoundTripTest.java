@@ -20,7 +20,7 @@ import com.intellij.testFramework.FileEditorManagerTestCase;
 
 import etalii.adp.freemind.FreeMindAsserts;
 import etalii.adp.freemind.model.MindMap;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 import etalii.adp.testing.Layout;
 
 /** Spec 001 FR-009, SC-001; FR-006, SC-002, US2-AS2: opening a map and saving or closing it without edits changes no byte. */
@@ -36,12 +36,12 @@ public class RoundTripTest extends FileEditorManagerTestCase {
     public void savingWithoutEditsIsByteIdentical() throws IOException {
         for (Path map : FreeMindAsserts.examples()) {
             byte[] original = Files.readAllBytes(map);
-            try (var d = DesignerDriver.open(myFixture, map)) {
-                MindMap model = LayoutTest.designer(d).model();
+            try (var d = ToolDriver.open(myFixture, map)) {
+                MindMap model = LayoutTest.tool(d).model();
                 assertNotNull(map.toString(), model);
                 assertNotNull("the root is drawn", d.viewOf(model.root().key()));
                 d.select(model.root().key());
-                d.showLayout(Layout.TEXT).showLayout(Layout.DESIGNER);
+                d.showLayout(Layout.TEXT).showLayout(Layout.TOOL);
                 assertFalse(map.toString(), d.isModified());
                 assertArrayEquals(map.toString(), original, d.savedBytes());
             }
@@ -52,8 +52,8 @@ public class RoundTripTest extends FileEditorManagerTestCase {
     public void closingWithoutSavingLeavesTheFileAsItWas() throws IOException {
         for (Path map : FreeMindAsserts.examples()) {
             byte[] original = Files.readAllBytes(map);
-            try (var d = DesignerDriver.open(myFixture, map)) {
-                d.select(LayoutTest.designer(d).model().root().key());
+            try (var d = ToolDriver.open(myFixture, map)) {
+                d.select(LayoutTest.tool(d).model().root().key());
                 FileEditorManager.getInstance(getProject()).closeFile(d.file());
                 d.settle();
                 assertArrayEquals(map.toString(), original, d.file().contentsToByteArray());
@@ -67,7 +67,7 @@ public class RoundTripTest extends FileEditorManagerTestCase {
     public void crlfAndLoneCrFilesKeepTheirSeparators() {
         for (String separator : new String[] { "\r\n", "\r" }) {
             byte[] original = MAP.replace("\n", separator).getBytes(UTF_8);
-            try (var d = DesignerDriver.openBytes(myFixture, "separators" + separator.length() + ".mm", original)) {
+            try (var d = ToolDriver.openBytes(myFixture, "separators" + separator.length() + ".mm", original)) {
                 assertArrayEquals(separator.length() + "", original, d.savedBytes());
                 d.select(key("B")).run(RENAME).typeInPlace("Edited");
                 assertArrayEquals(d.text().replace("\n", separator).getBytes(UTF_8), d.savedBytes());
@@ -83,7 +83,7 @@ public class RoundTripTest extends FileEditorManagerTestCase {
         settings.setStripTrailingSpaces(EditorSettingsExternalizable.STRIP_TRAILING_SPACES_WHOLE);
         try {
             String spaced = MAP.replace("TEXT=\"Root\">\n", "TEXT=\"Root\">   \n").replace("</map>\n", "</map>  \n");
-            try (var d = DesignerDriver.openText(myFixture, "spaces.mm", spaced)) {
+            try (var d = ToolDriver.openText(myFixture, "spaces.mm", spaced)) {
                 d.select(key("B")).run(RENAME).typeInPlace("Edited");
                 String saved = new String(d.savedBytes(), UTF_8);
                 assertEquals(spaced.replace("TEXT=\"B\"", "TEXT=\"Edited\"").replaceAll("MODIFIED=\"\\d+\" POSITION=\"right\" TEXT=\"Edited\"", ""),

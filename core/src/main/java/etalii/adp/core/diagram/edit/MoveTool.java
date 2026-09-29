@@ -25,7 +25,7 @@ import etalii.adp.core.diagram.ViewOptions;
 import etalii.adp.core.diagram.view.CanvasLayer;
 import etalii.adp.core.diagram.view.CanvasTool;
 import etalii.adp.core.diagram.view.DiagramCanvas;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 import etalii.adp.core.diagram.view.ElementPainter;
 import etalii.adp.core.diagram.view.Scene.ElementRender;
 import etalii.adp.core.settings.AdpSettings;
@@ -34,7 +34,7 @@ import etalii.adp.core.settings.CanvasOption;
 /**
  * Dragging the selected elements (FR-017). Past a 3 pixel threshold the selection follows the
  * pointer, the pressed element's top left snapped to the grid and the others kept at their
- * offsets; outlines show where they go. Released, it is one "Move". In a designer with a layout,
+ * offsets; outlines show where they go. Released, it is one "Move". In a diagram with a layout,
  * elements are dropped instead: before, onto or after the element under the pointer, by the
  * top quarter, the middle and the bottom quarter, as one {@link DiagramCommands#drop}. A refused
  * gesture shows the refusal while dragging and its reason in a balloon when released, and changes
@@ -44,7 +44,7 @@ public final class MoveTool implements CanvasTool, CanvasLayer {
 
     private static final int THRESHOLD = 3;
 
-    private final DiagramDesigner designer;
+    private final DiagramFileEditor fileEditor;
     private final DiagramCanvas canvas;
     private final RefusalFeedback feedback;
     private Point pressedAt;
@@ -58,7 +58,7 @@ public final class MoveTool implements CanvasTool, CanvasLayer {
     private Drop drop;
     private Drop previewedDrop;
 
-    /** Where a drop in a laid-out designer goes, and whether it may. */
+    /** Where a drop in a laid-out diagram goes, and whether it may. */
     private record Drop(Object target, Placement placement, Rectangle2D box, Verdict verdict) {
 
         boolean sameSpot(Drop other) {
@@ -66,15 +66,15 @@ public final class MoveTool implements CanvasTool, CanvasLayer {
         }
     }
 
-    public MoveTool(DiagramDesigner designer, RefusalFeedback feedback) {
-        this.designer = designer;
-        this.canvas = designer.canvas();
+    public MoveTool(DiagramFileEditor fileEditor, RefusalFeedback feedback) {
+        this.fileEditor = fileEditor;
+        this.canvas = fileEditor.canvas();
         this.feedback = feedback;
     }
 
-    /** A diagram coordinate on the designer's grid when snapping is effectively on (spec 004); unchanged otherwise. */
-    public static double snap(DiagramDesigner designer, double value) {
-        ViewOptions view = designer.definition().view();
+    /** A diagram coordinate on the diagram's grid when snapping is effectively on (spec 004); unchanged otherwise. */
+    public static double snap(DiagramFileEditor fileEditor, double value) {
+        ViewOptions view = fileEditor.definition().view();
         int grid = view.grid();
         return grid <= 0 || !AdpSettings.getInstance().effective(CanvasOption.SNAP_TO_GRID, view) ? value : Math.round(value / grid) * (double) grid;
     }
@@ -82,12 +82,12 @@ public final class MoveTool implements CanvasTool, CanvasLayer {
     @Override
     public void mousePressed(MouseEvent e) {
         reset();
-        if (!SelectionTool.plainLeftPress(e) || !designer.isEditable()) {
+        if (!SelectionTool.plainLeftPress(e) || !fileEditor.isEditable()) {
             return;
         }
         Point2D point = canvas.toDiagram(e.getPoint());
-        Object key = SelectionTool.elementAt(designer, point);
-        List<Object> selection = designer.selection();
+        Object key = SelectionTool.elementAt(fileEditor, point);
+        List<Object> selection = fileEditor.selection();
         if (key == null || !selection.contains(key)) {
             return;
         }
@@ -116,7 +116,7 @@ public final class MoveTool implements CanvasTool, CanvasLayer {
             dragging = true;
             if (!laidOut()) {
                 // whether the elements may move does not depend on where they go: asked once
-                moveVerdict = RefusalFeedback.preview(designer).move(start);
+                moveVerdict = RefusalFeedback.preview(fileEditor).move(start);
             }
         }
         follow(e.getPoint());
@@ -173,14 +173,14 @@ public final class MoveTool implements CanvasTool, CanvasLayer {
     }
 
     private boolean laidOut() {
-        return designer.definition().layout() != null;
+        return fileEditor.definition().layout() != null;
     }
 
     private void follow(Point point) {
         Point2D at = canvas.toDiagram(point);
         Rectangle2D box = start.get(primary);
-        dx = snap(designer, box.getX() + at.getX() - pressedDiagram.getX()) - box.getX();
-        dy = snap(designer, box.getY() + at.getY() - pressedDiagram.getY()) - box.getY();
+        dx = snap(fileEditor, box.getX() + at.getX() - pressedDiagram.getX()) - box.getX();
+        dy = snap(fileEditor, box.getY() + at.getY() - pressedDiagram.getY()) - box.getY();
         if (laidOut()) {
             drop = dropAt(at);
             if (drop != null && !drop.verdict().allowed()) {
@@ -202,23 +202,23 @@ public final class MoveTool implements CanvasTool, CanvasLayer {
             if (drop == null) {
                 return;
             }
-            verdict = designer.commands().drop(new ArrayList<>(start.keySet()), drop.target(), drop.placement());
+            verdict = fileEditor.commands().drop(new ArrayList<>(start.keySet()), drop.target(), drop.placement());
         } else {
             if (dx == 0 && dy == 0) {
                 return;
             }
             Map<Object, Rectangle2D> bounds = new LinkedHashMap<>();
             start.forEach((key, box) -> bounds.put(key, new Rectangle2D.Double(box.getX() + dx, box.getY() + dy, box.getWidth(), box.getHeight())));
-            verdict = designer.commands().move(bounds);
+            verdict = fileEditor.commands().move(bounds);
         }
         if (!verdict.allowed()) {
             feedback.balloon(point, verdict.reason());
         }
     }
 
-    /** The drop at a diagram point in a laid-out designer, or {@code null} over nothing to drop onto. */
+    /** The drop at a diagram point in a laid-out diagram, or {@code null} over nothing to drop onto. */
     private Drop dropAt(Point2D at) {
-        Object target = SelectionTool.elementAt(designer, at);
+        Object target = SelectionTool.elementAt(fileEditor, at);
         if (target == null || start.containsKey(target)) {
             return null;
         }
@@ -230,7 +230,7 @@ public final class MoveTool implements CanvasTool, CanvasLayer {
         if (spot.sameSpot(previewedDrop)) {
             return previewedDrop;
         }
-        previewedDrop = new Drop(target, placement, box, RefusalFeedback.preview(designer).drop(new ArrayList<>(start.keySet()), target, placement));
+        previewedDrop = new Drop(target, placement, box, RefusalFeedback.preview(fileEditor).drop(new ArrayList<>(start.keySet()), target, placement));
         return previewedDrop;
     }
 

@@ -22,10 +22,10 @@ import etalii.adp.core.diagram.sample.BundledSampleProvider;
 import etalii.adp.core.diagram.sample.SampleProvider;
 
 /**
- * T048 (FR-016, acceptance 5.1 to 5.3): a designer interpreted from a bundled DEDL definition
- * reads as that definition, its DEDL version and the etalii.adp revision it was copied from; one
+ * T048 (FR-016, acceptance 5.1 to 5.3): a tool interpreted from a bundled DISL specification
+ * reads as that specification, its DISL version and the etalii.adp revision it was copied from; one
  * the plug-in cannot interpret is listed as not loaded with each problem; a conflict with another
- * designer is shown; and the page offers no way to load a definition from elsewhere.
+ * tool is shown; and the page offers no way to load a specification from elsewhere.
  */
 @RunWith(JUnit4.class)
 public class BundledOriginTest extends BasePlatformTestCase {
@@ -74,21 +74,21 @@ public class BundledOriginTest extends BasePlatformTestCase {
 
     @Test
     public void theOriginNamesTheDefinitionItsVersionAndTheRevisionItWasCopiedFrom() {
-        assertEquals("DEDL definition sample-flow (DEDL 0.3), copied from etalii.adp at a1b2c3d", table.getModel().getValueAt(row("Bundled Sample Designer"), 4));
-        assertEquals("Loaded", table.getModel().getValueAt(row("Bundled Sample Designer"), 5));
+        assertEquals("DISL specification sample-flow (DISL 0.3), copied from etalii.adp at a1b2c3d", table.getModel().getValueAt(row("Bundled Sample Diagram"), 4));
+        assertEquals("Loaded", table.getModel().getValueAt(row("Bundled Sample Diagram"), 5));
     }
 
     @Test
-    public void aBundledDefinitionThePluginCannotInterpretIsNotLoadedWithEachProblem() {
-        assertEquals("Not loaded", table.getModel().getValueAt(row("Broken Bundled Designer"), 5));
-        String detail = detail("Broken Bundled Designer");
+    public void aBundledSpecificationThePluginCannotInterpretIsNotLoadedWithEachProblem() {
+        assertEquals("Not loaded", table.getModel().getValueAt(row("Broken Bundled Diagram"), 5));
+        String detail = detail("Broken Bundled Diagram");
         assertTrue(detail, detail.contains("toolbox: names undeclared type 'nothing'"));
     }
 
     @Test
-    public void aConflictWithAnotherDesignerIsShown() {
-        String detail = detail("Bundled Sample Designer");
-        assertTrue(detail, detail.contains("Shares file types with Sample Designer"));
+    public void aConflictWithAnotherToolIsShown() {
+        String detail = detail("Bundled Sample Diagram");
+        assertTrue(detail, detail.contains("Shares file types with Sample Diagram"));
     }
 
     @Test

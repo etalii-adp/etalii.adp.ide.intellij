@@ -93,21 +93,21 @@ Files: none (the configuration is T004).
 
 ---
 
-## Phase 5: User Story 3, the designers' own cost is known and bounded (P2)
+## Phase 5: User Story 3, the tools' own cost is known and bounded (P2)
 
-**Goal**: typing latency on large files is measured in every build, idle designers cost nothing, and closed designers are released.
+**Goal**: typing latency on large files is measured in every build, idle tools cost nothing, and closed tools are released.
 
 **Independent Test**: spec User Story 3.
 
-Files: `freemind/src/test/java/etalii/adp/freemind/ui/TypingLatencyTest.java`, `drawio/src/test/java/etalii/adp/drawio/GeneratedDiagrams.java`, `drawio/src/test/java/etalii/adp/drawio/TypingLatencyTest.java`, `core/src/test/java/etalii/adp/core/DesignerLeakTest.java`, and only if a test fails, the production file it points at.
+Files: `freemind/src/test/java/etalii/adp/freemind/ui/TypingLatencyTest.java`, `drawio/src/test/java/etalii/adp/drawio/GeneratedDiagrams.java`, `drawio/src/test/java/etalii/adp/drawio/TypingLatencyTest.java`, `core/src/test/java/etalii/adp/core/ToolLeakTest.java`, and only if a test fails, the production file it points at.
 
 ### Tests
 
 **Wave 1 — independent (different files):**
 
-- [x] **T016** [P] [US3] Type a burst of characters into a node's text in the text editor beside a designer showing `FreeMindAsserts.generatedMap(2000)`; time each keystroke until the designer shows it; print `SC-004 typing map ... ms` and assert the median within 100 ms, using `EditPerformanceTest`'s warm-up and CI headroom convention · `freemind/src/test/java/etalii/adp/freemind/ui/TypingLatencyTest.java`
+- [x] **T016** [P] [US3] Type a burst of characters into a node's text in the text editor beside a tool showing `FreeMindAsserts.generatedMap(2000)`; time each keystroke until the tool shows it; print `SC-004 typing map ... ms` and assert the median within 100 ms, using `EditPerformanceTest`'s warm-up and CI headroom convention · `freemind/src/test/java/etalii/adp/freemind/ui/TypingLatencyTest.java`
 - [x] **T017** [P] [US3] A generator for a valid draw.io file with a given number of cells, laid out on a grid with edges between neighbours · `drawio/src/test/java/etalii/adp/drawio/GeneratedDiagrams.java`
-- [x] **T018** [P] [US3] Open and close a designer many times on `FakeFormat` and check that no editor, document listener or view stays reachable, with the platform test framework's leak checks (FR-006) · `core/src/test/java/etalii/adp/core/DesignerLeakTest.java`
+- [x] **T018** [P] [US3] Open and close a tool many times on `FakeFormat` and check that no editor, document listener or view stays reachable, with the platform test framework's leak checks (FR-006) · `core/src/test/java/etalii/adp/core/ToolLeakTest.java`
 
 **⟶ Wait for Wave 1 to finish, then:**
 
@@ -117,7 +117,7 @@ Files: `freemind/src/test/java/etalii/adp/freemind/ui/TypingLatencyTest.java`, `
 
 - [x] **T020** [US3] Run the three tests. If one fails, fix the cause in the file it points at and record the change and its reason in research.md R6; if all pass, record the measured figures in the quickstart Results row · (file named by the failing test, or `specs/006-sandbox-ide-performance/quickstart.md`)
 
-**Checkpoint**: Story 3 verified; the designers are ruled in or out as a second cause.
+**Checkpoint**: Story 3 verified; the tools are ruled in or out as a second cause.
 
 ---
 

@@ -28,7 +28,7 @@ import etalii.adp.freemind.edit.FreeMindConventions;
 
 /**
  * New > FreeMind Mind Map (FR-014): asks for a name, writes FreeMind 1.0.1's new-map text with a
- * fresh {@code ID} and timestamps in the project's line separator, and opens it in the designer.
+ * fresh {@code ID} and timestamps in the project's line separator, and opens it in the diagram.
  */
 public final class NewMindMapAction extends AnAction implements DumbAware {
 

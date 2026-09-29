@@ -7,11 +7,11 @@ import javax.swing.JComponent;
 import com.intellij.openapi.options.Configurable;
 
 /**
- * The designers' own pages under ADP (US4, FR-014): one per designer whose settings declarations
- * hold together, and none for a designer without settings. It shows nothing on the ADP page
+ * The tools' own pages under ADP (US4, FR-014): one per tool whose settings declarations
+ * hold together, and none for a tool without settings. It shows nothing on the ADP page
  * itself; each child page applies on its own.
  */
-public final class DesignerPagesSection implements SettingsSection {
+public final class ToolPagesSection implements SettingsSection {
 
     @Override
     public int order() {
@@ -36,7 +36,7 @@ public final class DesignerPagesSection implements SettingsSection {
     public void reset() {
     }
 
-    /** The designers' own labels are searched on their own pages (research R4). */
+    /** The tools' own labels are searched on their own pages (research R4). */
     @Override
     public List<String> searchableLabels() {
         return List.of();
@@ -44,8 +44,8 @@ public final class DesignerPagesSection implements SettingsSection {
 
     @Override
     public List<Configurable> children() {
-        return AdpDesigners.withPages().stream()
-                .<Configurable>map(designer -> new DesignerSettingsConfigurable(designer.getEditorTypeId(), designer.designerInfo().name(), designer.settings()))
+        return AdpTools.withPages().stream()
+                .<Configurable>map(tool -> new ToolSettingsConfigurable(tool.getEditorTypeId(), tool.toolInfo().name(), tool.settings()))
                 .toList();
     }
 }

@@ -20,7 +20,7 @@ import com.intellij.testFramework.FileEditorManagerTestCase;
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.NodeKey;
 import etalii.adp.freemind.ui.actions.MindMapAction;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /** Spec 001 FR-019, FR-011, US2-AS1: a new node appears in the right place, ready for its text to be typed. */
 @RunWith(JUnit4.class)
@@ -40,8 +40,8 @@ public class AddNodeTest extends FileEditorManagerTestCase {
         super.setUp();
     }
 
-    private DesignerDriver open(String text) {
-        return DesignerDriver.openText(myFixture, "add.mm", text);
+    private ToolDriver open(String text) {
+        return ToolDriver.openText(myFixture, "add.mm", text);
     }
 
     @Test
@@ -175,7 +175,7 @@ public class AddNodeTest extends FileEditorManagerTestCase {
     }
 
     /** Press Escape in the open in-place editor, which closes it without a change. */
-    static void cancelInPlace(DesignerDriver d) {
+    static void cancelInPlace(ToolDriver d) {
         JTextField field = d.inPlaceField();
         assertNotNull("an in-place editor is open", field);
         KeyEvent escape = new KeyEvent(field, KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, KeyEvent.VK_ESCAPE, KeyEvent.CHAR_UNDEFINED);

@@ -23,7 +23,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 /**
  * A second, minimal format for the framework's own tests: a {@code .txt} file whose first line is
  * {@code #adpfake}, one item per following line. A line starting with {@code !} cannot be shown.
- * It needs no change to core (FR-019): a provider, a sniff and a designer are all a format writes.
+ * It needs no change to core (FR-019): a provider, a sniff and a tool are all a format writes.
  */
 final class FakeFormat {
 
@@ -56,12 +56,12 @@ final class FakeFormat {
         }
 
         @Override
-        protected AdpDesignerEditor<?> createDesigner(Project project, VirtualFile file, Document document) {
-            return new Designer(project, file, document);
+        protected AdpToolFileEditor<?> createTool(Project project, VirtualFile file, Document document) {
+            return new Tool(project, file, document);
         }
 
         @Override
-        protected String editorName() {
+        protected String toolName() {
             return "Fake Items";
         }
 
@@ -75,7 +75,7 @@ final class FakeFormat {
     record Items(List<String> lines) {
     }
 
-    static final class Designer extends AdpDesignerEditor<Items> {
+    static final class Tool extends AdpToolFileEditor<Items> {
 
         static final int ROW = 20;
 
@@ -83,7 +83,7 @@ final class FakeFormat {
         Items shown;
         Object revealed;
 
-        Designer(Project project, VirtualFile file, Document document) {
+        Tool(Project project, VirtualFile file, Document document) {
             super(project, file, document);
         }
 

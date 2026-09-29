@@ -10,9 +10,9 @@ import org.junit.runners.JUnit4;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
-/** The Structure view and the designer stay in step both ways, for a non-text editor (research R8). */
+/** The Structure view and the tool stay in step both ways, for a non-text editor (research R8). */
 @RunWith(JUnit4.class)
 public class StructureSyncTest extends FileEditorManagerTestCase {
 
@@ -25,8 +25,8 @@ public class StructureSyncTest extends FileEditorManagerTestCase {
     }
 
     @Test
-    public void theCompositeStructureViewIsTheDesigners() {
-        try (var d = DesignerDriver.openText(myFixture, "items.txt", TEXT)) {
+    public void theCompositeStructureViewIsTheTools() {
+        try (var d = ToolDriver.openText(myFixture, "items.txt", TEXT)) {
             assertInstanceOf(d.composite().getStructureViewBuilder(), AdpStructureView.class);
             StructureViewTreeElement root = d.structure().getRoot();
             assertEquals("Items", root.getPresentation().getPresentableText());
@@ -37,19 +37,19 @@ public class StructureSyncTest extends FileEditorManagerTestCase {
 
     @Test
     public void choosingAnElementRevealsAndSelectsTheItem() {
-        try (var d = DesignerDriver.openText(myFixture, "items.txt", TEXT)) {
+        try (var d = ToolDriver.openText(myFixture, "items.txt", TEXT)) {
             var element = (StructureViewTreeElement) d.structure().getRoot().getChildren()[2];
 
             element.navigate(true);
 
-            assertEquals(2, ((FakeFormat.Designer) d.designer()).revealed);
+            assertEquals(2, ((FakeFormat.Tool) d.tool()).revealed);
             assertEquals(List.of(2), d.selectedKeys());
         }
     }
 
     @Test
-    public void theDesignersSelectionIsTheCurrentElement() {
-        try (var d = DesignerDriver.openText(myFixture, "items.txt", TEXT)) {
+    public void theToolsSelectionIsTheCurrentElement() {
+        try (var d = ToolDriver.openText(myFixture, "items.txt", TEXT)) {
             var model = d.structure();
             AtomicInteger moves = new AtomicInteger();
             model.addEditorPositionListener(moves::incrementAndGet);
@@ -63,7 +63,7 @@ public class StructureSyncTest extends FileEditorManagerTestCase {
 
     @Test
     public void aDocumentChangeRebuildsTheTree() {
-        try (var d = DesignerDriver.openText(myFixture, "items.txt", TEXT)) {
+        try (var d = ToolDriver.openText(myFixture, "items.txt", TEXT)) {
             var model = d.structure();
             AtomicInteger changes = new AtomicInteger();
             model.addModelListener(changes::incrementAndGet);

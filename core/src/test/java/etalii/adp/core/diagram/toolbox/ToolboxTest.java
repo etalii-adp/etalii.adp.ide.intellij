@@ -34,13 +34,13 @@ import etalii.adp.core.diagram.sample.SampleProvider;
 import etalii.adp.core.diagram.view.DiagramCanvas;
 import etalii.adp.core.diagram.view.DiagramEditorProvider;
 import etalii.adp.core.diagram.view.ElementView;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 import etalii.adp.testing.DiagramDriver;
 import etalii.adp.testing.Layout;
 
 /**
- * T053, FR-016: the ADP Toolbox tool window lists the selected designer's toolbox, follows the
- * selected editor, drops an element where the drag ends on the designer side, and adds one at the
+ * T053, FR-016: the ADP Toolbox tool window lists the selected diagram's toolbox, follows the
+ * selected editor, drops an element where the drag ends on the diagram side, and adds one at the
  * centre of the visible canvas on Enter. It proves the tool window and drag and drop seams.
  */
 @RunWith(JUnit4.class)
@@ -99,7 +99,7 @@ public class ToolboxTest extends FileEditorManagerTestCase {
     }
 
     @Test
-    public void followsTheSelectedEditorIncludingANonAdpFileAndAnotherDesigner() {
+    public void followsTheSelectedEditorIncludingANonAdpFileAndAnotherTool() {
         assertEquals(List.of(), panel().entries());
         assertTrue("empty before any diagram is open", panel().emptyStateShown());
         assertEquals("Open an ADP diagram to see its toolbox", ToolboxPanel.EMPTY_TEXT);
@@ -108,23 +108,23 @@ public class ToolboxTest extends FileEditorManagerTestCase {
         try (var d = open("two-tasks.adpsample")) {
             assertEquals(List.of("task", "decision", "flow", "note"), panel().entries());
 
-            VirtualFile notes = DesignerDriver.createFile(myFixture, "notes.txt", "plain text\n".getBytes(UTF_8));
+            VirtualFile notes = ToolDriver.createFile(myFixture, "notes.txt", "plain text\n".getBytes(UTF_8));
             FileEditorManager editors = FileEditorManager.getInstance(getProject());
             editors.openFile(notes, true);
-            d.driver().settleUntil("the toolbox leaves the designer for a text file", () -> panel().designer() == null);
+            d.driver().settleUntil("the toolbox leaves the diagram for a text file", () -> panel().tool() == null);
             assertEquals(List.of(), panel().entries());
             assertTrue("empty after switching to a non-ADP file", panel().emptyStateShown());
 
             editors.openFile(d.driver().file(), true);
-            d.driver().settleUntil("the toolbox follows back to the sample designer", () -> panel().designer() == d.designer());
+            d.driver().settleUntil("the toolbox follows back to the sample diagram", () -> panel().tool() == d.tool());
             assertEquals(List.of("task", "decision", "flow", "note"), panel().entries());
-            assertSame(d.designer(), panel().designer());
+            assertSame(d.tool(), panel().tool());
 
             try (var other = DiagramDriver.openText(myFixture, "other.adpother", SampleFiles.read("two-tasks.adpsample"))) {
-                assertNotNull(other.designer());
-                other.driver().settleUntil("the toolbox follows the other designer", () -> panel().designer() == other.designer());
+                assertNotNull(other.tool());
+                other.driver().settleUntil("the toolbox follows the other diagram", () -> panel().tool() == other.tool());
                 assertEquals(List.of("decision", "task"), panel().entries());
-                assertSame(other.designer(), panel().designer());
+                assertSame(other.tool(), panel().tool());
             }
             editors.closeFile(notes);
         }
@@ -136,9 +136,9 @@ public class ToolboxTest extends FileEditorManagerTestCase {
     public void aDragLandsOnThePreviewSideAtTheDropPoint() {
         try (var d = open("two-tasks.adpsample")) {
             d.driver().showLayout(Layout.SPLIT);
-            d.designer().zoomIn();
+            d.tool().zoomIn();
             String before = d.driver().text();
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             assertTrue("the canvas is the preview side", SwingUtilities.isDescendingFrom(canvas, d.driver().composite().getPreviewEditor().getComponent()));
 
             d.dragFromToolbox("decision", 403, 197);
@@ -158,7 +158,7 @@ public class ToolboxTest extends FileEditorManagerTestCase {
     @Test
     public void enterAddsAnElementAtTheCentreOfTheVisibleCanvas() {
         try (var d = open("two-tasks.adpsample")) {
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             canvas.setSize(800, 600);
             Rectangle2D visible = canvas.visibleArea();
 
@@ -175,19 +175,19 @@ public class ToolboxTest extends FileEditorManagerTestCase {
     }
 
     @Test
-    public void aConnectionEntryArmsItsTypeOnTheDesigner() {
+    public void aConnectionEntryArmsItsTypeOnTheTool() {
         try (var d = open("two-tasks.adpsample")) {
             String before = d.driver().text();
-            assertNull(d.designer().armedConnectionType());
+            assertNull(d.tool().armedConnectionType());
             d.addFromToolboxWithKeyboard("note");
-            assertEquals("note", d.designer().armedConnectionType());
+            assertEquals("note", d.tool().armedConnectionType());
             d.addFromToolboxWithKeyboard("flow");
-            assertEquals("flow", d.designer().armedConnectionType());
+            assertEquals("flow", d.tool().armedConnectionType());
             assertEquals("arming changes nothing in the file", before, d.driver().text());
         }
     }
 
-    /** A second designer with its own toolbox, for following the selected editor from one designer to another. */
+    /** A second diagram with its own toolbox, for following the selected editor from one diagram to another. */
     public static final class OtherProvider extends DiagramEditorProvider {
 
         OtherProvider() {
@@ -209,8 +209,8 @@ public class ToolboxTest extends FileEditorManagerTestCase {
         }
 
         @Override
-        protected String editorName() {
-            return "Other Sample Designer";
+        protected String toolName() {
+            return "Other Sample Diagram";
         }
 
         @Override

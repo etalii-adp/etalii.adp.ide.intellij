@@ -21,7 +21,7 @@ import etalii.adp.core.diagram.model.Diagram;
 import etalii.adp.core.diagram.model.Sector;
 import etalii.adp.core.diagram.view.CanvasLayer;
 import etalii.adp.core.diagram.view.DiagramCanvas;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 import etalii.adp.core.diagram.view.ElementPainter;
 
 /**
@@ -44,11 +44,11 @@ public final class SectorLayer implements CanvasLayer {
     /** The header strip's depth: unscaled diagram pixels in diagram space, scaled pixels in view space. */
     private static final int HEADER_SIZE = 24;
 
-    private final DiagramDesigner designer;
+    private final DiagramFileEditor fileEditor;
     private final Space space;
 
-    public SectorLayer(DiagramDesigner designer, Space space) {
-        this.designer = designer;
+    public SectorLayer(DiagramFileEditor fileEditor, Space space) {
+        this.fileEditor = fileEditor;
         this.space = space;
     }
 
@@ -63,14 +63,14 @@ public final class SectorLayer implements CanvasLayer {
     }
 
     /** Where a sector is drawn, in the canvas's coordinates at the current zoom and scroll, or {@code null} when there is no such sector. */
-    public static Rectangle onCanvas(DiagramDesigner designer, Object sectorKey) {
-        Diagram diagram = designer.diagram();
+    public static Rectangle onCanvas(DiagramFileEditor fileEditor, Object sectorKey) {
+        Diagram diagram = fileEditor.diagram();
         Sector sector = diagram == null ? null : diagram.sector(sectorKey);
         if (sector == null) {
             return null;
         }
-        DiagramCanvas canvas = designer.canvas();
-        if (spaceOf(decl(designer, sector)) == Space.VIEW) {
+        DiagramCanvas canvas = fileEditor.canvas();
+        if (spaceOf(decl(fileEditor, sector)) == Space.VIEW) {
             Rectangle area = sector.bounds().getBounds();
             Point origin = canvas.viewportPosition();
             area.translate(origin.x, origin.y);
@@ -81,7 +81,7 @@ public final class SectorLayer implements CanvasLayer {
 
     @Override
     public void paint(Graphics2D g, DiagramCanvas canvas, Rectangle2D visible) {
-        Diagram diagram = designer.diagram();
+        Diagram diagram = fileEditor.diagram();
         if (diagram == null || diagram.sectors().isEmpty()) {
             return;
         }
@@ -91,7 +91,7 @@ public final class SectorLayer implements CanvasLayer {
         g.setStroke(new BasicStroke(view ? JBUIScale.scale(1f) : 1f));
         Font font = JBFont.label();
         for (Sector sector : diagram.sectors().values()) {
-            SectorDecl decl = decl(designer, sector);
+            SectorDecl decl = decl(fileEditor, sector);
             if (spaceOf(decl) != space) {
                 continue;
             }
@@ -139,8 +139,8 @@ public final class SectorLayer implements CanvasLayer {
         }
     }
 
-    private static SectorDecl decl(DiagramDesigner designer, Sector sector) {
-        return designer.definition().sectors().get(sector.declId());
+    private static SectorDecl decl(DiagramFileEditor fileEditor, Sector sector) {
+        return fileEditor.definition().sectors().get(sector.declId());
     }
 
     private static Space spaceOf(SectorDecl decl) {

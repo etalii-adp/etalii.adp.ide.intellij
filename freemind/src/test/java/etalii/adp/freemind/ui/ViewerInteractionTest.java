@@ -23,7 +23,7 @@ import com.intellij.testFramework.PlatformTestUtil;
 
 import etalii.adp.core.AdpDataKeys;
 import etalii.adp.core.ViewState;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /** Spec 001 FR-017, FR-027, US1-AS1: zoom, pan, selection and keyboard navigation. */
 @RunWith(JUnit4.class)
@@ -52,30 +52,30 @@ public class ViewerInteractionTest extends FileEditorManagerTestCase {
         super.setUp();
     }
 
-    private DesignerDriver open() {
-        return DesignerDriver.openText(myFixture, "view.mm", MAP);
+    private ToolDriver open() {
+        return ToolDriver.openText(myFixture, "view.mm", MAP);
     }
 
     @Test
     public void zoomInAndOutThroughThePlatformCommands() {
         try (var d = open()) {
-            MindMapCanvas canvas = LayoutTest.designer(d).canvas();
-            double before = d.designer().viewState().zoom();
+            MindMapCanvas canvas = LayoutTest.tool(d).canvas();
+            double before = d.tool().viewState().zoom();
             int width = canvas.getPreferredSize().width;
             Rectangle root = canvas.boundsOf(key("R"));
 
             d.run(ZOOM_IN);
-            assertTrue(d.designer().viewState().zoom() > before);
+            assertTrue(d.tool().viewState().zoom() > before);
             assertTrue("the map is drawn larger", canvas.getPreferredSize().width > width);
             assertTrue(canvas.boundsOf(key("R")).width > root.width);
             assertEquals("layout boxes stay unzoomed", root.width, d.viewOf(key("R")).bounds().width);
 
             d.run(ZOOM_OUT);
-            assertEquals(before, d.designer().viewState().zoom(), 1e-9);
+            assertEquals(before, d.tool().viewState().zoom(), 1e-9);
             assertEquals(width, canvas.getPreferredSize().width);
 
             d.run(ZOOM_OUT).run(ZOOM_RESET);
-            assertEquals(1.0, d.designer().viewState().zoom(), 1e-9);
+            assertEquals(1.0, d.tool().viewState().zoom(), 1e-9);
         }
     }
 
@@ -85,11 +85,11 @@ public class ViewerInteractionTest extends FileEditorManagerTestCase {
             for (int i = 0; i < 20; i++) {
                 d.run(ZOOM_IN);
             }
-            assertEquals(ViewState.ZOOM_LEVELS[ViewState.ZOOM_LEVELS.length - 1], d.designer().viewState().zoom(), 1e-9);
+            assertEquals(ViewState.ZOOM_LEVELS[ViewState.ZOOM_LEVELS.length - 1], d.tool().viewState().zoom(), 1e-9);
             for (int i = 0; i < 20; i++) {
                 d.run(ZOOM_OUT);
             }
-            assertEquals(ViewState.ZOOM_LEVELS[0], d.designer().viewState().zoom(), 1e-9);
+            assertEquals(ViewState.ZOOM_LEVELS[0], d.tool().viewState().zoom(), 1e-9);
         }
     }
 
@@ -99,7 +99,7 @@ public class ViewerInteractionTest extends FileEditorManagerTestCase {
             d.run(ZOOM_IN).run(ZOOM_IN);
             d.click(key("C"), 1, 0);
             assertEquals(List.of(key("C")), d.selectedKeys());
-            MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+            MindMapCanvas canvas = LayoutTest.tool(d).canvas();
             Rectangle c = canvas.boundsOf(key("C"));
             assertEquals(key("C"), canvas.keyAt(new Point(c.x + 1, c.y + 1)));
             assertNull(canvas.keyAt(new Point(c.x - 3, c.y - 3)));
@@ -108,8 +108,8 @@ public class ViewerInteractionTest extends FileEditorManagerTestCase {
 
     @Test
     public void panByScrolling() {
-        try (var d = DesignerDriver.open(myFixture, example("freeplane-large-map.mm"))) {
-            MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+        try (var d = ToolDriver.open(myFixture, example("freeplane-large-map.mm"))) {
+            MindMapCanvas canvas = LayoutTest.tool(d).canvas();
             JScrollPane scroll = (JScrollPane) SwingUtilities.getAncestorOfClass(JScrollPane.class, canvas);
             assertNotNull("the canvas scrolls", scroll);
             scroll.setSize(300, 200);
@@ -148,7 +148,7 @@ public class ViewerInteractionTest extends FileEditorManagerTestCase {
     public void clickingEmptySpaceClearsTheSelection() {
         try (var d = open()) {
             d.click(key("B"), 1, 0);
-            MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+            MindMapCanvas canvas = LayoutTest.tool(d).canvas();
             press(canvas, new Point(1, 1), new Point(1, 1), 0);
             assertEquals(List.of(), d.selectedKeys());
         }
@@ -156,15 +156,15 @@ public class ViewerInteractionTest extends FileEditorManagerTestCase {
 
     @Test
     public void opensCentredOnTheRoot() {
-        try (var d = DesignerDriver.open(myFixture, example("freeplane-large-map.mm"))) {
-            MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+        try (var d = ToolDriver.open(myFixture, example("freeplane-large-map.mm"))) {
+            MindMapCanvas canvas = LayoutTest.tool(d).canvas();
             JScrollPane scroll = (JScrollPane) SwingUtilities.getAncestorOfClass(JScrollPane.class, canvas);
             scroll.setSize(300, 200);
             scroll.doLayout();
             scroll.getViewport().doLayout();
             PlatformTestUtil.dispatchAllEventsInIdeEventQueue();
 
-            Rectangle root = canvas.boundsOf(LayoutTest.designer(d).model().root().key());
+            Rectangle root = canvas.boundsOf(LayoutTest.tool(d).model().root().key());
             Rectangle view = scroll.getViewport().getViewRect();
             int x = Math.max(0, Math.min((int) root.getCenterX() - view.width / 2, canvas.getWidth() - view.width));
             int y = Math.max(0, Math.min((int) root.getCenterY() - view.height / 2, canvas.getHeight() - view.height));
@@ -174,8 +174,8 @@ public class ViewerInteractionTest extends FileEditorManagerTestCase {
 
     @Test
     public void draggingEmptySpacePansAndKeepsTheSelection() {
-        try (var d = DesignerDriver.open(myFixture, example("freeplane-large-map.mm"))) {
-            MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+        try (var d = ToolDriver.open(myFixture, example("freeplane-large-map.mm"))) {
+            MindMapCanvas canvas = LayoutTest.tool(d).canvas();
             JScrollPane scroll = (JScrollPane) SwingUtilities.getAncestorOfClass(JScrollPane.class, canvas);
             scroll.setSize(300, 200);
             scroll.doLayout();
@@ -184,7 +184,7 @@ public class ViewerInteractionTest extends FileEditorManagerTestCase {
             PlatformTestUtil.dispatchAllEventsInIdeEventQueue();
             Point before = new Point(100, 100);
             scroll.getViewport().setViewPosition(before);
-            d.select(LayoutTest.designer(d).model().root().key());
+            d.select(LayoutTest.tool(d).model().root().key());
             List<Object> selected = d.selectedKeys();
 
             Point from = null;
@@ -206,7 +206,7 @@ public class ViewerInteractionTest extends FileEditorManagerTestCase {
     @Test
     public void marqueeSelectsTheNodesInside() {
         try (var d = open()) {
-            MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+            MindMapCanvas canvas = LayoutTest.tool(d).canvas();
             Rectangle area = canvas.boundsOf(key("C")).union(canvas.boundsOf(key("E")));
             area.grow(3, 3);
             // a plain drag on empty canvas pans, so the marquee is dragged with Shift held
@@ -250,9 +250,9 @@ public class ViewerInteractionTest extends FileEditorManagerTestCase {
     @Test
     public void keyboardFocusStartsOnTheRoot() {
         try (var d = open()) {
-            MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+            MindMapCanvas canvas = LayoutTest.tool(d).canvas();
             assertTrue(canvas.isFocusable());
-            assertSame(canvas, d.designer().getPreferredFocusedComponent());
+            assertSame(canvas, d.tool().getPreferredFocusedComponent());
             d.press("DOWN");
             assertEquals("the first key selects the root", List.of(key("R")), d.selectedKeys());
             assertEquals(key("R"), canvas.focusKey());
@@ -266,7 +266,7 @@ public class ViewerInteractionTest extends FileEditorManagerTestCase {
             Object[] items = d.dataContext().getData(PlatformCoreDataKeys.SELECTED_ITEMS);
             assertNotNull(items);
             assertEquals(List.of(key("C"), key("L")), List.of(items));
-            assertSame(d.designer(), d.dataContext().getData(AdpDataKeys.ADP_DESIGNER));
+            assertSame(d.tool(), d.dataContext().getData(AdpDataKeys.ADP_TOOL));
         }
     }
 

@@ -14,7 +14,7 @@ import com.intellij.openapi.command.undo.UndoManager;
 import com.intellij.openapi.fileEditor.FileEditorProvider;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 
-import etalii.adp.core.AdpDesignerEditor.DesignerState;
+import etalii.adp.core.AdpToolFileEditor.ToolState;
 import etalii.adp.core.diagram.sample.SampleDefinition;
 import etalii.adp.core.diagram.sample.SampleMapping;
 import etalii.adp.core.diagram.sample.SampleProvider;
@@ -28,7 +28,7 @@ import etalii.adp.testing.DiagramDriver;
 /**
  * T036 (FR-006, FR-011, FR-012, SC-003, acceptance 3.1 and 3.2), with two sample files open: the
  * grid shows after Apply without reopening, moving snaps to the grid spacing only with snapping
- * on, the opening zoom applies unless the file remembers its own, a designer that fixes an option
+ * on, the opening zoom applies unless the file remembers its own, a diagram that fixes an option
  * keeps it, and none of this changes a document, its modified state or its undo history.
  */
 @RunWith(JUnit4.class)
@@ -41,7 +41,7 @@ public class CanvasOptionsLiveTest extends FileEditorManagerTestCase {
             </sample>
             """;
 
-    /** The sample designer for {@code .adpfixed}, keeping snapping on whatever the user chose. */
+    /** The sample diagram for {@code .adpfixed}, keeping snapping on whatever the user chose. */
     static final class SnapFixed extends DiagramEditorProvider {
 
         SnapFixed() {
@@ -59,8 +59,8 @@ public class CanvasOptionsLiveTest extends FileEditorManagerTestCase {
         }
 
         @Override
-        protected String editorName() {
-            return "Snap Fixed Designer";
+        protected String toolName() {
+            return "Snap Fixed Diagram";
         }
 
         @Override
@@ -82,14 +82,14 @@ public class CanvasOptionsLiveTest extends FileEditorManagerTestCase {
         return DiagramDriver.openText(myFixture, name, DIAGRAM);
     }
 
-    /** What Apply on the ADP page does: store, then tell open designers once. */
+    /** What Apply on the ADP page does: store, then tell open diagrams once. */
     private void apply(CanvasOptions options) {
         settings.setCanvas(options);
         ApplicationManager.getApplication().getMessageBus().syncPublisher(AdpSettingsListener.TOPIC).settingsChanged();
     }
 
     private static Color pixel(DiagramDriver d, int x, int y) {
-        DiagramCanvas canvas = d.designer().canvas();
+        DiagramCanvas canvas = d.tool().canvas();
         canvas.setSize(600, 500);
         BufferedImage image = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_RGB);
         var graphics = image.createGraphics();
@@ -144,14 +144,14 @@ public class CanvasOptionsLiveTest extends FileEditorManagerTestCase {
         apply(new CanvasOptions(false, true, 1.5));
         try (var d = open("zoom.adpsample")) {
             assertEquals(1.5, d.zoomLevel(), 1e-9);
-            d.designer().setState(new DesignerState(0.75, List.of()));
+            d.tool().setState(new ToolState(0.75, List.of()));
             assertEquals("the remembered zoom wins", 0.75, d.zoomLevel(), 1e-9);
             assertUntouched(d, DIAGRAM);
         }
     }
 
     @Test
-    public void aDesignerThatFixesAnOptionIgnoresTheUsers() {
+    public void aToolThatFixesAnOptionIgnoresTheUsers() {
         FileEditorProvider.EP_FILE_EDITOR_PROVIDER.getPoint().registerExtension(new SnapFixed(), getTestRootDisposable());
         apply(new CanvasOptions(false, false, 1.0));
         try (var d = open("fixed.adpfixed")) {

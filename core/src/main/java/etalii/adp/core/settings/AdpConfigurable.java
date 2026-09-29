@@ -18,7 +18,7 @@ import com.intellij.util.ui.JBUI;
 
 /**
  * Settings > Tools > ADP (FR-001, FR-002, research R1). It owns the dialog contract: modified when
- * any section is, Apply writes the changed sections and tells open designers once, Reset and
+ * any section is, Apply writes the changed sections and tells open tools once, Reset and
  * Cancel write nothing. What the page shows comes from the registered {@link SettingsSection}s, in
  * their order, and so do its child pages.
  */
@@ -31,12 +31,12 @@ public final class AdpConfigurable implements SearchableConfigurable, Configurab
             .sorted(Comparator.comparingInt(SettingsSection::order)).toList();
     private Configurable[] children;
 
-    /** The id of a designer's own page, under this one. */
-    public static String pageId(String designerId) {
-        return ID + "." + designerId;
+    /** The id of a tool's own page, under this one. */
+    public static String pageId(String toolId) {
+        return ID + "." + toolId;
     }
 
-    /** Tell open designers that settings changed, once per apply. */
+    /** Tell open tools that settings changed, once per apply. */
     static void publish() {
         ApplicationManager.getApplication().getMessageBus().syncPublisher(AdpSettingsListener.TOPIC).settingsChanged();
     }

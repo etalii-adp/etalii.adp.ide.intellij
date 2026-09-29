@@ -1,12 +1,12 @@
 package etalii.adp.core.actions;
 
-import etalii.adp.core.AdpDesignerEditor;
+import etalii.adp.core.AdpToolFileEditor;
 
-/** Select every item of the focused designer. */
-public final class SelectAllAction extends ZoomActions.DesignerAction {
+/** Select every item of the focused tool. */
+public final class SelectAllAction extends ZoomActions.ToolAction {
 
     @Override
-    protected void run(AdpDesignerEditor<?> designer) {
-        designer.selectAll();
+    protected void run(AdpToolFileEditor<?> tool) {
+        tool.selectAll();
     }
 }

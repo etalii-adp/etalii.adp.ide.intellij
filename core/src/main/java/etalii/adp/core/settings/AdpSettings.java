@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
@@ -40,17 +41,24 @@ public final class AdpSettings implements PersistentStateComponent<Element> {
     private static final int MAX_ZOOM = 400;
 
     /** The stored fields and what the notice calls them. */
-    private static final Map<String, String> FIELDS = Map.of("offDesigners", "Designers turned off", "showGrid", CanvasOption.SHOW_GRID.label(),
-            "snapToGrid", CanvasOption.SNAP_TO_GRID.label(), "openingZoom", "Opening zoom", "designerSettings", "Designer settings");
+    private static final Map<String, String> FIELDS = Map.of("offTools", "Tools turned off", "showGrid", CanvasOption.SHOW_GRID.label(),
+            "snapToGrid", CanvasOption.SNAP_TO_GRID.label(), "openingZoom", "Opening zoom", "toolSettings", "Tool settings");
+
+    /**
+     * Stored field names and tool ids of earlier versions, read when the new ones are absent and
+     * never written again (spec 002 of etalii.adp, research R5).
+     */
+    private static final Map<String, String> OLD_FIELDS = Map.of("offDesigners", "offTools", "designerSettings", "toolSettings");
+    private static final Map<String, String> OLD_IDS = Map.of("etalii.adp.freemind.editor", "etalii.adp.freemind");
 
     /** The stored bean, as the platform's serializer writes it. Text fields keep what was stored until the page applies. */
     public static final class State {
-        public Set<String> offDesigners = new TreeSet<>();
+        public Set<String> offTools = new TreeSet<>();
         public String showGrid = "false";
         public String snapToGrid = "true";
         public String openingZoom = "100";
-        /** Keyed by {@code <designer id>/<setting key>}. */
-        public Map<String, String> designerSettings = new TreeMap<>();
+        /** Keyed by {@code <tool id>/<setting key>}. */
+        public Map<String, String> toolSettings = new TreeMap<>();
     }
 
     private State state = new State();
@@ -75,8 +83,21 @@ public final class AdpSettings implements PersistentStateComponent<Element> {
         State read = new State();
         unknown.clear();
         List<String> fellBack = new ArrayList<>();
+        Set<String> present = new TreeSet<>();
+        for (Element field : stored.getChildren()) {
+            if (field.getAttributeValue("name") != null) {
+                present.add(field.getAttributeValue("name"));
+            }
+        }
         for (Element field : stored.getChildren()) {
             String name = field.getAttributeValue("name");
+            if ("option".equals(field.getName()) && OLD_FIELDS.containsKey(name)) {
+                if (present.contains(OLD_FIELDS.get(name))) {
+                    continue;
+                }
+                name = OLD_FIELDS.get(name);
+                field = field.clone().setAttribute("name", name);
+            }
             if (!"option".equals(field.getName()) || name == null || !FIELDS.containsKey(name)) {
                 unknown.add(field.clone());
                 continue;
@@ -90,17 +111,31 @@ public final class AdpSettings implements PersistentStateComponent<Element> {
                 fellBack.add(FIELDS.get(name));
             }
         }
+        read.offTools = read.offTools.stream().map(AdpSettings::newId).collect(Collectors.toCollection(TreeSet::new));
+        Map<String, String> settings = new TreeMap<>();
+        read.toolSettings.forEach((key, value) -> {
+            int slash = key.indexOf('/');
+            String renamed = slash < 0 ? key : newId(key.substring(0, slash)) + key.substring(slash);
+            if (renamed.equals(key) || !read.toolSettings.containsKey(renamed)) {
+                settings.put(renamed, value);
+            }
+        });
+        read.toolSettings = settings;
         state = read;
         tell(fellBack);
     }
 
+    private static String newId(String id) {
+        return OLD_IDS.getOrDefault(id, id);
+    }
+
     private static void copy(String name, State from, State to) {
         switch (name) {
-        case "offDesigners" -> to.offDesigners = from.offDesigners == null ? new TreeSet<>() : new TreeSet<>(from.offDesigners);
+        case "offTools" -> to.offTools = from.offTools == null ? new TreeSet<>() : new TreeSet<>(from.offTools);
         case "showGrid" -> to.showGrid = from.showGrid;
         case "snapToGrid" -> to.snapToGrid = from.snapToGrid;
         case "openingZoom" -> to.openingZoom = from.openingZoom;
-        case "designerSettings" -> to.designerSettings = from.designerSettings == null ? new TreeMap<>() : new TreeMap<>(from.designerSettings);
+        case "toolSettings" -> to.toolSettings = from.toolSettings == null ? new TreeMap<>() : new TreeMap<>(from.toolSettings);
         default -> throw new IllegalArgumentException(name);
         }
     }
@@ -117,19 +152,19 @@ public final class AdpSettings implements PersistentStateComponent<Element> {
                 .notify(null);
     }
 
-    public synchronized boolean isOff(String designerId) {
-        return state.offDesigners.contains(designerId);
+    public synchronized boolean isOff(String toolId) {
+        return state.offTools.contains(toolId);
     }
 
-    public synchronized Set<String> offDesigners() {
-        return Collections.unmodifiableSet(new TreeSet<>(state.offDesigners));
+    public synchronized Set<String> offTools() {
+        return Collections.unmodifiableSet(new TreeSet<>(state.offTools));
     }
 
-    public synchronized void setOff(String designerId, boolean off) {
+    public synchronized void setOff(String toolId, boolean off) {
         if (off) {
-            state.offDesigners.add(designerId);
+            state.offTools.add(toolId);
         } else {
-            state.offDesigners.remove(designerId);
+            state.offTools.remove(toolId);
         }
     }
 
@@ -168,7 +203,7 @@ public final class AdpSettings implements PersistentStateComponent<Element> {
         state.openingZoom = Long.toString(Math.round(options.openingZoom() * 100));
     }
 
-    /** The value the designer keeps when its definition fixes {@code option}, else the user's. */
+    /** The value the tool keeps when its definition fixes {@code option}, else the user's. */
     public boolean effective(CanvasOption option, ViewOptions view) {
         Boolean fixed = view.fixed().get(option);
         return fixed != null ? fixed : canvas().value(option);
@@ -179,21 +214,21 @@ public final class AdpSettings implements PersistentStateComponent<Element> {
         return canvas().openingZoom();
     }
 
-    public boolean yesNo(String designerId, DesignerSetting setting) {
-        return Boolean.parseBoolean(value(designerId, setting));
+    public boolean yesNo(String toolId, ToolSetting setting) {
+        return Boolean.parseBoolean(value(toolId, setting));
     }
 
-    public int number(String designerId, DesignerSetting setting) {
-        return Integer.parseInt(value(designerId, setting));
+    public int number(String toolId, ToolSetting setting) {
+        return Integer.parseInt(value(toolId, setting));
     }
 
-    public String choice(String designerId, DesignerSetting setting) {
-        return value(designerId, setting);
+    public String choice(String toolId, ToolSetting setting) {
+        return value(toolId, setting);
     }
 
     /** The stored value when it is valid for the declaration, else the declared default. */
-    public synchronized String value(String designerId, DesignerSetting setting) {
-        String stored = state.designerSettings.get(key(designerId, setting));
+    public synchronized String value(String toolId, ToolSetting setting) {
+        String stored = state.toolSettings.get(key(toolId, setting));
         if (stored == null) {
             return setting.defaultValue();
         }
@@ -204,11 +239,11 @@ public final class AdpSettings implements PersistentStateComponent<Element> {
         return setting.defaultValue();
     }
 
-    public synchronized void setValue(String designerId, DesignerSetting setting, String value) {
-        state.designerSettings.put(key(designerId, setting), value);
+    public synchronized void setValue(String toolId, ToolSetting setting, String value) {
+        state.toolSettings.put(key(toolId, setting), value);
     }
 
-    private static String key(String designerId, DesignerSetting setting) {
-        return designerId + "/" + setting.key();
+    private static String key(String toolId, ToolSetting setting) {
+        return toolId + "/" + setting.key();
     }
 }

@@ -21,7 +21,7 @@ import etalii.adp.core.diagram.sample.SampleProvider;
 
 /**
  * T035 (FR-011, FR-012, acceptance 3.2 and 3.3): the canvas section's three options with their
- * defaults, the opening zoom choices of the contract, "Not followed by" under an option a designer
+ * defaults, the opening zoom choices of the contract, "Not followed by" under an option a tool
  * fixes, and "Reset to defaults" resetting the page with nothing stored until Apply.
  */
 @RunWith(JUnit4.class)
@@ -36,7 +36,7 @@ public class CanvasSectionTest extends BasePlatformTestCase {
         super.setUp();
         settings = FreshSettings.install(getTestRootDisposable());
         SampleProvider.register(getTestRootDisposable());
-        FileEditorProvider.EP_FILE_EDITOR_PROVIDER.getPoint().registerExtension(new AdpDesignersTest.Rival(), getTestRootDisposable());
+        FileEditorProvider.EP_FILE_EDITOR_PROVIDER.getPoint().registerExtension(new AdpToolsTest.Rival(), getTestRootDisposable());
         section = new CanvasSection();
         component = section.createComponent();
         section.reset();
@@ -83,9 +83,9 @@ public class CanvasSectionTest extends BasePlatformTestCase {
     }
 
     @Test
-    public void anOptionADesignerFixesSaysWhichDesignersDoNotFollowIt() {
+    public void anOptionAToolFixesSaysWhichToolsDoNotFollowIt() {
         List<String> shown = shownLabels();
-        assertTrue(shown.toString(), shown.contains("Not followed by: Rival Designer"));
+        assertTrue(shown.toString(), shown.contains("Not followed by: Rival Tool"));
         assertEquals(shown.toString(), 1, shown.stream().filter(text -> text.startsWith("Not followed by")).count());
     }
 

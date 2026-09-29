@@ -7,7 +7,7 @@
 # FreeMind example maps are compared byte for byte, so git must never touch their line endings.
 *.mm -text
 
-# Sample designer files and draw.io examples are compared byte for byte too.
+# Sample diagram files and draw.io examples are compared byte for byte too.
 *.adpsample -text
 *.drawio -text
 

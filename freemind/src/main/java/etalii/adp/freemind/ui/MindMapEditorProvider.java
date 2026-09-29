@@ -12,13 +12,13 @@ import etalii.adp.core.diagram.view.DiagramEditorProvider;
 import etalii.adp.freemind.FreeMindSniffer;
 
 /**
- * Opens FreeMind maps in the designer (FR-002, FR-003): a {@code .mm} file whose start
+ * Opens FreeMind maps in the diagram (FR-002, FR-003): a {@code .mm} file whose start
  * {@link FreeMindSniffer} recognises. Other {@code .mm} files are left to the editor the IDE would
  * use without the plug-in.
  */
 public final class MindMapEditorProvider extends DiagramEditorProvider {
 
-    public static final String EDITOR_TYPE_ID = "etalii.adp.freemind.editor";
+    public static final String EDITOR_TYPE_ID = "etalii.adp.freemind";
 
     public MindMapEditorProvider() {
         super(FreeMindDefinition.DEFINITION, FreeMindMapping::new);
@@ -34,15 +34,15 @@ public final class MindMapEditorProvider extends DiagramEditorProvider {
         return FreeMindSniffer.isFreeMind(head);
     }
 
-    /** The FreeMind designer, with its folding, tree navigation and actions. */
+    /** The Mind map, with its folding, tree navigation and actions. */
     @Override
-    protected MindMapDesigner createDesigner(Project project, VirtualFile file, Document document) {
-        return new MindMapDesigner(project, file, document);
+    protected MindMapFileEditor createTool(Project project, VirtualFile file, Document document) {
+        return new MindMapFileEditor(project, file, document);
     }
 
     @Override
-    protected String editorName() {
-        return "FreeMind Mind Map";
+    protected String toolName() {
+        return "Mind map";
     }
 
     @Override

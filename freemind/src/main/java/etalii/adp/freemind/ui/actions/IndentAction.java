@@ -5,7 +5,7 @@ import java.util.List;
 import etalii.adp.freemind.edit.MindMapEdits.Placement;
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
-import etalii.adp.freemind.ui.MindMapDesigner;
+import etalii.adp.freemind.ui.MindMapFileEditor;
 
 /**
  * Move Under Previous Sibling (spec 001 FR-022): the one selected node becomes the last child of
@@ -15,7 +15,7 @@ import etalii.adp.freemind.ui.MindMapDesigner;
 public final class IndentAction extends MindMapAction {
 
     @Override
-    protected String disabledReason(MindMapDesigner designer, MindMap map, List<MapNode> nodes) {
+    protected String disabledReason(MindMapFileEditor tool, MindMap map, List<MapNode> nodes) {
         if (nodes.size() != 1) {
             return ONE_NODE;
         }
@@ -26,7 +26,7 @@ public final class IndentAction extends MindMapAction {
     }
 
     @Override
-    protected void perform(MindMapDesigner designer, MindMap map, List<MapNode> nodes) {
-        move(designer, map, nodes.get(0), neighbour(map, nodes.get(0), -1), Placement.INTO);
+    protected void perform(MindMapFileEditor tool, MindMap map, List<MapNode> nodes) {
+        move(tool, map, nodes.get(0), neighbour(map, nodes.get(0), -1), Placement.INTO);
     }
 }

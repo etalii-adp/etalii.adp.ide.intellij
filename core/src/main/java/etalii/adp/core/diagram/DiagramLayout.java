@@ -9,7 +9,7 @@ import etalii.adp.core.ViewState;
 import etalii.adp.core.diagram.model.Diagram;
 import etalii.adp.core.diagram.model.Element;
 
-/** Positions for designers whose layout is computed rather than stored (research R7). */
+/** Positions for diagrams whose layout is computed rather than stored (research R7). */
 @FunctionalInterface
 public interface DiagramLayout {
 

@@ -14,8 +14,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 /**
- * T104, SC-001 (research R22): a designer built on the framework needs at most a tenth of the
- * FreeMind designer's code, and none of its own drawing, selection, undo or property panel code.
+ * T104, SC-001 (research R22): a diagram built on the framework needs at most a tenth of the
+ * Mind map's code, and none of its own drawing, selection, undo or property panel code.
  * Code lines are counted: blank lines, comment lines and the package and import lines are left out.
  */
 class CodeSizeTest {
@@ -33,7 +33,7 @@ class CodeSizeTest {
             .map(name -> MODULES.resolve("core/src/test/java/etalii/adp/core/diagram/sample/" + name + ".java")).toList();
 
     @Test
-    void theDrawioDesignerIsATenthOfFreeMind() {
+    void theDrawioToolIsATenthOfFreeMind() {
         List<Path> sources = javaFiles(MODULES.resolve("drawio/src/main/java"));
         assertTrue(sources.size() >= 5, sources.toString());
         int lines = count(sources);
@@ -42,11 +42,11 @@ class CodeSizeTest {
     }
 
     @Test
-    void theSampleDesignerIsATenthOfFreeMind() {
+    void theSampleToolIsATenthOfFreeMind() {
         SAMPLE.forEach(file -> assertTrue(Files.isRegularFile(file), file.toString()));
         int lines = count(SAMPLE);
-        System.out.println("SC-001: the sample designer's main parts have " + lines + " lines; the limit is " + LIMIT);
-        assertTrue(lines <= LIMIT, "the sample designer has " + lines + " lines, more than " + LIMIT);
+        System.out.println("SC-001: the sample diagram's main parts have " + lines + " lines; the limit is " + LIMIT);
+        assertTrue(lines <= LIMIT, "the sample diagram has " + lines + " lines, more than " + LIMIT);
     }
 
     @Test
