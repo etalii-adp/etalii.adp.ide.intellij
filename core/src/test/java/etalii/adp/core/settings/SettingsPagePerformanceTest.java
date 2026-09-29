@@ -18,7 +18,7 @@ import etalii.adp.core.diagram.sample.SettingSampleProvider;
 import etalii.adp.core.diagram.view.DiagramEditorProvider;
 
 /**
- * T050 (SC-006): with 20 designers installed, the ADP page adds no noticeable delay to opening the
+ * T050 (SC-006): with 20 tools installed, the ADP page adds no noticeable delay to opening the
  * Settings dialog. Creating the page, filling it and building its child pages takes under 100 ms,
  * the median of five runs after a warm-up.
  */
@@ -30,7 +30,7 @@ public class SettingsPagePerformanceTest extends BasePlatformTestCase {
     /** As in the diagram performance tests: shared CI machines are slower, so the assertion allows three times the budget. */
     private static final int CI_HEADROOM = 3;
 
-    /** A test-only designer that only fills the list. */
+    /** A test-only tool that only fills the list. */
     static final class Filler extends DiagramEditorProvider {
 
         private final int number;
@@ -51,8 +51,8 @@ public class SettingsPagePerformanceTest extends BasePlatformTestCase {
         }
 
         @Override
-        protected String editorName() {
-            return "Filler Designer " + number;
+        protected String toolName() {
+            return "Filler Tool " + number;
         }
 
         @Override
@@ -81,8 +81,8 @@ public class SettingsPagePerformanceTest extends BasePlatformTestCase {
     }
 
     @Test
-    public void thePageOpensWithinBudgetWithTwentyDesigners() {
-        assertEquals(20, AdpDesigners.providers().size());
+    public void thePageOpensWithinBudgetWithTwentyTools() {
+        assertEquals(20, AdpTools.providers().size());
         openAndClose();
 
         List<Long> times = new ArrayList<>();
@@ -92,7 +92,7 @@ public class SettingsPagePerformanceTest extends BasePlatformTestCase {
             times.add((System.nanoTime() - start) / 1_000_000);
         }
         long median = times.stream().sorted().toList().get(2);
-        System.out.printf("SC-006 ADP page with 20 designers %s: median %d ms (budget %d ms, CI limit %d ms)%n", times, median, BUDGET_MS,
+        System.out.printf("SC-006 ADP page with 20 tools %s: median %d ms (budget %d ms, CI limit %d ms)%n", times, median, BUDGET_MS,
                 BUDGET_MS * CI_HEADROOM);
         assertTrue("the page took " + median + " ms", median <= BUDGET_MS * CI_HEADROOM);
     }

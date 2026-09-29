@@ -14,15 +14,15 @@ import com.intellij.ui.EditorNotificationPanel;
 import com.intellij.ui.EditorNotificationProvider;
 
 /**
- * A banner above a designer's file while its text cannot be shown as a design, with the reason. A
- * problem sends the user to the text view, where the designer's own problem panel is out of sight.
+ * A banner above a tool's file while its text cannot be shown as a design, with the reason. A
+ * problem sends the user to the text view, where the tool's own problem panel is out of sight.
  */
 public final class AdpProblemNotifications implements EditorNotificationProvider, DumbAware {
 
     @Override
     public Function<? super FileEditor, ? extends JComponent> collectNotificationData(@NotNull Project project, @NotNull VirtualFile file) {
         return editor -> {
-            String problem = editor instanceof AdpEditorProvider.Composite composite ? composite.designer().problemMessage() : null;
+            String problem = editor instanceof AdpEditorProvider.Composite composite ? composite.tool().problemMessage() : null;
             if (problem == null) {
                 return null;
             }

@@ -48,21 +48,22 @@ import etalii.adp.core.ui.ProblemPanel;
 import etalii.adp.core.ui.ReadOnlyBanner;
 
 /**
- * The visual side of a designer (contracts/designer-framework.md). It never keeps its own copy of
+ * The visual side of a tool (specs/002-jetbrains-ide-support/contracts/designer-framework.md). It never keeps its own copy of
  * the content: it parses the {@link Document} on open and after every change, and every visual
  * change is {@link TextChanges} run as one named command, which is one step in the IDE's Undo
  * (research R4, R7). The provider pairs it with the platform's text editor on the same document.
  *
  * @param <M> the format's parse result
  */
-public abstract class AdpDesignerEditor<M> extends UserDataHolderBase implements FileEditor, DocumentReferenceProvider {
+public abstract class AdpToolFileEditor<M> extends UserDataHolderBase implements FileEditor, DocumentReferenceProvider {
 
     private final Project project;
     private final VirtualFile file;
     private final Document document;
     private final ViewState viewState = new ViewState();
     private final List<Runnable> modelListeners = new CopyOnWriteArrayList<>();
-    private final DesignerPanel root = new DesignerPanel();
+    private final ToolPanel root = new ToolPanel();
+    private String name = "Tool";
     private final JPanel notices = new JPanel(new BorderLayout());
     private final ReadOnlyBanner readOnlyBanner = new ReadOnlyBanner();
     private final DocumentListener documentListener = new DocumentListener() {
@@ -85,7 +86,7 @@ public abstract class AdpDesignerEditor<M> extends UserDataHolderBase implements
     private boolean refreshScheduled;
     private boolean disposed;
 
-    protected AdpDesignerEditor(Project project, VirtualFile file, Document document) {
+    protected AdpToolFileEditor(Project project, VirtualFile file, Document document) {
         this.project = project;
         this.file = file;
         this.document = document;
@@ -312,7 +313,7 @@ public abstract class AdpDesignerEditor<M> extends UserDataHolderBase implements
      */
     public void installActions(JComponent component, String groupId) {
         if (ActionManager.getInstance().getAction(groupId) instanceof DefaultActionGroup group) {
-            PopupHandler.installPopupMenu(component, group, "AdpDesignerPopup");
+            PopupHandler.installPopupMenu(component, group, "AdpToolPopup");
             List<AnAction> actions = new ArrayList<>();
             collect(group, actions);
             for (AnAction action : actions) {
@@ -348,7 +349,12 @@ public abstract class AdpDesignerEditor<M> extends UserDataHolderBase implements
 
     @Override
     public @NotNull String getName() {
-        return "Designer";
+        return name;
+    }
+
+    /** The tool's display name, which the tab shows; set by the provider that opened it. */
+    void named(String displayName) {
+        name = displayName;
     }
 
     @Override
@@ -358,14 +364,14 @@ public abstract class AdpDesignerEditor<M> extends UserDataHolderBase implements
 
     @Override
     public @NotNull FileEditorState getState(@NotNull FileEditorStateLevel level) {
-        return new DesignerState(viewState.zoom(), viewState.selection());
+        return new ToolState(viewState.zoom(), viewState.selection());
     }
 
     @Override
     public void setState(@NotNull FileEditorState state) {
-        if (state instanceof DesignerState designerState) {
-            viewState.setZoom(designerState.zoom());
-            select(designerState.selection());
+        if (state instanceof ToolState toolState) {
+            viewState.setZoom(toolState.zoom());
+            select(toolState.selection());
             zoomChanged();
         }
     }
@@ -396,20 +402,20 @@ public abstract class AdpDesignerEditor<M> extends UserDataHolderBase implements
     }
 
     /** Zoom and selection, kept across tab switches; never written to the file. */
-    public record DesignerState(double zoom, List<Object> selection) implements FileEditorState {
+    public record ToolState(double zoom, List<Object> selection) implements FileEditorState {
 
         @Override
         public boolean canBeMergedWith(@NotNull FileEditorState other, @NotNull FileEditorStateLevel level) {
-            return other instanceof DesignerState;
+            return other instanceof ToolState;
         }
     }
 
-    /** Publishes the designer and its selection to actions. */
-    private final class DesignerPanel extends BorderLayoutPanel implements UiDataProvider {
+    /** Publishes the tool and its selection to actions. */
+    private final class ToolPanel extends BorderLayoutPanel implements UiDataProvider {
 
         @Override
         public void uiDataSnapshot(@NotNull DataSink sink) {
-            sink.set(AdpDataKeys.ADP_DESIGNER, AdpDesignerEditor.this);
+            sink.set(AdpDataKeys.ADP_TOOL, AdpToolFileEditor.this);
             sink.set(PlatformCoreDataKeys.SELECTED_ITEMS, viewState.selection().toArray());
         }
     }

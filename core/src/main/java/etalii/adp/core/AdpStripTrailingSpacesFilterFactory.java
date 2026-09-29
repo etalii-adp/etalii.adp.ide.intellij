@@ -10,7 +10,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
-/** Saving never strips trailing spaces from a file a designer claims, so its bytes stay its own (research R5). */
+/** Saving never strips trailing spaces from a file a tool claims, so its bytes stay its own (research R5). */
 public final class AdpStripTrailingSpacesFilterFactory extends StripTrailingSpacesFilterFactory {
 
     @Override

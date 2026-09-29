@@ -21,19 +21,19 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.editor.Editor;
 
 /**
- * The Structure view of a designer's model, kept in step with the designer both ways (research R8):
- * choosing an element reveals and selects the item in the designer, and the designer's selection is
+ * The Structure view of a tool's model, kept in step with the tool both ways (research R8):
+ * choosing an element reveals and selects the item in the tool, and the tool's selection is
  * the model's current element. A format says what the tree is; element values are the format's keys.
  */
 public abstract class AdpStructureView extends TreeBasedStructureViewBuilder {
 
-    private final AdpDesignerEditor<?> designer;
+    private final AdpToolFileEditor<?> tool;
 
-    protected AdpStructureView(AdpDesignerEditor<?> designer) {
-        this.designer = designer;
+    protected AdpStructureView(AdpToolFileEditor<?> tool) {
+        this.tool = tool;
     }
 
-    /** The root item's key, or {@code null} while the designer shows no model. */
+    /** The root item's key, or {@code null} while the tool shows no model. */
     protected abstract Object rootKey();
 
     /** The text shown for an item. */
@@ -52,7 +52,7 @@ public abstract class AdpStructureView extends TreeBasedStructureViewBuilder {
         return true;
     }
 
-    /** One tree over the designer's latest model. */
+    /** One tree over the tool's latest model. */
     public final class Model implements StructureViewModel {
 
         private final List<ModelListener> modelListeners = new CopyOnWriteArrayList<>();
@@ -61,8 +61,8 @@ public abstract class AdpStructureView extends TreeBasedStructureViewBuilder {
         private final Runnable onSelection = () -> positionListeners.forEach(FileEditorPositionListener::onCurrentElementChanged);
 
         Model() {
-            designer.addModelListener(onModel);
-            designer.viewState().addSelectionListener(onSelection);
+            tool.addModelListener(onModel);
+            tool.viewState().addSelectionListener(onSelection);
         }
 
         @Override
@@ -70,10 +70,10 @@ public abstract class AdpStructureView extends TreeBasedStructureViewBuilder {
             return new Element(rootKey());
         }
 
-        /** The key of the designer's first selected item, or {@code null}. */
+        /** The key of the tool's first selected item, or {@code null}. */
         @Override
         public @Nullable Object getCurrentEditorElement() {
-            List<Object> selection = designer.selection();
+            List<Object> selection = tool.selection();
             return selection.isEmpty() ? null : selection.get(0);
         }
 
@@ -119,12 +119,12 @@ public abstract class AdpStructureView extends TreeBasedStructureViewBuilder {
 
         @Override
         public void dispose() {
-            designer.removeModelListener(onModel);
-            designer.viewState().removeSelectionListener(onSelection);
+            tool.removeModelListener(onModel);
+            tool.viewState().removeSelectionListener(onSelection);
         }
     }
 
-    /** One item: its value is the format's key; navigating reveals it in the designer. */
+    /** One item: its value is the format's key; navigating reveals it in the tool. */
     public final class Element implements StructureViewTreeElement, ItemPresentation {
 
         private final Object key;
@@ -161,7 +161,7 @@ public abstract class AdpStructureView extends TreeBasedStructureViewBuilder {
         @Override
         public void navigate(boolean requestFocus) {
             if (key != null) {
-                designer.reveal(key);
+                tool.reveal(key);
             }
         }
 

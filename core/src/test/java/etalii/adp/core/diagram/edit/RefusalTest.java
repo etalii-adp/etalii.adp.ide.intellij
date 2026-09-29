@@ -36,7 +36,7 @@ public class RefusalTest extends FileEditorManagerTestCase {
     }
 
     private static RefusalFeedback feedback(DiagramDriver d) {
-        return RefusalFeedback.of(d.designer().canvas());
+        return RefusalFeedback.of(d.tool().canvas());
     }
 
     @Test
@@ -78,7 +78,7 @@ public class RefusalTest extends FileEditorManagerTestCase {
     public void aRefusedTargetIsShownDuringTheDrag() {
         try (var d = open("two-tasks.adpsample")) {
             String before = d.driver().text();
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             Point from = canvas.toCanvas(anchor(d, "a", "out"));
             Point refused = canvas.toCanvas(anchor(d, "b", "out"));
             Point allowed = canvas.toCanvas(anchor(d, "b", "in"));
@@ -125,7 +125,7 @@ public class RefusalTest extends FileEditorManagerTestCase {
     public void escapeDuringADragChangesNothing() {
         try (var d = open("two-tasks.adpsample")) {
             String before = d.driver().text();
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             var box = d.elementView("a").bounds();
 
             d.driver().select("a");

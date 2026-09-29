@@ -24,14 +24,14 @@ import etalii.adp.core.diagram.sample.SampleProvider;
 import etalii.adp.core.diagram.sample.SettingSampleProvider;
 
 /**
- * T044 (FR-014, FR-015, acceptance 4.1 to 4.3): a designer that declares settings gets a page
- * named after it under ADP, with one editor of the right kind per setting; a designer without
- * settings gets none; values are stored under the designer's id, kept while it is off and after
+ * T044 (FR-014, FR-015, acceptance 4.1 to 4.3): a tool that declares settings gets a page
+ * named after it under ADP, with one editor of the right kind per setting; a tool without
+ * settings gets none; values are stored under the tool's id, kept while it is off and after
  * it is uninstalled, and read back when it returns; a declaration that breaks a rule is a problem
  * and gets no page.
  */
 @RunWith(JUnit4.class)
-public class DesignerSettingsConfigurableTest extends BasePlatformTestCase {
+public class ToolSettingsConfigurableTest extends BasePlatformTestCase {
 
     private AdpSettings settings;
     private int published;
@@ -66,9 +66,9 @@ public class DesignerSettingsConfigurableTest extends BasePlatformTestCase {
     }
 
     @Test
-    public void aDesignerWithSettingsGetsAPageNamedAfterIt() {
+    public void aToolWithSettingsGetsAPageNamedAfterIt() {
         SettingSampleProvider.register(getTestRootDisposable());
-        Configurable page = page("Settings Sample Designer");
+        Configurable page = page("Settings Sample Diagram");
         assertInstanceOf(page, SearchableConfigurable.class);
         assertEquals("etalii.adp.settings.etalii.adp.sample.settings", ((SearchableConfigurable) page).getId());
 
@@ -88,14 +88,14 @@ public class DesignerSettingsConfigurableTest extends BasePlatformTestCase {
     }
 
     @Test
-    public void aDesignerWithoutSettingsGetsNoPage() {
+    public void aToolWithoutSettingsGetsNoPage() {
         assertEquals(List.of(), pages().stream().map(Configurable::getDisplayName).toList());
     }
 
     @Test
-    public void valuesAreStoredUnderTheDesignersIdOnApply() throws Exception {
+    public void valuesAreStoredUnderTheToolsIdOnApply() throws Exception {
         SettingSampleProvider.register(getTestRootDisposable());
-        Configurable page = page("Settings Sample Designer");
+        Configurable page = page("Settings Sample Diagram");
         JComponent component = page.createComponent();
         page.reset();
         UIUtil.findComponentOfType(component, JBCheckBox.class).setSelected(true);
@@ -117,7 +117,7 @@ public class DesignerSettingsConfigurableTest extends BasePlatformTestCase {
 
         Disposable installed = Disposer.newDisposable(getTestRootDisposable(), "installed");
         SettingSampleProvider.register(installed);
-        Configurable page = page("Settings Sample Designer");
+        Configurable page = page("Settings Sample Diagram");
         JComponent component = page.createComponent();
         page.reset();
         @SuppressWarnings("unchecked")
@@ -137,9 +137,9 @@ public class DesignerSettingsConfigurableTest extends BasePlatformTestCase {
     @Test
     public void aDeclarationThatBreaksARuleIsAProblemAndGetsNoPage() {
         SettingSampleProvider broken = SettingSampleProvider.register(getTestRootDisposable(),
-                List.of(DesignerSetting.number("depth", "Depth", 12, 1, 9)));
+                List.of(ToolSetting.number("depth", "Depth", 12, 1, 9)));
         assertEquals(List.of("setting 'depth': the default 12 is outside 1 to 9"), broken.problems());
-        assertEquals(DesignerInfo.Status.NOT_LOADED, broken.designerInfo().status());
+        assertEquals(ToolInfo.Status.NOT_LOADED, broken.toolInfo().status());
         assertEquals(List.of(), pages());
     }
 }

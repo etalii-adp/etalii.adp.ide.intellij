@@ -24,19 +24,19 @@ import com.intellij.ui.table.JBTable;
 import etalii.adp.core.diagram.EditorKind;
 import etalii.adp.core.diagram.Verdict;
 import etalii.adp.core.diagram.properties.PropertyTableModel.Row;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 import etalii.adp.core.diagram.view.PropertiesContent;
 
 /**
  * The ADP Properties content (research R14, FR-021 to FR-024): a two-column table of the selected
- * items' shared properties, the same for every designer. It follows the selected editor, that
- * designer's selection and its model, rebuilding its rows on every change; a cell editor that is
+ * items' shared properties, the same for every diagram. It follows the selected editor, that
+ * diagram's selection and its model, rebuilding its rows on every change; a cell editor that is
  * open when its rows change is cancelled, so a value is never applied to an item that is gone. An
- * edit applies to every selected item as one command, through the designer's commands.
+ * edit applies to every selected item as one command, through the diagram's commands.
  */
 public final class PropertyPanel extends JPanel implements PropertiesContent, Disposable {
 
-    public static final String NO_DESIGNER = "No ADP designer is active";
+    public static final String NO_TOOL = "No ADP tool is active";
     public static final String NOTHING_SELECTED = "Nothing selected";
 
     private final Project project;
@@ -55,7 +55,7 @@ public final class PropertyPanel extends JPanel implements PropertiesContent, Di
         }
     };
     private final Runnable rebuild = this::rebuild;
-    private DiagramDesigner designer;
+    private DiagramFileEditor tool;
     private boolean applying;
     private String lastProblem;
 
@@ -66,7 +66,7 @@ public final class PropertyPanel extends JPanel implements PropertiesContent, Di
         table.getTableHeader().setReorderingAllowed(false);
         table.setShowGrid(false);
         table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
-        table.getEmptyText().setText(NO_DESIGNER);
+        table.getEmptyText().setText(NO_TOOL);
         add(ScrollPaneFactory.createScrollPane(table, true), BorderLayout.CENTER);
 
         project.getMessageBus().connect(this).subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
@@ -89,9 +89,9 @@ public final class PropertyPanel extends JPanel implements PropertiesContent, Di
         follow(project.isDisposed() ? null : FileEditorManager.getInstance(project).getSelectedEditor());
     }
 
-    /** The designer whose selection is shown, or {@code null}. */
-    public DiagramDesigner designer() {
-        return designer;
+    /** The diagram whose selection is shown, or {@code null}. */
+    public DiagramFileEditor tool() {
+        return tool;
     }
 
     /** The text shown while there are no rows. */
@@ -132,16 +132,16 @@ public final class PropertyPanel extends JPanel implements PropertiesContent, Di
     }
 
     private void follow(FileEditor editor) {
-        DiagramDesigner next = editor instanceof TextEditorWithPreview composite && composite.getPreviewEditor() instanceof DiagramDesigner d ? d
-                : editor instanceof DiagramDesigner d ? d : null;
-        if (next == designer && next != null) {
+        DiagramFileEditor next = editor instanceof TextEditorWithPreview composite && composite.getPreviewEditor() instanceof DiagramFileEditor d ? d
+                : editor instanceof DiagramFileEditor d ? d : null;
+        if (next == tool && next != null) {
             return;
         }
-        if (designer != null) {
-            designer.viewState().removeSelectionListener(rebuild);
-            designer.removeModelListener(rebuild);
+        if (tool != null) {
+            tool.viewState().removeSelectionListener(rebuild);
+            tool.removeModelListener(rebuild);
         }
-        designer = next;
+        tool = next;
         if (next != null) {
             next.viewState().addSelectionListener(rebuild);
             next.addModelListener(rebuild);
@@ -149,29 +149,29 @@ public final class PropertyPanel extends JPanel implements PropertiesContent, Di
         rebuild();
     }
 
-    /** Show the rows for the designer's selection as it is now. */
+    /** Show the rows for the diagram's selection as it is now. */
     private void rebuild() {
         if (table.isEditing() && !applying) {
             table.getCellEditor().cancelCellEditing();
         }
-        if (designer == null) {
-            table.getEmptyText().setText(NO_DESIGNER);
+        if (tool == null) {
+            table.getEmptyText().setText(NO_TOOL);
             model.clear();
             return;
         }
         table.getEmptyText().setText(NOTHING_SELECTED);
-        model.show(designer.definition(), designer.diagram(), designer.selection(), designer.isEditable());
+        model.show(tool.definition(), tool.diagram(), tool.selection(), tool.isEditable());
     }
 
     /** An edit of a row: one command over every item shown. */
     private void apply(String propertyId, String value) {
-        if (designer == null) {
+        if (tool == null) {
             return;
         }
         applying = true;
         try {
             lastProblem = null;
-            Verdict verdict = designer.commands().setProperty(model.keys(), propertyId, value);
+            Verdict verdict = tool.commands().setProperty(model.keys(), propertyId, value);
             if (!verdict.allowed()) {
                 problem(verdict.reason());
             }

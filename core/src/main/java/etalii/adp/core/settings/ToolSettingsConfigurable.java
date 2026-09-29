@@ -16,45 +16,45 @@ import com.intellij.ui.components.JBCheckBox;
 import com.intellij.util.ui.FormBuilder;
 
 /**
- * One designer's own settings page under ADP (US4, FR-014, research R6), built from what the
- * designer declares: a check box for yes/no, a spinner for a number, a list for a choice. Values
- * are stored in {@link AdpSettings} under the designer's id, so they outlast the designer being off
+ * One tool's own settings page under ADP (US4, FR-014, research R6), built from what the
+ * tool declares: a check box for yes/no, a spinner for a number, a list for a choice. Values
+ * are stored in {@link AdpSettings} under the tool's id, so they outlast the tool being off
  * or uninstalled (FR-015). Changes are kept until Apply.
  */
-public final class DesignerSettingsConfigurable implements SearchableConfigurable {
+public final class ToolSettingsConfigurable implements SearchableConfigurable {
 
-    private final String designerId;
-    private final String designerName;
-    private final List<DesignerSetting> settings;
-    private final Map<DesignerSetting, JComponent> editors = new LinkedHashMap<>();
+    private final String toolId;
+    private final String toolName;
+    private final List<ToolSetting> settings;
+    private final Map<ToolSetting, JComponent> editors = new LinkedHashMap<>();
 
-    public DesignerSettingsConfigurable(String designerId, String designerName, List<DesignerSetting> settings) {
-        this.designerId = designerId;
-        this.designerName = designerName;
+    public ToolSettingsConfigurable(String toolId, String toolName, List<ToolSetting> settings) {
+        this.toolId = toolId;
+        this.toolName = toolName;
         this.settings = List.copyOf(settings);
     }
 
     @Override
     public @NotNull String getId() {
-        return AdpConfigurable.pageId(designerId);
+        return AdpConfigurable.pageId(toolId);
     }
 
     @Override
     public String getDisplayName() {
-        return designerName;
+        return toolName;
     }
 
     @Override
     public JComponent createComponent() {
         FormBuilder form = FormBuilder.createFormBuilder();
-        for (DesignerSetting setting : settings) {
+        for (ToolSetting setting : settings) {
             JComponent editor = switch (setting.kind()) {
             case YES_NO -> new JBCheckBox(setting.label());
             case NUMBER -> new JBIntSpinner(Integer.parseInt(setting.defaultValue()), setting.min(), setting.max());
             case CHOICE -> new ComboBox<>(setting.choices().toArray(String[]::new));
             };
             editors.put(setting, editor);
-            if (setting.kind() == DesignerSetting.Kind.YES_NO) {
+            if (setting.kind() == ToolSetting.Kind.YES_NO) {
                 form.addComponent(editor);
             } else {
                 form.addLabeledComponent(setting.label() + ":", editor);
@@ -66,7 +66,7 @@ public final class DesignerSettingsConfigurable implements SearchableConfigurabl
     @Override
     public boolean isModified() {
         AdpSettings stored = AdpSettings.getInstance();
-        return editors.keySet().stream().anyMatch(setting -> !shown(setting).equals(stored.value(designerId, setting)));
+        return editors.keySet().stream().anyMatch(setting -> !shown(setting).equals(stored.value(toolId, setting)));
     }
 
     @Override
@@ -75,7 +75,7 @@ public final class DesignerSettingsConfigurable implements SearchableConfigurabl
             return;
         }
         AdpSettings stored = AdpSettings.getInstance();
-        editors.keySet().forEach(setting -> stored.setValue(designerId, setting, shown(setting)));
+        editors.keySet().forEach(setting -> stored.setValue(toolId, setting, shown(setting)));
         AdpConfigurable.publish();
     }
 
@@ -83,7 +83,7 @@ public final class DesignerSettingsConfigurable implements SearchableConfigurabl
     public void reset() {
         AdpSettings stored = AdpSettings.getInstance();
         editors.forEach((setting, editor) -> {
-            String value = stored.value(designerId, setting);
+            String value = stored.value(toolId, setting);
             switch (editor) {
             case JBCheckBox box -> box.setSelected(Boolean.parseBoolean(value));
             case JBIntSpinner spinner -> spinner.setNumber(Integer.parseInt(value));
@@ -99,7 +99,7 @@ public final class DesignerSettingsConfigurable implements SearchableConfigurabl
     }
 
     /** The value an editor shows, as stored text. */
-    private String shown(DesignerSetting setting) {
+    private String shown(ToolSetting setting) {
         return switch (editors.get(setting)) {
         case JBCheckBox box -> Boolean.toString(box.isSelected());
         case JBIntSpinner spinner -> Integer.toString(spinner.getNumber());

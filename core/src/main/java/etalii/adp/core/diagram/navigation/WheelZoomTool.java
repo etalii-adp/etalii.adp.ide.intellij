@@ -10,22 +10,22 @@ import javax.swing.JViewport;
 
 import etalii.adp.core.diagram.view.CanvasTool;
 import etalii.adp.core.diagram.view.DiagramCanvas;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 
 /**
  * Zooming with the wheel (FR-025, research R16): Ctrl+wheel (Cmd+wheel on macOS) steps through
- * {@code ViewState}'s zoom levels with the designer's own Zoom In and Zoom Out, and scrolls so the
- * diagram point under the pointer stays under it. With the designer's zoom off it swallows the
+ * {@code ViewState}'s zoom levels with the diagram's own Zoom In and Zoom Out, and scrolls so the
+ * diagram point under the pointer stays under it. With the diagram's zoom off it swallows the
  * gesture, so it neither zooms nor scrolls. The plain wheel is left to the scroll pane.
  */
 public final class WheelZoomTool implements CanvasTool {
 
-    private final DiagramDesigner designer;
+    private final DiagramFileEditor fileEditor;
     private final DiagramCanvas canvas;
 
-    public WheelZoomTool(DiagramDesigner designer) {
-        this.designer = designer;
-        this.canvas = designer.canvas();
+    public WheelZoomTool(DiagramFileEditor fileEditor) {
+        this.fileEditor = fileEditor;
+        this.canvas = fileEditor.canvas();
     }
 
     // simplified: one zoom level per wheel event whatever its size, so a trackpad's many small events zoom fast;
@@ -38,20 +38,20 @@ public final class WheelZoomTool implements CanvasTool {
         }
         e.consume();
         double rotation = e.getPreciseWheelRotation();
-        if (!designer.definition().view().zoom() || rotation == 0) {
+        if (!fileEditor.definition().view().zoom() || rotation == 0) {
             return;
         }
         Point pointer = e.getPoint();
         JViewport viewport = PanTool.viewportOf(canvas);
         Point before = viewport == null ? new Point() : viewport.getViewPosition();
         Point2D under = canvas.toDiagram(pointer);
-        double zoom = designer.viewState().zoom();
+        double zoom = fileEditor.viewState().zoom();
         if (rotation < 0) {
-            designer.zoomIn();
+            fileEditor.zoomIn();
         } else {
-            designer.zoomOut();
+            fileEditor.zoomOut();
         }
-        if (viewport == null || designer.viewState().zoom() == zoom) {
+        if (viewport == null || fileEditor.viewState().zoom() == zoom) {
             return;
         }
         // the view takes its new size now rather than at the next layout, so the position can be set against it

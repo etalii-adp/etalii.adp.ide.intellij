@@ -7,36 +7,36 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.fileEditor.FileEditorProvider;
 
 import etalii.adp.core.diagram.view.DiagramEditorProvider;
-import etalii.adp.core.settings.DesignerSetting;
+import etalii.adp.core.settings.ToolSetting;
 
-/** A test-only sample designer with settings of its own, for {@code .adpsettings} files. */
+/** A test-only sample diagram with settings of its own, for {@code .adpsettings} files. */
 public final class SettingSampleProvider extends DiagramEditorProvider {
 
     public static final String EDITOR_TYPE_ID = "etalii.adp.sample.settings";
-    public static final DesignerSetting COMPACT = DesignerSetting.yesNo("compact", "Compact rows", false);
-    public static final DesignerSetting DEPTH = DesignerSetting.number("depth", "Depth", 3, 1, 9);
-    public static final DesignerSetting DIRECTION = DesignerSetting.choice("direction", "Layout direction", "right", "left", "right");
+    public static final ToolSetting COMPACT = ToolSetting.yesNo("compact", "Compact rows", false);
+    public static final ToolSetting DEPTH = ToolSetting.number("depth", "Depth", 3, 1, 9);
+    public static final ToolSetting DIRECTION = ToolSetting.choice("direction", "Layout direction", "right", "left", "right");
 
-    private final List<DesignerSetting> settings;
+    private final List<ToolSetting> settings;
 
-    public SettingSampleProvider(List<DesignerSetting> settings) {
+    public SettingSampleProvider(List<ToolSetting> settings) {
         super(SampleDefinition.builder(), SampleMapping::new);
         this.settings = List.copyOf(settings);
     }
 
-    /** Register the designer with its three settings, until {@code disposable} goes. */
+    /** Register the diagram with its three settings, until {@code disposable} goes. */
     public static SettingSampleProvider register(Disposable disposable) {
         return register(disposable, List.of(COMPACT, DEPTH, DIRECTION));
     }
 
-    public static SettingSampleProvider register(Disposable disposable, List<DesignerSetting> settings) {
+    public static SettingSampleProvider register(Disposable disposable, List<ToolSetting> settings) {
         SettingSampleProvider provider = new SettingSampleProvider(settings);
         FileEditorProvider.EP_FILE_EDITOR_PROVIDER.getPoint().registerExtension(provider, disposable);
         return provider;
     }
 
     @Override
-    public List<DesignerSetting> settings() {
+    public List<ToolSetting> settings() {
         return settings;
     }
 
@@ -51,8 +51,8 @@ public final class SettingSampleProvider extends DiagramEditorProvider {
     }
 
     @Override
-    protected String editorName() {
-        return "Settings Sample Designer";
+    protected String toolName() {
+        return "Settings Sample Diagram";
     }
 
     @Override

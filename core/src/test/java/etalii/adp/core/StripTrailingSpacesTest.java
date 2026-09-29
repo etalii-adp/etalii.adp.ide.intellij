@@ -9,9 +9,9 @@ import org.junit.runners.JUnit4;
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
-/** With "strip trailing spaces on save" on, a designer's file keeps its spaces; other files do not (research R5). */
+/** With "strip trailing spaces on save" on, a tool's file keeps its spaces; other files do not (research R5). */
 @RunWith(JUnit4.class)
 public class StripTrailingSpacesTest extends FileEditorManagerTestCase {
 
@@ -41,8 +41,8 @@ public class StripTrailingSpacesTest extends FileEditorManagerTestCase {
     }
 
     @Test
-    public void aDesignersFileKeepsItsTrailingSpaces() {
-        try (var d = DesignerDriver.openText(myFixture, "items.txt", FakeFormat.HEADER + "alpha   \nbeta\n")) {
+    public void aToolsFileKeepsItsTrailingSpaces() {
+        try (var d = ToolDriver.openText(myFixture, "items.txt", FakeFormat.HEADER + "alpha   \nbeta\n")) {
             d.editText(t -> t + "gamma\t \n");
 
             assertEquals(FakeFormat.HEADER + "alpha   \nbeta\ngamma\t \n", new String(d.savedBytes(), UTF_8));
@@ -51,8 +51,8 @@ public class StripTrailingSpacesTest extends FileEditorManagerTestCase {
 
     @Test
     public void anotherFileIsStrippedAsUsual() {
-        try (var d = DesignerDriver.openText(myFixture, "plain.txt", "alpha   \nbeta\n")) {
-            assertNull(d.designer());
+        try (var d = ToolDriver.openText(myFixture, "plain.txt", "alpha   \nbeta\n")) {
+            assertNull(d.tool());
             com.intellij.openapi.command.WriteCommandAction.runWriteCommandAction(getProject(),
                     () -> d.document().insertString(d.document().getTextLength(), "gamma \n"));
 

@@ -12,9 +12,9 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
 import etalii.adp.core.AdpEditorProvider;
-import etalii.adp.core.settings.DesignerInfo;
+import etalii.adp.core.settings.ToolInfo;
 import etalii.adp.core.settings.FreshSettings;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /**
  * T008 (FR-008, research R5): a provider built from an inconsistent definition does not throw; it
@@ -38,16 +38,16 @@ public class BrokenSampleProviderTest extends BasePlatformTestCase {
 
     @Test
     public void itIsListedAsNotLoadedWithItsProblems() {
-        DesignerInfo info = BrokenSampleProvider.register(getTestRootDisposable()).designerInfo();
-        assertEquals(DesignerInfo.Status.NOT_LOADED, info.status());
+        ToolInfo info = BrokenSampleProvider.register(getTestRootDisposable()).toolInfo();
+        assertEquals(ToolInfo.Status.NOT_LOADED, info.status());
         assertEquals(List.of("toolbox: names undeclared type 'nothing'"), info.problems());
-        assertEquals("Broken Sample Designer", info.name());
+        assertEquals("Broken Sample Diagram", info.name());
     }
 
     @Test
     public void itRefusesEveryFile() {
         BrokenSampleProvider provider = BrokenSampleProvider.register(getTestRootDisposable());
-        VirtualFile file = DesignerDriver.createFile(myFixture, "any.adpbroken", "<sample/>".getBytes(UTF_8));
+        VirtualFile file = ToolDriver.createFile(myFixture, "any.adpbroken", "<sample/>".getBytes(UTF_8));
         assertFalse(provider.accept(getProject(), file));
         assertFalse(AdpEditorProvider.acceptedByAny(file));
     }

@@ -22,16 +22,16 @@ import etalii.adp.core.diagram.sample.BrokenSampleProvider;
 import etalii.adp.core.diagram.sample.SampleProvider;
 
 /**
- * T030 (FR-004, FR-007, FR-008, FR-017, SC-004, acceptance 1.2 to 1.4): the designer list shows
- * every designer with its file types, version, origin and status; selecting one shows its problems,
+ * T030 (FR-004, FR-007, FR-008, FR-017, SC-004, acceptance 1.2 to 1.4): the tool list shows
+ * every tool with its file types, version, origin and status; selecting one shows its problems,
  * conflicts and the options it does not follow; the File Types link goes to the platform's own
  * page, and nothing on the page repeats a default-editor choice.
  */
 @RunWith(JUnit4.class)
-public class DesignersSectionTest extends BasePlatformTestCase {
+public class ToolsSectionTest extends BasePlatformTestCase {
 
     private AdpSettings settings;
-    private DesignersSection section;
+    private ToolsSection section;
     private JComponent component;
     private JBTable table;
 
@@ -41,8 +41,8 @@ public class DesignersSectionTest extends BasePlatformTestCase {
         settings = FreshSettings.install(getTestRootDisposable());
         SampleProvider.register(getTestRootDisposable());
         BrokenSampleProvider.register(getTestRootDisposable());
-        FileEditorProvider.EP_FILE_EDITOR_PROVIDER.getPoint().registerExtension(new AdpDesignersTest.Rival(), getTestRootDisposable());
-        section = new DesignersSection();
+        FileEditorProvider.EP_FILE_EDITOR_PROVIDER.getPoint().registerExtension(new AdpToolsTest.Rival(), getTestRootDisposable());
+        section = new ToolsSection();
         component = section.createComponent();
         section.reset();
         table = UIUtil.findComponentOfType(component, JBTable.class);
@@ -86,42 +86,42 @@ public class DesignersSectionTest extends BasePlatformTestCase {
     }
 
     @Test
-    public void everyDesignerIsListedWithItsFileTypesOriginAndStatus() {
+    public void everyToolIsListedWithItsFileTypesOriginAndStatus() {
         assertEquals(3, table.getRowCount());
-        int sample = row("Sample Designer");
+        int sample = row("Sample Diagram");
         assertEquals(Boolean.TRUE, table.getValueAt(sample, 0));
         assertEquals(".adpsample", table.getValueAt(sample, 2));
-        String version = AdpDesigners.all().stream().filter(d -> d.id().equals(SampleProvider.EDITOR_TYPE_ID)).findFirst().orElseThrow().version();
+        String version = AdpTools.all().stream().filter(d -> d.id().equals(SampleProvider.EDITOR_TYPE_ID)).findFirst().orElseThrow().version();
         assertEquals(version, table.getValueAt(sample, 3));
         assertEquals("Built into ADP", table.getValueAt(sample, 4));
         assertEquals("Loaded", table.getValueAt(sample, 5));
-        assertEquals(".adprival, .adpsample", table.getValueAt(row("Rival Designer"), 2));
-        assertEquals("Not loaded", table.getValueAt(row("Broken Sample Designer"), 5));
+        assertEquals(".adprival, .adpsample", table.getValueAt(row("Rival Tool"), 2));
+        assertEquals("Not loaded", table.getValueAt(row("Broken Sample Diagram"), 5));
     }
 
     @Test
-    public void selectingABrokenDesignerShowsEachProblem() {
-        String detail = select("Broken Sample Designer");
+    public void selectingABrokenToolShowsEachProblem() {
+        String detail = select("Broken Sample Diagram");
         assertTrue(detail, detail.contains("Not loaded"));
         assertTrue(detail, detail.contains("toolbox: names undeclared type 'nothing'"));
     }
 
     @Test
-    public void aConflictIsShownOnBothDesignersWithWhichIsUsedAndHowToChange() {
-        String sample = select("Sample Designer");
-        assertTrue(sample, sample.contains("Shares file types with Rival Designer"));
-        assertTrue(sample, sample.contains("Sample Designer is used"));
+    public void aConflictIsShownOnBothToolsWithWhichIsUsedAndHowToChange() {
+        String sample = select("Sample Diagram");
+        assertTrue(sample, sample.contains("Shares file types with Rival Tool"));
+        assertTrue(sample, sample.contains("Sample Diagram is used"));
         assertTrue(sample, sample.contains("turn"));
-        String rival = select("Rival Designer");
-        assertTrue(rival, rival.contains("Shares file types with Sample Designer"));
-        assertTrue(rival, rival.contains("Sample Designer is used"));
+        String rival = select("Rival Tool");
+        assertTrue(rival, rival.contains("Shares file types with Sample Diagram"));
+        assertTrue(rival, rival.contains("Sample Diagram is used"));
     }
 
     @Test
-    public void theOptionsADesignerDoesNotFollowAreShown() {
-        String rival = select("Rival Designer");
+    public void theOptionsAToolDoesNotFollowAreShown() {
+        String rival = select("Rival Tool");
         assertTrue(rival, rival.contains("Does not follow: Show grid"));
-        assertFalse(select("Sample Designer").contains("Does not follow"));
+        assertFalse(select("Sample Diagram").contains("Does not follow"));
     }
 
     @Test
@@ -129,7 +129,7 @@ public class DesignersSectionTest extends BasePlatformTestCase {
         List<String> links = UIUtil.findComponentsOfType(component, ActionLink.class).stream().map(ActionLink::getText).toList();
         assertTrue(links.toString(), links.contains("File types and default editors…"));
         assertTrue("the platform has the page the link opens",
-                Configurable.APPLICATION_CONFIGURABLE.getExtensionList().stream().anyMatch(ep -> DesignersSection.FILE_TYPES_ID.equals(ep.id)));
+                Configurable.APPLICATION_CONFIGURABLE.getExtensionList().stream().anyMatch(ep -> ToolsSection.FILE_TYPES_ID.equals(ep.id)));
     }
 
     @Test
@@ -138,8 +138,8 @@ public class DesignersSectionTest extends BasePlatformTestCase {
     }
 
     @Test
-    public void turningADesignerOffIsBufferedUntilApply() {
-        int sample = row("Sample Designer");
+    public void turningAToolOffIsBufferedUntilApply() {
+        int sample = row("Sample Diagram");
         table.getModel().setValueAt(false, sample, 0);
         assertTrue(section.isModified());
         assertFalse(settings.isOff(SampleProvider.EDITOR_TYPE_ID));
@@ -150,12 +150,12 @@ public class DesignersSectionTest extends BasePlatformTestCase {
 
         table.getModel().setValueAt(true, sample, 0);
         section.reset();
-        assertEquals(Boolean.FALSE, table.getValueAt(row("Sample Designer"), 0));
+        assertEquals(Boolean.FALSE, table.getValueAt(row("Sample Diagram"), 0));
         assertFalse(section.isModified());
     }
 
     @Test
     public void theLabelsAreSearchable() {
-        assertTrue(section.searchableLabels().containsAll(List.of("Designers", "File types and default editors…")));
+        assertTrue(section.searchableLabels().containsAll(List.of("Tools", "File types and default editors…")));
     }
 }

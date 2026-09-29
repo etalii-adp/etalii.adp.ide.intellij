@@ -12,14 +12,14 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import etalii.adp.core.AdpEditorProvider;
 import etalii.adp.core.diagram.sample.BrokenSampleProvider;
 import etalii.adp.core.diagram.sample.SampleProvider;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /**
- * T009 (FR-009, research R7): a designer that is off, or has problems, accepts no file and
+ * T009 (FR-009, research R7): a tool that is off, or has problems, accepts no file and
  * {@link AdpEditorProvider#acceptedByAny} agrees; turned on again it accepts as before.
  */
 @RunWith(JUnit4.class)
-public class DesignerGatingTest extends BasePlatformTestCase {
+public class ToolGatingTest extends BasePlatformTestCase {
 
     private AdpSettings settings;
 
@@ -30,11 +30,11 @@ public class DesignerGatingTest extends BasePlatformTestCase {
     }
 
     private VirtualFile sampleFile() {
-        return DesignerDriver.createFile(myFixture, "gate.adpsample", "<sample/>".getBytes(UTF_8));
+        return ToolDriver.createFile(myFixture, "gate.adpsample", "<sample/>".getBytes(UTF_8));
     }
 
     @Test
-    public void aDesignerThatIsOffAcceptsNoFileAndOnAgainAcceptsAsBefore() {
+    public void aToolThatIsOffAcceptsNoFileAndOnAgainAcceptsAsBefore() {
         SampleProvider provider = SampleProvider.register(getTestRootDisposable());
         VirtualFile file = sampleFile();
         assertTrue(provider.accept(getProject(), file));
@@ -50,16 +50,16 @@ public class DesignerGatingTest extends BasePlatformTestCase {
     }
 
     @Test
-    public void turningOneDesignerOffLeavesTheOthers() {
+    public void turningOneToolOffLeavesTheOthers() {
         SampleProvider provider = SampleProvider.register(getTestRootDisposable());
         settings.setOff("etalii.adp.other", true);
         assertTrue(provider.accepts(sampleFile()));
     }
 
     @Test
-    public void aDesignerWithProblemsAcceptsNoFile() {
+    public void aToolWithProblemsAcceptsNoFile() {
         BrokenSampleProvider broken = BrokenSampleProvider.register(getTestRootDisposable());
-        VirtualFile file = DesignerDriver.createFile(myFixture, "gate.adpbroken", "<sample/>".getBytes(UTF_8));
+        VirtualFile file = ToolDriver.createFile(myFixture, "gate.adpbroken", "<sample/>".getBytes(UTF_8));
         assertFalse(broken.accepts(file));
         assertFalse(AdpEditorProvider.acceptedByAny(file));
     }

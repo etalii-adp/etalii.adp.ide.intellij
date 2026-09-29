@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 /**
  * T105, as in {@code freemind}: opening and editing draw.io files makes no network access (FR-021).
  * No main source in core or drawio opens a connection or socket, so neither the mapping nor the
- * designer can; draw.io files that point at images or libraries on the web are shown without them.
+ * diagram can; draw.io files that point at images or libraries on the web are shown without them.
  */
 class NoNetworkAccessTest {
 

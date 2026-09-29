@@ -17,7 +17,7 @@ import com.intellij.testFramework.FileEditorManagerTestCase;
 
 import etalii.adp.freemind.edit.MindMapEdits;
 import etalii.adp.freemind.model.MindMap;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /** FR-015, US3-AS2: the Structure view lists the node tree, with selection linked both ways. */
 @RunWith(JUnit4.class)
@@ -39,8 +39,8 @@ public class StructureViewTest extends FileEditorManagerTestCase {
 
     @Test
     public void listsTheNodeTreeOfALargeMap() {
-        try (var d = DesignerDriver.open(myFixture, example("freeplane-large-map.mm"))) {
-            MindMap map = (MindMap) d.designer().model();
+        try (var d = ToolDriver.open(myFixture, example("freeplane-large-map.mm"))) {
+            MindMap map = (MindMap) d.tool().model();
             StructureViewTreeElement root = d.structure().getRoot();
 
             assertEquals(map.root().key(), root.getValue());
@@ -51,7 +51,7 @@ public class StructureViewTest extends FileEditorManagerTestCase {
 
     @Test
     public void showsTheFirstIconBeforeTheText() {
-        try (var d = DesignerDriver.openText(myFixture, "structure.mm", FOLDED_MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "structure.mm", FOLDED_MAP)) {
             TreeElement folded = d.structure().getRoot().getChildren()[0];
 
             assertEquals(FreeMindIcons.display("idea") + " Folded", folded.getPresentation().getPresentableText());
@@ -60,11 +60,11 @@ public class StructureViewTest extends FileEditorManagerTestCase {
 
     @Test
     public void followsEdits() {
-        try (var d = DesignerDriver.openText(myFixture, "structure.mm", FOLDED_MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "structure.mm", FOLDED_MAP)) {
             StructureViewModel structure = d.structure();
-            MindMapEdits.Edit add = MindMapEdits.addChild((MindMap) d.designer().model(), key("ID_5"), "Added");
+            MindMapEdits.Edit add = MindMapEdits.addChild((MindMap) d.tool().model(), key("ID_5"), "Added");
 
-            d.designer().execute(add.label(), add.changes());
+            d.tool().execute(add.label(), add.changes());
             d.settle();
 
             assertTrue(values(all(structure.getRoot())).contains(add.created()));
@@ -73,7 +73,7 @@ public class StructureViewTest extends FileEditorManagerTestCase {
 
     @Test
     public void selectingInTheOutlineRevealsTheNodeWithoutAnEdit() {
-        try (var d = DesignerDriver.openText(myFixture, "structure.mm", FOLDED_MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "structure.mm", FOLDED_MAP)) {
             assertNull("hidden inside a folded branch", d.viewOf(key("ID_4")));
             StructureViewTreeElement deep = find(d.structure().getRoot(), key("ID_4"));
 
@@ -88,8 +88,8 @@ public class StructureViewTest extends FileEditorManagerTestCase {
     }
 
     @Test
-    public void selectingInTheDesignerSelectsInTheOutline() {
-        try (var d = DesignerDriver.openText(myFixture, "structure.mm", FOLDED_MAP)) {
+    public void selectingInTheToolSelectsInTheOutline() {
+        try (var d = ToolDriver.openText(myFixture, "structure.mm", FOLDED_MAP)) {
             StructureViewModel structure = d.structure();
 
             d.select(key("ID_5"));

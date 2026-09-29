@@ -10,7 +10,7 @@ import org.junit.runners.JUnit4;
 
 import com.intellij.testFramework.FileEditorManagerTestCase;
 
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /** Spec 001 FR-016, FR-023, US1-AS3: folding is a saved edit, or view-only on a read-only file. */
 @RunWith(JUnit4.class)
@@ -42,8 +42,8 @@ public class FoldTest extends FileEditorManagerTestCase {
         super.setUp();
     }
 
-    private DesignerDriver open() {
-        return DesignerDriver.openText(myFixture, "fold.mm", MAP);
+    private ToolDriver open() {
+        return ToolDriver.openText(myFixture, "fold.mm", MAP);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class FoldTest extends FileEditorManagerTestCase {
     public void onAReadOnlyFileFoldingIsViewOnly() {
         try (var d = open()) {
             d.setReadOnly(true);
-            assertFalse(d.designer().isEditable());
+            assertFalse(d.tool().isEditable());
 
             d.select(key("A"));
             assertTrue("folding stays available on a read-only file", d.presentation(TOGGLE_FOLD).isEnabled());
@@ -139,7 +139,7 @@ public class FoldTest extends FileEditorManagerTestCase {
     @Test
     public void revealExpandsCollapsedAncestorsWithoutAnEdit() {
         try (var d = open()) {
-            d.designer().reveal(key("A11"));
+            d.tool().reveal(key("A11"));
             d.settle();
             assertNotNull(d.viewOf(key("A11")));
             assertEquals(List.of(key("A11")), d.selectedKeys());

@@ -16,7 +16,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TestDialogManager;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /** Spec 001 FR-020, US2-AS2: rename in place by F2 and by double-click; a rich node asks first. */
 @RunWith(JUnit4.class)
@@ -60,7 +60,7 @@ public class RenameTest extends FileEditorManagerTestCase {
 
     @Test
     public void renameByF2() {
-        try (var d = DesignerDriver.openText(myFixture, "rename.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "rename.mm", MAP)) {
             d.select(key("B")).press("F2");
             assertNotNull("F2 opens the in-place editor", d.inPlaceField());
             assertEquals("the editor starts from the node's text", "B", d.inPlaceField().getText());
@@ -79,7 +79,7 @@ public class RenameTest extends FileEditorManagerTestCase {
 
     @Test
     public void renameByDoubleClick() {
-        try (var d = DesignerDriver.openText(myFixture, "rename.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "rename.mm", MAP)) {
             d.click(key("A2"), 2, 0);
             assertEquals(List.of(key("A2")), d.selectedKeys());
             assertNotNull("a double-click opens the in-place editor", d.inPlaceField());
@@ -91,7 +91,7 @@ public class RenameTest extends FileEditorManagerTestCase {
 
     @Test
     public void escapeCancelsTheRename() {
-        try (var d = DesignerDriver.openText(myFixture, "rename.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "rename.mm", MAP)) {
             d.select(key("B")).run(RENAME);
             d.inPlaceField().setText("Not kept");
             cancelInPlace(d);
@@ -103,7 +103,7 @@ public class RenameTest extends FileEditorManagerTestCase {
 
     @Test
     public void unchangedTextIsNoEdit() {
-        try (var d = DesignerDriver.openText(myFixture, "rename.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "rename.mm", MAP)) {
             d.select(key("B")).run(RENAME).typeInPlace("B");
             assertEquals(MAP, d.text());
             assertFalse(d.isModified());
@@ -113,7 +113,7 @@ public class RenameTest extends FileEditorManagerTestCase {
 
     @Test
     public void renameNeedsExactlyOneNode() {
-        try (var d = DesignerDriver.openText(myFixture, "rename.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "rename.mm", MAP)) {
             d.select(key("A"), key("B"));
             assertFalse(d.presentation(RENAME).isEnabled());
             d.run(RENAME);
@@ -126,7 +126,7 @@ public class RenameTest extends FileEditorManagerTestCase {
     @Test
     public void aRichNodeWarnsAndCancelChangesNothing() {
         answer(Messages.CANCEL);
-        try (var d = DesignerDriver.openText(myFixture, "rich.mm", RICH_MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "rich.mm", RICH_MAP)) {
             d.select(key("H")).run(RENAME);
             assertEquals("Hello rich world", d.inPlaceField().getText());
             d.typeInPlace("Plain");
@@ -141,7 +141,7 @@ public class RenameTest extends FileEditorManagerTestCase {
     @Test
     public void aRichNodeConfirmedBecomesPlainText() {
         answer(Messages.OK);
-        try (var d = DesignerDriver.openText(myFixture, "rich.mm", RICH_MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "rich.mm", RICH_MAP)) {
             d.select(key("H")).run(RENAME).typeInPlace("Plain");
             assertEquals(1, asked.size());
             assertFalse(d.text(), d.text().contains("richcontent TYPE=\"NODE\""));
@@ -158,7 +158,7 @@ public class RenameTest extends FileEditorManagerTestCase {
     @Test
     public void aPlainNodeIsNotWarned() {
         answer(Messages.CANCEL);
-        try (var d = DesignerDriver.openText(myFixture, "rename.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "rename.mm", MAP)) {
             d.select(key("L")).run(RENAME).typeInPlace("Left");
             assertTrue(asked.isEmpty());
             assertEquals("Left", node(d, key("L")).text());

@@ -11,7 +11,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 
 import etalii.adp.core.AdpDataKeys;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 
 /**
  * {@code etalii.adp.core.ShowProperties} (Alt+Shift+P): activates the ADP Properties tool window.
@@ -23,16 +23,16 @@ public final class ShowPropertiesAction extends AnAction implements DumbAware {
 
     @Override
     public void update(@NotNull AnActionEvent event) {
-        event.getPresentation().setEnabled(designer(event) != null);
+        event.getPresentation().setEnabled(tool(event) != null);
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        DiagramDesigner designer = designer(event);
-        if (designer == null) {
+        DiagramFileEditor tool = tool(event);
+        if (tool == null) {
             return;
         }
-        ToolWindow window = ToolWindowManager.getInstance(designer.project()).getToolWindow(PropertiesToolWindowFactory.ID);
+        ToolWindow window = ToolWindowManager.getInstance(tool.project()).getToolWindow(PropertiesToolWindowFactory.ID);
         if (window != null) {
             window.activate(null);
         }
@@ -43,11 +43,11 @@ public final class ShowPropertiesAction extends AnAction implements DumbAware {
         return ActionUpdateThread.EDT;
     }
 
-    /** The diagram designer whose canvas has focus, or {@code null}. */
-    private static DiagramDesigner designer(AnActionEvent event) {
-        if (!(event.getData(AdpDataKeys.ADP_DESIGNER) instanceof DiagramDesigner designer)) {
+    /** The diagram whose canvas has focus, or {@code null}. */
+    private static DiagramFileEditor tool(AnActionEvent event) {
+        if (!(event.getData(AdpDataKeys.ADP_TOOL) instanceof DiagramFileEditor tool)) {
             return null;
         }
-        return event.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT) == designer.canvas() ? designer : null;
+        return event.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT) == tool.canvas() ? tool : null;
     }
 }

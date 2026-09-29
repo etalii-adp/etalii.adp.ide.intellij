@@ -42,7 +42,7 @@ import kotlin.time.DurationUnit;
 /**
  * Spec 004 T051 (SC-001, FR-001), in a real IntelliJ IDEA 2026.2 with the built plug-in zip
  * installed: the IDE's own settings search, as the Settings dialog runs it, finds the ADP page by
- * "ADP" and by the FreeMind designer's name. {@code ADP_IT_PRODUCTS} and
+ * "ADP" and by the Mind map's name. {@code ADP_IT_PRODUCTS} and
  * {@code ADP_IDE_HOME_<CODE>} work as in {@link OpenMapIntegrationTest}.
  */
 class SettingsPageIntegrationTest {
@@ -51,7 +51,7 @@ class SettingsPageIntegrationTest {
     private static final String PAGE = "etalii.adp.settings";
 
     @Test
-    void theSettingsSearchFindsTheAdpPageByItsNameAndByADesignersName(@TempDir Path project) throws Exception {
+    void theSettingsSearchFindsTheAdpPageByItsNameAndByAToolsName(@TempDir Path project) throws Exception {
         String selected = System.getenv("ADP_IT_PRODUCTS");
         assumeTrue(selected == null || selected.isBlank() || Arrays.stream(selected.split(",")).map(String::strip).anyMatch(PRODUCT::equals),
                 PRODUCT + " is not in ADP_IT_PRODUCTS");
@@ -73,7 +73,7 @@ class SettingsPageIntegrationTest {
             Project opened = waitForProject(driver);
             buildSearchIndex(driver);
 
-            for (String search : List.of("ADP", "FreeMind Mind Map")) {
+            for (String search : List.of("ADP", "Mind map")) {
                 List<String> hits = pagesFound(driver, opened, search);
                 assertTrue(hits.contains(PAGE), "searching \"" + search + "\" finds the ADP page, found " + hits);
             }

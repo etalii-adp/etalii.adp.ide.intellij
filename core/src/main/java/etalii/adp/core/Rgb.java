@@ -1,6 +1,6 @@
 package etalii.adp.core;
 
-/** A colour a file states, 0 to 255 per channel. The designer turns it into a toolkit colour when it paints. */
+/** A colour a file states, 0 to 255 per channel. The tool turns it into a toolkit colour when it paints. */
 public record Rgb(int red, int green, int blue) {
 
     public Rgb {

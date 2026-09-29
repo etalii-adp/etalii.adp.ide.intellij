@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @param key stable across re-reads, compared by value
  * @param type a declared element type id, or an unknown one, which makes the element a placeholder
- * @param bounds in diagram coordinates; {@code null} for laid-out designers. A width or height of 0
+ * @param bounds in diagram coordinates; {@code null} for laid-out diagrams. A width or height of 0
  *            means "not stored": the type's sizing decides it
  * @param properties values of the declared properties; a missing one shows empty
  * @param sector the key of the sector the file puts it in, or {@code null}

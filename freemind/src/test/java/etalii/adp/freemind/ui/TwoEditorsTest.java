@@ -21,7 +21,7 @@ import com.intellij.testFramework.PlatformTestUtil;
 import etalii.adp.core.AdpEditorProvider;
 import etalii.adp.freemind.edit.MindMapEdits;
 import etalii.adp.freemind.model.NodeKey;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /** Spec 001 FR-006 and the "same file in two editors" edge case: one document, one history. */
 @RunWith(JUnit4.class)
@@ -34,18 +34,18 @@ public class TwoEditorsTest extends FileEditorManagerTestCase {
 
     @Test
     public void anEditInOneEditorShowsInTheOtherAndTheyShareOneUndoHistory() {
-        try (var d = DesignerDriver.openText(myFixture, "twice.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "twice.mm", MAP)) {
             EditorWindow window = manager.getCurrentWindow();
             assertNotNull(window);
             EditorWindow split = window.split(SwingConstants.VERTICAL, true, d.file(), false);
             try {
                 assertNotNull("the editor splits", split);
                 // The split opens its editor in the background.
-                PlatformTestUtil.waitWithEventsDispatching("no designer in the split window", () -> composite(split) != null, 10);
+                PlatformTestUtil.waitWithEventsDispatching("no diagram in the split window", () -> composite(split) != null, 10);
                 AdpEditorProvider.Composite second = composite(split);
                 assertNotSame("a second editor, not the first one reused", d.composite(), second);
-                MindMapDesigner first = LayoutTest.designer(d);
-                MindMapDesigner other = (MindMapDesigner) second.designer();
+                MindMapFileEditor first = LayoutTest.tool(d);
+                MindMapFileEditor other = (MindMapFileEditor) second.tool();
                 assertSame("both edit the one shared document", first.document(), other.document());
 
                 // An edit in the first editor shows in the second.
@@ -91,7 +91,7 @@ public class TwoEditorsTest extends FileEditorManagerTestCase {
                 }
                 d.settle();
             }
-            assertEquals("the first editor keeps working after the second closes", "B", LayoutTest.designer(d).model().node(key("B")).text());
+            assertEquals("the first editor keeps working after the second closes", "B", LayoutTest.tool(d).model().node(key("B")).text());
         }
     }
 
@@ -106,7 +106,7 @@ public class TwoEditorsTest extends FileEditorManagerTestCase {
         return null;
     }
 
-    private static String text(DesignerDriver d, NodeKey key) {
+    private static String text(ToolDriver d, NodeKey key) {
         return d.viewOf(key).text();
     }
 }

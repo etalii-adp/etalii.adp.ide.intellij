@@ -9,14 +9,14 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 /**
- * Everything a diagram designer declares (FR-001, research R4): element types, connection types,
+ * Everything a diagram declares (FR-001, research R4): element types, connection types,
  * toolbox, sectors, view options, rules, listener and optional layout. Built once with
  * {@link #builder(String)}; {@link Builder#build()} is the single validation point (FR-002).
  */
 public final class DiagramDefinition {
 
     private static final Pattern ID = Pattern.compile("[A-Za-z][A-Za-z0-9_.-]*");
-    private static final DiagramListener NO_LISTENER = (designer, changes) -> {
+    private static final DiagramListener NO_LISTENER = (tool, changes) -> {
     };
 
     private final String id;
@@ -93,7 +93,7 @@ public final class DiagramDefinition {
         return listener;
     }
 
-    /** The designer's layout, or {@code null} when positions come from the diagram (research R7). */
+    /** The diagram's layout, or {@code null} when positions come from the diagram (research R7). */
     public DiagramLayout layout() {
         return layout;
     }
@@ -213,7 +213,7 @@ public final class DiagramDefinition {
                 problems.add(path + ": is movable but not selectable");
             }
             if (type.movable() && layout != null) {
-                problems.add(path + ": is movable but the designer has a layout");
+                problems.add(path + ": is movable but the diagram has a layout");
             }
             if (type.resize() != Resize.NONE && type.sizing() instanceof Sizing.Fixed) {
                 problems.add(path + ": is resizable but has a fixed size");

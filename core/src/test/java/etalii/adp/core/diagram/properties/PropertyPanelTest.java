@@ -33,7 +33,7 @@ import etalii.adp.core.diagram.sample.SampleMapping;
 import etalii.adp.core.diagram.sample.SampleProvider;
 import etalii.adp.core.diagram.toolbox.ToolboxTest;
 import etalii.adp.core.diagram.view.DiagramEditorProvider;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 import etalii.adp.testing.DiagramDriver;
 import etalii.adp.testing.DiagramDriver.PropertyRow;
 import etalii.adp.testing.DiagramDriver.PropertyRows;
@@ -89,10 +89,10 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
         return followed(DiagramDriver.openText(myFixture, "three.adpsample", THREE));
     }
 
-    /** The panel follows a newly opened designer after the queue first drains, so wait for it before reading rows. */
+    /** The panel follows a newly opened diagram after the queue first drains, so wait for it before reading rows. */
     private DiagramDriver followed(DiagramDriver d) {
         try {
-            d.driver().settleUntil("the panel follows the newly opened designer", () -> panel().designer() == d.designer());
+            d.driver().settleUntil("the panel follows the newly opened diagram", () -> panel().tool() == d.tool());
         } catch (RuntimeException | AssertionError e) {
             d.close();
             throw e;
@@ -193,8 +193,8 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
     private void roundTrip(String property, String value, String expected) {
         try (var d = DiagramDriver.openText(myFixture, property + ".adpsample", SampleFiles.read("two-tasks.adpsample"))) {
             d.driver().select("a");
-            d.driver().settleUntil("the panel shows " + property + " for the new designer",
-                    () -> panel().designer() == d.designer() && hasRow(property));
+            d.driver().settleUntil("the panel shows " + property + " for the new diagram",
+                    () -> panel().tool() == d.tool() && hasRow(property));
             String before = d.driver().text();
             String was = d.properties().row(property).value();
 
@@ -202,7 +202,7 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
 
             assertTrue(property + ": " + d.driver().text(), d.driver().text().contains(expected));
             assertEquals(property, value, d.properties().row(property).value());
-            assertEquals(property, value, d.designer().diagram().element("a").property(property));
+            assertEquals(property, value, d.tool().diagram().element("a").property(property));
             assertEquals("Undo Change " + d.properties().row(property).label(), d.driver().undoLabel());
 
             d.driver().undo();
@@ -278,8 +278,8 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
     public void showsItsEmptyStates() {
         assertEquals(List.of(), ids(new PropertyRows(List.of())));
         assertEquals(0, panel().table().getRowCount());
-        assertEquals("No ADP designer is active", panel().emptyText());
-        assertEquals(PropertyPanel.NO_DESIGNER, panel().emptyText());
+        assertEquals("No ADP tool is active", panel().emptyText());
+        assertEquals(PropertyPanel.NO_TOOL, panel().emptyText());
         try (var d = open("two-tasks.adpsample")) {
             assertEquals(PropertyPanel.NOTHING_SELECTED, panel().emptyText());
             assertEquals("Nothing selected", PropertyPanel.NOTHING_SELECTED);
@@ -292,7 +292,7 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
             assertEquals(PropertyPanel.NOTHING_SELECTED, panel().emptyText());
         }
         panel().refreshFromSelectedEditor();
-        assertEquals(PropertyPanel.NO_DESIGNER, panel().emptyText());
+        assertEquals(PropertyPanel.NO_TOOL, panel().emptyText());
     }
 
     @Test
@@ -314,20 +314,20 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
     }
 
     @Test
-    public void followsTheSelectedEditorToAnotherDesigner() {
+    public void followsTheSelectedEditorToAnotherTool() {
         GadgetProvider.register(getTestRootDisposable());
         try (var d = open("unknown-type.adpsample")) {
             d.driver().select("z");
-            assertEquals("a placeholder in the sample designer", List.of(PropertyTableModel.KEY), ids(d.properties()));
-            assertSame(d.designer(), panel().designer());
+            assertEquals("a placeholder in the sample diagram", List.of(PropertyTableModel.KEY), ids(d.properties()));
+            assertSame(d.tool(), panel().tool());
 
             try (var other = DiagramDriver.openText(myFixture, "gadgets.adpgadget", SampleFiles.read("unknown-type.adpsample"))) {
-                other.driver().settleUntil("the panel follows the gadget designer", () -> panel().designer() == other.designer());
-                assertSame(other.designer(), panel().designer());
+                other.driver().settleUntil("the panel follows the gadget diagram", () -> panel().tool() == other.tool());
+                assertSame(other.tool(), panel().tool());
                 assertEquals(PropertyPanel.NOTHING_SELECTED, panel().emptyText());
                 other.driver().select("z");
                 PropertyRows rows = other.properties();
-                assertEquals("the gadget designer's own declarations", List.of("title", "colour", "id"), ids(rows));
+                assertEquals("the gadget diagram's own declarations", List.of("title", "colour", "id"), ids(rows));
                 assertEquals("teal", rows.row("colour").value());
                 assertEquals("Colour name", rows.row("colour").label());
 
@@ -336,16 +336,16 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
                 assertEquals("Undo Change Colour name", other.driver().undoLabel());
             }
 
-            VirtualFile notes = DesignerDriver.createFile(myFixture, "notes.txt", "plain text\n".getBytes(UTF_8));
+            VirtualFile notes = ToolDriver.createFile(myFixture, "notes.txt", "plain text\n".getBytes(UTF_8));
             FileEditorManager editors = FileEditorManager.getInstance(getProject());
             editors.openFile(notes, true);
-            d.driver().settleUntil("the panel leaves the designer for a text file", () -> panel().designer() == null);
-            assertNull(panel().designer());
-            assertEquals(PropertyPanel.NO_DESIGNER, panel().emptyText());
+            d.driver().settleUntil("the panel leaves the diagram for a text file", () -> panel().tool() == null);
+            assertNull(panel().tool());
+            assertEquals(PropertyPanel.NO_TOOL, panel().emptyText());
 
             editors.openFile(d.driver().file(), true);
-            d.driver().settleUntil("the panel follows back to the sample designer", () -> panel().designer() == d.designer());
-            assertSame(d.designer(), panel().designer());
+            d.driver().settleUntil("the panel follows back to the sample diagram", () -> panel().tool() == d.tool());
+            assertSame(d.tool(), panel().tool());
             assertEquals(List.of(PropertyTableModel.KEY), ids(d.properties()));
             editors.closeFile(notes);
         }
@@ -366,7 +366,7 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
         return null;
     }
 
-    /** A second designer that declares the sample file's unknown {@code gizmo} type, with properties of its own. */
+    /** A second diagram that declares the sample file's unknown {@code gizmo} type, with properties of its own. */
     public static final class GadgetProvider extends DiagramEditorProvider {
 
         GadgetProvider() {
@@ -394,8 +394,8 @@ public class PropertyPanelTest extends FileEditorManagerTestCase {
         }
 
         @Override
-        protected String editorName() {
-            return "Gadget Designer";
+        protected String toolName() {
+            return "Gadget Diagram";
         }
 
         @Override

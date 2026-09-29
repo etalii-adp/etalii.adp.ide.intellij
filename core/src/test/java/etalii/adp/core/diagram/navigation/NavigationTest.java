@@ -26,7 +26,7 @@ import etalii.adp.core.diagram.sample.SampleDefinition;
 import etalii.adp.core.diagram.sample.SampleFiles;
 import etalii.adp.core.diagram.sample.SampleProvider;
 import etalii.adp.core.diagram.view.DiagramCanvas;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 import etalii.adp.core.diagram.view.ElementView;
 import etalii.adp.testing.DiagramDriver;
 
@@ -51,22 +51,22 @@ public class NavigationTest extends FileEditorManagerTestCase {
     public void zoomingScalesElementsConnectionsTextsAndDiagramLanesTogether() {
         SampleProvider.register(getTestRootDisposable());
         try (var d = open("lanes.adpsample")) {
-            DiagramDesigner designer = d.designer();
-            DiagramCanvas canvas = designer.canvas();
+            DiagramFileEditor tool = d.tool();
+            DiagramCanvas canvas = tool.canvas();
             Rectangle element = canvas.toCanvas(d.elementView("a").bounds());
-            Rectangle text = canvas.toCanvas(designer.textBounds("a", "title"));
+            Rectangle text = canvas.toCanvas(tool.textBounds("a", "title"));
             Point bend = canvas.toCanvas(d.connectionView("f1").route().get(1));
-            Rectangle lane = SectorLayer.onCanvas(designer, "l2");
+            Rectangle lane = SectorLayer.onCanvas(tool, "l2");
             assertEquals(new Rectangle(0, 200, 10000, 200), lane);
 
             d.zoom(3);
 
             assertEquals(2.0, d.zoomLevel(), 1e-9);
             assertScaled(element, canvas.toCanvas(d.elementView("a").bounds()));
-            assertScaled(text, canvas.toCanvas(designer.textBounds("a", "title")));
+            assertScaled(text, canvas.toCanvas(tool.textBounds("a", "title")));
             Point zoomed = canvas.toCanvas(d.connectionView("f1").route().get(1));
             assertEquals(new Point(bend.x * 2, bend.y * 2), zoomed);
-            assertScaled(lane, SectorLayer.onCanvas(designer, "l2"));
+            assertScaled(lane, SectorLayer.onCanvas(tool, "l2"));
 
             canvas.setSize(1200, 1000);
             BufferedImage image = paint(canvas);
@@ -74,7 +74,7 @@ public class NavigationTest extends FileEditorManagerTestCase {
             Rectangle box = canvas.toCanvas(a.bounds());
             assertEquals("the element is painted at twice its size", new Color(a.fill().getRGB()),
                     new Color(image.getRGB(box.x + box.width / 4, box.y + 4)));
-            Rectangle l2 = SectorLayer.onCanvas(designer, "l2");
+            Rectangle l2 = SectorLayer.onCanvas(tool, "l2");
             assertEquals("the lane's header is painted at twice its width", new Color(SectorLayer.HEADER.getRGB()),
                     new Color(image.getRGB(l2.x + 2 * 20, l2.y + l2.height - 4)));
         }
@@ -84,24 +84,24 @@ public class NavigationTest extends FileEditorManagerTestCase {
     public void viewSpaceSectorsStayFixedWhileZoomingAndScrolling() {
         SampleProvider.register(getTestRootDisposable());
         try (var d = open("legend-view-space.adpsample")) {
-            DiagramDesigner designer = d.designer();
-            DiagramCanvas canvas = designer.canvas();
+            DiagramFileEditor tool = d.tool();
+            DiagramCanvas canvas = tool.canvas();
             JViewport viewport = viewport(d, 300, 200);
             viewport.setViewPosition(new Point(60, 0));
             assertEquals(new Point(60, 0), canvas.viewportPosition());
-            assertEquals(new Rectangle(60, 0, 150, 10000), SectorLayer.onCanvas(designer, "g"));
+            assertEquals(new Rectangle(60, 0, 150, 10000), SectorLayer.onCanvas(tool, "g"));
             Rectangle main = canvas.toCanvas(d.elementView("a").bounds());
 
             d.zoom(1);
 
             assertEquals(1.25, d.zoomLevel(), 1e-9);
             Point origin = canvas.viewportPosition();
-            assertEquals("fixed in the viewport", new Rectangle(origin.x, origin.y, 150, 10000), SectorLayer.onCanvas(designer, "g"));
+            assertEquals("fixed in the viewport", new Rectangle(origin.x, origin.y, 150, 10000), SectorLayer.onCanvas(tool, "g"));
             Rectangle zoomed = canvas.toCanvas(d.elementView("a").bounds());
             assertEquals("the content did scale", main.x * 1.25, zoomed.x, 1);
 
             viewport.setViewPosition(new Point(20, 0));
-            assertEquals("fixed while scrolling", new Rectangle(20, 0, 150, 10000), SectorLayer.onCanvas(designer, "g"));
+            assertEquals("fixed while scrolling", new Rectangle(20, 0, 150, 10000), SectorLayer.onCanvas(tool, "g"));
 
             BufferedImage image = paint(canvas);
             assertEquals("the header is painted in viewport pixels", new Color(SectorLayer.HEADER.getRGB()), new Color(image.getRGB(20 + 5, 5)));
@@ -112,7 +112,7 @@ public class NavigationTest extends FileEditorManagerTestCase {
     public void ctrlWheelZoomsThroughTheLevelsAroundThePointer() {
         SampleProvider.register(getTestRootDisposable());
         try (var d = open("legend-view-space.adpsample")) {
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             viewport(d, 300, 200);
             Rectangle visible = canvas.getVisibleRect();
             Point pointer = new Point(visible.x + visible.width / 2, visible.y + visible.height / 2);
@@ -151,7 +151,7 @@ public class NavigationTest extends FileEditorManagerTestCase {
     public void withZoomOffTheZoomActionsAreDisabledAndCtrlWheelDoesNothing() {
         SampleProvider.register(getTestRootDisposable(), SampleDefinition.builder().view(v -> v.zoom(false)));
         try (var d = open("legend-view-space.adpsample")) {
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             JViewport viewport = viewport(d, 300, 200);
             viewport.setViewPosition(new Point(50, 0));
             String text = d.driver().text();
@@ -173,7 +173,7 @@ public class NavigationTest extends FileEditorManagerTestCase {
     public void middleDragAndSpaceDragPanWithoutEditing() {
         SampleProvider.register(getTestRootDisposable());
         try (var d = open("legend-view-space.adpsample")) {
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             viewport(d, 300, 200);
             String text = d.driver().text();
 
@@ -196,7 +196,7 @@ public class NavigationTest extends FileEditorManagerTestCase {
     public void withPanOffSpaceDragAndMiddleDragDoNothing() {
         SampleProvider.register(getTestRootDisposable(), SampleDefinition.builder().view(v -> v.pan(false)));
         try (var d = open("legend-view-space.adpsample")) {
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             JViewport viewport = viewport(d, 300, 200);
             viewport.setViewPosition(new Point(50, 0));
             String text = d.driver().text();
@@ -212,11 +212,11 @@ public class NavigationTest extends FileEditorManagerTestCase {
     }
 
     /**
-     * Give the designer's scroll pane a size, as a window would, and lay it out; headless, nothing
+     * Give the diagram's scroll pane a size, as a window would, and lay it out; headless, nothing
      * else sizes it.
      */
     static JViewport viewport(DiagramDriver d, int width, int height) {
-        DiagramCanvas canvas = d.designer().canvas();
+        DiagramCanvas canvas = d.tool().canvas();
         JScrollPane pane = (JScrollPane) SwingUtilities.getAncestorOfClass(JScrollPane.class, canvas);
         for (Component c = pane; c != null; c = c.getParent()) {
             c.setBounds(0, 0, width, height);

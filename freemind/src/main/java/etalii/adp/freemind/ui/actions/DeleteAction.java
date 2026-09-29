@@ -12,13 +12,13 @@ import com.intellij.openapi.wm.StatusBar;
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
 import etalii.adp.freemind.model.NodeKey;
-import etalii.adp.freemind.ui.MindMapDesigner;
+import etalii.adp.freemind.ui.MindMapFileEditor;
 
 /**
  * Delete Node / Delete Nodes (spec 001 FR-021): the selected nodes with their descendants, and the
  * arrow links into them, as one step. The root is never deleted; when it is selected with other
  * nodes, the others are, and the status bar says why the root stayed. What remains nearest to the
- * first deleted node is selected afterwards. It is the framework's delete, through the designer's
+ * first deleted node is selected afterwards. It is the framework's delete, through the diagram's
  * commands, with spec 001's name and selection.
  */
 public final class DeleteAction extends MindMapAction {
@@ -34,15 +34,15 @@ public final class DeleteAction extends MindMapAction {
     }
 
     @Override
-    protected String disabledReason(MindMapDesigner designer, MindMap map, List<MapNode> nodes) {
+    protected String disabledReason(MindMapFileEditor tool, MindMap map, List<MapNode> nodes) {
         return nodes.stream().anyMatch(node -> node.parent() != null) ? null : ROOT_CANNOT_BE_DELETED;
     }
 
     @Override
-    protected void perform(MindMapDesigner designer, MindMap map, List<MapNode> nodes) {
+    protected void perform(MindMapFileEditor tool, MindMap map, List<MapNode> nodes) {
         List<MapNode> deleted = nodes.stream().filter(node -> node.parent() != null).toList();
         if (deleted.size() < nodes.size()) {
-            StatusBar.Info.set(ROOT_CANNOT_BE_DELETED, designer.project());
+            StatusBar.Info.set(ROOT_CANNOT_BE_DELETED, tool.project());
         }
         MapNode survivor = deleted.get(0).parent();
         while (survivor.parent() != null && isInside(survivor, deleted)) {
@@ -51,10 +51,10 @@ public final class DeleteAction extends MindMapAction {
         // Paths of other nodes can shift when several go, so a path-keyed survivor is only
         // selected again after a single delete.
         NodeKey keep = survivor.id() != null || deleted.size() == 1 ? survivor.key() : null;
-        designer.withReselect(() -> {
-            MindMap after = designer.model();
-            designer.select(keep != null && after != null && after.node(keep) != null ? List.of(keep) : List.of());
-        }, () -> designer.commands().remove(deleted.stream().map(MapNode::key).toList()));
+        tool.withReselect(() -> {
+            MindMap after = tool.model();
+            tool.select(keep != null && after != null && after.node(keep) != null ? List.of(keep) : List.of());
+        }, () -> tool.commands().remove(deleted.stream().map(MapNode::key).toList()));
     }
 
     private static boolean isInside(MapNode node, List<MapNode> deleted) {

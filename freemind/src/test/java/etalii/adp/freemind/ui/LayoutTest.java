@@ -15,7 +15,7 @@ import etalii.adp.core.NodeView;
 import etalii.adp.freemind.model.ArrowLink;
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /** Spec 001 FR-013, FR-015, US1-AS1: where nodes and arrow links are drawn. */
 @RunWith(JUnit4.class)
@@ -45,7 +45,7 @@ public class LayoutTest extends FileEditorManagerTestCase {
 
     @Test
     public void theRootIsCentredWithBranchesOnTheirSides() {
-        try (var d = DesignerDriver.openText(myFixture, "layout.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "layout.mm", MAP)) {
             Rectangle root = bounds(d, "R");
             for (String left : new String[] { "A", "D" }) {
                 assertTrue(left + " is left of the root", bounds(d, left).getMaxX() <= root.x);
@@ -66,7 +66,7 @@ public class LayoutTest extends FileEditorManagerTestCase {
     @Test
     public void horizontalGapIsHonoured() {
         String map = MAP.replace("POSITION=\"right\" TEXT=\"B\"", "HGAP=\"100\" POSITION=\"right\" TEXT=\"B\"");
-        try (var d = DesignerDriver.openText(myFixture, "hgap.mm", map)) {
+        try (var d = ToolDriver.openText(myFixture, "hgap.mm", map)) {
             Rectangle root = bounds(d, "R");
             assertEquals(100, bounds(d, "B").x - (int) root.getMaxX());
             assertEquals(MindMapLayout.DEFAULT_HGAP, bounds(d, "C").x - (int) root.getMaxX());
@@ -75,39 +75,39 @@ public class LayoutTest extends FileEditorManagerTestCase {
 
     @Test
     public void verticalGapAndShiftAreHonoured() {
-        try (var d = DesignerDriver.openText(myFixture, "vgap.mm", MAP.replace("ID=\"R\"", "ID=\"R\" VGAP=\"40\""))) {
+        try (var d = ToolDriver.openText(myFixture, "vgap.mm", MAP.replace("ID=\"R\"", "ID=\"R\" VGAP=\"40\""))) {
             assertEquals(40, bounds(d, "C").y - (int) bounds(d, "B").getMaxY());
         }
         String shifted = MAP.replace("ID=\"R\"", "ID=\"R\" VGAP=\"40\"").replace("TEXT=\"C\"", "TEXT=\"C\" VSHIFT=\"25\"");
-        try (var d = DesignerDriver.openText(myFixture, "vshift.mm", shifted)) {
+        try (var d = ToolDriver.openText(myFixture, "vshift.mm", shifted)) {
             assertEquals(65, bounds(d, "C").y - (int) bounds(d, "B").getMaxY());
         }
     }
 
     @Test
     public void arrowLinksAreConnectionsAndMissingDestinationsAreNotDrawn() {
-        try (var d = DesignerDriver.openText(myFixture, "links.mm", MAP)) {
-            MindMapDesigner designer = designer(d);
-            MindMap model = designer.model();
+        try (var d = ToolDriver.openText(myFixture, "links.mm", MAP)) {
+            MindMapFileEditor tool = tool(d);
+            MindMap model = tool.model();
             ArrowLink toB = model.arrowLinks().stream().filter(l -> l.destinationId().equals("B")).findFirst().orElseThrow();
             ArrowLink toNowhere = model.arrowLinks().stream().filter(l -> l.destinationId().equals("NOWHERE")).findFirst().orElseThrow();
 
-            MindMapLayout.Arrow arrow = designer.arrowOf(toB);
+            MindMapLayout.Arrow arrow = tool.arrowOf(toB);
             assertNotNull(arrow);
             assertEquals(key("D"), arrow.source());
             assertEquals(key("B"), arrow.target());
             assertFalse("STARTARROW None", arrow.startArrow());
             assertTrue(arrow.endArrow());
-            assertNull(designer.arrowOf(toNowhere));
-            assertEquals(1, designer.arrows().size());
+            assertNull(tool.arrowOf(toNowhere));
+            assertEquals(1, tool.arrows().size());
         }
     }
 
     @Test
     public void aLargeMapDrawsEveryVisibleNodeAndLink() {
-        try (var d = DesignerDriver.open(myFixture, example("freemind-0.8.1-large-arrow-links.mm"))) {
-            MindMapDesigner designer = designer(d);
-            MindMap model = designer.model();
+        try (var d = ToolDriver.open(myFixture, example("freemind-0.8.1-large-arrow-links.mm"))) {
+            MindMapFileEditor tool = tool(d);
+            MindMap model = tool.model();
             int drawnLinks = 0;
             for (MapNode node : model.nodesByKey().values()) {
                 assertEquals(node.toString(), visible(node), d.viewOf(node.key()) != null);
@@ -115,7 +115,7 @@ public class LayoutTest extends FileEditorManagerTestCase {
             for (ArrowLink link : model.arrowLinks()) {
                 MapNode destination = model.nodeById(link.destinationId());
                 boolean shown = destination != null && visible(destination) && visible(model.node(link.source()));
-                assertEquals(link.toString(), shown, designer.arrowOf(link) != null);
+                assertEquals(link.toString(), shown, tool.arrowOf(link) != null);
                 drawnLinks += shown ? 1 : 0;
             }
             assertTrue(drawnLinks > 0);
@@ -126,17 +126,17 @@ public class LayoutTest extends FileEditorManagerTestCase {
     @Test
     public void aFoldedBranchIsHiddenAndMarked() {
         String folded = MAP.replace("<node ID=\"A\" POSITION=\"left\" TEXT=\"A\">", "<node FOLDED=\"true\" ID=\"A\" POSITION=\"left\" TEXT=\"A\">");
-        try (var d = DesignerDriver.openText(myFixture, "folded.mm", folded)) {
+        try (var d = ToolDriver.openText(myFixture, "folded.mm", folded)) {
             NodeView a = d.viewOf(key("A"));
             assertTrue(a.folded());
             assertNull("a folded branch's children are not drawn", d.viewOf(key("A1")));
             assertFalse(d.viewOf(key("B")).folded());
             assertFalse("a leaf is never shown folded", d.viewOf(key("D")).folded());
 
-            MindMapDesigner designer = designer(d);
-            MapNode node = designer.model().node(key("A"));
-            designer.setShownFolded(node, false);
-            assertFalse(designer.isShownFolded(node));
+            MindMapFileEditor tool = tool(d);
+            MapNode node = tool.model().node(key("A"));
+            tool.setShownFolded(node, false);
+            assertFalse(tool.isShownFolded(node));
             assertNotNull("unfolding for display shows the children", d.viewOf(key("A1")));
             assertEquals("display folding never edits the file", folded, d.text());
             assertFalse(d.isModified());
@@ -145,8 +145,8 @@ public class LayoutTest extends FileEditorManagerTestCase {
 
     @Test
     public void nodesDoNotOverlap() {
-        try (var d = DesignerDriver.open(myFixture, example("freeplane-1.11-sample.mm"))) {
-            var views = designer(d).model().nodesByKey().keySet().stream().map(d::viewOf).filter(v -> v != null).toList();
+        try (var d = ToolDriver.open(myFixture, example("freeplane-1.11-sample.mm"))) {
+            var views = tool(d).model().nodesByKey().keySet().stream().map(d::viewOf).filter(v -> v != null).toList();
             for (int i = 0; i < views.size(); i++) {
                 for (int j = i + 1; j < views.size(); j++) {
                     assertFalse(views.get(i).key() + " overlaps " + views.get(j).key(), views.get(i).bounds().intersects(views.get(j).bounds()));
@@ -164,11 +164,11 @@ public class LayoutTest extends FileEditorManagerTestCase {
         return true;
     }
 
-    static MindMapDesigner designer(DesignerDriver d) {
-        return assertInstanceOf(d.designer(), MindMapDesigner.class);
+    static MindMapFileEditor tool(ToolDriver d) {
+        return assertInstanceOf(d.tool(), MindMapFileEditor.class);
     }
 
-    static Rectangle bounds(DesignerDriver d, String id) {
+    static Rectangle bounds(ToolDriver d, String id) {
         NodeView view = d.viewOf(key(id));
         assertNotNull(id + " is drawn", view);
         return view.bounds();

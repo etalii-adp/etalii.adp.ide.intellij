@@ -18,18 +18,18 @@ import etalii.adp.core.diagram.sample.SampleFiles;
 import etalii.adp.core.diagram.sample.SampleProvider;
 import etalii.adp.testing.DiagramDriver;
 
-/** FR-004, R8: text edits, undo and changes on disk reach the designer's listener as diagram changes. */
+/** FR-004, R8: text edits, undo and changes on disk reach the diagram's listener as diagram changes. */
 @RunWith(JUnit4.class)
 public class ChangeNotificationTest extends FileEditorManagerTestCase {
 
     private final List<List<DiagramChange>> received = new ArrayList<>();
-    private final List<DiagramCommands.Host> designers = new ArrayList<>();
+    private final List<DiagramCommands.Host> tools = new ArrayList<>();
 
     @Override
     public void setUp() {
         super.setUp();
-        SampleProvider.register(getTestRootDisposable(), SampleDefinition.builder().listener((designer, changes) -> {
-            designers.add(designer);
+        SampleProvider.register(getTestRootDisposable(), SampleDefinition.builder().listener((tool, changes) -> {
+            tools.add(tool);
             received.add(changes);
         }));
     }
@@ -54,7 +54,7 @@ public class ChangeNotificationTest extends FileEditorManagerTestCase {
             List<DiagramChange> expected = List.of(new PropertyChanged("b", "title", "Ship the goods to the customer quickly",
                     "Send the goods to the customer quickly"));
             assertEquals(List.of(expected), received);
-            assertSame(d.designer(), designers.get(0));
+            assertSame(d.tool(), tools.get(0));
             assertEquals(expected, d.lastChanges());
         }
     }

@@ -21,7 +21,7 @@ import org.junit.runners.JUnit4;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 
 import etalii.adp.core.ui.ReadOnlyBanner;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /** Spec 001 FR-008; FR-010, US2-AS6: a read-only map is shown with the reason, every edit is disabled with it, and folding is view-only. */
 @RunWith(JUnit4.class)
@@ -34,8 +34,8 @@ public class ReadOnlyTest extends FileEditorManagerTestCase {
         super.setUp();
     }
 
-    private DesignerDriver open() {
-        return DesignerDriver.openText(myFixture, "readonly.mm", MAP);
+    private ToolDriver open() {
+        return ToolDriver.openText(myFixture, "readonly.mm", MAP);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class ReadOnlyTest extends FileEditorManagerTestCase {
             assertFalse(d.readOnlyBannerShown());
             d.setReadOnly(true);
             assertTrue("the banner states the reason", d.readOnlyBannerShown());
-            assertFalse(d.designer().isEditable());
+            assertFalse(d.tool().isEditable());
             assertNotNull("the map is still shown", d.viewOf(key("A2")));
 
             // A2 has siblings on both sides and a grandparent: on a writable file every action applies.

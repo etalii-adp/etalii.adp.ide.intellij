@@ -42,20 +42,20 @@ public final class LinkOpener {
     }
 
     /** Open the link's target. A target that cannot be found is reported on the status bar. */
-    public static void open(MindMapDesigner designer, String link) {
+    public static void open(MindMapFileEditor tool, String link) {
         if (link == null || link.isBlank()) {
             return;
         }
         if (link.startsWith("#")) {
-            designer.reveal(NodeKey.ofId(link.substring(1)));
+            tool.reveal(NodeKey.ofId(link.substring(1)));
             return;
         }
         URL url = asUrl(link);
         if (url != null) {
-            BrowserUtil.browse(link.replace(" ", "%20"), designer.project());
+            BrowserUtil.browse(link.replace(" ", "%20"), tool.project());
             return;
         }
-        openFile(designer.project(), designer.getFile(), link);
+        openFile(tool.project(), tool.getFile(), link);
     }
 
     private static void openFile(Project project, VirtualFile map, String link) {

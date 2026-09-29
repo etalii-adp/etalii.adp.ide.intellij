@@ -30,7 +30,7 @@ import com.intellij.testFramework.PlatformTestUtil;
 import etalii.adp.core.AdpEditorProvider;
 import etalii.adp.freemind.model.MindMap;
 
-/** FR-014, US3-AS1: New > FreeMind Mind Map writes FreeMind 1.0.1's new-map text and opens it in the designer. */
+/** FR-014, US3-AS1: New > FreeMind Mind Map writes FreeMind 1.0.1's new-map text and opens it in the diagram. */
 @RunWith(JUnit4.class)
 public class NewMapTest extends FileEditorManagerTestCase {
 
@@ -73,7 +73,7 @@ public class NewMapTest extends FileEditorManagerTestCase {
     }
 
     @Test
-    public void createsANewMapAndOpensItInTheDesigner() throws IOException {
+    public void createsANewMapAndOpensItInTheTool() throws IOException {
         long before = System.currentTimeMillis();
         VirtualFile file = create("mindmap");
         long after = System.currentTimeMillis();
@@ -86,7 +86,7 @@ public class NewMapTest extends FileEditorManagerTestCase {
         assertTrue(before <= created && created <= after);
 
         var editor = assertInstanceOf(FileEditorManager.getInstance(getProject()).getSelectedEditor(file), AdpEditorProvider.Composite.class);
-        MindMap map = (MindMap) editor.designer().model();
+        MindMap map = (MindMap) editor.tool().model();
         assertNotNull(map);
         assertEquals("New Mindmap", map.root().text());
         assertTrue(map.root().children().isEmpty());

@@ -9,7 +9,7 @@ import etalii.adp.freemind.edit.MindMapEdits;
 import etalii.adp.freemind.edit.MindMapEdits.Edit;
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
-import etalii.adp.freemind.ui.MindMapDesigner;
+import etalii.adp.freemind.ui.MindMapFileEditor;
 
 /**
  * Fold / Unfold Branch (spec 001 FR-016, FR-023). The first selected branch decides: shown folded,
@@ -26,29 +26,29 @@ public final class ToggleFoldAction extends MindMapAction {
     }
 
     @Override
-    protected String disabledReason(MindMapDesigner designer, MindMap map, List<MapNode> nodes) {
+    protected String disabledReason(MindMapFileEditor tool, MindMap map, List<MapNode> nodes) {
         return nodes.stream().anyMatch(node -> !node.children().isEmpty()) ? null : NOTHING_TO_FOLD;
     }
 
     @Override
-    protected void perform(MindMapDesigner designer, MindMap map, List<MapNode> nodes) {
+    protected void perform(MindMapFileEditor tool, MindMap map, List<MapNode> nodes) {
         List<MapNode> branches = nodes.stream().filter(node -> !node.children().isEmpty()).toList();
-        boolean fold = !designer.isShownFolded(branches.get(0));
-        if (!designer.isEditable()) {
-            branches.forEach(branch -> designer.setShownFolded(branch, fold));
+        boolean fold = !tool.isShownFolded(branches.get(0));
+        if (!tool.isEditable()) {
+            branches.forEach(branch -> tool.setShownFolded(branch, fold));
             return;
         }
         List<TextChange> changes = new ArrayList<>();
         for (MapNode branch : branches) {
             // the file decides again; where it already says what the user asked for, that is all
-            designer.setShownFolded(branch, branch.folded());
+            tool.setShownFolded(branch, branch.folded());
             Edit edit = MindMapEdits.setFolded(map, branch.key(), fold);
             if (edit != null) {
                 changes.addAll(edit.changes().changes());
             }
         }
         if (!changes.isEmpty()) {
-            designer.runCommand(fold ? MindMapEdits.FOLD : MindMapEdits.UNFOLD, text -> new TextChanges(changes), () -> {
+            tool.runCommand(fold ? MindMapEdits.FOLD : MindMapEdits.UNFOLD, text -> new TextChanges(changes), () -> {
             });
         }
     }

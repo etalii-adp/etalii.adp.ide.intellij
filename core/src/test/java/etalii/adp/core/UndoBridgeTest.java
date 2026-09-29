@@ -16,7 +16,7 @@ import com.intellij.openapi.command.CommandListener;
 import com.intellij.openapi.command.undo.UndoManager;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /**
  * The undo bridge from a non-text editor (research R7), proved with the fake format before any
@@ -33,8 +33,8 @@ public class UndoBridgeTest extends FileEditorManagerTestCase {
         FakeFormat.register(getTestRootDisposable());
     }
 
-    private DesignerDriver open() {
-        return DesignerDriver.openText(myFixture, "items.txt", TEXT);
+    private ToolDriver open() {
+        return ToolDriver.openText(myFixture, "items.txt", TEXT);
     }
 
     private static TextChanges renameBeta() {
@@ -44,7 +44,7 @@ public class UndoBridgeTest extends FileEditorManagerTestCase {
     @Test
     public void oneLabelledEntryThatUndoesAndRedoesInOneStep() {
         try (var d = open()) {
-            d.designer().execute("Rename Item", renameBeta());
+            d.tool().execute("Rename Item", renameBeta());
             String edited = d.text();
 
             assertEquals(FakeFormat.HEADER + "zero\nalpha\nBETA\n", edited);
@@ -69,7 +69,7 @@ public class UndoBridgeTest extends FileEditorManagerTestCase {
     @Test
     public void typingAfterAnEditIsItsOwnEntry() {
         try (var d = open()) {
-            d.designer().execute("Rename Item", renameBeta());
+            d.tool().execute("Rename Item", renameBeta());
             String edited = d.text();
 
             d.editText(t -> t + "typed\n");
@@ -80,7 +80,7 @@ public class UndoBridgeTest extends FileEditorManagerTestCase {
         }
     }
 
-    /** The designer's change reaches the document as exactly one command, with its label. */
+    /** The tool's change reaches the document as exactly one command, with its label. */
     @Test
     public void routesATextEditCommandToItsExecutor() {
         try (var d = open()) {
@@ -92,10 +92,10 @@ public class UndoBridgeTest extends FileEditorManagerTestCase {
                 }
             });
 
-            d.designer().execute("Rename Item", renameBeta());
+            d.tool().execute("Rename Item", renameBeta());
 
             assertEquals(List.of("Rename Item"), commands);
-            assertEquals("zero", d.designer().viewOf(0).text());
+            assertEquals("zero", d.tool().viewOf(0).text());
         }
     }
 
@@ -105,7 +105,7 @@ public class UndoBridgeTest extends FileEditorManagerTestCase {
         try (var d = open()) {
             d.setReadOnly(true);
 
-            d.designer().execute("Rename Item", renameBeta());
+            d.tool().execute("Rename Item", renameBeta());
 
             assertEquals(TEXT, d.text());
             assertNull(d.undoLabel());
@@ -113,11 +113,11 @@ public class UndoBridgeTest extends FileEditorManagerTestCase {
         }
     }
 
-    /** There is one history: the text side undoes the designer's change, as the designer undoes typing. */
+    /** There is one history: the text side undoes the tool's change, as the tool undoes typing. */
     @Test
     public void keepsNoUndoOrRedoStackOfItsOwn() {
         try (var d = open()) {
-            d.designer().execute("Rename Item", renameBeta());
+            d.tool().execute("Rename Item", renameBeta());
 
             UndoManager.getInstance(getProject()).undo(d.composite().getTextEditor());
             assertEquals(TEXT, d.text());

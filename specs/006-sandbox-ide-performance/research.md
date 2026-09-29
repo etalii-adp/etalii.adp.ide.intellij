@@ -43,16 +43,16 @@ Phase 0 of [plan.md](plan.md). Evidence for the cause is in the spec's Context; 
 **Decision**: measure from what the sandbox already records, with one documented procedure in `quickstart.md`:
 - Start time (SC-001) and indexing (SC-002): `log_runIde/idea.log` timestamps from `IDE STARTED` to the first `exit dumb mode`, and the files counted in `log_runIde/indexing-diagnostic/`.
 - Memory and stability (SC-003): `jcmd <pid> GC.heap_info` with the platform's bundled runtime after a forced collection, and a search of `idea.log` for `OutOfMemoryError`, `Low memory signal` and `threadDumps-freeze` folders.
-- Designer latency (SC-004): new headless tests `TypingLatencyTest` in `freemind` and `drawio`, next to the existing `EditPerformanceTest` and `OpenPerformanceTest`, which type into the text editor of a generated 2,000-node map or 500-cell diagram and time until the designer shows the change. They print the figure and use the same CI headroom convention as those tests.
+- Tool latency (SC-004): new headless tests `TypingLatencyTest` in `freemind` and `drawio`, next to the existing `EditPerformanceTest` and `OpenPerformanceTest`, which type into the text editor of a generated 2,000-node map or 500-cell diagram and time until the tool shows the change. They print the figure and use the same CI headroom convention as those tests.
 - No re-download (SC-006): `./gradlew runIde --offline` succeeds on a second run.
 
-**Rationale**: FR-005 wants repeatability without a new tool. The headless tests catch a designer regression in every build; the sandbox checks are a manual procedure because a real sandbox needs a display.
+**Rationale**: FR-005 wants repeatability without a new tool. The headless tests catch a tool regression in every build; the sandbox checks are a manual procedure because a real sandbox needs a display.
 
-**Alternatives considered**: a Starter-based performance test of the sandbox itself, rejected as too heavy for a figure checked by hand; the platform's internal typing latency report, rejected because it times the text editor, not the designer.
+**Alternatives considered**: a Starter-based performance test of the sandbox itself, rejected as too heavy for a figure checked by hand; the platform's internal typing latency report, rejected because it times the text editor, not the tool.
 
-## R6. Idle cost and memory release of the designers
+## R6. Idle cost and memory release of the tools
 
-**Decision**: verify, then fix only what the measurement shows. The designer refresh is already coalesced (one re-parse per batch of document changes on the event thread, `AdpDesignerEditor.java:127`) and registered with the editor's disposable. A headless test opens and closes designers in a loop and checks that no editor instance stays reachable, using the platform test framework's leak checks.
+**Decision**: verify, then fix only what the measurement shows. The tool refresh is already coalesced (one re-parse per batch of document changes on the event thread, `AdpToolFileEditor.java:127`) and registered with the editor's disposable. A headless test opens and closes tools in a loop and checks that no editor instance stays reachable, using the platform test framework's leak checks.
 
 **Rationale**: the spec lists this as a check, not a known defect. Nothing in the code runs on a timer.
 

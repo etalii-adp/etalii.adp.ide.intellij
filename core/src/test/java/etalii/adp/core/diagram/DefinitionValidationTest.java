@@ -114,7 +114,7 @@ class DefinitionValidationTest {
         assertEquals(List.of("element 'x': is movable but not selectable"), problems(b -> b.element("x", e -> e.selectable(false))));
         assertEquals(List.of("element 'x': is resizable but has a fixed size"),
                 problems(b -> b.element("x", e -> e.sizing(Sizing.fixed(10, 10)).resize(Resize.BOTH))));
-        assertEquals(List.of("element 'box': is movable but the designer has a layout"),
+        assertEquals(List.of("element 'box': is movable but the diagram has a layout"),
                 problems(b -> b.layout((diagram, view, measure) -> Map.of())));
         assertEquals(List.of("connection 'c': the thickness must lie within 0.5 and 8"),
                 problems(b -> b.connection("c", c -> c.userConnectable(false).thickness(9))));

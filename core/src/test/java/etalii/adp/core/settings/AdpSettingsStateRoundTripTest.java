@@ -2,7 +2,10 @@ package etalii.adp.core.settings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.InputStream;
 
 import org.jdom.Element;
 import org.junit.jupiter.api.Test;
@@ -13,13 +16,13 @@ import com.intellij.util.xmlb.XmlSerializer;
 /**
  * T005 (SC-005, FR-003, FR-015): the stored state, written the way the platform's serializer
  * writes it and loaded into a fresh service, gives every value back, including the settings of a
- * designer that is not installed.
+ * tool that is not installed.
  */
 class AdpSettingsStateRoundTripTest {
 
-    private static final DesignerSetting DIRECTION = DesignerSetting.choice("direction", "Layout direction", "right", "left", "right", "both");
-    private static final DesignerSetting DEPTH = DesignerSetting.number("depth", "Depth", 3, 1, 9);
-    private static final DesignerSetting COMPACT = DesignerSetting.yesNo("compact", "Compact", false);
+    private static final ToolSetting DIRECTION = ToolSetting.choice("direction", "Layout direction", "right", "left", "right", "both");
+    private static final ToolSetting DEPTH = ToolSetting.number("depth", "Depth", 3, 1, 9);
+    private static final ToolSetting COMPACT = ToolSetting.yesNo("compact", "Compact", false);
 
     @Test
     void everyValueComesBack() throws Exception {
@@ -49,11 +52,11 @@ class AdpSettingsStateRoundTripTest {
     void theStateBeanIsWhatThePlatformSerializerWrites() {
         AdpSettings.State state = new AdpSettings.State();
         state.showGrid = "true";
-        state.offDesigners.add("etalii.adp.sample");
+        state.offTools.add("etalii.adp.sample");
         Element element = XmlSerializer.serialize(state);
         AdpSettings.State back = XmlSerializer.deserialize(element, AdpSettings.State.class);
         assertEquals("true", back.showGrid);
-        assertEquals(state.offDesigners, back.offDesigners);
+        assertEquals(state.offTools, back.offTools);
     }
 
     @Test
@@ -62,5 +65,60 @@ class AdpSettingsStateRoundTripTest {
         assertEquals("right", settings.choice("etalii.adp.gone", DIRECTION));
         assertEquals(3, settings.number("etalii.adp.gone", DEPTH));
         assertFalse(settings.yesNo("etalii.adp.gone", COMPACT));
+    }
+
+    /**
+     * T049 (spec 002 of etalii.adp, research R5): the adp.xml saved before the rename, with the old
+     * field names, gives every value back, and only the new names are written again.
+     */
+    @Test
+    void theSettingsStoredBeforeTheRenameStillApply() throws Exception {
+        AdpSettings settings = new AdpSettings();
+        try (InputStream in = getClass().getResourceAsStream("/settings/baseline-adp.xml")) {
+            settings.loadState(JDOMUtil.load(in).getChild("component"));
+        }
+
+        assertTrue(settings.isOff("etalii.adp.drawio"));
+        assertFalse(settings.isOff("etalii.adp.freemind"));
+        assertEquals(new CanvasOptions(true, false, 1.5), settings.canvas());
+        assertEquals("left", settings.choice("etalii.adp.sample.settings", DIRECTION));
+
+        String written = JDOMUtil.write(settings.getState());
+        assertTrue(written.contains("\"offTools\"") && written.contains("\"toolSettings\""), written);
+        assertFalse(written.contains("offDesigners") || written.contains("designerSettings"), written);
+    }
+
+    /** The mind map's old editor type id reads as its new one, in both the off list and the per-tool values. */
+    @Test
+    void theOldMindMapIdReadsAsTheNewOne() throws Exception {
+        AdpSettings settings = new AdpSettings();
+        settings.loadState(JDOMUtil.load("""
+                <component name="AdpSettings">
+                  <option name="designerSettings"><map><entry key="etalii.adp.freemind.editor/depth" value="5" /></map></option>
+                  <option name="offDesigners"><set><option value="etalii.adp.freemind.editor" /></set></option>
+                </component>"""));
+
+        assertTrue(settings.isOff("etalii.adp.freemind"));
+        assertFalse(settings.isOff("etalii.adp.freemind.editor"));
+        assertEquals(5, settings.number("etalii.adp.freemind", DEPTH));
+        String written = JDOMUtil.write(settings.getState());
+        assertFalse(written.contains("etalii.adp.freemind.editor"), written);
+    }
+
+    /** When a file holds both, the new names win and the old ones are dropped. */
+    @Test
+    void theNewNamesWinOverTheOld() throws Exception {
+        AdpSettings settings = new AdpSettings();
+        settings.loadState(JDOMUtil.load("""
+                <component name="AdpSettings">
+                  <option name="offDesigners"><set><option value="etalii.adp.old" /></set></option>
+                  <option name="offTools"><set><option value="etalii.adp.new" /></set></option>
+                </component>"""));
+
+        assertTrue(settings.isOff("etalii.adp.new"));
+        assertFalse(settings.isOff("etalii.adp.old"));
+        Element written = settings.getState();
+        assertNull(written.getChildren().stream()
+                .filter(field -> "offDesigners".equals(field.getAttributeValue("name"))).findAny().orElse(null), JDOMUtil.write(written));
     }
 }

@@ -7,7 +7,7 @@
 
 ## Context
 
-`./gradlew runIde` starts a sandbox IntelliJ IDEA with the plug-in installed. It is how a contributor tries a designer by hand. Peter reports that the sandbox becomes slow to the point of being unusable. The investigation below was done on Peter's machine on 2026-09-27 from the sandbox's own log (`.intellijPlatform/sandbox/EtAlii.Adp.IntelliJ/IU-2026.2.3/log_runIde/idea.log`), its freeze reports and the repository's folders. The sandbox was not running at the time.
+`./gradlew runIde` starts a sandbox IntelliJ IDEA with the plug-in installed. It is how a contributor tries a tool by hand. Peter reports that the sandbox becomes slow to the point of being unusable. The investigation below was done on Peter's machine on 2026-09-27 from the sandbox's own log (`.intellijPlatform/sandbox/EtAlii.Adp.IntelliJ/IU-2026.2.3/log_runIde/idea.log`), its freeze reports and the repository's folders. The sandbox was not running at the time.
 
 What the evidence shows:
 
@@ -15,11 +15,11 @@ What the evidence shows:
 2. **That project contains 29 GB of downloaded IDEs.** The real-IDE tests (`./gradlew integrationTest`) download and unpack IntelliJ IDEA, PyCharm, Rider and WebStorm under `out/ide-tests/` (19 GB unpacked, 6.4 GB installers, 4.2 GB per-test folders). `out/` is ignored by git but not excluded from the IDE project, so the sandbox scans and indexes it. The log shows it indexing files such as `out/ide-tests/cache/builds/RD-262.10315.191/lib/ReSharperHost/...`.
 3. **The sandbox then runs out of memory.** It has a 2 GB heap. About three and a half minutes after start it logs low-memory signals, then 11 `OutOfMemoryError: Java heap space` errors (15 heap-space messages in all) from the indexer, the file refresher and the UI thread, two freeze reports (10:50:31 and 10:50:41), and actions taking 1.8 to 2.6 seconds to update. The session has no clean shutdown in the log. Each of the three earlier sessions also logged one out-of-memory error, so the problem is not new.
 4. **A heap dump lands in the Gradle cache.** The sandbox runs with `-XX:+HeapDumpOnOutOfMemoryError` and no dump path, so the JVM writes the dump into its working directory, which is the unpacked IDE inside the Gradle cache (`~/.gradle/caches/9.8.0/transforms/.../idea-2026.2.3-win`). This matches the 3 GB heap dump found there earlier today. That this dump came from the 10:50 session is inferred from the timing, not proven.
-5. **The plug-in itself is not implicated yet.** The failure happened while typing (last action `EditorBackSpace`), but every out-of-memory error came from platform indexing and refresh. The designers re-parse the whole document once per keystroke batch on the UI thread (`core/src/main/java/etalii/adp/core/AdpDesignerEditor.java:127`), which is cheap for the example files and has not been measured on large ones.
+5. **The plug-in itself is not implicated yet.** The failure happened while typing (last action `EditorBackSpace`), but every out-of-memory error came from platform indexing and refresh. The tools re-parse the whole document once per keystroke batch on the UI thread (`core/src/main/java/etalii/adp/core/AdpToolFileEditor.java:127`), which is cheap for the example files and has not been measured on large ones.
 6. **A second copy sits inside the repository.** The worktree of the merged spec 004 is still at `.claude/worktrees/004-settings-page`, inside this repository, and holds its own 31 GB, mostly its own real-IDE test downloads. A sandbox that opens this repository sees that too.
 7. **Other observations, probably minor.** The sandbox's log has grown across four sessions since 2026-09-24 and still carries paths from the repository's two former folder names. JCEF starts in the sandbox. The sandbox runs IntelliJ IDEA Ultimate with the Ultimate module disabled, which logs a long list of excluded modules at every start.
 
-So the slowdown is not the plug-in's code but what the sandbox is asked to do: index a project that holds several complete IDEs, inside a heap sized for a small project. This feature makes the sandbox fast and keeps it fast, and makes the cost of the designers themselves visible.
+So the slowdown is not the plug-in's code but what the sandbox is asked to do: index a project that holds several complete IDEs, inside a heap sized for a small project. This feature makes the sandbox fast and keeps it fast, and makes the cost of the tools themselves visible.
 
 A **contributor** below is a person or agent who runs the sandbox to try the plug-in by hand.
 
@@ -27,7 +27,7 @@ A **contributor** below is a person or agent who runs the sandbox to try the plu
 
 ### User Story 1 - The sandbox is ready quickly and stays responsive (Priority: P1)
 
-A contributor runs `./gradlew runIde`. The sandbox opens a project that contains the files a contributor tries designers on, finishes indexing quickly, and stays responsive for as long as the contributor works in it. It never indexes downloaded IDEs, build output or its own sandbox folders, wherever the contributor has put them.
+A contributor runs `./gradlew runIde`. The sandbox opens a project that contains the files a contributor tries tools on, finishes indexing quickly, and stays responsive for as long as the contributor works in it. It never indexes downloaded IDEs, build output or its own sandbox folders, wherever the contributor has put them.
 
 **Why this priority**: this is the reported problem, and the evidence points at it as the whole cause.
 
@@ -38,7 +38,7 @@ A contributor runs `./gradlew runIde`. The sandbox opens a project that contains
 1. **Given** the real-IDE tests have run and their downloads are on disk, **When** the contributor runs `./gradlew runIde`, **Then** the sandbox does not scan or index any of those downloads.
 2. **Given** a fresh sandbox, **When** it starts, **Then** it opens a project that contains example FreeMind and draw.io files, without the contributor choosing one.
 3. **Given** a sandbox that last had a different project open, **When** it starts again, **Then** it still indexes no build output, downloaded IDE or sandbox folder.
-4. **Given** the sandbox has been open and in use for thirty minutes, **When** the contributor opens a designer or types in one, **Then** it responds as quickly as it did in the first minute.
+4. **Given** the sandbox has been open and in use for thirty minutes, **When** the contributor opens a tool or types in one, **Then** it responds as quickly as it did in the first minute.
 
 ---
 
@@ -57,19 +57,19 @@ When the sandbox does run out of memory or freezes, the contributor finds the he
 
 ---
 
-### User Story 3 - The designers' own cost is known and bounded (Priority: P2)
+### User Story 3 - The tools' own cost is known and bounded (Priority: P2)
 
-A contributor opens a large mind map and a large diagram in the sandbox and types in the text view beside the designer. Typing stays fluid. The project knows how large a file the designers stay fluid for, because it has been measured, and a change that makes them slower is noticed.
+A contributor opens a large mind map and a large diagram in the sandbox and types in the text view beside the tool. Typing stays fluid. The project knows how large a file the tools stay fluid for, because it has been measured, and a change that makes them slower is noticed.
 
-**Why this priority**: the investigation could not rule the designers in or out, because the platform ran out of memory first. Once Story 1 removes that noise, this confirms the plug-in is not a second cause.
+**Why this priority**: the investigation could not rule the tools in or out, because the platform ran out of memory first. Once Story 1 removes that noise, this confirms the plug-in is not a second cause.
 
-**Independent Test**: open a generated FreeMind map of the size named in SC-004 and a draw.io file of comparable size, type a burst of characters in the text editor beside each designer, and measure the time from keystroke to the designer showing the change.
+**Independent Test**: open a generated FreeMind map of the size named in SC-004 and a draw.io file of comparable size, type a burst of characters in the text editor beside each tool, and measure the time from keystroke to the tool showing the change.
 
 **Acceptance Scenarios**:
 
-1. **Given** a large file of the size named in SC-004 is open in a designer, **When** the contributor types in the text editor beside it, **Then** each keystroke appears in the text editor without a visible delay and the designer catches up within the time named in SC-004.
-2. **Given** a designer is open and the contributor is not doing anything, **When** a minute passes, **Then** the plug-in uses no measurable processor time.
-3. **Given** several designers were opened and closed, **When** the contributor looks at memory use, **Then** the closed designers no longer hold memory.
+1. **Given** a large file of the size named in SC-004 is open in a tool, **When** the contributor types in the text editor beside it, **Then** each keystroke appears in the text editor without a visible delay and the tool catches up within the time named in SC-004.
+2. **Given** a tool is open and the contributor is not doing anything, **When** a minute passes, **Then** the plug-in uses no measurable processor time.
+3. **Given** several tools were opened and closed, **When** the contributor looks at memory use, **Then** the closed tools no longer hold memory.
 
 ---
 
@@ -103,8 +103,8 @@ A contributor who runs `./gradlew runIde` for the first time, or after a platfor
 - **FR-002**: `./gradlew runIde` MUST open a small example project containing FreeMind and draw.io files by default, not this repository.
 - **FR-003**: The sandbox MUST keep writing a heap dump when it runs out of memory. A heap dump, freeze report or crash log from the sandbox MUST be written inside the sandbox's log folder and never inside the Gradle cache.
 - **FR-004**: The sandbox MUST start and stay within the success criteria below on a machine that holds the real-IDE test downloads.
-- **FR-005**: The project MUST have a repeatable measurement of the sandbox's start time, idle memory and designer typing latency, so the success criteria can be checked again after a change.
-- **FR-006**: The designers MUST NOT use processor time while nothing changes, and MUST release their memory when closed.
+- **FR-005**: The project MUST have a repeatable measurement of the sandbox's start time, idle memory and tool typing latency, so the success criteria can be checked again after a change.
+- **FR-006**: The tools MUST NOT use processor time while nothing changes, and MUST release their memory when closed.
 - **FR-007**: The readme or quickstart MUST say where the sandbox keeps its logs, dumps and settings, how to reset it, and how much disk the real-IDE tests use and where.
 - **FR-008**: `./gradlew runIde` MUST NOT download anything when its dependencies are already present.
 - **FR-009**: The real-IDE test downloads MUST live outside the repository, in a per-user cache that every clone and worktree on the machine shares.
@@ -112,7 +112,7 @@ A contributor who runs `./gradlew runIde` for the first time, or after a platfor
 ### Key Entities
 
 - **Sandbox**: the IDE started by `./gradlew runIde`, with its own settings, system, plug-ins and log folders.
-- **Sandbox project**: the project the sandbox opens, with the example files a contributor tries designers on.
+- **Sandbox project**: the project the sandbox opens, with the example files a contributor tries tools on.
 - **Real-IDE test downloads**: the IDE installers and unpacked IDEs the real-IDE tests fetch, today 29 GB under `out/ide-tests/`.
 - **Performance baseline**: the recorded start time, idle memory and typing latency the success criteria are checked against.
 
@@ -122,8 +122,8 @@ A contributor who runs `./gradlew runIde` for the first time, or after a platfor
 
 - **SC-001**: With the real-IDE test downloads on disk, the sandbox reaches a usable editor with an example map open within 60 seconds of `./gradlew runIde` on Peter's machine, when nothing needs downloading.
 - **SC-002**: The sandbox's first indexing of its project covers fewer than 5,000 files and finishes within 30 seconds.
-- **SC-003**: Over thirty minutes of opening, editing and closing designers, the sandbox logs no out-of-memory error, no low-memory signal and no freeze report, and its used heap after a garbage collection stays under half of its maximum.
-- **SC-004**: In a FreeMind map of 2,000 nodes and a draw.io file of 500 cells, the designer shows a typed change within 100 milliseconds of the keystroke.
+- **SC-003**: Over thirty minutes of opening, editing and closing tools, the sandbox logs no out-of-memory error, no low-memory signal and no freeze report, and its used heap after a garbage collection stays under half of its maximum.
+- **SC-004**: In a FreeMind map of 2,000 nodes and a draw.io file of 500 cells, the tool shows a typed change within 100 milliseconds of the keystroke.
 - **SC-005**: After any sandbox failure, the Gradle cache has not grown by more than 10 MB.
 - **SC-006**: A second `./gradlew runIde` in a row downloads nothing.
 

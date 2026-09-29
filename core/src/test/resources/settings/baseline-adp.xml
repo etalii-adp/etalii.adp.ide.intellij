@@ -1,0 +1,17 @@
+<application>
+  <component name="AdpSettings">
+    <option name="designerSettings">
+      <map>
+        <entry key="etalii.adp.sample.settings/direction" value="left" />
+      </map>
+    </option>
+    <option name="offDesigners">
+      <set>
+        <option value="etalii.adp.drawio" />
+      </set>
+    </option>
+    <option name="openingZoom" value="150" />
+    <option name="showGrid" value="true" />
+    <option name="snapToGrid" value="false" />
+  </component>
+</application>

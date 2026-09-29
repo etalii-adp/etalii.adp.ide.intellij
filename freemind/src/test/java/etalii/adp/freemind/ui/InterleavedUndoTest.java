@@ -23,10 +23,10 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.ex.ActionUtil;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 import etalii.adp.testing.Layout;
 
-/** Spec 001 FR-004, FR-006, US2-AS4: one undo history covers the designer and the text, in the order the edits were made. */
+/** Spec 001 FR-004, FR-006, US2-AS4: one undo history covers the diagram and the text, in the order the edits were made. */
 @RunWith(JUnit4.class)
 public class InterleavedUndoTest extends FileEditorManagerTestCase {
 
@@ -37,11 +37,11 @@ public class InterleavedUndoTest extends FileEditorManagerTestCase {
 
     @Test
     public void undoRevertsVisualAndTextEditsInReverseOrderOnEitherPage() {
-        try (var d = DesignerDriver.openText(myFixture, "interleaved.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "interleaved.mm", MAP)) {
             List<String> texts = new ArrayList<>();
             texts.add(d.text());
 
-            // 1: designer
+            // 1: diagram
             d.select(key("B")).run(ADD_CHILD);
             cancelInPlace(d);
             texts.add(d.text());
@@ -49,16 +49,16 @@ public class InterleavedUndoTest extends FileEditorManagerTestCase {
             d.showLayout(Layout.TEXT);
             d.editText(text -> text.replace("TEXT=\"A1\"", "TEXT=\"Typed A1\""));
             texts.add(d.text());
-            // 3: designer
-            d.showLayout(Layout.DESIGNER);
+            // 3: diagram
+            d.showLayout(Layout.TOOL);
             d.select(key("L")).run(RENAME).typeInPlace("Ell");
             texts.add(d.text());
             // 4: text
             d.showLayout(Layout.TEXT);
             d.editText(text -> text.replace("TEXT=\"A3\"", "TEXT=\"Typed A3\""));
             texts.add(d.text());
-            // 5: designer
-            d.showLayout(Layout.DESIGNER);
+            // 5: diagram
+            d.showLayout(Layout.TOOL);
             d.select(key("A2")).run(DELETE);
             texts.add(d.text());
 
@@ -66,8 +66,8 @@ public class InterleavedUndoTest extends FileEditorManagerTestCase {
                 assertFalse("edit " + i + " changed the text", texts.get(i - 1).equals(texts.get(i)));
             }
 
-            // Undo 5 and 4 from the text, 3 and 2 from the designer, 1 from the text.
-            Layout[] undoFrom = { Layout.TEXT, Layout.TEXT, Layout.DESIGNER, Layout.DESIGNER, Layout.TEXT };
+            // Undo 5 and 4 from the text, 3 and 2 from the diagram, 1 from the text.
+            Layout[] undoFrom = { Layout.TEXT, Layout.TEXT, Layout.TOOL, Layout.TOOL, Layout.TEXT };
             for (int step = 0; step < undoFrom.length; step++) {
                 int expected = texts.size() - 2 - step;
                 d.showLayout(undoFrom[step]);
@@ -83,7 +83,7 @@ public class InterleavedUndoTest extends FileEditorManagerTestCase {
             assertEquals(MAP, d.text());
             assertFalse("undoing everything clears the modified marker", d.isModified());
             assertNull(d.undoLabel());
-            d.showLayout(Layout.DESIGNER);
+            d.showLayout(Layout.TOOL);
             assertEquals("A1", d.viewOf(key("A1")).text());
             assertEquals("L", d.viewOf(key("L")).text());
             assertNotNull(d.viewOf(key("A2")));
@@ -93,7 +93,7 @@ public class InterleavedUndoTest extends FileEditorManagerTestCase {
     }
 
     /** The IDE's own Undo with the text editor focused. */
-    static void undoInText(DesignerDriver d) {
+    static void undoInText(ToolDriver d) {
         AnAction undo = ActionManager.getInstance().getAction("$Undo");
         AnActionEvent event = AnActionEvent.createEvent(d.textDataContext(), undo.getTemplatePresentation().clone(), "AdpTest",
                 ActionUiKind.NONE, null);
@@ -105,13 +105,13 @@ public class InterleavedUndoTest extends FileEditorManagerTestCase {
 
     @Test
     public void theVisualPageFollowsEachUndoOfATextEdit() {
-        try (var d = DesignerDriver.openText(myFixture, "interleaved.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "interleaved.mm", MAP)) {
             d.select(key("B")).run(RENAME).typeInPlace("Visual B");
             d.showLayout(Layout.SPLIT);
             d.editText(text -> text.replace("TEXT=\"Visual B\"", "TEXT=\"Typed B\""));
             assertEquals("Typed B", d.viewOf(key("B")).text());
 
-            d.showLayout(Layout.DESIGNER);
+            d.showLayout(Layout.TOOL);
             d.undo();
             assertEquals("the typing is undone first", "Visual B", d.viewOf(key("B")).text());
             assertEquals("Undo Rename Node", d.undoLabel());

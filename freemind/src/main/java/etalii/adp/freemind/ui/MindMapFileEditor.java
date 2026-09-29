@@ -35,7 +35,7 @@ import etalii.adp.core.diagram.properties.InPlaceEditor;
 import etalii.adp.core.diagram.view.CanvasLayer;
 import etalii.adp.core.diagram.view.CanvasTool;
 import etalii.adp.core.diagram.view.DiagramCanvas;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 import etalii.adp.core.diagram.view.ElementMeasure;
 import etalii.adp.core.diagram.view.ElementView;
 import etalii.adp.core.diagram.view.Scene.ElementRender;
@@ -50,17 +50,17 @@ import etalii.adp.freemind.parse.MindMapParser;
 import etalii.adp.freemind.ui.actions.MindMapAction;
 
 /**
- * The FreeMind designer on the diagram framework (research R19): its model is the parsed
+ * The Mind map on the diagram framework (research R19): its model is the parsed
  * {@link MindMap}, shown as the diagram {@link FreeMindMapping} makes of it. The framework draws,
  * selects, drops, deletes and edits in place; what is FreeMind's own stays here: folding for
  * display only, tree navigation with the arrow keys, following links, renaming formatted text after
  * asking, and spec 001's names for its commands. Selection and display-only folding are kept by
  * {@link NodeKey}, so they survive every re-parse, including one that fails in between.
  */
-public final class MindMapDesigner extends DiagramDesigner {
+public final class MindMapFileEditor extends DiagramFileEditor {
 
     /** The context menu group: FreeMind's actions, then zoom. It replaces the framework's on this canvas. */
-    public static final String POPUP_GROUP = "etalii.adp.freemind.DesignerPopup";
+    public static final String POPUP_GROUP = "etalii.adp.freemind.MindMapPopup";
 
     public static final String TITLE = "Rename Node";
     public static final String RICH_WARNING = "This node's text is formatted. Renaming it replaces the formatting with plain text.";
@@ -73,11 +73,11 @@ public final class MindMapDesigner extends DiagramDesigner {
     private int shownFolds;
     private Runnable alsoReselect;
 
-    public MindMapDesigner(Project project, VirtualFile file, Document document) {
+    public MindMapFileEditor(Project project, VirtualFile file, Document document) {
         this(project, file, document, new FreeMindMapping());
     }
 
-    private MindMapDesigner(Project project, VirtualFile file, Document document, FreeMindMapping mapping) {
+    private MindMapFileEditor(Project project, VirtualFile file, Document document, FreeMindMapping mapping) {
         super(project, file, document, FreeMindDefinition.DEFINITION, mapping);
         this.freeMind = mapping;
     }
@@ -124,7 +124,7 @@ public final class MindMapDesigner extends DiagramDesigner {
     /** The framework's context menu is FreeMind's here: its actions, then zoom. */
     @Override
     public void installActions(JComponent component, String groupId) {
-        super.installActions(component, DiagramDesigner.POPUP_GROUP.equals(groupId) ? POPUP_GROUP : groupId);
+        super.installActions(component, DiagramFileEditor.POPUP_GROUP.equals(groupId) ? POPUP_GROUP : groupId);
     }
 
     /** The canvas the map is drawn on. */
@@ -383,11 +383,6 @@ public final class MindMapDesigner extends DiagramDesigner {
         return new MindMapStructureView(this);
     }
 
-    @Override
-    public @NotNull String getName() {
-        return "Mind Map";
-    }
-
     /** Home selects the root, and Shift with an arrow key adds the node it moves to; plain arrow keys are the framework's. */
     private final class Keys implements CanvasTool {
 
@@ -429,7 +424,7 @@ public final class MindMapDesigner extends DiagramDesigner {
             }
             if (e.getClickCount() == 1 && contains(canvas().indicatorBounds(key, NodePainter.Indicator.LINK), e)) {
                 e.consume();
-                LinkOpener.open(MindMapDesigner.this, canvas().linkOf(key));
+                LinkOpener.open(MindMapFileEditor.this, canvas().linkOf(key));
             } else if (e.getClickCount() == 2 && isEditable()) {
                 e.consume();
                 rename(key);

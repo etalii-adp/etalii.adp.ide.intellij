@@ -38,7 +38,7 @@ import etalii.adp.core.diagram.model.Connection;
 import etalii.adp.core.diagram.model.Diagram;
 import etalii.adp.core.diagram.model.Element;
 import etalii.adp.core.diagram.view.DiagramCanvas;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 import etalii.adp.core.diagram.view.ElementMeasure;
 
 /**
@@ -46,7 +46,7 @@ import etalii.adp.core.diagram.view.ElementMeasure;
  * or a connection's editable label, with a property that is not read-only. A text field opens over
  * the text, or a text area for a wrapping or multi-line one, starting from the property's value,
  * with the font scaled by the zoom. Enter commits a text field and Ctrl+Enter a text area; Escape
- * and leaving the editor cancel. A commit is {@code setProperty} through the designer's commands,
+ * and leaving the editor cancel. A commit is {@code setProperty} through the diagram's commands,
  * the same path as the property panel, unless the caller opened it with a commit of its own. The
  * editor cancels itself, applying nothing, when its item is gone after a re-read. At most one is
  * open per canvas.
@@ -65,7 +65,7 @@ public final class InPlaceEditor {
     public record Target(Object key, String slot, String property, Rectangle2D box, boolean multiline, boolean wrap, Font font) {
     }
 
-    private final DiagramDesigner designer;
+    private final DiagramFileEditor tool;
     private final DiagramCanvas canvas;
     private final Target target;
     private final String initialText;
@@ -74,9 +74,9 @@ public final class InPlaceEditor {
     private final Runnable modelListener = this::modelChanged;
     private boolean finished;
 
-    private InPlaceEditor(DiagramDesigner designer, Target target, String initialText, Consumer<String> commit) {
-        this.designer = designer;
-        this.canvas = designer.canvas();
+    private InPlaceEditor(DiagramFileEditor tool, Target target, String initialText, Consumer<String> commit) {
+        this.tool = tool;
+        this.canvas = tool.canvas();
         this.target = target;
         this.initialText = initialText;
         this.onCommit = commit;
@@ -135,21 +135,21 @@ public final class InPlaceEditor {
     }
 
     /** The editable text drawn at a diagram point: the topmost element's, then a connection's; {@code null} when the text there is not editable. */
-    public static Target at(DiagramDesigner designer, Point2D point) {
-        Diagram diagram = designer.diagram();
+    public static Target at(DiagramFileEditor tool, Point2D point) {
+        Diagram diagram = tool.diagram();
         if (diagram == null) {
             return null;
         }
-        List<Object> elements = designer.elementKeys();
+        List<Object> elements = tool.elementKeys();
         for (int i = elements.size() - 1; i >= 0; i--) {
-            Target found = textAt(designer, diagram, elements.get(i), point);
+            Target found = textAt(tool, diagram, elements.get(i), point);
             if (found != null) {
                 return found.property() == null ? null : found;
             }
         }
-        List<Object> connections = designer.connectionKeys();
+        List<Object> connections = tool.connectionKeys();
         for (int i = connections.size() - 1; i >= 0; i--) {
-            Target found = textAt(designer, diagram, connections.get(i), point);
+            Target found = textAt(tool, diagram, connections.get(i), point);
             if (found != null) {
                 return found.property() == null ? null : found;
             }
@@ -158,12 +158,12 @@ public final class InPlaceEditor {
     }
 
     /** The item's first editable text that is drawn, or {@code null}. */
-    public static Target first(DiagramDesigner designer, Object key) {
-        Diagram diagram = designer.diagram();
+    public static Target first(DiagramFileEditor tool, Object key) {
+        Diagram diagram = tool.diagram();
         if (diagram == null) {
             return null;
         }
-        for (Target text : texts(designer, diagram, key)) {
+        for (Target text : texts(tool, diagram, key)) {
             if (text.property() != null) {
                 return text;
             }
@@ -172,8 +172,8 @@ public final class InPlaceEditor {
     }
 
     /** The text of the item drawn at the point, editable or not (then its property is {@code null}), or {@code null}. */
-    private static Target textAt(DiagramDesigner designer, Diagram diagram, Object key, Point2D point) {
-        for (Target text : texts(designer, diagram, key)) {
+    private static Target textAt(DiagramFileEditor tool, Diagram diagram, Object key, Point2D point) {
+        for (Target text : texts(tool, diagram, key)) {
             if (text.box().contains(point)) {
                 return text;
             }
@@ -182,41 +182,41 @@ public final class InPlaceEditor {
     }
 
     /** The item's drawn texts in declared order; a text that cannot be edited here has no property. */
-    private static List<Target> texts(DiagramDesigner designer, Diagram diagram, Object key) {
-        boolean editable = designer.isEditable();
+    private static List<Target> texts(DiagramFileEditor tool, Diagram diagram, Object key) {
+        boolean editable = tool.isEditable();
         Element element = diagram.element(key);
         if (element != null) {
-            ElementType type = designer.definition().elementType(element.type());
+            ElementType type = tool.definition().elementType(element.type());
             if (type == null) {
                 return List.of();
             }
             return type.texts().stream().map(slot -> {
-                Rectangle2D box = designer.textBounds(key, slot.id());
+                Rectangle2D box = tool.textBounds(key, slot.id());
                 if (box == null) {
                     return null;
                 }
                 PropertyDecl decl = type.property(slot.property());
                 boolean open = editable && slot.editable() && decl != null && !decl.readOnly()
-                        && designer.definition().rules().canSetProperty(diagram, key, slot.property()).allowed();
+                        && tool.definition().rules().canSetProperty(diagram, key, slot.property()).allowed();
                 return new Target(key, slot.id(), open ? slot.property() : null, box, slot.wrap() || multiline(decl), slot.wrap(),
                         ElementMeasure.font(slot.style(), element));
             }).filter(t -> t != null).toList();
         }
         Connection connection = diagram.connection(key);
-        ConnectionType type = connection == null ? null : designer.definition().connectionType(connection.type());
+        ConnectionType type = connection == null ? null : tool.definition().connectionType(connection.type());
         if (type == null) {
             return List.of();
         }
         return type.labels().entrySet().stream().map(entry -> {
             LabelSlot slot = entry.getKey();
             LabelDecl label = entry.getValue();
-            Rectangle2D box = designer.textBounds(key, slot.name());
+            Rectangle2D box = tool.textBounds(key, slot.name());
             if (box == null) {
                 return null;
             }
             PropertyDecl decl = type.property(label.property());
             boolean open = editable && label.editable() && decl != null && !decl.readOnly()
-                    && designer.definition().rules().canSetProperty(diagram, key, label.property()).allowed();
+                    && tool.definition().rules().canSetProperty(diagram, key, label.property()).allowed();
             return new Target(key, slot.name(), open ? label.property() : null, box, multiline(decl), multiline(decl), JBFont.small());
         }).filter(t -> t != null).toList();
     }
@@ -226,17 +226,17 @@ public final class InPlaceEditor {
     }
 
     /** Open the editor on an editable target, closing one that is open; false when the target cannot be edited now. */
-    public static boolean open(DiagramDesigner designer, Target target) {
-        return open(designer, target, null);
+    public static boolean open(DiagramFileEditor tool, Target target) {
+        return open(tool, target, null);
     }
 
     /**
      * The same, with {@code commit} getting a changed text instead of the property being set; for
-     * a designer's own edit of a text, such as FreeMind's rename of formatted text after asking.
+     * a diagram's own edit of a text, such as FreeMind's rename of formatted text after asking.
      */
-    public static boolean open(DiagramDesigner designer, Target target, Consumer<String> commit) {
-        Diagram diagram = designer.diagram();
-        if (target == null || target.property() == null || diagram == null || !designer.isEditable()) {
+    public static boolean open(DiagramFileEditor tool, Target target, Consumer<String> commit) {
+        Diagram diagram = tool.diagram();
+        if (target == null || target.property() == null || diagram == null || !tool.isEditable()) {
             return false;
         }
         Map<String, String> values = diagram.element(target.key()) != null ? diagram.element(target.key()).properties()
@@ -244,11 +244,11 @@ public final class InPlaceEditor {
         if (values == null) {
             return false;
         }
-        DiagramCanvas canvas = designer.canvas();
+        DiagramCanvas canvas = tool.canvas();
         if (canvas.getClientProperty(OPEN) instanceof InPlaceEditor open) {
             open.cancel();
         }
-        new InPlaceEditor(designer, target, values.getOrDefault(target.property(), ""), commit).show();
+        new InPlaceEditor(tool, target, values.getOrDefault(target.property(), ""), commit).show();
         return true;
     }
 
@@ -263,12 +263,12 @@ public final class InPlaceEditor {
     }
 
     // simplified: the editor keeps its place and font if the zoom changes while it is open;
-    // if that binds, cancel it from the designer's zoom change as it is cancelled on a re-read
+    // if that binds, cancel it from the diagram's zoom change as it is cancelled on a re-read
 
     private void show() {
         canvas.putClientProperty(OPEN, this);
         canvas.add(editor);
-        designer.addModelListener(modelListener);
+        tool.addModelListener(modelListener);
         canvas.revalidate();
         canvas.repaint();
         canvas.scrollRectToVisible(editor.getBounds());
@@ -278,7 +278,7 @@ public final class InPlaceEditor {
 
     /** The item went away (an undo, a change in the text): nothing is left to edit. */
     private void modelChanged() {
-        Diagram diagram = designer.diagram();
+        Diagram diagram = tool.diagram();
         if (diagram == null || diagram.element(target.key()) == null && diagram.connection(target.key()) == null) {
             cancel();
         }
@@ -293,7 +293,7 @@ public final class InPlaceEditor {
         if (text.equals(initialText)) {
             return;
         }
-        Diagram diagram = designer.diagram();
+        Diagram diagram = tool.diagram();
         if (diagram == null || diagram.element(target.key()) == null && diagram.connection(target.key()) == null) {
             return;
         }
@@ -301,7 +301,7 @@ public final class InPlaceEditor {
             onCommit.accept(text);
             return;
         }
-        Verdict verdict = designer.commands().setProperty(List.of(target.key()), target.property(), text);
+        Verdict verdict = tool.commands().setProperty(List.of(target.key()), target.property(), text);
         RefusalFeedback feedback = RefusalFeedback.of(canvas);
         if (!verdict.allowed() && feedback != null) {
             feedback.balloon(new Point2D.Double(target.box().getCenterX(), target.box().getCenterY()), verdict.reason());
@@ -316,7 +316,7 @@ public final class InPlaceEditor {
 
     private void close() {
         finished = true;
-        designer.removeModelListener(modelListener);
+        tool.removeModelListener(modelListener);
         canvas.remove(editor);
         if (canvas.getClientProperty(OPEN) == this) {
             canvas.putClientProperty(OPEN, null);

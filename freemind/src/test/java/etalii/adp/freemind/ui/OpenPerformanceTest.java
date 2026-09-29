@@ -11,7 +11,7 @@ import org.junit.runners.JUnit4;
 
 import com.intellij.testFramework.FileEditorManagerTestCase;
 
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /**
  * SC-004 on a generated 1,000-node map: it opens, is laid out and painted within 2 s. The editing
@@ -36,26 +36,26 @@ public class OpenPerformanceTest extends FileEditorManagerTestCase {
 
     @Test
     public void aThousandNodeMapOpensAndEditsWithinBudget() {
-        try (var warmUp = DesignerDriver.openText(myFixture, "warm-up.mm", generatedMap(50))) {
+        try (var warmUp = ToolDriver.openText(myFixture, "warm-up.mm", generatedMap(50))) {
             paint(warmUp);
         }
 
         String map = generatedMap(1000);
         long start = System.nanoTime();
-        try (var d = DesignerDriver.openText(myFixture, "large.mm", map)) {
+        try (var d = ToolDriver.openText(myFixture, "large.mm", map)) {
             paint(d);
             long elapsedMs = (System.nanoTime() - start) / 1_000_000;
             System.out.printf("SC-004 open and draw %5d ms (budget %d ms, CI limit %d ms)%n", elapsedMs, OPEN_BUDGET_MS,
                     OPEN_BUDGET_MS * CI_HEADROOM);
             assertTrue("open and draw took " + elapsedMs + " ms", elapsedMs <= OPEN_BUDGET_MS * CI_HEADROOM);
             assertNotNull(d.viewOf(key("ID_999")));
-            assertEquals(1000, LayoutTest.designer(d).model().nodesByKey().size());
+            assertEquals(1000, LayoutTest.tool(d).model().nodesByKey().size());
         }
     }
 
     /** Lays out and paints the whole canvas now, instead of when the event loop gets to it. */
-    private static void paint(DesignerDriver d) {
-        MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+    private static void paint(ToolDriver d) {
+        MindMapCanvas canvas = LayoutTest.tool(d).canvas();
         canvas.setSize(canvas.getPreferredSize());
         BufferedImage image = new BufferedImage(Math.max(1, canvas.getWidth()), Math.max(1, canvas.getHeight()), BufferedImage.TYPE_INT_RGB);
         var graphics = image.createGraphics();

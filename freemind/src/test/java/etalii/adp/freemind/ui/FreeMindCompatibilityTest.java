@@ -26,14 +26,14 @@ import etalii.adp.freemind.edit.FreeMindConventions;
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
 import etalii.adp.freemind.parse.MindMapParser;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /**
  * Spec 001 FR-012, SC-005, opt-in (research R10). FreeMind is GPL, so it cannot be a build
  * dependency. When {@code FREEMIND_HOME} points at a FreeMind 1.0.1 installation, each example is
- * edited in the designer and saved, and every reference result and a new map's text are read in a
+ * edited in the diagram and saved, and every reference result and a new map's text are read in a
  * separate JVM by FreeMind's own XML reader ({@code freemind.main.XMLElement} from
- * {@code lib/freemind.jar}); the node tree and text it reads must match the designer's. Without
+ * {@code lib/freemind.jar}); the node tree and text it reads must match the diagram's. Without
  * {@code FREEMIND_HOME} the test is skipped with that reason.
  */
 @RunWith(JUnit4.class)
@@ -77,7 +77,7 @@ public class FreeMindCompatibilityTest extends FileEditorManagerTestCase {
     }
 
     @Test
-    public void freeMindReadsWhatTheDesignerSaved() throws Exception {
+    public void freeMindReadsWhatTheToolSaved() throws Exception {
         String home = System.getenv("FREEMIND_HOME");
         Assume.assumeTrue("FREEMIND_HOME is not set, so FreeMind 1.0.1's reader is not available", home != null && !home.isBlank());
         Path jar = Path.of(home, "lib", "freemind.jar");
@@ -87,9 +87,9 @@ public class FreeMindCompatibilityTest extends FileEditorManagerTestCase {
         List<Path> files = new ArrayList<>();
         List<String> expected = new ArrayList<>();
         for (Path example : FreeMindAsserts.examples()) {
-            try (var d = DesignerDriver.open(myFixture, example)) {
-                MindMapDesigner designer = LayoutTest.designer(d);
-                MindMap map = designer.model();
+            try (var d = ToolDriver.open(myFixture, example)) {
+                MindMapFileEditor tool = LayoutTest.tool(d);
+                MindMap map = tool.model();
                 d.select(map.root().key()).run(ADD_CHILD).typeInPlace("Added é & <more>");
                 MapNode first = map.root().children().isEmpty() ? map.root() : map.root().children().get(0);
                 d.select(first.key()).run(RENAME);
@@ -122,7 +122,7 @@ public class FreeMindCompatibilityTest extends FileEditorManagerTestCase {
         assertEquals(expected, freeMindTree(jar, files));
     }
 
-    /** The node tree as the designer's parser reads the file, in the dump's form. */
+    /** The node tree as the diagram's parser reads the file, in the dump's form. */
     private static List<String> tree(Path file) throws Exception {
         List<String> lines = new ArrayList<>();
         lines.add("# " + file.getFileName());

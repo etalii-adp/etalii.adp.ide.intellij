@@ -12,10 +12,10 @@ import com.intellij.testFramework.FileEditorManagerTestCase;
 
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.NodeKey;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 import etalii.adp.testing.Layout;
 
-/** Spec 001 FR-006, US1: the text and the designer show one document. */
+/** Spec 001 FR-006, US1: the text and the diagram show one document. */
 @RunWith(JUnit4.class)
 public class TextVisualSyncTest extends FileEditorManagerTestCase {
 
@@ -39,22 +39,22 @@ public class TextVisualSyncTest extends FileEditorManagerTestCase {
         super.setUp();
     }
 
-    private DesignerDriver open() {
-        return DesignerDriver.openText(myFixture, "sync.mm", MAP);
+    private ToolDriver open() {
+        return ToolDriver.openText(myFixture, "sync.mm", MAP);
     }
 
     @Test
     public void aTextEditShowsOnTheVisualPage() {
         try (var d = open()) {
-            assertEquals(Layout.DESIGNER, d.layout());
+            assertEquals(Layout.TOOL, d.layout());
             d.showLayout(Layout.TEXT);
             d.editText(text -> text.replace("TEXT=\"A2\"", "TEXT=\"Typed in the text\""));
             assertTrue(d.isModified());
 
-            d.showLayout(Layout.DESIGNER);
+            d.showLayout(Layout.TOOL);
             assertEquals("Typed in the text", node(d, key("A2")).text());
             assertEquals("Typed in the text", d.viewOf(key("A2")).text());
-            assertNull(d.designer().problemMessage());
+            assertNull(d.tool().problemMessage());
         }
     }
 
@@ -94,8 +94,8 @@ public class TextVisualSyncTest extends FileEditorManagerTestCase {
             for (int round = 0; round < 3; round++) {
                 d.showLayout(Layout.TEXT);
                 assertEquals(Layout.TEXT, d.layout());
-                d.showLayout(Layout.DESIGNER);
-                assertEquals(Layout.DESIGNER, d.layout());
+                d.showLayout(Layout.TOOL);
+                assertEquals(Layout.TOOL, d.layout());
                 assertEquals("round " + round, List.of(key("A1"), key("B")), d.selectedKeys());
             }
         }
@@ -129,24 +129,24 @@ public class TextVisualSyncTest extends FileEditorManagerTestCase {
     @Test
     public void breakingAndFixingTheTextKeepsTheSelectionAndFolding() {
         try (var d = open()) {
-            MindMapDesigner designer = LayoutTest.designer(d);
+            MindMapFileEditor tool = LayoutTest.tool(d);
             d.select(key("A2"));
-            designer.setShownFolded(designer.model().node(key("A")), true);
+            tool.setShownFolded(tool.model().node(key("A")), true);
             assertNull(d.viewOf(key("A2")));
 
             d.editText(text -> text.replace("<node CREATED=\"1000\" ID=\"B\"", "<node CREATED=\"1000\" ID=\"B\" ID=\"B\""));
             assertTrue(d.problemShown());
-            assertNull(d.designer().model());
+            assertNull(d.tool().model());
 
             d.editText(text -> MAP);
             assertFalse(d.problemShown());
             assertEquals("the selection survives the broken text", List.of(key("A2")), d.selectedKeys());
-            assertTrue("display folding survives too", designer.isShownFolded(designer.model().node(key("A"))));
+            assertTrue("display folding survives too", tool.isShownFolded(tool.model().node(key("A"))));
         }
     }
 
-    static MapNode node(DesignerDriver d, NodeKey key) {
-        MapNode node = LayoutTest.designer(d).model().node(key);
+    static MapNode node(ToolDriver d, NodeKey key) {
+        MapNode node = LayoutTest.tool(d).model().node(key);
         assertNotNull(key + " is in the model", node);
         return node;
     }

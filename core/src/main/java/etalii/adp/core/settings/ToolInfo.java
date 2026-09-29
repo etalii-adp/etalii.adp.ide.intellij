@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * One installed designer as the ADP page shows it (FR-007).
+ * One installed tool as the ADP page shows it (FR-007).
  *
  * @param fileTypes the extensions it handles, sorted
  * @param problems each problem found while loading; empty when it loaded
- * @param conflictsWith the ids of other designers sharing a file type (FR-017)
+ * @param conflictsWith the ids of other tools sharing a file type (FR-017)
  * @param unfollowed the canvas options its definition fixes (FR-012)
  */
-public record DesignerInfo(String id, String name, List<String> fileTypes, String version, DesignerOrigin origin, List<String> problems, boolean on,
+public record ToolInfo(String id, String name, List<String> fileTypes, String version, ToolOrigin origin, List<String> problems, boolean on,
         List<String> conflictsWith, Set<CanvasOption> unfollowed) {
 
     public enum Status {
@@ -28,7 +28,7 @@ public record DesignerInfo(String id, String name, List<String> fileTypes, Strin
         }
     }
 
-    public DesignerInfo {
+    public ToolInfo {
         fileTypes = List.copyOf(fileTypes);
         problems = List.copyOf(problems);
         conflictsWith = List.copyOf(conflictsWith);

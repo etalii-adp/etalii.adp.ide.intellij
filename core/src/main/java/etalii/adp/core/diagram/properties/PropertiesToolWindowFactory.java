@@ -11,7 +11,7 @@ import com.intellij.ui.content.ContentFactory;
 
 /**
  * The ADP Properties tool window (research R14, contracts/plugin-contributions.md): one
- * {@link PropertyPanel}, shared by every diagram designer, that follows the selected editor.
+ * {@link PropertyPanel}, shared by every diagram, that follows the selected editor.
  */
 public final class PropertiesToolWindowFactory implements ToolWindowFactory, DumbAware {
 

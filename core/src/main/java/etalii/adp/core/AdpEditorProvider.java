@@ -25,22 +25,22 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
-import etalii.adp.core.settings.AdpDesigners;
+import etalii.adp.core.settings.AdpTools;
 import etalii.adp.core.settings.AdpSettings;
 import etalii.adp.core.settings.CanvasOption;
-import etalii.adp.core.settings.DesignerInfo;
-import etalii.adp.core.settings.DesignerOrigin;
-import etalii.adp.core.settings.DesignerSetting;
+import etalii.adp.core.settings.ToolInfo;
+import etalii.adp.core.settings.ToolOrigin;
+import etalii.adp.core.settings.ToolSetting;
 
 /**
- * Opens a format's files in its designer, paired with the platform's text editor on the same
+ * Opens a format's files in its tool, paired with the platform's text editor on the same
  * document (research R2, R3). A file is claimed only when its extension is the format's and the
  * start of its content is the format, so other files with the same extension are left alone. A
- * designer the user turned off on the ADP page, or one with problems, claims nothing (spec 004).
+ * tool the user turned off on the ADP page, or one with problems, claims nothing (spec 004).
  */
 public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware, PluginAware {
 
-    /** The ADP plug-in's id; its own designers read as built into it. */
+    /** The ADP plug-in's id; its own tools read as built into it. */
     public static final String ADP_PLUGIN_ID = "etalii.adp";
 
     /** How much of a file the sniff reads, at most. */
@@ -55,26 +55,26 @@ public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware
     /** True when the start of the file (at most {@link #SNIFF_LIMIT} bytes) is this format. Must not throw. */
     protected abstract boolean sniff(byte[] head);
 
-    /** The designer for one opened file. */
-    protected abstract AdpDesignerEditor<?> createDesigner(Project project, VirtualFile file, Document document);
+    /** The tool for one opened file. */
+    protected abstract AdpToolFileEditor<?> createTool(Project project, VirtualFile file, Document document);
 
     /** The name shown on the composite editor. */
-    protected abstract String editorName();
+    protected abstract String toolName();
 
     @Override
     public abstract @NotNull String getEditorTypeId();
 
-    /** Settings this designer shows on its own page under ADP; empty for none (FR-014). */
-    public List<DesignerSetting> settings() {
+    /** Settings this tool shows on its own page under ADP; empty for none (FR-014). */
+    public List<ToolSetting> settings() {
         return List.of();
     }
 
-    /** Where this designer comes from (FR-007, FR-016): by default, the plug-in that registered it. */
-    public DesignerOrigin origin() {
+    /** Where this tool comes from (FR-007, FR-016): by default, the plug-in that registered it. */
+    public ToolOrigin origin() {
         if (plugin == null || ADP_PLUGIN_ID.equals(plugin.getPluginId().getIdString())) {
-            return new DesignerOrigin.Module(ADP_PLUGIN_ID);
+            return new ToolOrigin.Module(ADP_PLUGIN_ID);
         }
-        return new DesignerOrigin.OtherPlugin(plugin.getPluginId().getIdString(), plugin.getName());
+        return new ToolOrigin.OtherPlugin(plugin.getPluginId().getIdString(), plugin.getName());
     }
 
     /** The platform tells each provider it creates from a plug-in descriptor which plug-in that is. */
@@ -83,23 +83,23 @@ public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware
         plugin = pluginDescriptor;
     }
 
-    /** Problems found while loading; any problem makes the designer refuse every file (FR-008). By default, those of its settings. */
+    /** Problems found while loading; any problem makes the tool refuse every file (FR-008). By default, those of its settings. */
     public List<String> problems() {
-        return DesignerSetting.problems(settings());
+        return ToolSetting.problems(settings());
     }
 
-    /** The canvas options this designer keeps whatever the user chose (FR-012); none by default. */
+    /** The canvas options this tool keeps whatever the user chose (FR-012); none by default. */
     public Set<CanvasOption> fixedOptions() {
         return Set.of();
     }
 
-    /** Everything the ADP page shows about this designer. */
-    public final DesignerInfo designerInfo() {
+    /** Everything the ADP page shows about this tool. */
+    public final ToolInfo toolInfo() {
         String version = plugin == null ? "" : Objects.requireNonNullElse(plugin.getVersion(), "");
-        List<String> conflicts = AdpDesigners.providers().stream()
+        List<String> conflicts = AdpTools.providers().stream()
                 .filter(other -> other != this && other.extensions().stream().anyMatch(extensions()::contains))
                 .map(AdpEditorProvider::getEditorTypeId).toList();
-        return new DesignerInfo(getEditorTypeId(), editorName(), extensions().stream().sorted().toList(), version, origin(), problems(),
+        return new ToolInfo(getEditorTypeId(), toolName(), extensions().stream().sorted().toList(), version, origin(), problems(),
                 !isOff(), conflicts, fixedOptions());
     }
 
@@ -115,7 +115,7 @@ public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware
                 && !isOff() && problems().isEmpty() && sniff(head(file));
     }
 
-    /** Off on the ADP page. Without an application, as in a format's plain unit tests, there are no settings and every designer is on. */
+    /** Off on the ADP page. Without an application, as in a format's plain unit tests, there are no settings and every tool is on. */
     private boolean isOff() {
         return ApplicationManager.getApplication() != null && AdpSettings.getInstance().isOff(getEditorTypeId());
     }
@@ -136,10 +136,11 @@ public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware
     @Override
     public @NotNull FileEditor createEditor(@NotNull Project project, @NotNull VirtualFile file) {
         TextEditor text = (TextEditor) TextEditorProvider.getInstance().createEditor(project, file);
-        AdpDesignerEditor<?> designer = createDesigner(project, file, text.getEditor().getDocument());
-        Composite composite = new Composite(text, designer, editorName());
-        designer.start(() -> composite.setLayoutUnremembered(TextEditorWithPreview.Layout.SHOW_EDITOR));
-        if (designer.model() == null) {
+        AdpToolFileEditor<?> tool = createTool(project, file, text.getEditor().getDocument());
+        tool.named(toolName());
+        Composite composite = new Composite(text, tool, toolName());
+        tool.start(() -> composite.setLayoutUnremembered(TextEditorWithPreview.Layout.SHOW_EDITOR));
+        if (tool.model() == null) {
             composite.setLayoutUnremembered(TextEditorWithPreview.Layout.SHOW_EDITOR);
         }
         return composite;
@@ -156,18 +157,18 @@ public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware
                 .anyMatch(provider -> provider instanceof AdpEditorProvider adp && adp.accepts(file));
     }
 
-    /** The text editor and the designer; the designer alone by default. */
+    /** The text editor and the tool; the tool alone by default. */
     public static final class Composite extends TextEditorWithPreview {
 
-        private final AdpDesignerEditor<?> designer;
+        private final AdpToolFileEditor<?> tool;
 
-        Composite(TextEditor text, AdpDesignerEditor<?> designer, String name) {
-            super(text, designer, name, Layout.SHOW_PREVIEW);
-            this.designer = designer;
+        Composite(TextEditor text, AdpToolFileEditor<?> tool, String name) {
+            super(text, tool, name, Layout.SHOW_PREVIEW);
+            this.tool = tool;
         }
 
-        public AdpDesignerEditor<?> designer() {
-            return designer;
+        public AdpToolFileEditor<?> tool() {
+            return tool;
         }
 
         /**
@@ -185,10 +186,10 @@ public abstract class AdpEditorProvider implements FileEditorProvider, DumbAware
             properties.setValue(key, remembered);
         }
 
-        /** The designer's Structure view, not the text's (research R8). */
+        /** The tool's Structure view, not the text's (research R8). */
         @Override
         public StructureViewBuilder getStructureViewBuilder() {
-            return designer.getStructureViewBuilder();
+            return tool.getStructureViewBuilder();
         }
     }
 }

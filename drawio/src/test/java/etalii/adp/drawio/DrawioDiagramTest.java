@@ -28,9 +28,9 @@ import etalii.adp.core.diagram.view.ElementPainter;
 import etalii.adp.testing.DiagramDriver;
 import etalii.adp.testing.Layout;
 
-/** T103: the draw.io designer in a headless IDE, registered from {@code adp-drawio.xml} as the plug-in ships it. */
+/** T103: the draw.io diagram in a headless IDE, registered from {@code adp-drawio.xml} as the plug-in ships it. */
 @RunWith(JUnit4.class)
-public class DrawioDesignerTest extends FileEditorManagerTestCase {
+public class DrawioDiagramTest extends FileEditorManagerTestCase {
 
     @Override
     public void setUp() {
@@ -62,15 +62,15 @@ public class DrawioDesignerTest extends FileEditorManagerTestCase {
     }
 
     @Test
-    public void everyExampleOpensInTheDesigner() {
+    public void everyExampleOpensInTheTool() {
         for (String name : DrawioMappingTest.EXAMPLES) {
             try (var d = open(name)) {
                 assertEquals(name, DrawioEditorProvider.EDITOR_TYPE_ID, d.driver().editorTypeIdUsed());
-                assertNotNull(name, d.designer());
-                assertFalse(name + ": " + d.designer().problemMessage(), d.driver().problemShown());
+                assertNotNull(name, d.tool());
+                assertFalse(name + ": " + d.tool().problemMessage(), d.driver().problemShown());
                 assertFalse(name, d.elementKeys().isEmpty());
                 assertFalse(name, d.driver().isModified());
-                assertEquals("draw.io Designer", d.driver().composite().getName());
+                assertEquals("draw.io diagram", d.driver().composite().getName());
             }
         }
     }
@@ -78,15 +78,15 @@ public class DrawioDesignerTest extends FileEditorManagerTestCase {
     @Test
     public void onlyDrawioFilesThatSniffAreClaimed() {
         try (var d = DiagramDriver.openText(myFixture, "diagram.xml", DrawioMappingTest.read("flowchart_1"))) {
-            assertNull("not a .drawio file", d.designer());
+            assertNull("not a .drawio file", d.tool());
             assertFalse(d.driver().editorTypeIdsOffered().contains(DrawioEditorProvider.EDITOR_TYPE_ID));
         }
         try (var d = DiagramDriver.openText(myFixture, "picture.drawio", "<svg xmlns=\"http://www.w3.org/2000/svg\"/>")) {
-            assertNull("not draw.io content", d.designer());
+            assertNull("not draw.io content", d.tool());
             assertFalse(d.driver().editorTypeIdsOffered().contains(DrawioEditorProvider.EDITOR_TYPE_ID));
         }
         try (var d = DiagramDriver.openText(myFixture, "empty.drawio", "")) {
-            assertNull(d.designer());
+            assertNull(d.tool());
         }
     }
 
@@ -149,7 +149,7 @@ public class DrawioDesignerTest extends FileEditorManagerTestCase {
     public void edgesArePaintedAndHitAboveTheGridRectanglesUnderThem() {
         try (var d = open("flowchart_1")) {
             assertTrue("the grid rectangle is under the point", d.elementView("68").bounds().contains(422, 1000));
-            assertEquals("the edge through it is on top", "89", d.designer().canvas().itemAt(new Point2D.Double(422, 1000)));
+            assertEquals("the edge through it is on top", "89", d.tool().canvas().itemAt(new Point2D.Double(422, 1000)));
             assertEquals("the milestones show, with their text", "Milestone 1", d.elementView("141").texts().get("label"));
             assertNull("the group itself is not drawn", d.elementView("140"));
         }
@@ -168,9 +168,9 @@ public class DrawioDesignerTest extends FileEditorManagerTestCase {
             assertEquals(List.of("x0y0.5", "x1y0.5"), d.anchorsOf(row).stream().map(a -> a.id()).toList());
 
             java.awt.Rectangle rowBefore = d.elementView(row).bounds();
-            java.awt.geom.Rectangle2D at = d.designer().diagram().element(list).bounds();
+            java.awt.geom.Rectangle2D at = d.tool().diagram().element(list).bounds();
             at.setRect(at.getX() + 40, at.getY(), at.getWidth(), at.getHeight());
-            assertTrue("moved by its header, as in draw.io", d.designer().commands().move(java.util.Map.of(list, at)).allowed());
+            assertTrue("moved by its header, as in draw.io", d.tool().commands().move(java.util.Map.of(list, at)).allowed());
             d.driver().settle();
             assertEquals("Undo Move", d.driver().undoLabel());
             assertEquals("the row moved with its list", rowBefore.x + 40, d.elementView(row).bounds().x);
@@ -187,7 +187,7 @@ public class DrawioDesignerTest extends FileEditorManagerTestCase {
             for (boolean dark : new boolean[] { false, true }) {
                 JBColor.setDark(dark);
                 // as a theme change does: the canvas takes its colours again
-                d.designer().canvas().updateUI();
+                d.tool().canvas().updateUI();
                 java.awt.Color body = d.elementView(list).fill();
                 for (String row : List.of("21ea969265ad0168-15", "21ea969265ad0168-16", "21ea969265ad0168-17")) {
                     double contrast = ElementPainter.contrast(d.elementView(row).text(), body);
@@ -205,7 +205,7 @@ public class DrawioDesignerTest extends FileEditorManagerTestCase {
             assertEquals(DrawioEditorProvider.EDITOR_TYPE_ID, d.driver().editorTypeIdUsed());
             assertTrue(d.driver().problemShown());
             assertEquals(Layout.TEXT, d.driver().layout());
-            assertTrue(d.designer().problemMessage(), d.designer().problemMessage().contains("\"Compressed\""));
+            assertTrue(d.tool().problemMessage(), d.tool().problemMessage().contains("\"Compressed\""));
             assertEquals(List.of(), d.elementKeys());
             assertFalse(d.driver().isModified());
         }

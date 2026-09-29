@@ -41,13 +41,13 @@ import etalii.adp.core.diagram.model.Sector;
 
 /**
  * Every gesture as one command (research R9, R17): the definition's permissions, then the
- * designer's rules, then the mapping's text changes, run through {@link Host#execute} with the
+ * diagram's rules, then the mapping's text changes, run through {@link Host#execute} with the
  * contract's label. The first refusal wins, nothing is written, and it is recorded on the host
  * for the refusal feedback and the test kit.
  */
 public final class DiagramCommands {
 
-    /** What a gesture works on: the designer, or a fake in tests. */
+    /** What a gesture works on: the diagram, or a fake in tests. */
     public interface Host extends UserDataHolder {
 
         DiagramDefinition definition();
@@ -93,7 +93,7 @@ public final class DiagramCommands {
             return refuse("the file cannot be shown as a diagram");
         }
         if (elementType == null) {
-            return refuse("'" + type + "' is not an element type of this designer");
+            return refuse("'" + type + "' is not an element type of this diagram");
         }
         Rectangle2D bounds = null;
         Object sector = null;
@@ -235,7 +235,7 @@ public final class DiagramCommands {
         return run("Resize", host.mapping().setBounds(host.text(), d, List.of(change)), () -> host.select(List.of(key)));
     }
 
-    /** Drop elements onto a target, for designers with a layout. */
+    /** Drop elements onto a target, for diagrams with a layout. */
     public Verdict drop(Collection<?> keys, Object target, Placement placement) {
         Diagram d = host.diagram();
         Element onto = d == null ? null : d.element(target);
@@ -279,7 +279,7 @@ public final class DiagramCommands {
         }
         ConnectionType connectionType = host.definition().connectionType(type);
         if (connectionType == null) {
-            return refuse("'" + type + "' is not a connection type of this designer");
+            return refuse("'" + type + "' is not a connection type of this diagram");
         }
         if (!connectionType.userConnectable()) {
             return refuse("'" + connectionType.label() + "' connections cannot be drawn");

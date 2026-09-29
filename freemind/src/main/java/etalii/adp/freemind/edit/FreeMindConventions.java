@@ -4,7 +4,7 @@ import java.util.function.Predicate;
 import java.util.random.RandomGenerator;
 
 /**
- * How FreeMind 1.0.1 writes what the designer adds (research R5), so edited maps stay normal
+ * How FreeMind 1.0.1 writes what the diagram adds (research R5), so edited maps stay normal
  * FreeMind maps (FR-011).
  */
 public final class FreeMindConventions {

@@ -21,7 +21,7 @@ import etalii.adp.core.diagram.model.Element;
 /**
  * The ADP Properties rows (research R14, FR-022, FR-024): the declarations every selected item
  * shares, by id, grouped under a row per category in the order the categories first appear. A
- * value the items do not agree on is mixed and shows empty. A value the designer's rules keep for
+ * value the items do not agree on is mixed and shows empty. A value the diagram's rules keep for
  * one of the items is read-only. A placeholder shows only its key, read only. Column 0 is the label and column 1 the value in the file's notation; an edit of column 1
  * goes to the applier as the property id and the new value.
  */

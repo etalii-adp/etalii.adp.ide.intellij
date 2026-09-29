@@ -8,7 +8,7 @@ import com.intellij.openapi.fileEditor.FileEditorProvider;
 import etalii.adp.core.diagram.view.DiagramEditorProvider;
 
 /**
- * A test-only designer whose definition does not hold together: its toolbox names a type nobody
+ * A test-only diagram whose definition does not hold together: its toolbox names a type nobody
  * declares, and one of its anchors accepts an undeclared connection. It claims {@code .adpbroken}
  * files whose first element is {@code <sample>}.
  */
@@ -37,8 +37,8 @@ public final class BrokenSampleProvider extends DiagramEditorProvider {
     }
 
     @Override
-    protected String editorName() {
-        return "Broken Sample Designer";
+    protected String toolName() {
+        return "Broken Sample Diagram";
     }
 
     @Override

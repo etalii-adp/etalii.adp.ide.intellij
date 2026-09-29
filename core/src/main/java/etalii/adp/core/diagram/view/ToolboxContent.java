@@ -12,7 +12,7 @@ import javax.swing.JComponent;
  */
 public interface ToolboxContent {
 
-    /** The type ids listed now, in toolbox order; empty when no diagram designer is selected. */
+    /** The type ids listed now, in toolbox order; empty when no diagram is selected. */
     List<String> entries();
 
     /** Enter on an entry: an element type is added at the centre of the visible canvas, a connection type is armed. */

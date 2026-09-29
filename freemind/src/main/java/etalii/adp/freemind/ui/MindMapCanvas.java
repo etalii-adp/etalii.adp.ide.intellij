@@ -38,7 +38,7 @@ import etalii.adp.freemind.model.NodeKey;
  */
 public final class MindMapCanvas extends DiagramCanvas {
 
-    private final MindMapDesigner designer;
+    private final MindMapFileEditor tool;
 
     private final ComponentListener followRoot = new ComponentAdapter() {
         @Override
@@ -54,9 +54,9 @@ public final class MindMapCanvas extends DiagramCanvas {
     private Point shownRoot;
     private double shownZoom;
 
-    MindMapCanvas(MindMapDesigner designer) {
-        super(designer);
-        this.designer = designer;
+    MindMapCanvas(MindMapFileEditor tool) {
+        super(tool);
+        this.tool = tool;
         ToolTipManager.sharedInstance().registerComponent(this);
         addComponentListener(followRoot);
     }
@@ -98,7 +98,7 @@ public final class MindMapCanvas extends DiagramCanvas {
      */
     private void followRoot() {
         JViewport viewport = viewport();
-        MindMap map = designer.model();
+        MindMap map = tool.model();
         Rectangle root = map == null ? null : boundsOf(map.root().key());
         if (viewport == null || root == null || viewport.getExtentSize().width <= 0 || viewport.getExtentSize().height <= 0) {
             return;
@@ -128,11 +128,11 @@ public final class MindMapCanvas extends DiagramCanvas {
         return (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, this);
     }
 
-    /** The drawn nodes in document order, as the designer shows them. */
+    /** The drawn nodes in document order, as the diagram shows them. */
     public MindMapLayout.Result mapLayout() {
         Map<NodeKey, NodeView> views = new LinkedHashMap<>();
-        for (Object key : designer.elementKeys()) {
-            NodeView view = designer.viewOf(key);
+        for (Object key : tool.elementKeys()) {
+            NodeView view = tool.viewOf(key);
             if (view != null) {
                 views.put((NodeKey) key, view);
             }
@@ -142,15 +142,15 @@ public final class MindMapCanvas extends DiagramCanvas {
 
     /** The node's box in this component's coordinates, or {@code null} when it is not drawn. */
     public Rectangle boundsOf(NodeKey key) {
-        ElementView view = designer.elementView(key);
+        ElementView view = tool.elementView(key);
         return view == null ? null : zoomed(view.bounds());
     }
 
     /** The node drawn at a point in this component's coordinates, or {@code null}. */
     public NodeKey keyAt(Point point) {
         Point2D at = toDiagram(point);
-        for (Object key : designer.elementKeys()) {
-            if (designer.elementView(key).bounds().contains(at)) {
+        for (Object key : tool.elementKeys()) {
+            if (tool.elementView(key).bounds().contains(at)) {
                 return (NodeKey) key;
             }
         }
@@ -159,17 +159,17 @@ public final class MindMapCanvas extends DiagramCanvas {
 
     /** An indicator's box in this component's coordinates, or {@code null} when the node does not show it. */
     public Rectangle indicatorBounds(NodeKey key, NodePainter.Indicator which) {
-        ElementView view = designer.elementView(key);
+        ElementView view = tool.elementView(key);
         if (view == null) {
             return null;
         }
         if (which == NodePainter.Indicator.FOLDED) {
-            Rectangle2D box = designer.textBounds(key, FreeMindMapping.FOLD_MARKER);
+            Rectangle2D box = tool.textBounds(key, FreeMindMapping.FOLD_MARKER);
             return box == null || view.texts().getOrDefault(FreeMindMapping.FOLD_MARKER, "").isEmpty() ? null : zoomed(box);
         }
         String glyph = which == NodePainter.Indicator.LINK ? NodePainter.LINK_GLYPH : NodePainter.NOTE_GLYPH;
         String shown = view.texts().getOrDefault(FreeMindMapping.INDICATORS, "");
-        Rectangle2D box = designer.textBounds(key, FreeMindMapping.INDICATORS);
+        Rectangle2D box = tool.textBounds(key, FreeMindMapping.INDICATORS);
         if (box == null || !shown.contains(glyph)) {
             return null;
         }
@@ -187,7 +187,7 @@ public final class MindMapCanvas extends DiagramCanvas {
 
     /** The node keyboard navigation starts from: the last one selected. */
     public NodeKey focusKey() {
-        List<Object> selection = designer.selection();
+        List<Object> selection = tool.selection();
         for (int i = selection.size() - 1; i >= 0; i--) {
             if (selection.get(i) instanceof NodeKey key) {
                 return key;
@@ -230,7 +230,7 @@ public final class MindMapCanvas extends DiagramCanvas {
         if (contains(indicatorBounds(key, NodePainter.Indicator.FOLDED), event.getPoint())) {
             return "Folded";
         }
-        Rectangle2D icons = designer.textBounds(key, FreeMindMapping.ICONS);
+        Rectangle2D icons = tool.textBounds(key, FreeMindMapping.ICONS);
         if (icons == null || node.icons().isEmpty()) {
             return null;
         }
@@ -248,14 +248,14 @@ public final class MindMapCanvas extends DiagramCanvas {
     }
 
     private double width(NodeKey key, String text) {
-        Diagram diagram = designer.diagram();
+        Diagram diagram = tool.diagram();
         Font font = ElementMeasure.font(TextSlot.Style.PLAIN, diagram == null ? null : diagram.element(key));
         FontRenderContext frc = getFontMetrics(font).getFontRenderContext();
         return font.getStringBounds(text, frc).getWidth();
     }
 
     private MapNode node(NodeKey key) {
-        MindMap map = designer.model();
+        MindMap map = tool.model();
         return map == null || key == null ? null : map.node(key);
     }
 

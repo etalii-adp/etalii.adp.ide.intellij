@@ -21,12 +21,12 @@ import etalii.adp.core.diagram.sample.SampleProvider;
 
 /**
  * T007 (FR-007, FR-017): the registry lists every registered ADP provider and nothing else, and
- * each designer's name, sorted file types, version, origin, conflicts and unfollowed options.
+ * each tool's name, sorted file types, version, origin, conflicts and unfollowed options.
  */
 @RunWith(JUnit4.class)
-public class AdpDesignersTest extends BasePlatformTestCase {
+public class AdpToolsTest extends BasePlatformTestCase {
 
-    /** A second designer for sample files, and for {@code .adprival}, fixing the grid off. */
+    /** A second tool for sample files, and for {@code .adprival}, fixing the grid off. */
     static final class Rival extends DiagramEditorProvider {
 
         static final String ID = "etalii.adp.rival";
@@ -46,8 +46,8 @@ public class AdpDesignersTest extends BasePlatformTestCase {
         }
 
         @Override
-        protected String editorName() {
-            return "Rival Designer";
+        protected String toolName() {
+            return "Rival Tool";
         }
 
         @Override
@@ -67,22 +67,22 @@ public class AdpDesignersTest extends BasePlatformTestCase {
         SampleProvider.register(getTestRootDisposable());
         FileEditorProvider.EP_FILE_EDITOR_PROVIDER.getPoint().registerExtension(new Rival(), getTestRootDisposable());
 
-        List<String> ids = AdpDesigners.providers().stream().map(AdpEditorProvider::getEditorTypeId).toList();
+        List<String> ids = AdpTools.providers().stream().map(AdpEditorProvider::getEditorTypeId).toList();
         assertEquals(List.of(SampleProvider.EDITOR_TYPE_ID, Rival.ID), ids);
-        assertEquals(ids, AdpDesigners.all().stream().map(DesignerInfo::id).toList());
+        assertEquals(ids, AdpTools.all().stream().map(ToolInfo::id).toList());
     }
 
     @Test
-    public void eachDesignerIsDescribed() {
+    public void eachToolIsDescribed() {
         SampleProvider sample = SampleProvider.register(getTestRootDisposable());
-        DesignerInfo info = sample.designerInfo();
+        ToolInfo info = sample.toolInfo();
         assertEquals(SampleProvider.EDITOR_TYPE_ID, info.id());
-        assertEquals("Sample Designer", info.name());
+        assertEquals("Sample Diagram", info.name());
         assertEquals(List.of("adpsample"), info.fileTypes());
         assertEquals("registered by the test, not by a plug-in descriptor", "", info.version());
-        assertEquals(new DesignerOrigin.Module(AdpEditorProvider.ADP_PLUGIN_ID), info.origin());
+        assertEquals(new ToolOrigin.Module(AdpEditorProvider.ADP_PLUGIN_ID), info.origin());
         assertEquals("Built into ADP", info.origin().describe());
-        assertEquals(DesignerInfo.Status.LOADED, info.status());
+        assertEquals(ToolInfo.Status.LOADED, info.status());
         assertEquals(List.of(), info.problems());
         assertTrue(info.on());
         assertEquals(List.of(), info.conflictsWith());
@@ -90,41 +90,41 @@ public class AdpDesignersTest extends BasePlatformTestCase {
     }
 
     @Test
-    public void theVersionAndOriginAreThoseOfThePluginThatRegisteredTheDesigner() {
+    public void theVersionAndOriginAreThoseOfThePluginThatRegisteredTheTool() {
         PluginDescriptor platform = PluginManagerCore.getPlugin(PluginId.getId(PluginManagerCore.CORE_PLUGIN_ID));
         Rival rival = new Rival();
         rival.setPluginDescriptor(platform);
-        DesignerInfo info = rival.designerInfo();
+        ToolInfo info = rival.toolInfo();
         assertEquals(platform.getVersion(), info.version());
-        assertEquals(new DesignerOrigin.OtherPlugin(PluginManagerCore.CORE_PLUGIN_ID, platform.getName()), info.origin());
+        assertEquals(new ToolOrigin.OtherPlugin(PluginManagerCore.CORE_PLUGIN_ID, platform.getName()), info.origin());
         assertEquals("From plug-in " + platform.getName(), info.origin().describe());
     }
 
     @Test
     public void fileTypesAreSorted() {
         Rival rival = new Rival();
-        assertEquals(List.of("adprival", "adpsample"), rival.designerInfo().fileTypes());
+        assertEquals(List.of("adprival", "adpsample"), rival.toolInfo().fileTypes());
     }
 
     @Test
-    public void overlappingFileTypesAreAConflictOnBothDesigners() {
+    public void overlappingFileTypesAreAConflictOnBothTools() {
         SampleProvider sample = SampleProvider.register(getTestRootDisposable());
         Rival rival = new Rival();
         FileEditorProvider.EP_FILE_EDITOR_PROVIDER.getPoint().registerExtension(rival, getTestRootDisposable());
 
-        assertEquals(List.of(Rival.ID), sample.designerInfo().conflictsWith());
-        assertEquals(List.of(SampleProvider.EDITOR_TYPE_ID), rival.designerInfo().conflictsWith());
+        assertEquals(List.of(Rival.ID), sample.toolInfo().conflictsWith());
+        assertEquals(List.of(SampleProvider.EDITOR_TYPE_ID), rival.toolInfo().conflictsWith());
     }
 
     @Test
     public void theFixedCanvasOptionsAreReported() {
-        assertEquals(Set.of(CanvasOption.SHOW_GRID), new Rival().designerInfo().unfollowed());
+        assertEquals(Set.of(CanvasOption.SHOW_GRID), new Rival().toolInfo().unfollowed());
     }
 
     @Test
-    public void aDesignerThatIsOffIsReportedOff() {
+    public void aToolThatIsOffIsReportedOff() {
         SampleProvider sample = SampleProvider.register(getTestRootDisposable());
         AdpSettings.getInstance().setOff(SampleProvider.EDITOR_TYPE_ID, true);
-        assertFalse(sample.designerInfo().on());
+        assertFalse(sample.toolInfo().on());
     }
 }

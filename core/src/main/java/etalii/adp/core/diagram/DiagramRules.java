@@ -6,7 +6,7 @@ import etalii.adp.core.diagram.model.Diagram;
 import etalii.adp.core.diagram.model.End;
 
 /**
- * A designer's own rules (FR-003), asked after the definition's permissions and before the
+ * A diagram's own rules (FR-003), asked after the definition's permissions and before the
  * mapping. Everything is allowed unless a method says otherwise.
  */
 public interface DiagramRules {

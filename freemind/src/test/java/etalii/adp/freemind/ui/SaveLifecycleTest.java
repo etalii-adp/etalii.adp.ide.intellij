@@ -31,7 +31,7 @@ import com.intellij.testFramework.PlatformTestUtil;
 import etalii.adp.core.AdpEditorProvider;
 import etalii.adp.freemind.edit.MindMapEdits;
 import etalii.adp.freemind.edit.MindMapEdits.Edit;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /** Spec 001 FR-005, FR-005: saving, reloading and closing behave as for any other file in the IDE. */
 @RunWith(JUnit4.class)
@@ -44,7 +44,7 @@ public class SaveLifecycleTest extends FileEditorManagerTestCase {
 
     @Test
     public void saveWritesTheEditAndClearsDirty() throws IOException {
-        try (var d = DesignerDriver.openText(myFixture, "save.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "save.mm", MAP)) {
             d.select(key("B")).run(RENAME).typeInPlace("Saved");
             assertTrue("the tab shows the file as modified", d.isModified());
             String edited = d.text();
@@ -73,9 +73,9 @@ public class SaveLifecycleTest extends FileEditorManagerTestCase {
         VirtualFile file = writeAndSave(path, MAP, document -> {
             VirtualFile opened = FileDocumentManager.getInstance().getFile(document);
             editors.openFile(opened, true);
-            MindMapDesigner designer = (MindMapDesigner) ((AdpEditorProvider.Composite) editors.getSelectedEditor(opened)).designer();
-            Edit edit = MindMapEdits.rename(designer.model(), key("B"), "Remembered");
-            designer.execute(edit.label(), edit.changes());
+            MindMapFileEditor tool = (MindMapFileEditor) ((AdpEditorProvider.Composite) editors.getSelectedEditor(opened)).tool();
+            Edit edit = MindMapEdits.rename(tool.model(), key("B"), "Remembered");
+            tool.execute(edit.label(), edit.changes());
         }, "TEXT=\"Remembered\"");
         try {
             byte[] before = versionBefore(file);
@@ -118,7 +118,7 @@ public class SaveLifecycleTest extends FileEditorManagerTestCase {
 
     @Test
     public void revertRestoresTheSavedFile() {
-        try (var d = DesignerDriver.openText(myFixture, "revert.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "revert.mm", MAP)) {
             d.select(key("A2")).run(DELETE);
             assertNull(d.viewOf(key("A2")));
             assertTrue(d.isModified());
@@ -127,7 +127,7 @@ public class SaveLifecycleTest extends FileEditorManagerTestCase {
             d.settle();
             assertEquals(MAP, d.text());
             assertFalse(d.isModified());
-            assertNotNull("the designer shows the reloaded map", d.viewOf(key("A2")));
+            assertNotNull("the diagram shows the reloaded map", d.viewOf(key("A2")));
         }
     }
 
@@ -137,7 +137,7 @@ public class SaveLifecycleTest extends FileEditorManagerTestCase {
      */
     @Test
     public void closingADirtyEditorAsksToSave() throws IOException {
-        try (var d = DesignerDriver.openText(myFixture, "close.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "close.mm", MAP)) {
             d.select(key("A2")).run(DELETE);
             String edited = d.text();
             FileEditorManager.getInstance(getProject()).closeFile(d.file());
@@ -150,23 +150,23 @@ public class SaveLifecycleTest extends FileEditorManagerTestCase {
 
     /**
      * The IDE's Save As copies the file (Refactor > Copy) with the editor's current text; the copy
-     * opens in the designer and the original keeps its saved content.
+     * opens in the diagram and the original keeps its saved content.
      */
     @Test
     public void saveAsWritesANewFileAndSwitchesToIt() throws IOException {
-        try (var d = DesignerDriver.openText(myFixture, "original.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "original.mm", MAP)) {
             d.select(key("B")).run(RENAME).typeInPlace("Copied");
             String edited = d.text();
             VirtualFile original = d.file();
-            try (var copy = DesignerDriver.openText(myFixture, "copy.mm", edited)) {
-                assertNotNull("the copy opens in the designer", copy.designer());
+            try (var copy = ToolDriver.openText(myFixture, "copy.mm", edited)) {
+                assertNotNull("the copy opens in the diagram", copy.tool());
                 assertEquals(edited, new String(copy.file().contentsToByteArray(), UTF_8));
                 assertEquals(MAP, new String(original.contentsToByteArray(), UTF_8));
                 assertFalse(copy.isModified());
                 assertEquals("Copied", node(copy, key("B")).text());
 
                 copy.select(key("A2")).run(DELETE);
-                assertNull("the designer keeps working on the new file", copy.viewOf(key("A2")));
+                assertNull("the diagram keeps working on the new file", copy.viewOf(key("A2")));
                 assertEquals("the original is not touched", edited, d.text());
             }
         }

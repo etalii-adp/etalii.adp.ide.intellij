@@ -5,7 +5,7 @@ import java.util.List;
 import etalii.adp.freemind.edit.MindMapEdits;
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
-import etalii.adp.freemind.ui.MindMapDesigner;
+import etalii.adp.freemind.ui.MindMapFileEditor;
 
 /**
  * Add Sibling Node (spec 001 FR-019): a new node right after the one selected node, on the same
@@ -14,7 +14,7 @@ import etalii.adp.freemind.ui.MindMapDesigner;
 public final class AddSiblingAction extends MindMapAction {
 
     @Override
-    protected String disabledReason(MindMapDesigner designer, MindMap map, List<MapNode> nodes) {
+    protected String disabledReason(MindMapFileEditor tool, MindMap map, List<MapNode> nodes) {
         if (nodes.size() != 1) {
             return ONE_NODE;
         }
@@ -22,7 +22,7 @@ public final class AddSiblingAction extends MindMapAction {
     }
 
     @Override
-    protected void perform(MindMapDesigner designer, MindMap map, List<MapNode> nodes) {
-        AddChildAction.added(designer, MindMapEdits.addSibling(map, nodes.get(0).key(), NEW_NODE_TEXT, now(), random()));
+    protected void perform(MindMapFileEditor tool, MindMap map, List<MapNode> nodes) {
+        AddChildAction.added(tool, MindMapEdits.addSibling(map, nodes.get(0).key(), NEW_NODE_TEXT, now(), random()));
     }
 }

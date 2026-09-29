@@ -22,9 +22,9 @@ import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.UIUtil;
 
 /**
- * The canvas options every diagram designer follows (US3, FR-011, FR-012): Show grid, Snap to
- * grid and the zoom a diagram opens at. Under an option that a designer's definition fixes, the
- * page names the designers that do not follow it. "Reset to defaults" resets the page only;
+ * The canvas options every diagram follows (US3, FR-011, FR-012): Show grid, Snap to
+ * grid and the zoom a diagram opens at. Under an option that a tool's definition fixes, the
+ * page names the tools that do not follow it. "Reset to defaults" resets the page only;
  * nothing is stored until Apply.
  */
 public final class CanvasSection implements SettingsSection {
@@ -85,9 +85,9 @@ public final class CanvasSection implements SettingsSection {
             return;
         }
         show(AdpSettings.getInstance().canvas());
-        List<DesignerInfo> designers = AdpDesigners.all();
+        List<ToolInfo> tools = AdpTools.all();
         for (CanvasOption option : CanvasOption.values()) {
-            String names = designers.stream().filter(d -> d.unfollowed().contains(option)).map(DesignerInfo::name).collect(Collectors.joining(", "));
+            String names = tools.stream().filter(d -> d.unfollowed().contains(option)).map(ToolInfo::name).collect(Collectors.joining(", "));
             JBLabel label = unfollowed.get(option);
             label.setText(names.isEmpty() ? "" : "Not followed by: " + names);
             label.setVisible(!names.isEmpty());

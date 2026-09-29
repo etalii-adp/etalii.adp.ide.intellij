@@ -18,14 +18,14 @@ import com.intellij.ui.scale.JBUIScale;
 
 import etalii.adp.core.diagram.view.CanvasTool;
 import etalii.adp.core.diagram.view.DiagramCanvas;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 
 /**
  * Panning (FR-025, research R16): a middle-button drag, or a left drag while Space is held,
- * scrolls the designer's scroll pane so the diagram follows the pointer. It claims the press
+ * scrolls the diagram's scroll pane so the diagram follows the pointer. It claims the press
  * before selection and move, so a Space-drag over an element pans rather than moves it. With the
- * designer's pan off it does nothing and lets every event through. The scroll bars and the plain
- * wheel keep working either way. A designer whose view asks for background panning also pans on a
+ * diagram's pan off it does nothing and lets every event through. The scroll bars and the plain
+ * wheel keep working either way. A diagram whose view asks for background panning also pans on a
  * plain left drag that starts on empty canvas; a click there, without a drag, clears the selection.
  */
 public final class PanTool implements CanvasTool {
@@ -33,7 +33,7 @@ public final class PanTool implements CanvasTool {
     /** How far, before scaling, the pointer moves before a press on empty canvas is a drag rather than a click. */
     private static final int THRESHOLD = 3;
 
-    private final DiagramDesigner designer;
+    private final DiagramFileEditor fileEditor;
     private final DiagramCanvas canvas;
     private boolean space;
     private JViewport viewport;
@@ -43,9 +43,9 @@ public final class PanTool implements CanvasTool {
     private Point startPosition;
     private Cursor cursorBefore;
 
-    public PanTool(DiagramDesigner designer) {
-        this.designer = designer;
-        this.canvas = designer.canvas();
+    public PanTool(DiagramFileEditor fileEditor) {
+        this.fileEditor = fileEditor;
+        this.canvas = fileEditor.canvas();
         canvas.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
@@ -57,7 +57,7 @@ public final class PanTool implements CanvasTool {
     }
 
     private boolean enabled() {
-        return designer.definition().view().pan();
+        return fileEditor.definition().view().pan();
     }
 
     @Override
@@ -110,18 +110,18 @@ public final class PanTool implements CanvasTool {
     @Override
     public void mouseReleased(MouseEvent e) {
         if (pressedAt != null) {
-            if (background && !moved && !designer.selection().isEmpty()) {
+            if (background && !moved && !fileEditor.selection().isEmpty()) {
                 // a click on empty canvas still clears the selection, as it does without background panning
-                designer.select(List.of());
+                fileEditor.select(List.of());
             }
             end();
             e.consume();
         }
     }
 
-    /** A plain left press on empty canvas, with the designer's background panning on. */
+    /** A plain left press on empty canvas, with the diagram's background panning on. */
     private boolean onBackground(MouseEvent e) {
-        if (!designer.definition().view().backgroundPan() || designer.diagram() == null || !SwingUtilities.isLeftMouseButton(e) || e.isPopupTrigger()
+        if (!fileEditor.definition().view().backgroundPan() || fileEditor.diagram() == null || !SwingUtilities.isLeftMouseButton(e) || e.isPopupTrigger()
                 || (e.getModifiersEx() & (InputEvent.CTRL_DOWN_MASK | InputEvent.META_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.ALT_DOWN_MASK)) != 0) {
             return false;
         }

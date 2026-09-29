@@ -1,6 +1,0 @@
-<!-- The ADP page's designer list (spec 004, US1 and US2). -->
-<idea-plugin>
-    <extensions defaultExtensionNs="etalii.adp">
-        <settingsSection implementation="etalii.adp.core.settings.DesignersSection"/>
-    </extensions>
-</idea-plugin>

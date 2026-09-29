@@ -17,7 +17,7 @@ import com.intellij.testFramework.FileEditorManagerTestCase;
 import etalii.adp.freemind.edit.MindMapEdits;
 import etalii.adp.freemind.edit.MindMapEdits.Edit;
 import etalii.adp.freemind.model.MindMap;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /**
  * SC-004 (spec 001 SC-003, edit half) on a generated 1,000-node map: the result of adding,
@@ -43,14 +43,14 @@ public class EditPerformanceTest extends FileEditorManagerTestCase {
 
     @Test
     public void aThousandNodeMapOpensAndEditsWithinBudget() {
-        try (var warmUp = DesignerDriver.openText(myFixture, "warm-up.mm", generatedMap(50))) {
+        try (var warmUp = ToolDriver.openText(myFixture, "warm-up.mm", generatedMap(50))) {
             for (int i = 0; i < 5; i++) {
                 edit(warmUp, m -> MindMapEdits.rename(m, key("ID_1"), "warm " + System.nanoTime()));
                 paint(warmUp);
             }
         }
 
-        try (var d = DesignerDriver.openText(myFixture, "large.mm", generatedMap(1000))) {
+        try (var d = ToolDriver.openText(myFixture, "large.mm", generatedMap(1000))) {
             paint(d);
             assertNotNull(d.viewOf(key("ID_999")));
 
@@ -62,7 +62,7 @@ public class EditPerformanceTest extends FileEditorManagerTestCase {
         }
     }
 
-    private static void measure(DesignerDriver d, String action, Function<MindMap, Edit> build) {
+    private static void measure(ToolDriver d, String action, Function<MindMap, Edit> build) {
         long start = System.nanoTime();
         edit(d, build);
         paint(d);
@@ -71,16 +71,16 @@ public class EditPerformanceTest extends FileEditorManagerTestCase {
         assertTrue(action + " took " + elapsedMs + " ms", elapsedMs <= EDIT_BUDGET_MS * CI_HEADROOM);
     }
 
-    private static void edit(DesignerDriver d, Function<MindMap, Edit> build) {
-        MindMapDesigner designer = LayoutTest.designer(d);
-        Edit edit = build.apply(designer.model());
-        designer.execute(edit.label(), edit.changes());
+    private static void edit(ToolDriver d, Function<MindMap, Edit> build) {
+        MindMapFileEditor tool = LayoutTest.tool(d);
+        Edit edit = build.apply(tool.model());
+        tool.execute(edit.label(), edit.changes());
         d.settle();
     }
 
     /** Paints what a 1600 by 1000 window would show, now instead of when the event loop gets to it. */
-    private static void paint(DesignerDriver d) {
-        MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+    private static void paint(ToolDriver d) {
+        MindMapCanvas canvas = LayoutTest.tool(d).canvas();
         canvas.setSize(canvas.getPreferredSize());
         BufferedImage image = new BufferedImage(1600, 1000, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();

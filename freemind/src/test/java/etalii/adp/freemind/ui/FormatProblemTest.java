@@ -21,7 +21,7 @@ import org.junit.runners.JUnit4;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 import com.intellij.ui.HyperlinkLabel;
 
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 import etalii.adp.testing.Layout;
 
 /** FR-009, US1-AS4 and spec 001 FR-007: text that is not a map is explained, never lost or changed. */
@@ -54,18 +54,18 @@ public class FormatProblemTest extends FileEditorManagerTestCase {
     @Test
     public void aTextEditIntoAnInvalidMapIsExplainedAndKept() {
         for (Problem problem : PROBLEMS) {
-            try (var d = DesignerDriver.openText(myFixture, "problem-" + PROBLEMS.indexOf(problem) + ".mm", MAP)) {
+            try (var d = ToolDriver.openText(myFixture, "problem-" + PROBLEMS.indexOf(problem) + ".mm", MAP)) {
                 String broken = problem.breakIt().apply(MAP);
                 d.showLayout(Layout.TEXT);
                 d.editText(problem.breakIt());
                 assertEquals(problem.name(), broken, d.text());
 
-                d.showLayout(Layout.DESIGNER);
+                d.showLayout(Layout.TOOL);
                 assertTrue(problem.name(), d.problemShown());
-                String message = d.designer().problemMessage();
+                String message = d.tool().problemMessage();
                 assertExplains(problem, message);
-                assertNull(problem.name() + ": no half-drawn map", d.designer().model());
-                assertFalse(problem.name(), SwingUtilities.getAncestorOfClass(JScrollPane.class, LayoutTest.designer(d).canvas()).isVisible());
+                assertNull(problem.name() + ": no half-drawn map", d.tool().model());
+                assertFalse(problem.name(), SwingUtilities.getAncestorOfClass(JScrollPane.class, LayoutTest.tool(d).canvas()).isVisible());
                 assertNull(problem.name(), d.viewOf(key("B")));
                 assertEquals(problem.name() + ": no text is lost", broken, d.text());
 
@@ -78,9 +78,9 @@ public class FormatProblemTest extends FileEditorManagerTestCase {
                 assertTrue(d.isModified());
 
                 d.editText(text -> MAP);
-                d.showLayout(Layout.DESIGNER);
+                d.showLayout(Layout.TOOL);
                 assertFalse(problem.name(), d.problemShown());
-                assertNull(d.designer().problemMessage());
+                assertNull(d.tool().problemMessage());
                 assertNotNull(problem.name() + ": fixing the text restores the map", d.viewOf(key("B")));
                 assertNull(showTextLink(d));
             }
@@ -91,9 +91,9 @@ public class FormatProblemTest extends FileEditorManagerTestCase {
     public void aMalformedFileOpensOnTheTextPageUnmodified() throws IOException {
         for (Problem problem : PROBLEMS) {
             String broken = problem.breakIt().apply(MAP);
-            try (var d = DesignerDriver.openText(myFixture, "broken-" + PROBLEMS.indexOf(problem) + ".mm", broken)) {
+            try (var d = ToolDriver.openText(myFixture, "broken-" + PROBLEMS.indexOf(problem) + ".mm", broken)) {
                 if (!problem.claimed()) {
-                    assertNull(problem.name() + " is not a FreeMind map, so it opens as without the plug-in", d.designer());
+                    assertNull(problem.name() + " is not a FreeMind map, so it opens as without the plug-in", d.tool());
                     assertArrayEquals(broken.getBytes(UTF_8), d.file().contentsToByteArray());
                     continue;
                 }
@@ -101,10 +101,10 @@ public class FormatProblemTest extends FileEditorManagerTestCase {
                 assertEquals(broken, d.text());
                 assertFalse(problem.name(), d.isModified());
                 assertTrue(problem.name(), d.problemShown());
-                assertExplains(problem, d.designer().problemMessage());
+                assertExplains(problem, d.tool().problemMessage());
                 assertArrayEquals(problem.name() + ": opening leaves the file as it was", broken.getBytes(UTF_8), d.file().contentsToByteArray());
 
-                d.showLayout(Layout.DESIGNER);
+                d.showLayout(Layout.TOOL);
                 d.showLayout(Layout.TEXT);
                 assertFalse(problem.name() + ": looking at the explanation changes nothing", d.isModified());
                 assertEquals(broken, d.text());
@@ -121,8 +121,8 @@ public class FormatProblemTest extends FileEditorManagerTestCase {
     }
 
     /** The visible "Show Text" link of the problem panel, or {@code null}. */
-    private static HyperlinkLabel showTextLink(DesignerDriver d) {
-        return find(d.designer().getComponent());
+    private static HyperlinkLabel showTextLink(ToolDriver d) {
+        return find(d.tool().getComponent());
     }
 
     private static HyperlinkLabel find(Component component) {

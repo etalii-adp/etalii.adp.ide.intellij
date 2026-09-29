@@ -11,7 +11,7 @@ import com.intellij.ui.content.ContentFactory;
 
 /**
  * The ADP Toolbox tool window (research R13, contracts/plugin-contributions.md): one
- * {@link ToolboxPanel} that follows the selected editor and lists its diagram designer's toolbox.
+ * {@link ToolboxPanel} that follows the selected editor and lists its diagram's toolbox.
  */
 public final class ToolboxToolWindowFactory implements ToolWindowFactory, DumbAware {
 

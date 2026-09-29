@@ -14,13 +14,13 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.scale.JBUIScale;
 
 import etalii.adp.core.NodeView;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /** FR-016, US1-AS5: legible in light and dark themes, sharp at any scale. */
 @RunWith(JUnit4.class)
 public class ThemeTest extends FileEditorManagerTestCase {
 
-    /** WCAG 2.1 non-text contrast, which the designer holds text and lines to. */
+    /** WCAG 2.1 non-text contrast, which the diagram holds text and lines to. */
     private static final double MIN_CONTRAST = 3.0;
 
     static final String MAP = """
@@ -69,7 +69,7 @@ public class ThemeTest extends FileEditorManagerTestCase {
     public void everyNodeIsLegibleUnderDarcula() {
         for (boolean dark : new boolean[] { false, true }) {
             JBColor.setDark(dark);
-            try (var d = DesignerDriver.openText(myFixture, (dark ? "dark" : "light") + ".mm", MAP)) {
+            try (var d = ToolDriver.openText(myFixture, (dark ? "dark" : "light") + ".mm", MAP)) {
                 for (String id : new String[] { "R", "PLAIN", "NAVY", "PALE", "CARD", "MINT", "WIDE" }) {
                     NodeView view = d.viewOf(key(id));
                     Color behind = view.background() != null ? view.background() : NodePainter.CANVAS_BACKGROUND;
@@ -83,7 +83,7 @@ public class ThemeTest extends FileEditorManagerTestCase {
     @Test
     public void aLowContrastFileColourGetsAPlate() {
         JBColor.setDark(true);
-        try (var d = DesignerDriver.openText(myFixture, "plate.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "plate.mm", MAP)) {
             NodeView navy = d.viewOf(key("NAVY"));
             assertEquals("the author's colour is kept", new Color(0x000080), new Color(navy.foreground().getRGB()));
             assertNotNull("navy on a dark canvas is drawn on a plate", navy.background());
@@ -94,7 +94,7 @@ public class ThemeTest extends FileEditorManagerTestCase {
             assertNull(d.viewOf(key("PLAIN")).background());
         }
         JBColor.setDark(false);
-        try (var d = DesignerDriver.openText(myFixture, "no-plate.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "no-plate.mm", MAP)) {
             assertNull("navy on a light canvas needs no plate", d.viewOf(key("NAVY")).background());
             assertNotNull("pale yellow on a light canvas does", d.viewOf(key("PALE")).background());
         }
@@ -105,7 +105,7 @@ public class ThemeTest extends FileEditorManagerTestCase {
         int gapAtOne;
         int fontAtOne;
         int heightAtOne;
-        try (var d = DesignerDriver.openText(myFixture, "scale-1.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "scale-1.mm", MAP)) {
             gapAtOne = d.viewOf(key("R")).bounds().x - (int) d.viewOf(key("WIDE")).bounds().getMaxX();
             fontAtOne = d.viewOf(key("WIDE")).font().getSize();
             heightAtOne = d.viewOf(key("WIDE")).bounds().height;
@@ -114,7 +114,7 @@ public class ThemeTest extends FileEditorManagerTestCase {
         assertEquals(16, fontAtOne);
 
         JBUIScale.setUserScaleFactorForTest(2f);
-        try (var d = DesignerDriver.openText(myFixture, "scale-2.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "scale-2.mm", MAP)) {
             assertEquals(200, d.viewOf(key("R")).bounds().x - (int) d.viewOf(key("WIDE")).bounds().getMaxX());
             assertEquals(32, d.viewOf(key("WIDE")).font().getSize());
             assertTrue(d.viewOf(key("WIDE")).bounds().height > heightAtOne * 3 / 2);
@@ -125,8 +125,8 @@ public class ThemeTest extends FileEditorManagerTestCase {
     public void theCanvasPaintsInBothThemes() {
         for (boolean dark : new boolean[] { false, true }) {
             JBColor.setDark(dark);
-            try (var d = DesignerDriver.openText(myFixture, (dark ? "paint-dark" : "paint-light") + ".mm", MAP)) {
-                MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+            try (var d = ToolDriver.openText(myFixture, (dark ? "paint-dark" : "paint-light") + ".mm", MAP)) {
+                MindMapCanvas canvas = LayoutTest.tool(d).canvas();
                 canvas.setSize(canvas.getPreferredSize());
                 BufferedImage image = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_RGB);
                 var graphics = image.createGraphics();

@@ -6,12 +6,12 @@ import java.util.Map;
 import etalii.adp.core.settings.CanvasOption;
 
 /**
- * Pan, zoom and the grid per designer (FR-025, spec 004 research R8). Whether the grid is shown
+ * Pan, zoom and the grid per diagram (FR-025, spec 004 research R8). Whether the grid is shown
  * and snapped to is the user's choice, unless the definition fixes it.
  *
  * @param grid the grid spacing in unscaled pixels
  * @param backgroundPan whether a plain left drag on empty canvas pans instead of dragging a marquee
- * @param fixed canvas options this designer keeps whatever the user chose
+ * @param fixed canvas options this diagram keeps whatever the user chose
  */
 public record ViewOptions(boolean zoom, boolean pan, int grid, boolean backgroundPan, Map<CanvasOption, Boolean> fixed) {
 
@@ -52,7 +52,7 @@ public record ViewOptions(boolean zoom, boolean pan, int grid, boolean backgroun
             return this;
         }
 
-        /** Keep {@code option} at {@code value} in this designer, whatever the user chose. */
+        /** Keep {@code option} at {@code value} in this diagram, whatever the user chose. */
         public Builder fix(CanvasOption option, boolean value) {
             fixed.put(option, value);
             return this;

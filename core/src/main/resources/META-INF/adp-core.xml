@@ -6,19 +6,19 @@
 
     <actions>
         <action id="etalii.adp.core.SelectAll" class="etalii.adp.core.actions.SelectAllAction" text="Select All Nodes"
-                description="Select every node of the designer">
+                description="Select every node of the diagram">
             <keyboard-shortcut keymap="$default" first-keystroke="control A"/>
         </action>
         <action id="etalii.adp.core.ZoomIn" class="etalii.adp.core.actions.ZoomActions$ZoomIn" text="Zoom In"
-                description="Zoom in on the designer">
+                description="Zoom in on the diagram">
             <keyboard-shortcut keymap="$default" first-keystroke="control EQUALS"/>
         </action>
         <action id="etalii.adp.core.ZoomOut" class="etalii.adp.core.actions.ZoomActions$ZoomOut" text="Zoom Out"
-                description="Zoom out of the designer">
+                description="Zoom out of the diagram">
             <keyboard-shortcut keymap="$default" first-keystroke="control MINUS"/>
         </action>
         <action id="etalii.adp.core.ZoomReset" class="etalii.adp.core.actions.ZoomActions$ZoomReset" text="Actual Size"
-                description="Show the designer at its actual size">
+                description="Show the diagram at its actual size">
             <keyboard-shortcut keymap="$default" first-keystroke="control 0"/>
         </action>
     </actions>

@@ -3,7 +3,7 @@ package etalii.adp.core.ui;
 import com.intellij.ui.EditorNotificationPanel;
 
 /**
- * Why the designer cannot show the file: the message, line and column, and a "Show Text" link to
+ * Why the tool cannot show the file: the message, line and column, and a "Show Text" link to
  * the text view. The file is never changed because of a problem.
  */
 public final class ProblemPanel extends EditorNotificationPanel {

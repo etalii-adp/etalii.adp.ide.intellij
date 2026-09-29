@@ -12,7 +12,7 @@ tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
 }
 
-// The draw.io designer: built on core's diagram framework only (principle III).
+// The draw.io diagram: built on core's diagram framework only (principle III).
 dependencies {
     implementation(project(":core"))
     intellijPlatform {

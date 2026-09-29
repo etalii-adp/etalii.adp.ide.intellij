@@ -7,14 +7,14 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * One setting a designer declares for its own page under ADP (FR-014, research R6). Values are
+ * One setting a tool declares for its own page under ADP (FR-014, research R6). Values are
  * stored as text and checked against the declaration when read.
  *
  * @param min the smallest number, for {@link Kind#NUMBER}
  * @param max the largest number, for {@link Kind#NUMBER}
  * @param choices the values to choose from, for {@link Kind#CHOICE}
  */
-public record DesignerSetting(String key, String label, Kind kind, String defaultValue, int min, int max, List<String> choices) {
+public record ToolSetting(String key, String label, Kind kind, String defaultValue, int min, int max, List<String> choices) {
 
     private static final Pattern KEY = Pattern.compile("[A-Za-z][A-Za-z0-9_.-]*");
 
@@ -22,20 +22,20 @@ public record DesignerSetting(String key, String label, Kind kind, String defaul
         YES_NO, NUMBER, CHOICE
     }
 
-    public DesignerSetting {
+    public ToolSetting {
         choices = List.copyOf(choices);
     }
 
-    public static DesignerSetting yesNo(String key, String label, boolean defaultValue) {
-        return new DesignerSetting(key, label, Kind.YES_NO, Boolean.toString(defaultValue), 0, 0, List.of());
+    public static ToolSetting yesNo(String key, String label, boolean defaultValue) {
+        return new ToolSetting(key, label, Kind.YES_NO, Boolean.toString(defaultValue), 0, 0, List.of());
     }
 
-    public static DesignerSetting number(String key, String label, int defaultValue, int min, int max) {
-        return new DesignerSetting(key, label, Kind.NUMBER, Integer.toString(defaultValue), min, max, List.of());
+    public static ToolSetting number(String key, String label, int defaultValue, int min, int max) {
+        return new ToolSetting(key, label, Kind.NUMBER, Integer.toString(defaultValue), min, max, List.of());
     }
 
-    public static DesignerSetting choice(String key, String label, String defaultValue, String... choices) {
-        return new DesignerSetting(key, label, Kind.CHOICE, defaultValue, 0, 0, List.of(choices));
+    public static ToolSetting choice(String key, String label, String defaultValue, String... choices) {
+        return new ToolSetting(key, label, Kind.CHOICE, defaultValue, 0, 0, List.of(choices));
     }
 
     /** True when {@code value} is a valid value of this setting. */
@@ -57,11 +57,11 @@ public record DesignerSetting(String key, String label, Kind kind, String defaul
         };
     }
 
-    /** Every rule a designer's list breaks, each naming the setting; empty when it holds together. */
-    public static List<String> problems(List<DesignerSetting> settings) {
+    /** Every rule a tool's list breaks, each naming the setting; empty when it holds together. */
+    public static List<String> problems(List<ToolSetting> settings) {
         List<String> problems = new ArrayList<>();
         Set<String> keys = new HashSet<>();
-        for (DesignerSetting setting : settings) {
+        for (ToolSetting setting : settings) {
             String name = "setting '" + setting.key + "': ";
             if (setting.key == null || !KEY.matcher(setting.key).matches()) {
                 problems.add(name + "the key must match " + KEY.pattern());

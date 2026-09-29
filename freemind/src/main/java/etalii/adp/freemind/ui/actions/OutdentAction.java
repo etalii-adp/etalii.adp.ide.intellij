@@ -5,7 +5,7 @@ import java.util.List;
 import etalii.adp.freemind.edit.MindMapEdits.Placement;
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.MindMap;
-import etalii.adp.freemind.ui.MindMapDesigner;
+import etalii.adp.freemind.ui.MindMapFileEditor;
 
 /**
  * Move Up a Level (spec 001 FR-022): the one selected node, at depth two or deeper, goes right
@@ -14,7 +14,7 @@ import etalii.adp.freemind.ui.MindMapDesigner;
 public final class OutdentAction extends MindMapAction {
 
     @Override
-    protected String disabledReason(MindMapDesigner designer, MindMap map, List<MapNode> nodes) {
+    protected String disabledReason(MindMapFileEditor tool, MindMap map, List<MapNode> nodes) {
         if (nodes.size() != 1) {
             return ONE_NODE;
         }
@@ -25,7 +25,7 @@ public final class OutdentAction extends MindMapAction {
     }
 
     @Override
-    protected void perform(MindMapDesigner designer, MindMap map, List<MapNode> nodes) {
-        move(designer, map, nodes.get(0), nodes.get(0).parent(), Placement.AFTER);
+    protected void perform(MindMapFileEditor tool, MindMap map, List<MapNode> nodes) {
+        move(tool, map, nodes.get(0), nodes.get(0).parent(), Placement.AFTER);
     }
 }

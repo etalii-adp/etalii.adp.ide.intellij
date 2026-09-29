@@ -1,8 +1,10 @@
-# Building a diagram designer
+# Building a diagram
 
-This guide takes you from an empty module to a working diagram designer for your own file format. The example is a small state machine: two element types (a state and an end state) and one connection type (a transition), stored in a `.states` file. You write four small classes and one XML fragment. You write no drawing, hit-testing, selection, undo, toolbox or property panel code: the framework in `core` does all of that.
+ADP's tools come in three kinds: **diagrams**, **designers** and **editors**, as defined in the [ADP glossary](https://github.com/etalii-adp/etalii.adp/blob/develop/docs/terminology.md). The framework in `core` has two layers. The tool framework (`etalii.adp.core` and `etalii.adp.core.settings`) is what every kind shares: the file editor lifecycle, text and visual synchronisation, undo, registration and the ADP settings page. The diagram framework (`etalii.adp.core.diagram`) builds on it for diagrams. This plug-in has no designer or editor yet; when the first one comes, it gets its own framework beside the diagram framework, on the same tool framework. This guide builds a diagram.
 
-The API is described in full in [contracts/diagram-framework.md](../specs/003-diagram-designer-framework/contracts/diagram-framework.md), and the test kit in [contracts/test-kit.md](../specs/003-diagram-designer-framework/contracts/test-kit.md). Two complete designers to read next to this guide: the sample designer in `core/src/test/java/etalii/adp/core/diagram/sample/` and the draw.io designer in `drawio/src/main/java/etalii/adp/drawio/`.
+This guide takes you from an empty module to a working diagram for your own file format. The example is a small state machine: two element types (a state and an end state) and one connection type (a transition), stored in a `.states` file. You write four small classes and one XML fragment. You write no drawing, hit-testing, selection, undo, toolbox or property panel code: the framework in `core` does all of that.
+
+The API is described in full in [contracts/diagram-framework.md](../specs/003-diagram-designer-framework/contracts/diagram-framework.md), and the test kit in [contracts/test-kit.md](../specs/003-diagram-designer-framework/contracts/test-kit.md). Two complete diagrams to read next to this guide: the sample diagram in `core/src/test/java/etalii/adp/core/diagram/sample/` and the draw.io diagram in `drawio/src/main/java/etalii/adp/drawio/`.
 
 ## What you are building
 
@@ -42,7 +44,7 @@ The framework's types live in five packages. The samples below show every import
 
 ## 2. The definition
 
-The definition declares what your diagrams contain and how they look. It is built once. `build()` checks it and throws a `DefinitionException` that lists every problem, each naming the declaration it concerns, so a mistake shows up the first time the designer loads.
+The definition declares what your diagrams contain and how they look. It is built once. `build()` checks it and throws a `DefinitionException` that lists every problem, each naming the declaration it concerns, so a mistake shows up the first time the diagram loads.
 
 ```java
 package etalii.adp.states;
@@ -92,7 +94,7 @@ What each part does:
 - **Anchors** are where connections attach. `at(fx, fy)` is a point on the bounds (0,0 is the top left, 1,1 the bottom right). `perimeter()` attaches where the line meets the outline. `accepts(type, direction)` says which connection types may start (`OUT`), end (`IN`) or both (`BOTH`) at it. In the example a state takes transitions in on its left and sends them out on its right, and the end state only takes the end of a transition. A perimeter anchor is taken hold of on the outline: a press in the middle of an element moves it instead. `DiagramDriver.connect` presses on the outline for you.
 - **Connection types** have a line (straight, orthogonal or curved), a dash, a thickness, a tone, an arrowhead at each end, and up to three labels (middle, source, target), each editable in place or not. `routed(true)` makes an orthogonal line go around other elements.
 - **Properties** have an editor kind: `EditorKind.TEXT`, `MULTILINE`, `BOOLEAN`, `COLOR`, `number(integer, min, max)` or `choice(option(value, label), ...)`. Input that does not fit is refused before any edit is made. Values are strings in your file's own notation.
-- **The toolbox** lists every type in declaration order unless you call `toolbox(...)`. **View options** switch pan and zoom and set the grid spacing (10 by default); whether the grid is shown and snapped to is the user's choice on the ADP settings page (see section 8). **Sectors** (`sector(...)`) declare swimlanes in diagram or view space; see the sample designer.
+- **The toolbox** lists every type in declaration order unless you call `toolbox(...)`. **View options** switch pan and zoom and set the grid spacing (10 by default); whether the grid is shown and snapped to is the user's choice on the ADP settings page (see section 8). **Sectors** (`sector(...)`) declare swimlanes in diagram or view space; see the sample diagram.
 
 Write a one-line test that the definition builds (`StatesDefinition.DEFINITION` is enough): a `DefinitionException` then fails the test with every problem listed.
 
@@ -230,7 +232,7 @@ import etalii.adp.core.diagram.view.DiagramEditorProvider;
 public final class StatesEditorProvider extends DiagramEditorProvider {
 
     public StatesEditorProvider() {
-        super(StatesDefinition.DEFINITION, StatesMapping::new, "etalii.adp.states", "State Machine Designer", "states", "states");
+        super(StatesDefinition.DEFINITION, StatesMapping::new, "etalii.adp.states", "State Machine Diagram", "states", "states");
     }
 }
 ```
@@ -322,7 +324,7 @@ class StatesMappingTest {
 }
 ```
 
-Designer tests run in a headless IDE with `DiagramDriver` from the `testing` module. They are JUnit 4 tests on the platform's `FileEditorManagerTestCase`. The driver opens a file, dispatches real mouse and key events to the canvas, and lets you observe what is drawn. A path relative to the module directory finds your test data:
+Diagram tests run in a headless IDE with `DiagramDriver` from the `testing` module. They are JUnit 4 tests on the platform's `FileEditorManagerTestCase`. The driver opens a file, dispatches real mouse and key events to the canvas, and lets you observe what is drawn. A path relative to the module directory finds your test data:
 
 ```java
 package etalii.adp.states;
@@ -336,7 +338,7 @@ import org.junit.runners.JUnit4;
 import java.nio.file.Path;
 
 @RunWith(JUnit4.class)
-public class StatesDesignerTest extends FileEditorManagerTestCase {
+public class StatesDiagramTest extends FileEditorManagerTestCase {
 
     @Test
     public void connectAndUndo() {
@@ -380,45 +382,45 @@ public final class StatesRules implements DiagramRules {
 
 Every rule has a default that allows, so you override only the ones you need. The other rules are `canAdd`, `canRemove`, `canDisconnect`, `canDrop` and `canSetProperty` (a value that is read-only for one item only).
 
-**A listener** hears about every change after the text is read again, whether it came from the diagram, the text editor, undo or a change on disk: `definition.listener((designer, changes) -> ...)`. The changes are `Added`, `Removed`, `Moved`, `Resized`, `Connected`, `Disconnected`, `PropertyChanged` and `SectorChanged`.
+**A listener** hears about every change after the text is read again, whether it came from the diagram, the text editor, undo or a change on disk: `definition.listener((diagram, changes) -> ...)`. The changes are `Added`, `Removed`, `Moved`, `Resized`, `Connected`, `Disconnected`, `PropertyChanged` and `SectorChanged`.
 
 **A layout** is for formats that do not store positions, such as FreeMind. Give the definition a `DiagramLayout` that returns bounds for every element to show; its elements are then not moved freely but dropped onto other elements, which the mapping's `drop` turns into text. A definition with a layout may not declare movable element types. See `freemind/src/main/java/etalii/adp/freemind/ui/MindMapLayout.java`.
 
 ## 8. Optional: settings
 
-Every designer is listed on the IDE's own settings page, Settings > Tools > ADP, with its file types, version, origin and whether it loaded. The user can turn it off there, and the IDE then opens its files as it would without ADP. You write nothing for this: the list is read from your provider.
+Every diagram is listed on the IDE's own settings page, Settings > Tools > ADP, with its file types, version, origin and whether it loaded. The user can turn it off there, and the IDE then opens its files as it would without ADP. You write nothing for this: the list is read from your provider.
 
-**Canvas options** apply to every diagram designer: Show grid, Snap to grid and the zoom a diagram opens at. When your format decides one of them itself, fix it in the definition and the page names your designer under that option as not following it. FreeMind lays nodes out rather than placing them, so it fixes both grid options off:
+**Canvas options** apply to every diagram: Show grid, Snap to grid and the zoom a diagram opens at. When your format decides one of them itself, fix it in the definition and the page names your diagram under that option as not following it. FreeMind lays nodes out rather than placing them, so it fixes both grid options off:
 
 ```java
 .view(v -> v.fix(CanvasOption.SHOW_GRID, false).fix(CanvasOption.SNAP_TO_GRID, false))
 ```
 
-`grid(spacing)` sets only the spacing of the grid. A designer that must not zoom turns zoom off with `zoom(false)`, and the opening zoom then does not apply to it.
+`grid(spacing)` sets only the spacing of the grid. A diagram that must not zoom turns zoom off with `zoom(false)`, and the opening zoom then does not apply to it.
 
-**Settings of your own** are declared, not coded. Override `settings()` on the provider, and the framework builds a page named after your designer under ADP, with a check box, a spinner or a list per setting. Values are stored for the user under your editor type id, so they survive your designer being turned off or uninstalled. Read them where you need them:
+**Settings of your own** are declared, not coded. Override `settings()` on the provider, and the framework builds a page named after your diagram under ADP, with a check box, a spinner or a list per setting. Values are stored for the user under your editor type id, so they survive your diagram being turned off or uninstalled. Read them where you need them:
 
 ```java
-public static final DesignerSetting DIRECTION = DesignerSetting.choice("direction", "Layout direction", "right", "left", "right", "both");
+public static final ToolSetting DIRECTION = ToolSetting.choice("direction", "Layout direction", "right", "left", "right", "both");
 
 @Override
-public List<DesignerSetting> settings() {
+public List<ToolSetting> settings() {
     return List.of(DIRECTION);
 }
 
-// anywhere in the designer
+// anywhere in the diagram
 String direction = AdpSettings.getInstance().choice(getEditorTypeId(), DIRECTION);
 ```
 
-A key starts with a letter and uses letters, digits, `_`, `.` and `-`; a label is not empty; a number's default lies in its range; a choice's default is one of its choices. A declaration that breaks a rule is listed as a problem of your designer, which then opens no files and gets no page. To repaint when the user applies the page, subscribe to `AdpSettingsListener.TOPIC` on the application message bus for the designer's lifetime; never change the document in response.
+A key starts with a letter and uses letters, digits, `_`, `.` and `-`; a label is not empty; a number's default lies in its range; a choice's default is one of its choices. A declaration that breaks a rule is listed as a problem of your diagram, which then opens no files and gets no page. To repaint when the user applies the page, subscribe to `AdpSettingsListener.TOPIC` on the application message bus for the diagram's lifetime; never change the document in response.
 
-**Origin** is where the page says your designer comes from: "Built into ADP", or "From plug-in <name>" when another plug-in registers it. `origin()` works this out from the plug-in that registered the provider; a designer interpreted from a bundled DEDL definition returns `DesignerOrigin.BundledDefinition` with the definition's name, DEDL version and the etalii.adp revision it was copied from.
+**Origin** is where the page says your diagram comes from: "Built into ADP", or "From plug-in <name>" when another plug-in registers it. `origin()` works this out from the plug-in that registered the provider; a diagram interpreted from a bundled DISL specification returns `ToolOrigin.BundledSpecification` with the specification's name, DISL version and the etalii.adp revision it was copied from.
 
 ## Checklist
 
 - The definition test passes: no `DefinitionException`.
 - Every example file reads, and opening and saving it without edits is byte-identical.
 - Each edit kind changes only its own ranges.
-- The designer test opens an example, edits it, and undoes back to the original bytes.
+- The diagram test opens an example, edits it, and undoes back to the original bytes.
 - The provider claims your files and no others.
-- On Settings > Tools > ADP your designer is listed as loaded, and any option your definition fixes names it under "Not followed by".
+- On Settings > Tools > ADP your diagram is listed as loaded, and any option your definition fixes names it under "Not followed by".

@@ -40,8 +40,8 @@
             <keyboard-shortcut keymap="$default" first-keystroke="SPACE"/>
         </action>
 
-        <!-- The designer's context menu: the actions above in table order, then zoom. -->
-        <group id="etalii.adp.freemind.DesignerPopup" text="Mind Map" popup="false">
+        <!-- The mind map's context menu: the actions above in table order, then zoom. -->
+        <group id="etalii.adp.freemind.MindMapPopup" text="Mind map" popup="false">
             <reference ref="etalii.adp.freemind.AddChild"/>
             <reference ref="etalii.adp.freemind.AddSibling"/>
             <separator/>

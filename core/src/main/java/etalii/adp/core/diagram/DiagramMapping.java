@@ -9,7 +9,7 @@ import etalii.adp.core.diagram.model.Diagram;
 import etalii.adp.core.diagram.model.End;
 
 /**
- * Between one file format and the diagram (FR-027 to FR-029, research R5): the designer's own code.
+ * Between one file format and the diagram (FR-027 to FR-029, research R5): the diagram's own code.
  * Each edit method returns range-exact changes against {@code text}, the text {@code diagram} was
  * read from, or an empty {@link TextChanges} when there is nothing to do. Changes must not
  * overlap. The framework runs them as one command, re-reads the text and diffs.
@@ -34,7 +34,7 @@ public interface DiagramMapping {
     /** An empty {@code value} means "not set". */
     TextChanges setProperty(CharSequence text, Diagram diagram, Set<Object> keys, String property, String value);
 
-    /** Only for designers with a {@link DiagramLayout}. By default nothing is supported. */
+    /** Only for diagrams with a {@link DiagramLayout}. By default nothing is supported. */
     default TextChanges drop(CharSequence text, Diagram diagram, Set<Object> keys, Object target, Placement placement) {
         return TextChanges.of();
     }

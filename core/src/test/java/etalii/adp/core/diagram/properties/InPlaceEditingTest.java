@@ -69,7 +69,7 @@ public class InPlaceEditingTest extends FileEditorManagerTestCase {
     }
 
     private static JTextComponent editor(DiagramDriver d) {
-        return InPlaceEditor.component(d.designer().canvas());
+        return InPlaceEditor.component(d.tool().canvas());
     }
 
     /** A key press on the in-place editor: an action registered for it on the component, else its key binding. */
@@ -219,15 +219,15 @@ public class InPlaceEditingTest extends FileEditorManagerTestCase {
     @Test
     public void theEditorSitsOverItsSlotWithTheFontScaledByTheZoom() {
         try (var d = open()) {
-            d.designer().zoomIn();
+            d.tool().zoomIn();
             d.driver().settle();
             double zoom = d.zoomLevel();
             assertTrue(zoom > 1);
             d.doubleClickText("a", "owner");
             JTextComponent field = editor(d);
             assertEquals(JBFont.small().getSize2D() * zoom, field.getFont().getSize2D(), 0.01);
-            DiagramCanvas canvas = d.designer().canvas();
-            Rectangle slot = canvas.toCanvas(d.designer().textBounds("a", "owner"));
+            DiagramCanvas canvas = d.tool().canvas();
+            Rectangle slot = canvas.toCanvas(d.tool().textBounds("a", "owner"));
             assertTrue("over the slot: " + field.getBounds() + " " + slot, field.getBounds().contains(slot.x + 1, slot.y + 1));
             press(field, "ESCAPE");
         }
@@ -247,7 +247,7 @@ public class InPlaceEditingTest extends FileEditorManagerTestCase {
     @Test
     public void showPropertiesIsOfferedWhileTheCanvasHasFocus() {
         try (var d = open()) {
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             assertTrue(d.driver().presentation(ShowPropertiesAction.ID).isEnabled());
             KeyStroke altShiftP = KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
             boolean registered = ActionUtil.getActions(canvas).stream().anyMatch(action -> action instanceof ShowPropertiesAction

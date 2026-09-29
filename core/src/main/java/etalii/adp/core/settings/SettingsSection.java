@@ -11,14 +11,14 @@ import com.intellij.openapi.options.Configurable;
 
 /**
  * One part of the ADP page, registered from its own descriptor fragment (research R1). The page
- * owns the dialog contract and asks each section in {@link #order()}. Designer authors do not
+ * owns the dialog contract and asks each section in {@link #order()}. Tool engineers do not
  * implement it.
  */
 public interface SettingsSection {
 
     ExtensionPointName<SettingsSection> EP_NAME = ExtensionPointName.create("etalii.adp.settingsSection");
 
-    /** Designers 10, canvas 20, designer pages 30. */
+    /** Tools 10, canvas 20, tool pages 30. */
     int order();
 
     /** {@code null} for a section that only adds child pages. */

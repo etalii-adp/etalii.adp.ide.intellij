@@ -18,7 +18,7 @@ public sealed interface DiagramChange {
     record Removed(Object key) implements DiagramChange {
     }
 
-    /** The position changed, the size did not; also a new parent in a laid-out designer. */
+    /** The position changed, the size did not; also a new parent in a laid-out diagram. */
     record Moved(Object key, Rectangle2D from, Rectangle2D to) implements DiagramChange {
     }
 

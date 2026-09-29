@@ -9,7 +9,7 @@ import com.intellij.openapi.Disposable;
 import etalii.adp.core.diagram.DiagramFeature;
 import etalii.adp.core.diagram.view.CanvasTool;
 import etalii.adp.core.diagram.view.DiagramCanvas;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 
 /**
  * Properties on every diagram canvas (US3): a double-click on an editable text slot or connection
@@ -19,12 +19,12 @@ import etalii.adp.core.diagram.view.DiagramDesigner;
 public final class PropertiesFeature implements DiagramFeature {
 
     @Override
-    public void install(DiagramDesigner designer, DiagramCanvas canvas, Disposable lifetime) {
+    public void install(DiagramFileEditor tool, DiagramCanvas canvas, Disposable lifetime) {
         canvas.addTool(new CanvasTool() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2
-                        && InPlaceEditor.open(designer, InPlaceEditor.at(designer, canvas.toDiagram(e.getPoint())))) {
+                        && InPlaceEditor.open(tool, InPlaceEditor.at(tool, canvas.toDiagram(e.getPoint())))) {
                     e.consume();
                 }
             }

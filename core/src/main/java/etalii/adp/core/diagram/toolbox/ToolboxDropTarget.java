@@ -20,7 +20,7 @@ import etalii.adp.core.diagram.edit.MoveTool;
 import etalii.adp.core.diagram.edit.RefusalFeedback;
 import etalii.adp.core.diagram.toolbox.ToolboxDragSource.ToolboxDrag;
 import etalii.adp.core.diagram.view.DiagramCanvas;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 import etalii.adp.core.diagram.view.Scene.ElementRender;
 
 /**
@@ -33,23 +33,23 @@ public final class ToolboxDropTarget implements DnDTarget {
 
     private static final String KEY = "etalii.adp.toolbox.dropTarget";
 
-    private final DiagramDesigner designer;
+    private final DiagramFileEditor tool;
     private final DiagramCanvas canvas;
     private final RefusalFeedback feedback;
     private Object previewedFor;
     private Verdict previewed;
 
-    private ToolboxDropTarget(DiagramDesigner designer, RefusalFeedback feedback) {
-        this.designer = designer;
-        this.canvas = designer.canvas();
+    private ToolboxDropTarget(DiagramFileEditor tool, RefusalFeedback feedback) {
+        this.tool = tool;
+        this.canvas = tool.canvas();
         this.feedback = feedback;
     }
 
-    /** Take toolbox drops on the designer's canvas until {@code lifetime} ends. */
-    public static void install(DiagramDesigner designer, RefusalFeedback feedback, Disposable lifetime) {
-        ToolboxDropTarget target = new ToolboxDropTarget(designer, feedback);
-        designer.canvas().putClientProperty(KEY, target);
-        DnDManager.getInstance().registerTarget(target, designer.canvas(), lifetime);
+    /** Take toolbox drops on the diagram's canvas until {@code lifetime} ends. */
+    public static void install(DiagramFileEditor tool, RefusalFeedback feedback, Disposable lifetime) {
+        ToolboxDropTarget target = new ToolboxDropTarget(tool, feedback);
+        tool.canvas().putClientProperty(KEY, target);
+        DnDManager.getInstance().registerTarget(target, tool.canvas(), lifetime);
     }
 
     /** The toolbox drop target of a canvas, or {@code null}. */
@@ -58,12 +58,12 @@ public final class ToolboxDropTarget implements DnDTarget {
     }
 
     /** Enter on an element entry: the element centred in the visible canvas, as far as its declared size says. */
-    static void addAtCentre(DiagramDesigner designer, String typeId) {
-        ElementType type = designer.definition().elementType(typeId);
-        if (type == null || designer.diagram() == null) {
+    static void addAtCentre(DiagramFileEditor tool, String typeId) {
+        ElementType type = tool.definition().elementType(typeId);
+        if (type == null || tool.diagram() == null) {
             return;
         }
-        Rectangle2D visible = designer.canvas().visibleArea();
+        Rectangle2D visible = tool.canvas().visibleArea();
         double width = switch (type.sizing()) {
         case Sizing.Fixed fixed -> fixed.width();
         case Sizing.FromDiagram from -> from.minWidth();
@@ -75,9 +75,9 @@ public final class ToolboxDropTarget implements DnDTarget {
         case Sizing.Auto auto -> 0;
         };
         Point2D centre = new Point2D.Double(visible.getCenterX(), visible.getCenterY());
-        Point2D at = new Point2D.Double(MoveTool.snap(designer, centre.getX() - width / 2), MoveTool.snap(designer, centre.getY() - height / 2));
-        Verdict verdict = designer.commands().add(typeId, at, null);
-        RefusalFeedback feedback = RefusalFeedback.of(designer.canvas());
+        Point2D at = new Point2D.Double(MoveTool.snap(tool, centre.getX() - width / 2), MoveTool.snap(tool, centre.getY() - height / 2));
+        Verdict verdict = tool.commands().add(typeId, at, null);
+        RefusalFeedback feedback = RefusalFeedback.of(tool.canvas());
         if (!verdict.allowed() && feedback != null) {
             feedback.balloon(centre, verdict.reason());
         }
@@ -87,7 +87,7 @@ public final class ToolboxDropTarget implements DnDTarget {
     public Verdict dropAt(String typeId, Point point) {
         feedback.clear();
         previewedFor = null;
-        Verdict verdict = designer.commands().add(typeId, snapped(point), targetAt(typeId, point));
+        Verdict verdict = tool.commands().add(typeId, snapped(point), targetAt(typeId, point));
         if (!verdict.allowed()) {
             feedback.balloon(point, verdict.reason());
         } else {
@@ -98,7 +98,7 @@ public final class ToolboxDropTarget implements DnDTarget {
 
     @Override
     public boolean update(DnDEvent event) {
-        if (!(event.getAttachedObject() instanceof ToolboxDrag drag) || designer.definition().elementType(drag.typeId()) == null) {
+        if (!(event.getAttachedObject() instanceof ToolboxDrag drag) || tool.definition().elementType(drag.typeId()) == null) {
             event.setDropPossible(false);
             return false;
         }
@@ -107,7 +107,7 @@ public final class ToolboxDropTarget implements DnDTarget {
         Object key = List.of(drag.typeId(), Objects.requireNonNullElse(target, ""));
         if (!key.equals(previewedFor)) {
             previewedFor = key;
-            previewed = RefusalFeedback.preview(designer).add(drag.typeId(), snapped(point), target);
+            previewed = RefusalFeedback.preview(tool).add(drag.typeId(), snapped(point), target);
         }
         if (previewed.allowed()) {
             feedback.clear();
@@ -136,12 +136,12 @@ public final class ToolboxDropTarget implements DnDTarget {
 
     private Point2D snapped(Point point) {
         Point2D at = canvas.toDiagram(point);
-        return new Point2D.Double(MoveTool.snap(designer, at.getX()), MoveTool.snap(designer, at.getY()));
+        return new Point2D.Double(MoveTool.snap(tool, at.getX()), MoveTool.snap(tool, at.getY()));
     }
 
     /** The element a drop at a canvas point goes onto: the topmost one there, when the type may be dropped onto others. */
     private Object targetAt(String typeId, Point point) {
-        ElementType type = designer.definition().elementType(typeId);
+        ElementType type = tool.definition().elementType(typeId);
         return type != null && type.droppableOnto() ? canvas.elementAt(canvas.toDiagram(point)) : null;
     }
 }

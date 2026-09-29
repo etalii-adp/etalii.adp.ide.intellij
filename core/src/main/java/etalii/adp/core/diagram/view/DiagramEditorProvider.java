@@ -17,9 +17,9 @@ import etalii.adp.core.settings.CanvasOption;
 import etalii.adp.core.xml.XmlTree;
 
 /**
- * Opens a diagram format's files in a {@link DiagramDesigner} (contracts/diagram-framework.md).
- * A designer author says which files: an extension and root element names, or by overriding
- * {@code extensions()}, {@code sniff}, {@code editorName()} and {@code getEditorTypeId()}. A
+ * Opens a diagram format's files in a {@link DiagramFileEditor} (contracts/diagram-framework.md).
+ * A tool engineer says which files: an extension and root element names, or by overriding
+ * {@code extensions()}, {@code sniff}, {@code toolName()} and {@code getEditorTypeId()}. A
  * definition given as a builder is built here. An inconsistent one does not stop the provider
  * from loading: it keeps every problem (FR-002), refuses every file, and the ADP page lists it as
  * not loaded with its problems (spec 004, research R5).
@@ -30,7 +30,7 @@ public abstract class DiagramEditorProvider extends AdpEditorProvider {
     private final List<String> definitionProblems;
     private final Supplier<DiagramMapping> mapping;
     private final String editorTypeId;
-    private final String editorName;
+    private final String toolName;
     private final Set<String> extensions;
     private final Set<String> rootNames;
 
@@ -38,23 +38,23 @@ public abstract class DiagramEditorProvider extends AdpEditorProvider {
      * Files with {@code extension} whose first element, after the XML prolog, is one of
      * {@code rootNames} (see {@link XmlTree#rootName}).
      */
-    protected DiagramEditorProvider(DiagramDefinition definition, Supplier<DiagramMapping> mapping, String editorTypeId, String editorName,
+    protected DiagramEditorProvider(DiagramDefinition definition, Supplier<DiagramMapping> mapping, String editorTypeId, String toolName,
             String extension, String... rootNames) {
-        this(new Built(definition, List.of()), mapping, editorTypeId, editorName, extension, rootNames);
+        this(new Built(definition, List.of()), mapping, editorTypeId, toolName, extension, rootNames);
     }
 
-    private DiagramEditorProvider(Built built, Supplier<DiagramMapping> mapping, String editorTypeId, String editorName, String extension,
+    private DiagramEditorProvider(Built built, Supplier<DiagramMapping> mapping, String editorTypeId, String toolName, String extension,
             String... rootNames) {
         this.definition = built.definition();
         this.definitionProblems = built.problems();
         this.mapping = mapping;
         this.editorTypeId = editorTypeId;
-        this.editorName = editorName;
+        this.toolName = toolName;
         this.extensions = extension == null ? null : Set.of(extension);
         this.rootNames = Set.of(rootNames);
     }
 
-    /** For a provider that overrides {@code extensions()}, {@code sniff}, {@code editorName()} and {@code getEditorTypeId()}. */
+    /** For a provider that overrides {@code extensions()}, {@code sniff}, {@code toolName()} and {@code getEditorTypeId()}. */
     protected DiagramEditorProvider(DiagramDefinition definition, Supplier<DiagramMapping> mapping) {
         this(definition, mapping, null, null, null);
     }
@@ -88,8 +88,8 @@ public abstract class DiagramEditorProvider extends AdpEditorProvider {
     }
 
     @Override
-    protected String editorName() {
-        return editorName;
+    protected String toolName() {
+        return toolName;
     }
 
     @Override
@@ -114,9 +114,9 @@ public abstract class DiagramEditorProvider extends AdpEditorProvider {
         return definition == null ? Set.of() : definition.view().fixed().keySet();
     }
 
-    /** A {@link DiagramDesigner}; override to return a subclass with designer-specific actions. */
+    /** A {@link DiagramFileEditor}; override to return a subclass with diagram-specific actions. */
     @Override
-    protected DiagramDesigner createDesigner(Project project, VirtualFile file, Document document) {
-        return new DiagramDesigner(project, file, document, definition, mapping.get());
+    protected DiagramFileEditor createTool(Project project, VirtualFile file, Document document) {
+        return new DiagramFileEditor(project, file, document, definition, mapping.get());
     }
 }

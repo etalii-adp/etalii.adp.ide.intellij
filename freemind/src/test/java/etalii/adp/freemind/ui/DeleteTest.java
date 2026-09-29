@@ -17,7 +17,7 @@ import com.intellij.openapi.wm.StatusBarInfo;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 
 import etalii.adp.freemind.ui.actions.MindMapAction;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /** Spec 001 FR-021 and its edge cases: nodes go with their descendants and the arrow links into them, never the root. */
 @RunWith(JUnit4.class)
@@ -47,7 +47,7 @@ public class DeleteTest extends FileEditorManagerTestCase {
 
     @Test
     public void deleteOneNode() {
-        try (var d = DesignerDriver.openText(myFixture, "delete.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "delete.mm", MAP)) {
             d.select(key("A2")).press("DELETE");
             assertNull(d.viewOf(key("A2")));
             assertFalse(d.text().contains("ID=\"A2\""));
@@ -63,7 +63,7 @@ public class DeleteTest extends FileEditorManagerTestCase {
 
     @Test
     public void deleteSeveralNodesWithTheirDescendants() {
-        try (var d = DesignerDriver.openText(myFixture, "delete.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "delete.mm", MAP)) {
             d.select(key("A"), key("A1"), key("L")).run(DELETE);
             for (String id : List.of("A", "A1", "A2", "A3", "L")) {
                 assertNull(id, d.viewOf(key(id)));
@@ -78,7 +78,7 @@ public class DeleteTest extends FileEditorManagerTestCase {
 
     @Test
     public void theRootAloneCannotBeDeleted() {
-        try (var d = DesignerDriver.openText(myFixture, "delete.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "delete.mm", MAP)) {
             d.select(key("R"));
             assertFalse(d.presentation(DELETE).isEnabled());
             assertEquals("the reason is stated", MindMapAction.ROOT_CANNOT_BE_DELETED, d.presentation(DELETE).getDescription());
@@ -107,7 +107,7 @@ public class DeleteTest extends FileEditorManagerTestCase {
                 return "";
             }
         });
-        try (var d = DesignerDriver.openText(myFixture, "delete.mm", MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "delete.mm", MAP)) {
             d.select(key("R"), key("B"));
             assertTrue(d.presentation(DELETE).isEnabled());
             d.run(DELETE);
@@ -120,7 +120,7 @@ public class DeleteTest extends FileEditorManagerTestCase {
 
     @Test
     public void arrowLinksIntoDeletedNodesGoAndComeBackWithOneUndo() {
-        try (var d = DesignerDriver.openText(myFixture, "links.mm", LINKED_MAP)) {
+        try (var d = ToolDriver.openText(myFixture, "links.mm", LINKED_MAP)) {
             d.select(key("A")).run(DELETE);
             assertFalse("a link inside the deleted branch goes with it", d.text().contains("Arrow_ID_1"));
             assertFalse("a link into the deleted branch is removed", d.text().contains("Arrow_ID_2"));

@@ -47,8 +47,8 @@ import kotlin.time.DurationKt;
 import kotlin.time.DurationUnit;
 
 /**
- * T111, the draw.io designer in a real IntelliJ IDEA 2026.2 with the built plug-in zip installed:
- * {@code flowchart_1.drawio} opens in the draw.io designer, a rounded rectangle is added from the
+ * T111, the draw.io diagram in a real IntelliJ IDEA 2026.2 with the built plug-in zip installed:
+ * {@code flowchart_1.drawio} opens in the draw.io diagram, a rounded rectangle is added from the
  * ADP Toolbox as pressing Enter on its entry does, and the IDE's own Undo then returns the file to
  * its original bytes. {@code ADP_IT_PRODUCTS} and {@code ADP_IDE_HOME_<CODE>} work as in
  * {@link OpenMapIntegrationTest}.
@@ -96,15 +96,15 @@ class OpenDrawioTest {
                 CompositeRemote composite = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), opened, RdTarget.DEFAULT)
                         .getSelectedEditor(file);
                 assertNotNull(composite, "the diagram opens in an editor");
-                assertEquals("draw.io Designer", composite.getName());
-                assertTrue(composite.designer().isEditable(), "the diagram can be edited");
+                assertEquals("draw.io diagram", composite.getName());
+                assertTrue(composite.tool().isEditable(), "the diagram can be edited");
                 texts[0] = document(d, file).getText();
                 return Unit.INSTANCE;
             });
 
-            DesignerTab.select(driver, opened, FILE);
+            ToolTab.select(driver, opened, FILE);
             driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
-                DesignerTab.front(d, opened, EditorsKt.findOpenFile(d, FILE, opened, false));
+                ToolTab.front(d, opened, EditorsKt.findOpenFile(d, FILE, opened, false));
                 ToolWindowRemote toolbox = d.service(JvmClassMappingKt.getKotlinClass(ToolWindowManagerRemote.class), opened, RdTarget.DEFAULT)
                         .getToolWindow("ADP Toolbox");
                 assertNotNull(toolbox, "the ADP Toolbox is registered");
@@ -120,7 +120,7 @@ class OpenDrawioTest {
             assertNotEquals(texts[0], texts[1], "adding from the toolbox changed the diagram");
             assertTrue(texts[1].contains("<mxCell id=\"adp-1\" value=\"\" style=\"rounded=1;whiteSpace=wrap;html=1;\""), "the new shape is in the text");
 
-            DesignerTab.select(driver, opened, FILE);
+            ToolTab.select(driver, opened, FILE);
             invoke(driver, opened, "$Undo");
             texts[2] = text(driver, opened);
             assertEquals(texts[0], texts[2], "Undo returns the text");
@@ -138,14 +138,14 @@ class OpenDrawioTest {
         }
     }
 
-    /** Runs an action through the action system with the designer's canvas as its context, as its shortcut would. */
+    /** Runs an action through the action system with the tool's canvas as its context, as its shortcut would. */
     private static void invoke(Driver driver, Project project, String actionId) {
         driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
             VirtualFile file = EditorsKt.findOpenFile(d, FILE, project, false);
-            DesignerTab.front(d, project, file);
-            DesignerRemote designer = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT)
-                    .getSelectedEditor(file).designer();
-            ActionManagerKt.invokeAction(d, actionId, true, designer.view(), null, RdTarget.DEFAULT);
+            ToolTab.front(d, project, file);
+            ToolRemote tool = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT)
+                    .getSelectedEditor(file).tool();
+            ActionManagerKt.invokeAction(d, actionId, true, tool.view(), null, RdTarget.DEFAULT);
             return Unit.INSTANCE;
         });
     }
@@ -200,7 +200,7 @@ class OpenDrawioTest {
                 info.getQodanaProductCode(), info.getFullName(), ignored -> new ExistingIdeInstaller(installed));
     }
 
-    // The IDE's services and the plug-in's designer and toolbox, as the Driver sees them.
+    // The IDE's services and the plug-in's tool and toolbox, as the Driver sees them.
 
     @Remote("com.intellij.openapi.fileEditor.FileEditorManager")
     public interface FileEditorManagerRemote {
@@ -249,11 +249,11 @@ class OpenDrawioTest {
     public interface CompositeRemote {
         String getName();
 
-        DesignerRemote designer();
+        ToolRemote tool();
     }
 
-    @Remote(value = "etalii.adp.core.diagram.view.DiagramDesigner", plugin = PLUGIN)
-    public interface DesignerRemote {
+    @Remote(value = "etalii.adp.core.diagram.view.DiagramFileEditor", plugin = PLUGIN)
+    public interface ToolRemote {
         boolean isEditable();
 
         Component view();

@@ -318,7 +318,7 @@
   ],
   "step_summaries": {
     "plan": {
-      "summary": "Build-only fix plus designer latency tests and a manual sandbox measurement",
+      "summary": "Build-only fix plus tool latency tests and a manual sandbox measurement",
       "key_finding": "Starter puts downloads under <git root>/out/ide-tests and runIde runs with the Gradle-cache platform as working directory"
     },
     "tasks": {
@@ -348,7 +348,7 @@
       "tasks": "T003,T016,T019,T023"
     },
     "FR-006": {
-      "title": "Designers use no idle CPU and release memory when closed",
+      "title": "Tools use no idle CPU and release memory when closed",
       "tasks": "T018,T020"
     },
     "FR-007": {
@@ -440,9 +440,9 @@
     },
     "T018": {
       "status": "DONE",
-      "did": "Leak test; proven to fail with a deliberate Disposer-held designer, passes on the real code",
+      "did": "Leak test; proven to fail with a deliberate Disposer-held tool, passes on the real code",
       "files": [
-        "core/src/test/java/etalii/adp/core/DesignerLeakTest.java"
+        "core/src/test/java/etalii/adp/core/ToolLeakTest.java"
       ]
     },
     "T019": {
@@ -454,7 +454,7 @@
     },
     "T020": {
       "status": "DONE",
-      "did": "All three pass; no production change needed; designers ruled out as a second cause"
+      "did": "All three pass; no production change needed; tools ruled out as a second cause"
     },
     "T013": {
       "status": "DONE",

@@ -25,7 +25,7 @@ import etalii.adp.core.diagram.sample.SampleDefinition;
 import etalii.adp.core.diagram.sample.SampleFiles;
 import etalii.adp.core.diagram.sample.SampleProvider;
 import etalii.adp.core.diagram.view.DiagramCanvas;
-import etalii.adp.core.diagram.view.DiagramDesigner;
+import etalii.adp.core.diagram.view.DiagramFileEditor;
 import etalii.adp.testing.DiagramDriver;
 
 /**
@@ -42,7 +42,7 @@ public class SectorTest extends FileEditorManagerTestCase {
     @Override
     public void setUp() {
         super.setUp();
-        SampleProvider.register(getTestRootDisposable(), SampleDefinition.builder().listener((designer, changes) -> told.addAll(changes)));
+        SampleProvider.register(getTestRootDisposable(), SampleDefinition.builder().listener((tool, changes) -> told.addAll(changes)));
     }
 
     private DiagramDriver open(String name) {
@@ -59,7 +59,7 @@ public class SectorTest extends FileEditorManagerTestCase {
             String edited = d.driver().text();
             assertEquals("l2", attribute(box(edited, "a"), "lane"));
             assertEquals("the other element is untouched", box(opened, "b"), box(edited, "b"));
-            assertEquals("l2", d.designer().diagram().element("a").sector());
+            assertEquals("l2", d.tool().diagram().element("a").sector());
             assertEquals("Undo Move to Shop", d.driver().undoLabel());
             assertTrue("told: " + told, told.contains(new SectorChanged("a", "l1", "l2")));
             assertTrue(d.lastChanges().contains(new SectorChanged("a", "l1", "l2")));
@@ -77,9 +77,9 @@ public class SectorTest extends FileEditorManagerTestCase {
     @Test
     public void membershipOfAViewSpaceSectorIsDecidedInTheViewportAfterScrolling() {
         try (var d = open("legend-view-space.adpsample")) {
-            DiagramDesigner designer = d.designer();
+            DiagramFileEditor tool = d.tool();
             viewport(d, 300, 200).setViewPosition(new Point(100, 0));
-            assertNull(designer.diagram().element("a").sector());
+            assertNull(tool.diagram().element("a").sector());
 
             d.dragToSector("a", "g");
 
@@ -95,10 +95,10 @@ public class SectorTest extends FileEditorManagerTestCase {
     @Test
     public void lanesArePaintedAsBandsWithTheirLabelsInTheirOrientation() {
         try (var d = open("lanes.adpsample")) {
-            DiagramDesigner designer = d.designer();
-            DiagramCanvas canvas = designer.canvas();
-            assertEquals(new Rectangle(0, 0, 10000, 200), SectorLayer.onCanvas(designer, "l1"));
-            assertEquals(new Rectangle(0, 200, 10000, 200), SectorLayer.onCanvas(designer, "l2"));
+            DiagramFileEditor tool = d.tool();
+            DiagramCanvas canvas = tool.canvas();
+            assertEquals(new Rectangle(0, 0, 10000, 200), SectorLayer.onCanvas(tool, "l1"));
+            assertEquals(new Rectangle(0, 200, 10000, 200), SectorLayer.onCanvas(tool, "l2"));
             canvas.setSize(600, 450);
             BufferedImage image = paint(canvas);
             Color header = new Color(SectorLayer.HEADER.getRGB());
@@ -113,7 +113,7 @@ public class SectorTest extends FileEditorManagerTestCase {
     @Test
     public void viewSpaceSectorsArePaintedWithTheirLabelsInTheirOrientation() {
         try (var d = open("legend-view-space.adpsample")) {
-            DiagramCanvas canvas = d.designer().canvas();
+            DiagramCanvas canvas = d.tool().canvas();
             canvas.setSize(600, 300);
             BufferedImage image = paint(canvas);
             Color header = new Color(SectorLayer.HEADER.getRGB());

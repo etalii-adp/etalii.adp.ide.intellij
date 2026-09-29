@@ -14,7 +14,7 @@ import com.intellij.testFramework.FileEditorManagerTestCase;
 
 import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.NodeKey;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 import etalii.adp.testing.DropPosition;
 
 /** Spec 001 FR-022: dragging a node before, after or onto another moves it with its subtree as one edit. */
@@ -41,14 +41,14 @@ public class DragMoveTest extends FileEditorManagerTestCase {
         super.setUp();
     }
 
-    private DesignerDriver open() {
-        return DesignerDriver.openText(myFixture, "drag.mm", MAP);
+    private ToolDriver open() {
+        return ToolDriver.openText(myFixture, "drag.mm", MAP);
     }
 
     @Test
     public void theEditingGesturesAreAttachedWhenTheFileOpens() {
         try (var d = open()) {
-            MindMapCanvas canvas = LayoutTest.designer(d).canvas();
+            MindMapCanvas canvas = LayoutTest.tool(d).canvas();
             assertTrue("the IDE told the installer the file opened", EditingInstaller.isAttached(canvas));
         }
     }
@@ -102,7 +102,7 @@ public class DragMoveTest extends FileEditorManagerTestCase {
             assertFalse(d.isModified());
             assertNull(d.undoLabel());
             assertEquals("nodes are never positioned freely", before, d.viewOf(key("A")).bounds());
-            assertNull("no drop feedback is left behind", DragMove.feedbackOf(LayoutTest.designer(d).canvas()));
+            assertNull("no drop feedback is left behind", DragMove.feedbackOf(LayoutTest.tool(d).canvas()));
         }
     }
 
@@ -116,7 +116,7 @@ public class DragMoveTest extends FileEditorManagerTestCase {
         }
     }
 
-    private static List<NodeKey> children(DesignerDriver d, String id) {
+    private static List<NodeKey> children(ToolDriver d, String id) {
         MapNode node = node(d, key(id));
         return node.children().stream().map(MapNode::key).toList();
     }

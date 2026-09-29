@@ -46,7 +46,7 @@ import kotlin.time.DurationUnit;
 
 /**
  * Takes the screenshots in {@code docs/screenshots/} (see its readme): each row opens one example
- * file in its designer in a real IntelliJ IDEA 2026.2 with the built plug-in zip installed, sizes the
+ * file in its tool in a real IntelliJ IDEA 2026.2 with the built plug-in zip installed, sizes the
  * IDE window to 1600×900, and paints that window into a PNG. It is not a test and does not run with
  * {@code integrationTest}; {@code ./gradlew captureScreenshots} runs it and writes the images into
  * {@code docs/screenshots/}. {@code ADP_IDE_HOME_IU} works as in {@link OpenMapIntegrationTest}.
@@ -105,7 +105,7 @@ class CaptureScreenshots {
                 return Unit.INSTANCE;
             });
 
-            // Let indexing, the pages the IDE opens on a first start and the designer's layout settle.
+            // Let indexing, the pages the IDE opens on a first start and the tool's layout settle.
             Thread.sleep(15_000);
 
             driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
@@ -134,7 +134,7 @@ class CaptureScreenshots {
                 return Unit.INSTANCE;
             });
 
-            // Let the tool windows and the toolbox follow the designer before painting.
+            // Let the tool windows and the toolbox follow the tool before painting.
             Thread.sleep(5_000);
 
             Path target = output.resolve(image).toAbsolutePath();

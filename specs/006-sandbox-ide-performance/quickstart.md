@@ -13,18 +13,18 @@ Paths below are relative to the repository. `<sandbox>` is `.intellijPlatform/sa
 
 ## 2. Start time and indexing (SC-001, SC-002)
 
-- Ready: time from `IDE STARTED` in `<sandbox>/log_runIde/idea.log` to the moment an example map is shown in its designer.
+- Ready: time from `IDE STARTED` in `<sandbox>/log_runIde/idea.log` to the moment an example map is shown in its tool.
 - Indexing: the newest file in `<sandbox>/log_runIde/indexing-diagnostic/` gives the number of scanned and indexed files and the time. Before the change, also note whether paths under `out/ide-tests` appear in `idea.log`.
 
 ## 3. Thirty minutes of use (SC-003)
 
-Open two maps and two diagrams from the example project, edit in both the designer and the text view, close and reopen them, for thirty minutes. Then:
+Open two maps and two diagrams from the example project, edit in both the tool and the text view, close and reopen them, for thirty minutes. Then:
 
 - Find the sandbox's process id (the `java` process whose command line contains `log_runIde`).
 - Run the platform runtime's `jcmd <pid> GC.run`, then `jcmd <pid> GC.heap_info`, and note used against maximum heap.
 - Count in `idea.log`: `OutOfMemoryError`, `Low memory signal`; count `threadDumps-freeze-*` folders in the log folder.
 
-## 4. Designer latency (SC-004)
+## 4. Tool latency (SC-004)
 
 ```bash
 ./gradlew :freemind:test --tests '*TypingLatencyTest' :drawio:test --tests '*TypingLatencyTest'

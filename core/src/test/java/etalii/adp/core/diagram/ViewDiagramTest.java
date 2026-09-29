@@ -40,11 +40,11 @@ public class ViewDiagramTest extends FileEditorManagerTestCase {
     }
 
     @Test
-    public void aSampleFileOpensInTheSampleDesigner() {
+    public void aSampleFileOpensInTheSampleTool() {
         try (var d = open("two-tasks.adpsample")) {
-            assertNotNull(d.designer());
+            assertNotNull(d.tool());
             assertEquals(SampleProvider.EDITOR_TYPE_ID, d.driver().editorTypeIdUsed());
-            assertEquals(Layout.DESIGNER, d.driver().layout());
+            assertEquals(Layout.TOOL, d.driver().layout());
             assertEquals(SampleFiles.read("two-tasks.adpsample"), d.driver().text());
             assertEquals(List.of("a", "b"), d.elementKeys());
             assertEquals(List.of("f1"), d.connectionKeys());
@@ -74,7 +74,7 @@ public class ViewDiagramTest extends FileEditorManagerTestCase {
             Rectangle box = b.bounds();
             assertEquals(new Point(240, 40), box.getLocation());
             assertTrue("auto-sized within the maximum width: " + box, box.width > 0 && box.width <= JBUI.scale(200));
-            int lineHeight = d.designer().canvas().getFontMetrics(b.font()).getHeight();
+            int lineHeight = d.tool().canvas().getFontMetrics(b.font()).getHeight();
             assertTrue("two lines fit: " + box, box.height >= 2 * lineHeight);
             assertTrue("no taller than the text needs: " + box, box.height < 4 * lineHeight);
         }
@@ -131,7 +131,7 @@ public class ViewDiagramTest extends FileEditorManagerTestCase {
     public void everySampleFileThatReadsIsPainted() {
         for (String name : List.of("two-tasks", "flow-dashed-curved", "invisible-anchors", "lanes", "legend-view-space", "unknown-type", "crlf")) {
             try (var d = open(name + ".adpsample")) {
-                DiagramCanvas canvas = d.designer().canvas();
+                DiagramCanvas canvas = d.tool().canvas();
                 canvas.setSize(canvas.getPreferredSize());
                 assertTrue(name, canvas.getWidth() > 0 && canvas.getHeight() > 0);
                 BufferedImage image = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_INT_RGB);

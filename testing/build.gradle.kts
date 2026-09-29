@@ -12,7 +12,7 @@ tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
 }
 
-// The designer test kit (contracts/test-kit.md): main code here is test support for format modules.
+// The tool test kit (contracts/test-kit.md): main code here is test support for format modules.
 dependencies {
     implementation(project(":core"))
     intellijPlatform {

@@ -32,7 +32,7 @@ tasks.test {
         events("failed")
         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
     }
-    // Hand-written sample designer files, read by the diagram tests.
+    // Hand-written sample tool files, read by the diagram tests.
     systemProperty("adp.testdata", layout.projectDirectory.dir("testdata").asFile.absolutePath)
     inputs.dir("testdata")
 }

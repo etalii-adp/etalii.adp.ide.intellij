@@ -16,7 +16,7 @@ import etalii.adp.freemind.model.MapNode;
 import etalii.adp.freemind.model.NodeKey;
 import etalii.adp.freemind.model.Side;
 import etalii.adp.freemind.ui.actions.MindMapAction;
-import etalii.adp.testing.DesignerDriver;
+import etalii.adp.testing.ToolDriver;
 
 /** Spec 001 FR-022, US2-AS2: keyboard moves among siblings and between levels, with the command table's enablement. */
 @RunWith(JUnit4.class)
@@ -32,8 +32,8 @@ public class MoveNodeTest extends FileEditorManagerTestCase {
         super.setUp();
     }
 
-    private DesignerDriver open() {
-        return DesignerDriver.openText(myFixture, "move.mm", MAP);
+    private ToolDriver open() {
+        return ToolDriver.openText(myFixture, "move.mm", MAP);
     }
 
     @Test
@@ -127,7 +127,7 @@ public class MoveNodeTest extends FileEditorManagerTestCase {
         }
     }
 
-    private static List<NodeKey> children(DesignerDriver d, String parentId) {
+    private static List<NodeKey> children(ToolDriver d, String parentId) {
         return node(d, key(parentId)).children().stream().map(MapNode::key).toList();
     }
 }

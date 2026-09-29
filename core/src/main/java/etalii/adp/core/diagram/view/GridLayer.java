@@ -12,7 +12,7 @@ import etalii.adp.core.settings.CanvasOption;
 
 /**
  * The grid (spec 004, FR-011): a dot at every grid point, under the elements and above the
- * sectors, when showing the grid is effectively on for the designer. Dots keep their size on the
+ * sectors, when showing the grid is effectively on for the diagram. Dots keep their size on the
  * screen at every zoom; when they would crowd together, only every second, fourth... point is
  * drawn.
  */
@@ -24,10 +24,10 @@ public final class GridLayer implements CanvasLayer {
     /** Closer than this on the screen, dots are thinned out. */
     private static final int MIN_GAP = 6;
 
-    private final DiagramDesigner designer;
+    private final DiagramFileEditor tool;
 
-    public GridLayer(DiagramDesigner designer) {
-        this.designer = designer;
+    public GridLayer(DiagramFileEditor tool) {
+        this.tool = tool;
     }
 
     @Override
@@ -37,7 +37,7 @@ public final class GridLayer implements CanvasLayer {
 
     @Override
     public void paint(Graphics2D g, DiagramCanvas canvas, Rectangle2D visible) {
-        ViewOptions view = designer.definition().view();
+        ViewOptions view = tool.definition().view();
         if (view.grid() <= 0 || !AdpSettings.getInstance().effective(CanvasOption.SHOW_GRID, view)) {
             return;
         }

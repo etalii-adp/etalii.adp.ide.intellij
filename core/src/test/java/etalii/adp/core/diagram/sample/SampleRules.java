@@ -7,7 +7,7 @@ import etalii.adp.core.diagram.Verdict;
 import etalii.adp.core.diagram.model.Diagram;
 import etalii.adp.core.diagram.model.Element;
 
-/** The sample designer's one rule: a diagram keeps at least one task. */
+/** The sample diagram's one rule: a diagram keeps at least one task. */
 public final class SampleRules implements DiagramRules {
 
     @Override
