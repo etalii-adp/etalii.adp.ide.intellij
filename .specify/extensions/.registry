@@ -16,7 +16,13 @@
           "speckit.git.commit"
         ]
       },
-      "registered_skills": [],
+      "registered_skills": [
+        "speckit-git-feature",
+        "speckit-git-validate",
+        "speckit-git-remote",
+        "speckit-git-initialize",
+        "speckit-git-commit"
+      ],
       "installed_at": "2026-09-24T12:18:57.518253+00:00"
     },
     "companion": {
@@ -50,7 +56,29 @@
           "speckit.companion.living-sync"
         ]
       },
-      "registered_skills": [],
+      "registered_skills": [
+        "speckit-companion-after-specify",
+        "speckit-companion-after-plan",
+        "speckit-companion-after-tasks",
+        "speckit-companion-after-implement",
+        "speckit-companion-status",
+        "speckit-companion-resume",
+        "speckit-companion-specify",
+        "speckit-companion-plan",
+        "speckit-companion-tasks",
+        "speckit-companion-implement",
+        "speckit-companion-classify",
+        "speckit-companion-mark-complete",
+        "speckit-companion-auto",
+        "speckit-companion-doctor",
+        "speckit-companion-living-adopt",
+        "speckit-companion-living-move",
+        "speckit-companion-living-drift",
+        "speckit-companion-living-show",
+        "speckit-companion-living-validate",
+        "speckit-companion-living-coverage",
+        "speckit-companion-living-sync"
+      ],
       "installed_at": "2026-09-24T12:49:20.216241+00:00"
     }
   }
