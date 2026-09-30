@@ -23,3 +23,10 @@ __pycache__/
 .DS_Store
 Thumbs.db
 .trace.jsonl
+
+# Test and editor output (Allure results from the real-IDE tests, the Java language server's bin/ folders)
+allure-results/
+bin/
+
+# Spec Kit's downloaded extension catalogue
+.specify/extensions/.cache/
