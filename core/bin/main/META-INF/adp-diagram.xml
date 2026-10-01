@@ -1,6 +1,0 @@
-<!-- The diagram framework: the extension point through which each story's fragment adds its tools and layers to the canvas. -->
-<idea-plugin>
-    <extensionPoints>
-        <extensionPoint qualifiedName="etalii.adp.diagramFeature" interface="etalii.adp.core.diagram.DiagramFeature" dynamic="true"/>
-    </extensionPoints>
-</idea-plugin>

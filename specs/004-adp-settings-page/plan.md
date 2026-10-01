@@ -26,7 +26,7 @@ No new dependency and no new module: everything is in `core`, in a new `settings
 
 **Project Type**: IntelliJ Platform plug-in, Gradle modules `core`, `freemind`, `drawio`, `testing`.
 
-**Performance Goals**: SC-006: the Settings dialog opens no slower with the page, measured with 20 designers (19 test-only providers plus the real ones).
+**Performance Goals**: SC-006: the Settings dialog opens no slower with the page, measured with 20 test-only designers (18 fillers and the two sample designers).
 
 **Constraints**: settings never change a file, its undo history or its modified state (FR-006); no network access; no project-level state (FR-005).
 
@@ -74,7 +74,7 @@ core/src/main/resources/META-INF/
 ├── adp-settings-canvas.xml                # US3: the canvas section
 └── adp-settings-designer-pages.xml        # US4: the designer pages section
 core/src/main/java/etalii/adp/core/
-├── AdpEditorProvider.java                 # accepts() honours off; designerInfo(), settings(), origin(), problems()
+├── AdpEditorProvider.java                 # accepts() honours off; designerInfo(), settings(), origin(), problems(), fixedOptions(); implements PluginAware for version and origin
 ├── settings/                              # new
 │   ├── AdpSettings.java                   # application service + State bean, typed reads, fallback (R2, R3)
 │   ├── AdpSettingsListener.java           # message-bus topic (R8)
@@ -98,7 +98,7 @@ core/src/main/java/etalii/adp/core/diagram/edit/MoveTool.java                # s
 freemind/src/main/java/etalii/adp/freemind/ui/FreeMindDefinition.java        # fixes grid and snap off
 core/src/test/java/etalii/adp/core/settings/                                 # new tests
 core/src/test/java/etalii/adp/core/diagram/sample/                           # + BrokenSampleProvider, sample setting and origin
-src/integrationTest/java/etalii/adp/it/SettingsPageIntegrationTest.java      # search and open-time scenario
+src/integrationTest/java/etalii/adp/it/SettingsPageIntegrationTest.java      # settings search scenario
 ```
 
 **Structure Decision**: a `settings` package in `core` beside `diagram`, because the page serves every designer, including FreeMind, which is not only a diagram. The diagram view changes stay in `diagram/`. No format module gains a dependency.

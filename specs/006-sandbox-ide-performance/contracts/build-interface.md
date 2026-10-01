@@ -18,4 +18,4 @@ What a contributor, CI and the tests can rely on after this feature.
 
 ## IDE project model
 
-- The root build applies Gradle's `idea` plug-in and excludes `out`, `.intellijPlatform`, `.claude/worktrees` and each module's `build` folder, so any IntelliJ Platform IDE importing this Gradle build leaves them unindexed.
+- The root build applies Gradle's `idea` plug-in and excludes `out`, `.intellijPlatform` and `.claude/worktrees` (module `build` folders are left to the IDE's Gradle import, which excludes them itself), so any IntelliJ Platform IDE importing this Gradle build leaves them unindexed.

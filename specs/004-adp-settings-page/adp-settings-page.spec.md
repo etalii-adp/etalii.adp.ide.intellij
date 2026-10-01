@@ -180,7 +180,7 @@ Designers defined in DEDL are not loaded from the user's disk: their definitions
 
 - The page sits where the IDE places settings for tools (Settings > Tools > ADP). Its exact place is a presentation choice for the plan.
 - The default editor for a file type (designer or text) stays the IDE's own choice (spec 001, FR-003); the ADP page links to it rather than repeating it.
-- Canvas options apply to designers built on the diagram designer framework (spec 003). The FreeMind designer follows them once it is migrated onto that framework.
+- Canvas options apply to designers built on the diagram designer framework (spec 003). The FreeMind designer is on that framework; its definition fixes Show grid and Snap to grid off, so it follows only the opening zoom.
 - Defaults: every designer on, grid off, snapping on, opening zoom 100%.
 - Colours, fonts and key bindings are the IDE's own colour scheme and keymap settings, not ADP settings.
 - A visual editor for designer definitions is out of scope.

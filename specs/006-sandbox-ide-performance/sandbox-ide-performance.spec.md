@@ -1,6 +1,6 @@
 # Feature Specification: A Fast Sandbox IDE
 
-**Feature Branch**: `features/006-sandbox-ide-performance` (drafted on `develop`, not yet branched)
+**Feature Branch**: `features/006-sandbox-ide-performance` (merged into `develop` by PR #13)
 **Created**: 2026-09-27
 **Status**: Draft
 **Input**: "Running the plug-in with `./gradlew runIde` is slow. Investigate the slowdown and fix it."
@@ -113,7 +113,7 @@ A contributor who runs `./gradlew runIde` for the first time, or after a platfor
 
 - **Sandbox**: the IDE started by `./gradlew runIde`, with its own settings, system, plug-ins and log folders.
 - **Sandbox project**: the project the sandbox opens, with the example files a contributor tries tools on.
-- **Real-IDE test downloads**: the IDE installers and unpacked IDEs the real-IDE tests fetch, today 29 GB under `out/ide-tests/`.
+- **Real-IDE test downloads**: the IDE installers and unpacked IDEs the real-IDE tests fetch, about 30 GB, kept in the per-user cache `adp.ideTests.home` (29 GB under `out/ide-tests/` before this feature).
 - **Performance baseline**: the recorded start time, idle memory and typing latency the success criteria are checked against.
 
 ## Success Criteria *(mandatory)*

@@ -23,7 +23,7 @@ The sandbox slows down because it reopens this repository, which holds 29 GB of 
 | II. The text file is the source of truth | PASS. The sandbox edits copies, so vendored example files are never rewritten by hand trials. |
 | III. One framework, many tools | PASS. No change to `core`; each format adds only its own latency test. |
 | IV. Test-first, against real files | PASS. The latency tests and the download-location test are written first and seen failing. The latency tests use generated files, like the existing performance tests; the sandbox project uses the real published examples. |
-| V. Simplicity | PASS. Build configuration and one test helper; no new library; the heap stays at its default. |
+| V. Simplicity | PASS. Build configuration and one test helper; no new plug-in dependency (the integration tests add `kodein-di-jvm`, Starter's version, and `junit-platform-launcher`); the heap stays at its default. |
 | Platform constraints | PASS. Headless build unchanged; no runtime network access added. |
 | Workflow | PASS once the work moves to its own branch and worktree (the spec was drafted on `develop`). |
 | Quality above everything else | PASS. The change must build with no new compiler or Gradle deprecation warnings. |
@@ -52,12 +52,11 @@ specs/006-sandbox-ide-performance/
 ```text
 build.gradle.kts                          # runIde project argument, dump paths, idea excludes, test cache property
 src/integrationTest/java/etalii/adp/it/
-├── IdeTestsHome.java                     # new: points the Starter framework at the per-user cache
-└── *IntegrationTest.java, OpenDrawioTest.java   # call IdeTestsHome before starting an IDE
+└── IdeTestsHome.java                     # new: a JUnit LauncherSessionListener (META-INF/services) pointing the Starter framework at the per-user cache
 freemind/src/test/java/etalii/adp/freemind/ui/
 └── TypingLatencyTest.java                # new: SC-004 on a generated 2,000-node map
 drawio/src/test/java/etalii/adp/drawio/
-├── DrawioAsserts.java (or existing helper) # new generator for a 500-cell diagram
+├── GeneratedDiagrams.java                # new generator for a 500-cell diagram
 └── TypingLatencyTest.java                # new: SC-004 on a generated 500-cell diagram
 README.md                                 # sandbox folders, reset, test download location and size
 .gitignore                                # nothing new expected; verify

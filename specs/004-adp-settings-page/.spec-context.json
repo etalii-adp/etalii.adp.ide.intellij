@@ -499,7 +499,7 @@
       "note": "Implementation waits for spec 003 (PR #4) to merge; re-check R5 and R8 against the merged code"
     },
     {
-      "note": "integrationTest not run: the permission classifier refused it as Modify Shared Resources, awaiting Peter. SettingsPageIntegrationTest (T051) compiles but never ran, the NoPreviousHost fix is unconfirmed, T051 and T053 stay open",
+      "note": "integrationTest ran in commit 5cdda70: SettingsPageIntegrationTest (T051) passes and NoPreviousHostIntegrationTest is green again; only T053, the manual quickstart walk, stays open",
       "step": "implement"
     },
     {
@@ -735,7 +735,7 @@
       "tests": "core/src/test/java/etalii/adp/core/settings/AdpSettingsTest.java"
     },
     "SC-001": {
-      "tests": "core/src/test/java/etalii/adp/core/settings/AdpSearchableOptionsTest.java,src/integrationTest/java/etalii/adp/it/SettingsPageIntegrationTest.java (not run)"
+      "tests": "core/src/test/java/etalii/adp/core/settings/AdpSearchableOptionsTest.java,src/integrationTest/java/etalii/adp/it/SettingsPageIntegrationTest.java"
     },
     "SC-002": {
       "tests": "core/src/test/java/etalii/adp/core/settings/TurnDesignerOffTest.java"
@@ -1111,7 +1111,7 @@
       "did": "gradlew check (integrationTest included) exited 0 on 5cdda70; manual quickstart walk in runIde confirmed by Peter on 2026-09-28"
     }
   },
-  "last_action": "All tasks but T051 and T053 done; gradlew test, verifyPlugin and verifyDependencyLicences exit 0; integrationTest awaiting permission",
+  "last_action": "All tasks but T053 done; gradlew check and integrationTest exit 0; merged into develop by PR #7; T053, the manual quickstart walk, passed for Peter on 2026-09-28",
   "verified": [
     {
       "what": "headless tests, plug-in verifier and licence check",

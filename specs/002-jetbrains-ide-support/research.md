@@ -253,9 +253,11 @@ Root project `EtAlii.Adp.IntelliJ` builds the plug-in; `core` and `freemind` app
 
 `./gradlew build` compiles, runs `check` (all three test layers), `verifyPluginProjectConfiguration`
 and `verifyPlugin`, and produces `build/distributions/etalii-adp-<version>.zip`, the file users
-install from disk. `verifyPlugin` runs the Plugin Verifier against IntelliJ IDEA, Rider,
+install from disk. `verifyPlugin` runs the Plugin Verifier against IntelliJ IDEA,
 WebStorm, PyCharm, CLion, GoLand, PhpStorm and RubyMine 2026.2 (`select { types = ...;
-sinceBuild = "262" }`), which covers FR-001 for the products not exercised by the integration
+sinceBuild = "262" }`), and against Rider through `create(Rider, riderVerifyVersion) {
+useInstaller = false }` (its Maven archive, version pinned in `gradle.properties`; `select {}`
+only fetches installers, which Rider lacks), which covers FR-001 for the products not exercised by the integration
 suite.
 
 The build downloads the IDEs it tests against; that is build-time network use. The plug-in

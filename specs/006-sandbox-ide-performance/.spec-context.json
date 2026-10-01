@@ -277,15 +277,15 @@
   ],
   "concerns": [
     {
-      "note": "Cause inferred from the sandbox log of 2026-09-27 10:46-10:50; no live measurement of a running sandbox yet"
+      "note": "Cause inferred from the sandbox log of 2026-09-27 10:46-10:50; the after-runs were measured later (quickstart Results), but the thirty-minute session (SC-003) is still unmeasured"
     },
     {
-      "note": "Spec drafted on develop in a dirty working tree; the feature branch is not created yet"
+      "note": "Merged into develop by PR #13; Peter's manual checks for T014 and T024 passed on 2026-09-28"
     }
   ],
   "decisions": [
     {
-      "decision": "Defaults pending Peter: sandbox opens a bundled examples project; real-IDE test downloads move out of the repo; heap dumps go to the sandbox log folder"
+      "decision": "(Superseded by the next decision) Defaults pending Peter: sandbox opens a bundled examples project; real-IDE test downloads move out of the repo; heap dumps go to the sandbox log folder"
     },
     {
       "decision": "Peter chose on 2026-09-27: runIde opens a small example project; real-IDE test downloads live outside the repo in a per-user cache; heap dumps are kept, written to the sandbox log folder"
@@ -301,7 +301,7 @@
       "rejected": "a junction from out/ide-tests, which the IDE would still index"
     },
     {
-      "decision": "Exclude out, .intellijPlatform and build via the Gradle idea plug-in",
+      "decision": "Exclude out, .intellijPlatform and .claude/worktrees via the Gradle idea plug-in; build folders are left to the Gradle import",
       "why": "travels with the build to any IDE importing it, no committed .idea files",
       "rejected": "committed .iml exclusions"
     },
@@ -361,7 +361,7 @@
     },
     "FR-009": {
       "title": "Real-IDE test downloads live in a per-user cache outside the repository",
-      "tasks": "T004,T006,T007,T008,T009,T010,T011,T012,T013"
+      "tasks": "T004,T006,T007,T013"
     }
   },
   "currentTask": "T024",

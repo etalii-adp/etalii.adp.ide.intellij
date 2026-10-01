@@ -38,10 +38,12 @@ Covered by `./gradlew test`: every example map opened and saved without edits is
 and every scenario in `freemind/testdata/reference/scenarios.json` reproduces its recorded result
 byte for byte, and undoing it restores the original. To look at one by hand:
 
-1. `./gradlew runIde`, open `freemind/testdata/examples/freemind-1.0.1-rich-notes.mm`.
-2. Add a child to the root, save, and diff the file with `git diff --no-index`: only the new
-   node's line and the parent's `MODIFIED` value differ.
-3. Undo, save: `git status` shows the file unchanged.
+1. `./gradlew runIde` opens `example-project` in the sandbox, which holds fresh copies of the
+   example files; open `freemind-1.0.1-rich-notes.mm` there.
+2. Add a child to the root, save, and compare the copy with the original in
+   `freemind/testdata/examples/` using `git diff --no-index`: only the new node's line and the
+   parent's `MODIFIED` value differ.
+3. Undo, save: the same comparison shows no difference.
 
 ## 3. Install from disk and use it (SC-001, SC-006)
 
@@ -53,7 +55,7 @@ In each IDE: Settings > Plugins > gear icon > Install Plugin from Disk > the zip
 | Open a non-FreeMind `.mm` file (in CLion: an Objective-C++ source) | Opens in the editor the IDE would use without the plug-in |
 | Toolbar: Editor / Editor and Preview | Shows the same file as text; edits in either side appear in the other |
 | Add five nodes, undo two, save | Edit > Undo shows "Undo Add Child Node"; the saved file has three new nodes |
-| Settings > Keymap > Plug-ins > A Different Perspective (ADP), rebind Add Child Node, press it in the designer | The action runs |
+| Settings > Keymap > Plug-ins > ADP: A Different Perspective, rebind Add Child Node, press it in the designer | The action runs |
 | New > FreeMind Mind Map | A map with one root opens in the designer |
 | Structure tool window | Lists the node tree; selection follows both ways |
 | Switch to a dark theme, raise the IDE font scale | Everything legible and sharp |

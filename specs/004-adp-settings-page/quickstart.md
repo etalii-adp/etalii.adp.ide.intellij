@@ -6,7 +6,7 @@ Prerequisites: spec 003 merged into `develop`; JDK 25; this feature's branch che
 
 ```bash
 ./gradlew test               # headless: service, fallback, page, gating, search, live apply
-./gradlew integrationTest    # real IDE: search "ADP" and a designer name, dialog open time
+./gradlew integrationTest    # real IDE: settings search for "ADP" and a designer name
 ./gradlew check              # everything, plus the plug-in verifier
 ```
 
@@ -21,7 +21,7 @@ All three must exit zero.
 | Turn off | Untick FreeMind, Apply, open a `.mm` file | Opens in the text editor; an already open map stays open | US2, FR-010 |
 | Turn on | Tick it, Apply, open the file again | Opens in the designer | US2 |
 | Grid | Tick Show grid, Apply with a `.drawio` file open | Grid appears without reopening; the file is not marked modified | US3, FR-006 |
-| Not followed | Select Snap to grid | "Not followed by: FreeMind Mind Map" shown | FR-012 |
+| Not followed | Look at Show grid and Snap to grid | "Not followed by: FreeMind Mind Map" beside each | FR-012 |
 | Cancel | Change anything, Cancel | Nothing changes | FR-002 |
 | Export | File > Manage IDE Settings > Export, reset, Import | Settings come back | SC-005 |
 

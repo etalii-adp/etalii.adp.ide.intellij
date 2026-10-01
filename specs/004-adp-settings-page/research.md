@@ -14,7 +14,7 @@ The page is made of sections. `AdpConfigurable` owns the dialog contract (`isMod
 
 ## R2. Storage, export, import and Settings Sync
 
-**Decision**: An application service `AdpSettings implements PersistentStateComponent<AdpSettings.State>`, annotated `@State(name = "AdpSettings", storages = @Storage("adp.xml"), category = SettingsCategory.PLUGINS)`. The state is a plain bean of strings, booleans and string maps. Every setting is user-level (FR-005).
+**Decision**: An application service `AdpSettings implements PersistentStateComponent<Element>`, annotated `@State(name = "AdpSettings", storages = @Storage("adp.xml"), category = SettingsCategory.PLUGINS)`. It serializes an inner `State` bean of strings, booleans and string maps with `XmlSerializer`, reads each known `<option>` on its own and keeps unknown elements. Every setting is user-level (FR-005).
 
 **Rationale**: A `PersistentStateComponent` with the default roaming type is what File > Manage IDE Settings > Export and Import, and Settings Sync, already carry (FR-003, SC-005). No project-level state is left after the 2026-09-26 clarification, so no project service is needed.
 
@@ -22,7 +22,7 @@ The page is made of sections. `AdpConfigurable` owns the dialog contract (`isMod
 
 ## R3. Reading stored settings that are damaged or newer (FR-018)
 
-**Decision**: The state stores each value as it was written. `AdpSettings` validates each field when it is read into the typed `CanvasOptions` and designer settings: an unknown enum constant, an out-of-range zoom or an unparsable value falls back to that field's default alone. Fields it does not know are kept in the state untouched, so a downgrade followed by an upgrade loses nothing. When at least one field fell back, one notification from the `ADP` notification group says which settings were reset, once per IDE session.
+**Decision**: The state stores each value as it was written. `AdpSettings` validates each field when it is read into the typed `CanvasOptions` and designer settings: an out-of-range zoom or an unparsable value falls back to that field's default alone. Fields it does not know are kept in the state untouched, so a downgrade followed by an upgrade loses nothing. When at least one field fell back, one notification from the `ADP` notification group says which settings were reset, once per IDE session.
 
 **Rationale**: The platform's serializer drops a whole component only when the XML itself is broken; field-level fallback has to be ADP's. Keeping unknown fields honours "keeps what it can".
 
@@ -38,7 +38,7 @@ The page is made of sections. `AdpConfigurable` owns the dialog contract (`isMod
 
 ## R5. Which designers are installed, and their status (FR-007, FR-008)
 
-**Decision**: A small registry `AdpDesigners` lists every `AdpEditorProvider` among the platform's `fileEditorProvider` extensions. Each provider answers `designerInfo()`: its name (`editorName()`), file types (`extensions()`), version (the `version` of the plug-in descriptor that registered the extension, via `PluginManager.getPluginByClass`), its origin (R9) and its problems. The provider's own id, `getEditorTypeId()`, is the key everything else stores against.
+**Decision**: A small registry `AdpDesigners` lists every `AdpEditorProvider` among the platform's `fileEditorProvider` extensions. Each provider answers `designerInfo()`: its name (`editorName()`), file types (`extensions()`), version (the `version` of the plug-in descriptor that registered the extension, handed to the provider through `PluginAware.setPluginDescriptor`, since `PluginManager.getPluginByClass` is internal API and fails the plug-in verifier; a provider a test registers itself reads as built into ADP with an empty version), its origin (R9) and its problems. The provider's own id, `getEditorTypeId()`, is the key everything else stores against.
 
 `DiagramEditorProvider`'s builder constructor today lets a `DefinitionException` escape, so the platform fails to create the extension and the designer vanishes without a trace. It changes to catch the exception, keep its `problems()`, and refuse every file (`accepts` returns false). A designer that failed that way is then listed as "Not loaded" with each problem (acceptance scenario 1.3, SC-004).
 
@@ -64,7 +64,7 @@ The page is made of sections. `AdpConfigurable` owns the dialog contract (`isMod
 
 ## R8. Canvas options and how they reach open designers (FR-006, FR-011, FR-012)
 
-**Decision**: `AdpSettings` publishes `AdpSettingsListener.TOPIC` on the application message bus after Apply. `DiagramDesigner` subscribes for its lifetime and repaints; it never touches its document.
+**Decision**: The ADP page, and each designer page, publishes `AdpSettingsListener.TOPIC` on the application message bus after an Apply that changed something. `DiagramDesigner` subscribes for its lifetime and repaints; it never touches its document.
 
 - **Show grid**: a new `GridLayer` in `core/…/diagram/view/` paints dots at the grid spacing when showing is on.
 - **Snap to grid**: every snap already goes through `MoveTool.snap(designer, value)`, which `ResizeTool` and `ToolboxDropTarget` call too. Its body changes to snap only when the effective option is on; no caller changes.
@@ -99,7 +99,7 @@ The page is made of sections. `AdpConfigurable` owns the dialog contract (`isMod
 
 ## R12. Testing approach
 
-**Decision**: Headless platform tests (`BasePlatformTestCase`) for the service, the configurable's `isModified`/`apply`/`reset`, the registry, gating, search contributions and live application to an open designer through `DiagramDriver`. A state round trip test serializes `AdpSettings.State` with the platform's `XmlSerializer` and loads it back, including damaged and unknown fields (SC-005, FR-018). One Starter + Driver integration scenario opens the real Settings dialog, searches "ADP" and a designer name, and measures that the dialog opens within the same time budget with and without the page (SC-001, SC-006). A deliberately broken sample designer (test-only) proves SC-004.
+**Decision**: Headless platform tests (`BasePlatformTestCase`) for the service, the configurable's `isModified`/`apply`/`reset`, the registry, gating, search contributions and live application to an open designer through `DiagramDriver`. A state round trip test serializes `AdpSettings.State` with the platform's `XmlSerializer` and loads it back (SC-005); `AdpSettingsTest` covers damaged and unknown fields (FR-018). One Starter + Driver integration scenario runs the IDE's settings search (the registrar the Settings dialog uses) for "ADP" and "FreeMind Mind Map" and expects the ADP page (SC-001). SC-006 is the headless page-cost test. A deliberately broken sample designer (test-only) proves SC-004.
 
 **Rationale**: Constitution IV: registration and platform behaviour in a headless IDE, and the few things only a real dialog shows in the integration suite.
 
