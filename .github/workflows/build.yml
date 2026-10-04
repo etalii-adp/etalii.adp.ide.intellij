@@ -143,10 +143,12 @@ jobs:
         with:
           pattern: etalii-adp-*.zip
           merge-multiple: true
+          # The artifact is the zip itself; without this it would be unpacked.
+          skip-decompress: true
           path: plugin
       - name: Publish the development build
         run: |
-          zip=$(ls plugin/etalii-adp-*.zip)
+          zip=$(find plugin -type f -name 'etalii-adp-*.zip' | head -n 1)
           file=$(basename "$zip")
           version=${file#etalii-adp-}
           version=${version%.zip}
@@ -211,10 +213,12 @@ jobs:
         with:
           pattern: etalii-adp-*.zip
           merge-multiple: true
+          # The artifact is the zip itself; without this it would be unpacked.
+          skip-decompress: true
           path: plugin
       - name: Publish the release
         run: |
-          zip=$(ls plugin/etalii-adp-*.zip)
+          zip=$(find plugin -type f -name 'etalii-adp-*.zip' | head -n 1)
           version=${GITHUB_REF_NAME#v}
           # The previous version mark, so the generated notes do not start at the development tag.
           previous=$(gh api "repos/$GH_REPO/tags" --paginate --jq '.[].name' \
