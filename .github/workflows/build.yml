@@ -1,16 +1,24 @@
-# Checks every pull request into develop and every change to develop (etalii.adp spec 001-ci-and-badges).
+# Checks every pull request into develop and every change to develop (etalii.adp spec 001-ci-and-badges), and
+# publishes the plug-in from what passed (spec 005-continuous-integration).
+#
+# Triggers: a pull request into develop, a push to develop, a push of a v<version> tag, and a manual run.
 #
 # The build job decides this workflow's result and badge: the plug-in builds, the headless tests pass, the plug-in
 # verifies against the IDEs it declares, and every shipped library has an allowed licence. That is `./gradlew build`
-# without integrationTest, which `check` otherwise depends on.
+# without integrationTest, which `check` otherwise depends on. It offers the plug-in as the installable zip itself.
+# On a tag run it first checks the version mark: the tag must be v<pluginVersion> and its commit must be on develop.
 #
 # Some headless tests draw on a Swing canvas, so this job also runs under xvfb-run.
 #
 # The real-IDE tests run in their own job, beside the build job rather than after it, and fail the workflow like it
 # does. When they fail, the job keeps each IDE's log. Both jobs give xvfb-run a full-size screen: its default
-# 640x480x8 screen leaves editor components "not showing".
+# 640x480x8 screen leaves editor components "not showing". Both test jobs write the skipped tests and their reasons to
+# the job summary and keep their test reports on every run that was not cancelled.
 #
-# What else this repository's CI does (development builds, versioned releases) is spec 005's to decide.
+# Two jobs publish, and only they hold contents: write. Each needs both test jobs, so it runs only when they passed.
+# development-build runs on develop and keeps one "development" pre-release on the Releases page in step with it,
+# moving only forward. release runs on a v<version> tag and publishes that version once; it never replaces a release.
+# Neither can run for a pull request, whose ref is refs/pull/<n>/merge.
 name: Build
 
 on:
@@ -18,7 +26,13 @@ on:
     branches: [develop]
   push:
     branches: [develop]
+    tags: ['v*']
   workflow_dispatch:
+    inputs:
+      rehearsal_cleanup:
+        description: TEMPORARY - delete the development-rehearsal release and tag
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -32,6 +46,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      # A version mark is refused unless it names the plug-in's version and marks a commit of develop (FR-014, FR-016).
+      - name: Check the version mark
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(sed -n 's/^pluginVersion=//p' gradle.properties | tr -d '[:space:]')
+          refused=0
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::The tag $GITHUB_REF_NAME does not mark version $version, which gradle.properties declares; the tag for it is v$version."
+            refused=1
+          fi
+          status=$(gh api "repos/$GITHUB_REPOSITORY/compare/$GITHUB_SHA...develop" --jq .status) || status="not found"
+          if [ "$status" != "ahead" ] && [ "$status" != "identical" ]; then
+            echo "::error::The tag $GITHUB_REF_NAME marks $GITHUB_SHA, which is not on develop ($status), so it is not released."
+            refused=1
+          fi
+          exit $refused
       # javaVersion in gradle.properties. Not Temurin: the jar manifest records the JDK's vendor, and Temurin's
       # vendor name contains the previous host's name, which NoPreviousHostIntegrationTest forbids.
       - uses: actions/setup-java@v6
@@ -42,17 +74,21 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
       - name: Build, test and verify the plug-in
         run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' ./gradlew build -x integrationTest
+      - name: Report the skipped tests
+        if: ${{ !cancelled() }}
+        run: python3 .github/scripts/skipped-tests.py
       - name: Keep the test reports
-        if: failure()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
           name: test-reports
           path: '**/build/reports/'
+      # Not archived, so the download is the installable etalii-adp-<version>.zip itself, named after the file.
       - name: Offer the plug-in for download
         uses: actions/upload-artifact@v7
         with:
-          name: etalii.adp.ide.intellij-plugin
           path: build/distributions/*.zip
+          archive: false
           if-no-files-found: error
 
   real-ide-tests:
@@ -66,11 +102,16 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
       - name: Run the real-IDE tests
         # The IDEs the tests download and the folders they run in, where the IDE logs are kept from.
+        # ADP_IDEA_LICENSE is optional: without the secret the licensed runs are skipped, with the reason in the summary.
         env:
           ADP_IDE_TESTS_HOME: ${{ runner.temp }}/ide-tests-home
+          ADP_IDEA_LICENSE: ${{ secrets.ADP_IDEA_LICENSE }}
         run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' ./gradlew integrationTest
+      - name: Report the skipped tests
+        if: ${{ !cancelled() }}
+        run: python3 .github/scripts/skipped-tests.py
       - name: Keep the test reports
-        if: failure()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
           name: real-ide-test-reports
@@ -83,6 +124,107 @@ jobs:
           name: real-ide-logs
           path: ${{ runner.temp }}/ide-tests-home/out/ide-tests/tests/**/log/
           if-no-files-found: ignore
+
+  # Keeps the "development" pre-release in step with develop: the plug-in the build job made, from a commit that passed
+  # both test jobs. It only moves forward, so re-running an older run of develop leaves a newer build in place.
+  development-build:
+    needs: [build, real-ide-tests]
+    if: (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/claude/project-thread-k2tmp0') && !inputs.rehearsal_cleanup
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      DEVELOPMENT_TAG: development-rehearsal
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Take the plug-in the build job made
+        uses: actions/download-artifact@v8
+        with:
+          pattern: etalii-adp-*.zip
+          merge-multiple: true
+          # The artifact is the zip itself; without this it would be unpacked.
+          skip-decompress: true
+          path: plugin
+      - name: Publish the development build
+        run: |
+          zip=$(find plugin -type f -name 'etalii-adp-*.zip' | head -n 1)
+          file=$(basename "$zip")
+          version=${file#etalii-adp-}
+          version=${version%.zip}
+          if gh release view "$DEVELOPMENT_TAG" >/dev/null 2>&1; then
+            exists=1
+            status=$(gh api "repos/$GH_REPO/compare/$DEVELOPMENT_TAG...$GITHUB_SHA" --jq .status)
+            if [ "$status" != "ahead" ]; then
+              echo "::notice::The development build is already at $GITHUB_SHA or a newer commit ($status), so it is left as it is."
+              exit 0
+            fi
+          else
+            exists=0
+          fi
+          date=$(date -u +%Y-%m-%d)
+          subject=$(gh api "repos/$GH_REPO/commits/$GITHUB_SHA" --jq '.commit.message | split("\n")[0]')
+          title="Development build $version (${GITHUB_SHA:0:7}, $date)"
+          {
+            echo "The plug-in from \`develop\` at [$GITHUB_SHA]($GITHUB_SERVER_URL/$GH_REPO/commit/$GITHUB_SHA), built and tested on $date (UTC)."
+            echo
+            echo "> $subject"
+            echo
+            echo "Checked by [this run]($GITHUB_SERVER_URL/$GH_REPO/actions/runs/$GITHUB_RUN_ID). Every merge into develop replaces this build."
+          } > notes.md
+          if [ "$exists" = 0 ]; then
+            gh release create "$DEVELOPMENT_TAG" "$zip" --target "$GITHUB_SHA" --prerelease --latest=false \
+              --title "$title" --notes-file notes.md
+          else
+            gh release upload "$DEVELOPMENT_TAG" "$zip" --clobber
+            gh release view "$DEVELOPMENT_TAG" --json assets --jq '.assets[].name' | while read -r asset; do
+              if [ "$asset" != "$file" ]; then gh release delete-asset "$DEVELOPMENT_TAG" "$asset" --yes; fi
+            done
+            gh release edit "$DEVELOPMENT_TAG" --prerelease --latest=false --title "$title" --notes-file notes.md
+            # The tag moves last, so a job that stopped half-way is not taken for "already published" when re-run.
+            gh api -X PATCH "repos/$GH_REPO/git/refs/tags/$DEVELOPMENT_TAG" -f sha="$GITHUB_SHA" -F force=true >/dev/null
+          fi
+
+  rehearsal-cleanup:
+    if: inputs.rehearsal_cleanup && github.ref == 'refs/heads/claude/project-thread-k2tmp0'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - run: gh release delete development-rehearsal --cleanup-tag --yes
+
+  # Publishes the version a v<version> tag marks, once its commit passed both test jobs. A published release is never
+  # replaced: gh release create fails when it exists, and nothing here edits or deletes.
+  release:
+    needs: [build, real-ide-tests]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Take the plug-in the build job made
+        uses: actions/download-artifact@v8
+        with:
+          pattern: etalii-adp-*.zip
+          merge-multiple: true
+          # The artifact is the zip itself; without this it would be unpacked.
+          skip-decompress: true
+          path: plugin
+      - name: Publish the release
+        run: |
+          zip=$(find plugin -type f -name 'etalii-adp-*.zip' | head -n 1)
+          version=${GITHUB_REF_NAME#v}
+          # The previous version mark, so the generated notes do not start at the development tag.
+          previous=$(gh api "repos/$GH_REPO/tags" --paginate --jq '.[].name' \
+            | grep '^v' | grep -vx "$GITHUB_REF_NAME" | sort -V | tail -n 1 || true)
+          gh release create "$GITHUB_REF_NAME" "$zip" --verify-tag --title "$version" --generate-notes \
+            ${previous:+--notes-start-tag "$previous"}
 
   # Flags a retired use of the ADP vocabulary (etalii.adp spec 002, FR-017). The runner and its list of retired
   # patterns and allowances live in etalii.adp and are read from its develop branch, so every repository is checked
