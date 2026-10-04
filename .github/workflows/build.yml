@@ -28,6 +28,11 @@ on:
     branches: [develop]
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      rehearsal_cleanup:
+        description: TEMPORARY - delete the development-rehearsal release and tag
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -124,12 +129,12 @@ jobs:
   # both test jobs. It only moves forward, so re-running an older run of develop leaves a newer build in place.
   development-build:
     needs: [build, real-ide-tests]
-    if: github.ref == 'refs/heads/develop'
+    if: (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/claude/project-thread-k2tmp0') && !inputs.rehearsal_cleanup
     runs-on: ubuntu-latest
     permissions:
       contents: write
     env:
-      DEVELOPMENT_TAG: development
+      DEVELOPMENT_TAG: development-rehearsal
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
     steps:
@@ -177,6 +182,17 @@ jobs:
             # The tag moves last, so a job that stopped half-way is not taken for "already published" when re-run.
             gh api -X PATCH "repos/$GH_REPO/git/refs/tags/$DEVELOPMENT_TAG" -f sha="$GITHUB_SHA" -F force=true >/dev/null
           fi
+
+  rehearsal-cleanup:
+    if: inputs.rehearsal_cleanup && github.ref == 'refs/heads/claude/project-thread-k2tmp0'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - run: gh release delete development-rehearsal --cleanup-tag --yes
 
   # Publishes the version a v<version> tag marks, once its commit passed both test jobs. A published release is never
   # replaced: gh release create fails when it exists, and nothing here edits or deletes.
