@@ -2,7 +2,7 @@
 
 Reads every JUnit XML report below the working directory, **/build/test-results/**/*.xml, and appends a "Skipped
 tests" table with the columns Test and Reason to the file named by GITHUB_STEP_SUMMARY, or prints it when that is not
-set. It only reports: it exits 0 whatever it finds, also when there are no reports.
+set; the table is also printed to the job's log. It only reports: it exits 0 whatever it finds, also when there are no reports.
 """
 
 import os
@@ -56,8 +56,7 @@ def main():
     if target:
         with open(target, "a", encoding="utf-8") as file:
             file.write(text)
-    else:
-        sys.stdout.write(text)
+    sys.stdout.write(text)
     return 0
 
 
