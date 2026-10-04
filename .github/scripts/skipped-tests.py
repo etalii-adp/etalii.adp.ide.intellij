@@ -1,8 +1,8 @@
 """Writes the skipped tests and their reasons to the job summary (spec 005, FR-004 and FR-005).
 
 Reads every JUnit XML report below the working directory, **/build/test-results/**/*.xml, and appends a "Skipped
-tests" table with the columns Test and Reason to the file named by GITHUB_STEP_SUMMARY, or prints it when that is not
-set; the table is also printed to the job's log. It only reports: it exits 0 whatever it finds, also when there are no reports.
+tests" table with the columns Test and Reason to the file named by GITHUB_STEP_SUMMARY when that is set, and prints it to
+the job's log. It only reports: it exits 0 whatever it finds, also when there are no reports.
 """
 
 import os

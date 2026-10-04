@@ -28,11 +28,6 @@ on:
     branches: [develop]
     tags: ['v*']
   workflow_dispatch:
-    inputs:
-      rehearsal_cleanup:
-        description: TEMPORARY - delete the development-rehearsal release and tag
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -129,12 +124,12 @@ jobs:
   # both test jobs. It only moves forward, so re-running an older run of develop leaves a newer build in place.
   development-build:
     needs: [build, real-ide-tests]
-    if: (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/claude/project-thread-k2tmp0') && !inputs.rehearsal_cleanup
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     env:
-      DEVELOPMENT_TAG: development-rehearsal
+      DEVELOPMENT_TAG: development
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
     steps:
@@ -149,6 +144,7 @@ jobs:
       - name: Publish the development build
         run: |
           zip=$(find plugin -type f -name 'etalii-adp-*.zip' | head -n 1)
+          [ -n "$zip" ] || { echo "::error::The build job's plug-in was not found among the downloaded artifacts."; exit 1; }
           file=$(basename "$zip")
           version=${file#etalii-adp-}
           version=${version%.zip}
@@ -185,17 +181,6 @@ jobs:
             gh api -X PATCH "repos/$GH_REPO/git/refs/tags/$DEVELOPMENT_TAG" -f sha="$GITHUB_SHA" -F force=true >/dev/null
           fi
 
-  rehearsal-cleanup:
-    if: inputs.rehearsal_cleanup && github.ref == 'refs/heads/claude/project-thread-k2tmp0'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    env:
-      GH_TOKEN: ${{ github.token }}
-      GH_REPO: ${{ github.repository }}
-    steps:
-      - run: gh release delete development-rehearsal --cleanup-tag --yes
-
   # Publishes the version a v<version> tag marks, once its commit passed both test jobs. A published release is never
   # replaced: gh release create fails when it exists, and nothing here edits or deletes.
   release:
@@ -219,6 +204,7 @@ jobs:
       - name: Publish the release
         run: |
           zip=$(find plugin -type f -name 'etalii-adp-*.zip' | head -n 1)
+          [ -n "$zip" ] || { echo "::error::The build job's plug-in was not found among the downloaded artifacts."; exit 1; }
           version=${GITHUB_REF_NAME#v}
           # The previous version mark, so the generated notes do not start at the development tag.
           previous=$(gh api "repos/$GH_REPO/tags" --paginate --jq '.[].name' \

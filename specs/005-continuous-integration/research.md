@@ -82,6 +82,8 @@ Title: `Development build <version> (<short sha>, <date>)`. Notes: the full comm
 
 **Rationale.** A zip wrapped in a zip is not installable; the reviewer would have to know to unzip once and not twice. `archive` is an input of `upload-artifact@v7` (read from its `action.yml` on 2026-10-04); with `archive: false` the artifact is named after the file.
 
+**Found in the rehearsal (2026-10-04).** `download-artifact@v8` unpacks an artifact that is itself a zip unless `skip-decompress: true` is set, so both publishing jobs set it and look for the zip below their download folder.
+
 **Fallback.** If the direct upload does not behave as documented on the first run, keep the wrapped upload under the name `etalii.adp.ide.intellij-plugin` and say in the readme that the download has to be unzipped once.
 
 ## R8. Caching the IDEs the real-IDE tests download
