@@ -12,10 +12,6 @@ out/
 .idea/usage.statistics.xml
 *.iws
 
-# Python bytecode (spec-kit scripts)
-__pycache__/
-*.pyc
-
 # Agent-local settings (may hold machine-specific or private state)
 .claude/settings.local.json
 
@@ -27,6 +23,3 @@ Thumbs.db
 # Test and editor output (Allure results from the real-IDE tests, the Java language server's bin/ folders)
 allure-results/
 bin/
-
-# Spec Kit's downloaded extension catalogue
-.specify/extensions/.cache/

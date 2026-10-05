@@ -20,19 +20,14 @@ import java.util.zip.ZipInputStream;
 import org.junit.jupiter.api.Test;
 
 /**
- * Nothing refers to the previous host (FR-017, SC-005): not the tracked files outside this
- * feature's own spec, not the plug-in zip's entries or their contents, and not the plug-in as the
- * sandbox IDE installed it. The search ignores case.
+ * Nothing refers to the previous host (FR-017, SC-005): not the tracked files, not the plug-in
+ * zip's entries or their contents, and not the plug-in as the sandbox IDE installed it. The
+ * search ignores case.
  */
 class NoPreviousHostIntegrationTest {
 
     /** The previous host's name, spelled so this file does not match itself. */
     private static final String NAME = "ecl" + "ipse";
-
-    private static final String OWN_SPEC = "specs/002-jetbrains-ide-support/";
-
-    /** Spec 003's library survey names third-party libraries that carry the word, not the host. */
-    private static final String LIBRARY_SURVEY = "specs/003-diagram-designer-framework/library-survey.md";
 
     private final Path repository = Path.of(System.getProperty("adp.repository", "."));
 
@@ -40,9 +35,6 @@ class NoPreviousHostIntegrationTest {
     void theTrackedFilesDoNotNameIt() throws Exception {
         List<String> hits = new ArrayList<>();
         for (String file : trackedFiles()) {
-            if (file.startsWith(OWN_SPEC) || file.equals(LIBRARY_SURVEY)) {
-                continue;
-            }
             if (mentions(file.getBytes(UTF_8)) || Files.isRegularFile(repository.resolve(file)) && mentions(Files.readAllBytes(repository.resolve(file)))) {
                 hits.add(file);
             }

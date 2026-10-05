@@ -6,23 +6,16 @@ ADP's vocabulary is defined in the glossary, [`docs/terminology.md` in etalii.ad
 
 ## How work is done here: spec-driven development (GitHub Spec Kit)
 
-Every change starts as a specification. Use the Spec Kit skills in `.claude/skills/` in order:
+Every change starts as a specification, written in [etalii.adp](https://github.com/etalii-adp/etalii.adp) rather than here: this repository has no Spec Kit setup of its own. A feature is `specs/NNN-feature-name/` in etalii.adp, specified, planned and split into tasks with etalii.adp's Spec Kit skills as its `CLAUDE.md` describes; its tasks name files here as `etalii.adp.ide.intellij/...`, and the code arrives here in a pull request of its own, on a branch named as the feature's. Work on it from etalii.adp's folder, with this repository's clone beside it, or set `SPECIFY_INIT_DIR` to etalii.adp's folder.
 
-1. `/speckit-constitution` — project principles, in `.specify/memory/constitution.md`. Read it before any other step; plans are checked against it.
-2. `/speckit-specify` — a feature spec under `specs/NNN-feature-name/`, on its own `NNN-feature-name` branch (the `git` extension creates it).
-3. `/speckit-clarify` — optional, resolves `[NEEDS CLARIFICATION]` markers before planning.
-4. `/speckit-plan` — technical plan, research, data model and contracts.
-5. `/speckit-tasks` — ordered, testable tasks.
-6. `/speckit-analyze` — optional cross-artifact consistency check.
-7. `/speckit-implement` — execute the tasks.
+This repository's principles, which every plan for it is checked against, are in etalii.adp's [`.specify/memory/repositories/etalii.adp.ide.intellij.md`](https://github.com/etalii-adp/etalii.adp/blob/develop/.specify/memory/repositories/etalii.adp.ide.intellij.md). Its earlier features keep their numbers in etalii.adp's [`specs/etalii.adp.ide.intellij/`](https://github.com/etalii-adp/etalii.adp/tree/develop/specs/etalii.adp.ide.intellij), so a "spec 003" in code, commits or pull requests here is `specs/etalii.adp.ide.intellij/003-*` there.
 
 Specs say *what* and *why*; plans say *how*. Do not put implementation choices in a spec.
 
 ## Conventions
 
 - The build is Gradle with the IntelliJ Platform Gradle Plugin: `./gradlew build` runs everything, `./gradlew test` the headless tests, `./gradlew integrationTest` the real-IDE tests, `./gradlew runIde` a sandbox IDE. Modules: `core` (framework), `freemind` (format), `testing` (test kit).
-- One feature per branch, named `features/<number>-<name>` (Spec Kit's `branch_prefix` is set to `features`). The one exception is `claude/<name>`, which Claude's cloud sessions are handed by their harness.
+- One feature per branch, named `features/<number>-<name>` (the name etalii.adp's Spec Kit gave the feature). The one exception is `claude/<name>`, which Claude's cloud sessions are handed by their harness.
 - A feature branch is never merged locally into `develop`. When its tasks are done, push the branch from the worktree it was built in to `origin` and open a pull request into `develop`; nothing reaches `develop` except through a pull request. When the pull request is merged or closed, delete the branch locally and on `origin`, and remove the worktree.
 - End commit messages written by an agent with a `Co-Authored-By:` trailer naming the model.
-- Shell scripts for Spec Kit are the PowerShell variants (`.specify/scripts/powershell/`).
 - When writing markdown files do not split lines to ensure a maximum line length is honored.

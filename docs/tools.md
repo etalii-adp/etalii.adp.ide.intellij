@@ -11,7 +11,7 @@ The tool types this IntelliJ Platform plug-in supports or plans to support, each
 | Icon | State | Meaning |
 |---|---|---|
 | 💡 | Identified | Recognized as a candidate diagram type; no spec yet |
-| 📝 | Specified | A specification exists (`specs/`) |
+| 📝 | Specified | A specification exists (in etalii.adp's `specs/`) |
 | ⏸️ | To-do | Specification planned and queued for implementation, not yet started |
 | 🛠️ | Work-in-progress | Actively being implemented |
 | ⚗️ | Prototype | Implemented as a working prototype; usable, not yet hardened to full quality |
