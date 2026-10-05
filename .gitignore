@@ -24,3 +24,4 @@ core/bin/
 # Test and editor output (Allure results from the real-IDE tests, the Java language server's bin/ folders)
 allure-results/
 bin/
+**/__pycache__/
