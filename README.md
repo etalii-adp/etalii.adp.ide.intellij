@@ -32,9 +32,11 @@ Every IntelliJ Platform IDE from release 2026.2 (build 262) on. The build verifi
 
 ## Install from disk
 
-1. Build the plug-in (below), or take a released `etalii-adp-<version>.zip`.
+1. Download `etalii-adp-<version>.zip` from the [Releases page](https://github.com/etalii-adp/etalii.adp.ide.intellij/releases): either the newest versioned release, or the **Development build** pre-release, which is the plug-in from the current `develop` after it passed every check. Keep the zip as it is; do not unzip it.
 2. In the IDE, open **Settings > Plugins**, click the gear icon, choose **Install Plugin from Disk...** and pick the zip.
 3. Restart the IDE when asked.
+
+To try a pull request before it is merged, open its **Build** run under **Actions**: the run offers that pull request's `etalii-adp-<version>.zip` for 90 days. You can also build the plug-in yourself (below).
 
 ## Build
 
@@ -49,6 +51,8 @@ You need a JDK to start Gradle; the Java toolchain the platform requires is down
 ```
 
 The installable plug-in is `build/distributions/etalii-adp-<version>.zip`. On Windows use `gradlew.bat`.
+
+Every pull request into `develop` and every change to `develop` is checked by the Build workflow (`.github/workflows/build.yml`): the build and headless tests in one job, the real-IDE tests in another. Each job's summary lists the tests that were skipped and why, and its test reports are kept with the run. When a download from JetBrains fails, the failing step's log names the URL; **Re-run failed jobs** on the run's page repeats the job without a push.
 
 The layout:
 
@@ -81,6 +85,15 @@ The sandbox lives in `.intellijPlatform/sandbox/EtAlii.Adp.IntelliJ/<platform>/`
 
 The build excludes `out`, `.intellijPlatform` and `.claude/worktrees` from the IDE project, so opening this repository in an IDE does not index sandboxes, downloads or nested worktrees.
 
+## Releasing
+
+For maintainers. The version is `pluginVersion` in `gradle.properties`.
+
+1. To release, push the tag `v<that version>` on a commit of `develop`, for example `git tag v0.1.0 <commit>` and `git push origin v0.1.0`.
+2. The Build run for the tag checks that commit like any other and then publishes the release, with the plug-in and notes generated from the pull requests merged since the previous release.
+3. A tag that does not match the version, marks a commit that is not on `develop`, or whose checks fail publishes nothing; the run says why. A published release is never replaced.
+4. Right after a release, raise `pluginVersion` in a pull request, so the development builds carry the next version.
+
 ## Check compatibility with FreeMind 1.0.1
 
 FreeMind is GPL, so it cannot be a build dependency. Its check is opt-in: point `FREEMIND_HOME` at a FreeMind 1.0.1 installation, the folder that holds `lib/freemind.jar`, and run the test.
@@ -93,7 +106,7 @@ Each example map is edited and saved, then loaded with FreeMind's own reader in 
 
 ## How work is done here
 
-Every change starts as a specification, using GitHub Spec Kit. See `CLAUDE.md` and the features under `specs/`.
+Every change starts as a specification, using GitHub Spec Kit in [etalii.adp](https://github.com/etalii-adp/etalii.adp), where this repository's features are kept under [`specs/etalii.adp.ide.intellij/`](https://github.com/etalii-adp/etalii.adp/tree/develop/specs/etalii.adp.ide.intellij). See `CLAUDE.md`.
 
 ## Licence
 

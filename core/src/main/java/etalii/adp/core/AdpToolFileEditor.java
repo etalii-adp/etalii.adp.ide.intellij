@@ -48,7 +48,7 @@ import etalii.adp.core.ui.ProblemPanel;
 import etalii.adp.core.ui.ReadOnlyBanner;
 
 /**
- * The visual side of a tool (specs/002-jetbrains-ide-support/contracts/designer-framework.md). It never keeps its own copy of
+ * The visual side of a tool (etalii.adp: specs/etalii.adp.ide.intellij/002-jetbrains-ide-support/contracts/designer-framework.md). It never keeps its own copy of
  * the content: it parses the {@link Document} on open and after every change, and every visual
  * change is {@link TextChanges} run as one named command, which is one step in the IDE's Undo
  * (research R4, R7). The provider pairs it with the platform's text editor on the same document.

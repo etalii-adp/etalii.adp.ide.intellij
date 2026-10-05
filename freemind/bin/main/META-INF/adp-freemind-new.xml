@@ -1,8 +1,0 @@
-<idea-plugin>
-    <actions>
-        <action id="etalii.adp.freemind.NewMindMap" class="etalii.adp.freemind.ui.NewMindMapAction" text="FreeMind Mind Map"
-                description="Create a new FreeMind mind map">
-            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewFile"/>
-        </action>
-    </actions>
-</idea-plugin>

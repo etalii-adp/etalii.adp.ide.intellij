@@ -1,1 +1,0 @@
-/speckit-companion-resume specs/003-diagram-designer-framework
