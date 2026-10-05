@@ -4,7 +4,7 @@ ADP's tools come in three kinds: **diagrams**, **designers** and **editors**, as
 
 This guide takes you from an empty module to a working diagram for your own file format. The example is a small state machine: two element types (a state and an end state) and one connection type (a transition), stored in a `.states` file. You write four small classes and one XML fragment. You write no drawing, hit-testing, selection, undo, toolbox or property panel code: the framework in `core` does all of that.
 
-The API is described in full in [contracts/diagram-framework.md](../specs/003-diagram-designer-framework/contracts/diagram-framework.md), and the test kit in [contracts/test-kit.md](../specs/003-diagram-designer-framework/contracts/test-kit.md). Two complete diagrams to read next to this guide: the sample diagram in `core/src/test/java/etalii/adp/core/diagram/sample/` and the draw.io diagram in `drawio/src/main/java/etalii/adp/drawio/`.
+The API is described in full in [contracts/diagram-framework.md](https://github.com/etalii-adp/etalii.adp/blob/develop/specs/etalii.adp.ide.intellij/003-diagram-designer-framework/contracts/diagram-framework.md), and the test kit in [contracts/test-kit.md](https://github.com/etalii-adp/etalii.adp/blob/develop/specs/etalii.adp.ide.intellij/003-diagram-designer-framework/contracts/test-kit.md). Two complete diagrams to read next to this guide: the sample diagram in `core/src/test/java/etalii/adp/core/diagram/sample/` and the draw.io diagram in `drawio/src/main/java/etalii/adp/drawio/`.
 
 ## What you are building
 

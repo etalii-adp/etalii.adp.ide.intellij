@@ -106,7 +106,7 @@ Each example map is edited and saved, then loaded with FreeMind's own reader in 
 
 ## How work is done here
 
-Every change starts as a specification, using GitHub Spec Kit. See `CLAUDE.md` and the features under `specs/`.
+Every change starts as a specification, using GitHub Spec Kit in [etalii.adp](https://github.com/etalii-adp/etalii.adp), where this repository's features are kept under [`specs/etalii.adp.ide.intellij/`](https://github.com/etalii-adp/etalii.adp/tree/develop/specs/etalii.adp.ide.intellij). See `CLAUDE.md`.
 
 ## Licence
 
