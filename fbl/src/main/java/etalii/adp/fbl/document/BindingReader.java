@@ -10,7 +10,7 @@ import etalii.adp.fbl.family.json.JsonMember;
 import etalii.adp.fbl.family.json.JsonValue;
 
 /** Maps a binding's JSON onto the typed records, reporting what it cannot map. */
-final class BindingReader {
+public final class BindingReader {
 
     private BindingReader() {
     }
@@ -281,7 +281,7 @@ final class BindingReader {
     }
 
     /** A scalar as the text a body would hold: a string's value, a literal as written, nothing for null. */
-    static String scalarText(JsonValue value) {
+    public static String scalarText(JsonValue value) {
         return switch (value.kind()) {
             case STRING, TRUE, FALSE, NUMBER -> value.text();
             case NULL -> "";
