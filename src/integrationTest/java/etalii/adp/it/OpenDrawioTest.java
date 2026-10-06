@@ -102,9 +102,7 @@ class OpenDrawioTest {
                 return Unit.INSTANCE;
             });
 
-            ToolTab.select(driver, opened, FILE);
-            driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
-                ToolTab.front(d, opened, EditorsKt.findOpenFile(d, FILE, opened, false));
+            ToolTab.act(driver, opened, FILE, d -> {
                 ToolWindowRemote toolbox = d.service(JvmClassMappingKt.getKotlinClass(ToolWindowManagerRemote.class), opened, RdTarget.DEFAULT)
                         .getToolWindow("ADP Toolbox");
                 assertNotNull(toolbox, "the ADP Toolbox is registered");
@@ -113,14 +111,12 @@ class OpenDrawioTest {
                 panel.refreshFromSelectedEditor();
                 assertTrue(panel.entries().contains("rounded"), "the toolbox lists draw.io shapes: " + panel.entries());
                 panel.activate("rounded");
-                return Unit.INSTANCE;
             });
 
             texts[1] = text(driver, opened);
             assertNotEquals(texts[0], texts[1], "adding from the toolbox changed the diagram");
             assertTrue(texts[1].contains("<mxCell id=\"adp-1\" value=\"\" style=\"rounded=1;whiteSpace=wrap;html=1;\""), "the new shape is in the text");
 
-            ToolTab.select(driver, opened, FILE);
             invoke(driver, opened, "$Undo");
             texts[2] = text(driver, opened);
             assertEquals(texts[0], texts[2], "Undo returns the text");
@@ -139,14 +135,12 @@ class OpenDrawioTest {
     }
 
     /** Runs an action through the action system with the tool's canvas as its context, as its shortcut would. */
-    private static void invoke(Driver driver, Project project, String actionId) {
-        driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
+    private static void invoke(Driver driver, Project project, String actionId) throws InterruptedException {
+        ToolTab.act(driver, project, FILE, d -> {
             VirtualFile file = EditorsKt.findOpenFile(d, FILE, project, false);
-            ToolTab.front(d, project, file);
             ToolRemote tool = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT)
                     .getSelectedEditor(file).tool();
             ActionManagerKt.invokeAction(d, actionId, true, tool.view(), null, RdTarget.DEFAULT);
-            return Unit.INSTANCE;
         });
     }
 
