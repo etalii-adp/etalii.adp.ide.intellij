@@ -7,6 +7,7 @@ import java.util.List;
 
 import etalii.adp.fbl.Splice;
 import etalii.adp.fbl.SpliceOperation;
+import etalii.adp.fbl.rule.BodyReading;
 import etalii.adp.fbl.rule.RefusedException;
 import etalii.adp.fbl.text.Span;
 
@@ -14,9 +15,15 @@ import etalii.adp.fbl.text.Span;
 public final class Plan {
 
     private final List<Splice> splices = new ArrayList<>();
+    private final BodyReading reading;
     private boolean snapshot;
 
-    public Plan() {
+    public Plan(BodyReading reading) {
+        this.reading = reading;
+    }
+
+    public BodyReading reading() {
+        return reading;
     }
 
     public List<Splice> splices() {

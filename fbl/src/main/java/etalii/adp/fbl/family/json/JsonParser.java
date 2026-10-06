@@ -208,16 +208,47 @@ public final class JsonParser {
         return new Text(builder.toString(), new Span(start, position));
     }
 
+    /**
+     * The code the four bytes at {@code at} name, or -1 when they name none. A document takes four
+     * hexadecimal digits and nothing else. A body takes what the first host accepts: white space
+     * before the digits, and white space and then NUL bytes after them, as long as one digit is there.
+     */
     private int hex4(int at) {
+        int end = at + 4;
+        int i = at;
+        if (!strict) {
+            while (i < end && isHexWhite(bytes[i])) {
+                i++;
+            }
+        }
         int code = 0;
-        for (int i = at; i < at + 4; i++) {
+        int digits = 0;
+        while (i < end) {
             int digit = Character.digit(bytes[i] & 0xFF, 16);
             if (digit < 0) {
-                return -1;
+                break;
             }
             code = code * 16 + digit;
+            digits++;
+            i++;
         }
-        return code;
+        if (strict) {
+            return digits == 4 ? code : -1;
+        }
+        if (digits == 0) {
+            return -1;
+        }
+        while (i < end && isHexWhite(bytes[i])) {
+            i++;
+        }
+        while (i < end && bytes[i] == 0) {
+            i++;
+        }
+        return i == end ? code : -1;
+    }
+
+    private static boolean isHexWhite(byte b) {
+        return b == ' ' || b >= 0x09 && b <= 0x0D;
     }
 
     private JsonValue parseLiteral() throws JsonSyntaxException {
@@ -271,7 +302,7 @@ public final class JsonParser {
         return switch (raw.toLowerCase(Locale.ROOT)) {
             case "infinity" -> Double.POSITIVE_INFINITY;
             case "-infinity" -> Double.NEGATIVE_INFINITY;
-            case "nan" -> Double.NaN;
+            case "nan", "-nan" -> Double.NaN;
             default -> null;
         };
     }

@@ -7,7 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /** How CEL values convert, compare and print. */
-final class CelValues {
+public final class CelValues {
 
     /** How far an int and a double may lie apart and still be equal: the single-precision 0.000001, widened, as the first host has it. */
     private static final double TOLERANCE = 0.000001f;
@@ -141,7 +141,7 @@ final class CelValues {
      * for a whole number, and an exponent ({@code 1E+15}, {@code 1E-05}) from fifteen digits before
      * the point or four zeros after it.
      */
-    private static String format(double d) {
+    public static String format(double d) {
         if (Double.isNaN(d)) {
             return "NaN";
         }

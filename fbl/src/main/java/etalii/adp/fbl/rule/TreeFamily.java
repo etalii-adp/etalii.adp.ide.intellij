@@ -13,6 +13,7 @@ import etalii.adp.fbl.document.Rule;
 import etalii.adp.fbl.document.Slot;
 import etalii.adp.fbl.expression.CelMap;
 import etalii.adp.fbl.family.json.JsonValue;
+import etalii.adp.fbl.plan.Plan;
 import etalii.adp.fbl.text.BodyText;
 import etalii.adp.fbl.text.Span;
 
@@ -221,6 +222,17 @@ public abstract class TreeFamily extends FamilyReader {
         Entry start = Selector.start(resolved, root, parent);
         List<Selector.Match> matches = Selector.match(start, resolved);
         return !matches.isEmpty() && matches.get(0).entry() instanceof TreeEntry tree ? tree : null;
+    }
+
+    /** The captures the binding's existing entries bound, so {@code {capture}} segments of a container resolve (FBL §6.2). */
+    protected static Map<String, String> capturesOf(Plan plan) {
+        for (ReadElement element : plan.reading().elements()) {
+            Map<String, String> captures = element.candidate().captures();
+            if (!captures.isEmpty()) {
+                return captures;
+            }
+        }
+        return Map.of();
     }
 
     /** Adds {@code entry} and every entry under it to the entries, in document order, each with its parent and children set. */
