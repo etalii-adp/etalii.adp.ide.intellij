@@ -1,6 +1,9 @@
 package etalii.adp.it;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import com.intellij.driver.client.Driver;
 import com.intellij.driver.client.Remote;
@@ -15,13 +18,15 @@ import kotlin.Unit;
 import kotlin.jvm.JvmClassMappingKt;
 
 /**
- * Brings an open file's tool to the front before a test acts on it, as someone clicks its tab.
+ * Brings an open file's tool to the front before a test acts on it, closing any other editor tab.
  * <p>
  * IntelliJ IDEA without a licence opens its "Trial" page as an editor tab a little after a project
  * opens, and selects it, so the tool's canvas is no longer showing: the action system then
  * refuses to run an action with it ("target component is not showing") and the toolbox, which
- * follows the selected editor, lists nothing. {@link #select} and {@link #front} select the file's
- * tab again, as someone clicks it.
+ * follows the selected editor, lists nothing. A test opens only the one file, so every other tab
+ * is the IDE's own: {@link #select}, {@link #front} and {@link #act} close it, and say so in the
+ * log, and select the file's tab again. Should the Trial page keep breaking the tests in other
+ * ways, the unlicensed IntelliJ IDEA run is the one to retire (Peter, 2026-10-06).
  */
 final class ToolTab {
 
@@ -30,7 +35,10 @@ final class ToolTab {
     private ToolTab() {
     }
 
-    /** Waits, for at most half a minute, until the file's tool canvas shows, selecting its tab when another one is. */
+    /**
+     * Waits, for at most half a minute, until the file's tool canvas shows, closing the other tabs and selecting its own
+     * when another one is.
+     */
     static void select(Driver driver, Project project, String fileName) throws InterruptedException {
         long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
         String[] state = new String[1];
@@ -39,6 +47,7 @@ final class ToolTab {
             driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
                 VirtualFile file = EditorsKt.findOpenFile(d, fileName, project, false);
                 EditorsRemote editors = d.service(JvmClassMappingKt.getKotlinClass(EditorsRemote.class), project, RdTarget.DEFAULT);
+                closeOthers(editors, file);
                 showing[0] = editors.getSelectedEditor(file).tool().view().isShowing();
                 if (!showing[0]) {
                     try {
@@ -61,14 +70,55 @@ final class ToolTab {
     }
 
     /**
-     * Selects the file's tab again when its canvas is not showing, on the event dispatch thread the caller is on, so
-     * an action invoked next in the same call runs with a showing canvas: between two Driver calls the IDE can still
-     * select another tab.
+     * Closes the other tabs and selects the file's tab again when its canvas is not showing, on the event dispatch
+     * thread the caller is on, so an action invoked next in the same call runs with a showing canvas: between two
+     * Driver calls the IDE can still open another tab. Whether the canvas shows now.
      */
-    static void front(Driver d, Project project, VirtualFile file) {
+    static boolean front(Driver d, Project project, VirtualFile file) {
         EditorsRemote editors = d.service(JvmClassMappingKt.getKotlinClass(EditorsRemote.class), project, RdTarget.DEFAULT);
+        closeOthers(editors, file);
         if (!editors.getSelectedEditor(file).tool().view().isShowing()) {
             editors.openFile(file, true);
+        }
+        return editors.getSelectedEditor(file).tool().view().isShowing();
+    }
+
+    /**
+     * Runs {@code body} on the event dispatch thread with the file's tool canvas showing: {@link #select}, then
+     * {@link #front} and {@code body} in one call. When a tab opened in between still hides the canvas after
+     * {@link #front}, it starts again rather than act on a hidden canvas, three times at most.
+     */
+    static void act(Driver driver, Project project, String fileName, Consumer<Driver> body) throws InterruptedException {
+        for (int attempt = 1; ; attempt++) {
+            select(driver, project, fileName);
+            boolean[] done = new boolean[1];
+            driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
+                if (front(d, project, EditorsKt.findOpenFile(d, fileName, project, false))) {
+                    body.accept(d);
+                    done[0] = true;
+                }
+                return Unit.INSTANCE;
+            });
+            if (done[0]) {
+                return;
+            }
+            if (attempt == 3) {
+                throw new AssertionError(fileName + "'s tool canvas was hidden again each time, three times, right before acting on it");
+            }
+        }
+    }
+
+    /** Closes every editor tab but the file's, naming the closed ones in the log. */
+    private static void closeOthers(EditorsRemote editors, VirtualFile file) {
+        List<String> closed = new ArrayList<>();
+        for (VirtualFile other : editors.getOpenFiles()) {
+            if (!other.getPath().equals(file.getPath())) {
+                closed.add(other.getName());
+                editors.closeFile(other);
+            }
+        }
+        if (!closed.isEmpty()) {
+            System.out.println("Closed the editor tabs " + closed + " so " + file.getName() + "'s tool shows");
         }
     }
 
@@ -100,6 +150,8 @@ final class ToolTab {
         VirtualFile[] getOpenFiles();
 
         void openFile(VirtualFile file, boolean focusEditor);
+
+        void closeFile(VirtualFile file);
     }
 
     @Remote(value = "etalii.adp.core.AdpEditorProvider$Composite", plugin = PLUGIN)

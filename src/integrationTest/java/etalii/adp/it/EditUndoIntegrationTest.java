@@ -134,14 +134,12 @@ class EditUndoIntegrationTest {
                 return Unit.INSTANCE;
             });
 
-            ToolTab.select(driver, opened, "map.mm");
             invoke(driver, opened, path[0], "etalii.adp.freemind.AddChild");
             texts[1] = text(driver, opened);
             assertNotEquals(texts[0], texts[1], product + ": Add Child Node changed the map");
             assertTrue(texts[1].contains("TEXT=\"New Node\""), product + ": the new node is in the text");
 
             String before = undoState(driver, opened);
-            ToolTab.select(driver, opened, "map.mm");
             invoke(driver, opened, path[0], "$Undo", false);
             texts[2] = awaitText(driver, opened, texts[0], product, before);
             assertEquals(texts[0], texts[2], product + ": Undo returns the text");
@@ -160,7 +158,7 @@ class EditUndoIntegrationTest {
     }
 
     /** Runs an action through the action system with the tool's canvas as its context, as its shortcut would. */
-    private static void invoke(Driver driver, Project project, String path, String actionId) {
+    private static void invoke(Driver driver, Project project, String path, String actionId) throws InterruptedException {
         invoke(driver, project, path, actionId, true);
     }
 
@@ -168,14 +166,12 @@ class EditUndoIntegrationTest {
      * The same, with {@code now} false for an action that may ask something: it is then queued as a key press
      * queues it, and a modal dialog it opens cannot hold the Driver's call until the IDE is killed.
      */
-    private static void invoke(Driver driver, Project project, String path, String actionId, boolean now) {
-        driver.withContext(OnDispatcher.EDT, LockSemantics.NO_LOCK, d -> {
+    private static void invoke(Driver driver, Project project, String path, String actionId, boolean now) throws InterruptedException {
+        ToolTab.act(driver, project, "map.mm", d -> {
             VirtualFile map = EditorsKt.findOpenFile(d, "map.mm", project, false);
-            ToolTab.front(d, project, map);
             ToolRemote tool = d.service(JvmClassMappingKt.getKotlinClass(FileEditorManagerRemote.class), project, RdTarget.DEFAULT)
                     .getSelectedEditor(map).tool();
             ActionManagerKt.invokeAction(d, actionId, now, tool.view(), null, RdTarget.DEFAULT);
-            return Unit.INSTANCE;
         });
     }
 
