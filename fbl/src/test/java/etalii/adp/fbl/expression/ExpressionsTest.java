@@ -121,8 +121,8 @@ class ExpressionsTest {
     /** FBL §16 and FR-013: a match that takes too long is stopped, not waited for. This host's own test. */
     @Test
     void aMatchThatRunsTooLongIsStopped() {
-        BoundedRegex regex = new BoundedRegex("^(a+)+$", false, Duration.ofMillis(50));
-        String hostile = "a".repeat(40) + "b";
+        BoundedRegex regex = new BoundedRegex("^(.*?,){25}X", false, Duration.ofMillis(50));
+        String hostile = ",".repeat(60);
 
         assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
             long started = System.nanoTime();
