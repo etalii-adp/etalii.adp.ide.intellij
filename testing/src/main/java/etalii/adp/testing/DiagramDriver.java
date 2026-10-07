@@ -276,8 +276,7 @@ public final class DiagramDriver implements AutoCloseable {
 
     /** The panel's rows for the current selection. */
     public PropertyRows properties() {
-        driver.settle();
-        PropertiesContent content = properties(PROPERTIES);
+        PropertiesContent content = followingProperties();
         JTable table = content.table();
         List<PropertyRow> rows = new ArrayList<>();
         for (int row = 0; row < table.getRowCount(); row++) {
@@ -292,8 +291,7 @@ public final class DiagramDriver implements AutoCloseable {
 
     /** Edit a property through its cell editor, then commit, as a user does. */
     public ToolDriver setProperty(String propertyId, String value) {
-        driver.settle();
-        PropertiesContent content = properties(PROPERTIES);
+        PropertiesContent content = followingProperties();
         JTable table = content.table();
         int row = -1;
         for (int i = 0; i < table.getRowCount() && row < 0; i++) {
@@ -313,6 +311,16 @@ public final class DiagramDriver implements AutoCloseable {
         }
         driver.settle();
         return driver;
+    }
+
+    /**
+     * The Properties content once it follows this diagram. Like the toolbox, it follows the selected
+     * editor on a selection event that can arrive after the editor opened, and until then it shows no
+     * rows, so a property read or edit would find none.
+     */
+    private PropertiesContent followingProperties() {
+        driver.settleUntil("the Properties panel follows the diagram", () -> properties(PROPERTIES).tool() == tool());
+        return properties(PROPERTIES);
     }
 
     /** The panel's rows. */

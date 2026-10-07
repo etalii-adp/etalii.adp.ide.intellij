@@ -11,6 +11,9 @@ import etalii.adp.core.diagram.EditorKind;
  */
 public interface PropertiesContent {
 
+    /** The diagram whose selection the rows show, or {@code null} while the content follows none. */
+    DiagramFileEditor tool();
+
     /** The rows for the current selection. */
     JTable table();
 
