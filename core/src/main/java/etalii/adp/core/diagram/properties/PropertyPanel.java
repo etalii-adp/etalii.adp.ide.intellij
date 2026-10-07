@@ -90,6 +90,7 @@ public final class PropertyPanel extends JPanel implements PropertiesContent, Di
     }
 
     /** The diagram whose selection is shown, or {@code null}. */
+    @Override
     public DiagramFileEditor tool() {
         return tool;
     }
