@@ -61,8 +61,19 @@ The layout:
 | `core` | The tool framework, including the diagram framework (definitions, mapping contract, canvas, toolbox, property panel, XML helpers). It knows no file format. |
 | `freemind` | The FreeMind file format: parser, text edits, the mind map, actions. The vendored example maps are in `freemind/testdata/examples/`, each with its licence. |
 | `drawio` | The draw.io diagram: definition, mapping and registration. The example diagrams in `drawio/testdata/examples/` are decompressed draw.io templates (CC-BY-4.0), each with its licence. |
+| `fbl` | A generic implementation of FBL, the Format Binding Language. It imports nothing from the platform and no tool uses it yet (see below). Its test data is in `fbl/testdata/`. |
 | `testing` | `ToolDriver` and `DiagramDriver`, the test kit the tool tests use. |
 | `src/integrationTest` | Tests that install the built zip into real IDEs. |
+
+### The FBL implementation
+
+The plug-in carries a generic implementation of [FBL](https://github.com/etalii-adp/etalii.adp/blob/develop/specifications/fbl/FBL-specification.md), the Format Binding Language, version 0.1: given an FBL document and the bytes of a body, it reads the body into elements, relations and findings, plans every change as splices that leave every other byte alone, and keeps a history with exact undo. It holds nothing specific to a tool type or to one binding. **No tool uses it yet**: nothing is registered, and FreeMind maps and draw.io diagrams are read and written as before. The tool that first uses it must join FBL's own history to the platform's undo and reconcile a body's mixed line endings with the platform's document.
+
+- **What it claims**: FBL's *Host, declared* (section 15.1) for the families `yaml`, `json`, `xml`, `lines` and `blocks`, with two exceptions. Several readings sharing one open body (section 9) is not implemented, and the loader checks that need a DISL specification are not made. Folder subjects go as far as recognition and file selection; files are not watched. It contains no persistence plugin, only the host's side of that contract.
+- **Where it comes from**: it is a port, layer by layer, of the FBL library of [`etalii.adp.ide.standalone`](https://github.com/etalii-adp/etalii.adp.ide.standalone) at commit `25fc7b4a`, in Java with no third-party library. Its sentences (findings, refusals) are that library's, word for word.
+- **What it is tested against**: `fbl/testdata/conformance/` holds FBL's example bindings, round-trip fixtures and registrations, byte for byte from `etalii.adp` at `2c873cf`; `fbl/testdata/real/` holds 41 real files and 32 registrations from `etalii.adp.ide.standalone` at `25fc7b4a`; and the repository's own mind maps under `freemind/testdata` are read through the mind map binding and compared with the FreeMind module's parser. Each folder's `README.md` records its source and licence (Apache-2.0). `fbl/testdata/baseline/fbl-test-inventory.md` maps each of standalone's 86 FBL tests to its counterpart here, and `fbl/testdata/divergences.json` lists the known disagreements between a binding and a real file, each with its reason.
+
+`./gradlew :fbl:test` runs all of it, with no network.
 
 ### Integration test settings
 
