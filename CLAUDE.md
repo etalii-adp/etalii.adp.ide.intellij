@@ -14,7 +14,7 @@ Specs say *what* and *why*; plans say *how*. Do not put implementation choices i
 
 ## Conventions
 
-- The build is Gradle with the IntelliJ Platform Gradle Plugin: `./gradlew build` runs everything, `./gradlew test` the headless tests, `./gradlew integrationTest` the real-IDE tests, `./gradlew runIde` a sandbox IDE. Modules: `core` (framework), `freemind` (format), `testing` (test kit).
+- The build is Gradle with the IntelliJ Platform Gradle Plugin: `./gradlew build` runs everything, `./gradlew test` the headless tests, `./gradlew integrationTest` the real-IDE tests, `./gradlew runIde` a sandbox IDE. Modules: `core` (framework), `freemind` and `drawio` (formats), `fbl` (the generic FBL implementation, used by no tool yet), `testing` (test kit).
 - One feature per branch, named `features/<number>-<name>` (the name etalii.adp's Spec Kit gave the feature). The one exception is `claude/<name>`, which Claude's cloud sessions are handed by their harness.
 - A feature branch is never merged locally into `develop`. When its tasks are done, push the branch from the worktree it was built in to `origin` and open a pull request into `develop`; nothing reaches `develop` except through a pull request. When the pull request is merged or closed, delete the branch locally and on `origin`, and remove the worktree.
 - End commit messages written by an agent with a `Co-Authored-By:` trailer naming the model.

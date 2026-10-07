@@ -13,3 +13,6 @@
 
 # The Gradle wrapper script must stay LF, or it fails on Linux and macOS.
 gradlew text eol=lf
+
+# The FBL conformance corpus and real files are compared byte for byte, at byte offsets.
+fbl/testdata/** -text
