@@ -44,6 +44,7 @@ dependencies {
         pluginComposedModule(implementation(project(":core")))
         pluginComposedModule(implementation(project(":freemind")))
         pluginComposedModule(implementation(project(":drawio")))
+        pluginComposedModule(implementation(project(":fbl")))
         testFramework(TestFrameworkType.Starter, configurationName = integrationTestImplementation.name)
         pluginVerifier()
     }
