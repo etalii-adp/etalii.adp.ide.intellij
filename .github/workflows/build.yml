@@ -3,9 +3,11 @@
 #
 # Triggers: a pull request into develop, a push to develop, a push of a v<version> tag, and a manual run.
 #
-# The build job decides this workflow's result and badge: the plug-in builds, the headless tests pass, the plug-in
-# verifies against the IDEs it declares, and every shipped library has an allowed licence. That is `./gradlew build`
-# without integrationTest, which `check` otherwise depends on. It offers the plug-in as the installable zip itself.
+# The build job checks that the plug-in builds, the headless tests pass and every shipped library has an allowed
+# licence. That is `./gradlew build` without integrationTest and verifyPlugin, which `check` otherwise depends on. It
+# offers the plug-in as the installable zip itself. The verify-plugin job runs verifyPlugin beside it: the plug-in
+# verifier checks the plug-in against the eight IDEs it declares, downloading each, so it is a job of its own rather
+# than the slowest part of the build job (CI speed analysis, 2026-10-12). Every job fails the workflow and its badge.
 # On a tag run it first checks the version mark: the tag must be v<pluginVersion> and its commit must be on develop.
 #
 # Some headless tests draw on a Swing canvas, so this job also runs under xvfb-run.
@@ -15,7 +17,17 @@
 # 640x480x8 screen leaves editor components "not showing". Both test jobs write the skipped tests and their reasons to
 # the job summary and keep their test reports on every run that was not cancelled.
 #
-# Two jobs publish, and only they hold contents: write. Each needs both test jobs, so it runs only when they passed.
+# Gradle's cache is restored by every run but written only by the nightly scheduled run and a manual one. Writing it
+# on every push to develop took 4.6 minutes a run (277 s median), because the build cache inside it changes with
+# every commit. A change to the build's dependencies is therefore cached from the next night on; until then a run
+# downloads what is missing, as a pull request already does.
+#
+# The build and verify-plugin jobs run on ubuntu-latest unless the ADP_LARGE_RUNNER variable names a larger runner
+# (an organisation's larger hosted runner, for example). Larger runners are billed per minute even for a public
+# repository, so the variable stays unset until someone chooses that.
+#
+# Two jobs publish, and only they hold contents: write. Each needs the build, real-ide-tests and verify-plugin jobs,
+# so it runs only when they passed.
 # development-build runs on develop and keeps one "development" pre-release on the Releases page in step with it,
 # moving only forward. release runs on a v<version> tag and publishes that version once; it never replaces a release.
 # Neither can run for a pull request, whose ref is refs/pull/<n>/merge.
@@ -27,6 +39,8 @@ on:
   push:
     branches: [develop]
     tags: ['v*']
+  schedule:
+    - cron: '23 3 * * *'
   workflow_dispatch:
 
 permissions:
@@ -38,7 +52,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.ADP_LARGE_RUNNER || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v7
       # A version mark is refused unless it names the plug-in's version and marks a commit of develop (FR-014, FR-016).
@@ -65,10 +79,12 @@ jobs:
         with:
           distribution: zulu
           java-version: '25'
-      # Caches Gradle and the IntelliJ Platform downloads between runs.
+      # Caches Gradle and the IntelliJ Platform downloads between runs; only a scheduled or manual run writes it.
       - uses: gradle/actions/setup-gradle@v6
-      - name: Build, test and verify the plug-in
-        run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' ./gradlew build -x integrationTest
+        with:
+          cache-read-only: ${{ github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' }}
+      - name: Build and test the plug-in
+        run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' ./gradlew build -x integrationTest -x verifyPlugin
       - name: Report the skipped tests
         if: ${{ !cancelled() }}
         run: python3 .github/scripts/skipped-tests.py
@@ -95,6 +111,8 @@ jobs:
           distribution: zulu
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: ${{ github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' }}
       - name: Run the real-IDE tests
         # The IDEs the tests download and the folders they run in, where the IDE logs are kept from.
         # ADP_IDEA_LICENSE is optional: without the secret the licensed runs are skipped, with the reason in the summary.
@@ -122,8 +140,30 @@ jobs:
 
   # Keeps the "development" pre-release in step with develop: the plug-in the build job made, from a commit that passed
   # both test jobs. It only moves forward, so re-running an older run of develop leaves a newer build in place.
+  # The plug-in verifier, against every IDE pluginVerification declares in build.gradle.kts.
+  verify-plugin:
+    runs-on: ${{ vars.ADP_LARGE_RUNNER || 'ubuntu-latest' }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: ${{ github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' }}
+      - name: Verify the plug-in against the IDEs it declares
+        run: ./gradlew verifyPlugin
+      - name: Keep the verifier's reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: verifier-reports
+          path: build/reports/pluginVerifier/
+          if-no-files-found: ignore
+
   development-build:
-    needs: [build, real-ide-tests]
+    needs: [build, real-ide-tests, verify-plugin]
     if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     permissions:
@@ -184,7 +224,7 @@ jobs:
   # Publishes the version a v<version> tag marks, once its commit passed both test jobs. A published release is never
   # replaced: gh release create fails when it exists, and nothing here edits or deletes.
   release:
-    needs: [build, real-ide-tests]
+    needs: [build, real-ide-tests, verify-plugin]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
