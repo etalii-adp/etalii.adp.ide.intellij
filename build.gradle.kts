@@ -73,15 +73,23 @@ intellijPlatform {
     pluginVerification {
         ides {
             select {
-                types = listOf(
-                    IntelliJPlatformType.IntellijIdea,
-                    IntelliJPlatformType.WebStorm,
-                    IntelliJPlatformType.PyCharm,
-                    IntelliJPlatformType.CLion,
-                    IntelliJPlatformType.GoLand,
-                    IntelliJPlatformType.PhpStorm,
-                    IntelliJPlatformType.RubyMine,
-                )
+                // -PverifyIdes=pull-request, which the Build workflow passes for a pull request, verifies against
+                // IntelliJ IDEA and Rider only: each IDE costs the verifier about a minute on a runner, IDEA is the
+                // platform the others build on and Rider is the one assembled differently. Everything else - a local
+                // build, develop, a release tag, the nightly run - verifies against all eight.
+                types = if (providers.gradleProperty("verifyIdes").orNull == "pull-request") {
+                    listOf(IntelliJPlatformType.IntellijIdea)
+                } else {
+                    listOf(
+                        IntelliJPlatformType.IntellijIdea,
+                        IntelliJPlatformType.WebStorm,
+                        IntelliJPlatformType.PyCharm,
+                        IntelliJPlatformType.CLion,
+                        IntelliJPlatformType.GoLand,
+                        IntelliJPlatformType.PhpStorm,
+                        IntelliJPlatformType.RubyMine,
+                    )
+                }
                 sinceBuild = providers.gradleProperty("pluginSinceBuild").map { "$it.3" }
                 untilBuild = providers.gradleProperty("pluginSinceBuild").map { "$it.*" }
             }

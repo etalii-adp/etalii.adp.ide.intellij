@@ -7,7 +7,8 @@
 # licence. That is `./gradlew build` without integrationTest and verifyPlugin, which `check` otherwise depends on. It
 # offers the plug-in as the installable zip itself. The verify-plugin job runs verifyPlugin beside it: the plug-in
 # verifier checks the plug-in against the eight IDEs it declares, downloading each, so it is a job of its own rather
-# than the slowest part of the build job (CI speed analysis, 2026-10-12). Every job fails the workflow and its badge.
+# than the slowest part of the build job, and a pull request verifies against IntelliJ IDEA and Rider only (CI speed
+# analysis, 2026-10-12). Every job fails the workflow and its badge.
 # On a tag run it first checks the version mark: the tag must be v<pluginVersion> and its commit must be on develop.
 #
 # Some headless tests draw on a Swing canvas, so this job also runs under xvfb-run.
@@ -152,8 +153,12 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: ${{ github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' }}
+      # A pull request verifies against IntelliJ IDEA and Rider (build.gradle.kts, verifyIdes); develop, a tag and the
+      # nightly run verify against all eight.
       - name: Verify the plug-in against the IDEs it declares
-        run: ./gradlew verifyPlugin
+        env:
+          VERIFY_IDES: ${{ github.event_name == 'pull_request' && 'pull-request' || 'all' }}
+        run: ./gradlew verifyPlugin -PverifyIdes="$VERIFY_IDES"
       - name: Keep the verifier's reports
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
