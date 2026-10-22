@@ -191,4 +191,68 @@ class LoadingTest {
             assertEquals(List.of(), loaded.problems().stream().filter(p -> p.severity() == ProblemSeverity.ERROR).toList(), document);
         }
     }
+
+    // FBL 0.8 §14.1 step 6 for an insert's constant (etalii.adp spec 033): given only in the yaml and json families and
+    // never beside emit, its values scalars, and its key not one the same rule writes: a writable attribute binding,
+    // id.from, or a relation's source or target.
+
+    private static String bindingIn(String family, String element, String rest) {
+        return "{ \"claims\": " + CLAIMS + ", \"body\": { \"kind\": \"file\", \"family\": \"" + family + "\" }, \"reader\": " + DECLARED
+                + ", \"elements\": [" + element + "]" + rest + " }";
+    }
+
+    static Stream<Arguments> refusedConstants() {
+        return Stream.of(
+                Arguments.of("yaml", """
+                        { "name": "item", "type": "Item", "at": "/items/*", "id": { "from": { "key": "id" } }, "attributes": { "kind": { "key": "type" } }, "insert": { "place": "end", "container": "/items", "constant": { "type": "task" } } }""",
+                        "/bindings/t/elements/0/insert/constant/type"),
+                Arguments.of("json", """
+                        { "name": "item", "type": "Item", "at": "/items/*", "id": { "from": { "key": "type" } }, "insert": { "place": "end", "container": "/items", "constant": { "type": "task" } } }""",
+                        "/bindings/t/elements/0/insert/constant/type"),
+                Arguments.of("yaml", """
+                        { "name": "item", "type": "Item", "at": "/items/*", "id": { "from": { "key": "id" } }, "insert": { "place": "end", "container": "/items", "emit": "- id: {id}", "constant": { "type": "task" } } }""",
+                        "/bindings/t/elements/0/insert/constant"),
+                Arguments.of("lines", """
+                        { "name": "item", "type": "Item", "line": "^(?<id>.*)$", "id": { "from": { "group": "id" } }, "insert": { "place": "end", "emit": "{id}", "constant": { "type": "task" } } }""",
+                        "/bindings/t/elements/0/insert/constant"),
+                Arguments.of("xml", """
+                        { "name": "item", "type": "Item", "at": "/items/item", "id": { "from": { "attribute": "id" } }, "insert": { "place": "end", "container": "/items", "constant": { "type": "task" } } }""",
+                        "/bindings/t/elements/0/insert/constant"),
+                Arguments.of("yaml", """
+                        { "name": "item", "type": "Item", "at": "/items/*", "id": { "from": { "key": "id" } }, "insert": { "place": "end", "container": "/items", "constant": { "type": ["task"] } } }""",
+                        "/bindings/t/elements/0/insert/constant/type"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("refusedConstants")
+    void anInsertConstantIsRefusedWhereFbl08Step6ForbidsIt(String family, String element, String pointer) {
+        assertTrue(hasErrorAt(load(bindingIn(family, element, ""), "0.8"), pointer));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "from", "to" })
+    void anInsertConstantOnARelationEndsKeyIsRefused(String key) {
+        String relation = ", \"relations\": [{ \"name\": \"link\", \"type\": \"Link\", \"at\": \"/links/*\", \"source\": { \"key\": \"from\", \"reference\": { \"to\": [\"item\"] } },"
+                + " \"target\": { \"key\": \"to\", \"reference\": { \"to\": [\"item\"] } }, \"insert\": { \"place\": \"end\", \"container\": \"/links\", \"constant\": { \"" + key + "\": \"a\" } } }]";
+
+        assertTrue(hasErrorAt(load(bindingIn("yaml", ITEM, relation), "0.8"), "/bindings/t/relations/0/insert/constant/" + key));
+    }
+
+    @Test
+    void anInsertConstantOnAKeyARuleOnlyReadsIsAccepted() {
+        // The attribute is read-only, so the constant is the key's one writer.
+        String element = """
+                { "name": "item", "type": "Item", "at": "/items/*", "id": { "from": { "key": "id" } }, "attributes": { "kind": { "key": "type", "readOnly": true } }, "insert": { "place": "end", "container": "/items", "keys": ["id", "type"], "constant": { "type": "task", "size": 3, "done": false, "none": null } } }""";
+
+        assertEquals(List.of(), load(bindingIn("yaml", element, ""), "0.8").stream().filter(p -> p.severity() == ProblemSeverity.ERROR).toList());
+    }
+
+    @Test
+    void theCopiedRefusedBindingIsRefusedForItsRuleTaskOnly() {
+        FblDocumentLoader.Loaded loaded = FblDocumentLoader.load(Corpus.conformance08().resolve("refused/insert-constant-collision.fbl"));
+
+        // Refused at the task's constant; its note, which reads the same key read-only, is not.
+        assertEquals(List.of("/bindings/board/elements/0/insert/constant/type"),
+                loaded.problems().stream().filter(p -> p.severity() == ProblemSeverity.ERROR).map(Problem::pointer).toList());
+    }
 }

@@ -24,6 +24,16 @@ public final class Corpus {
         return root().resolve("conformance");
     }
 
+    /** The fixtures and the refused binding of FBL 0.8's insert constant, copied on their own (etalii.adp spec 033). */
+    public static Path conformance08() {
+        return root().resolve("conformance-0.8");
+    }
+
+    /** Every copied corpus of {@code specifications/fbl/}: the whole one of FBL 0.1, and the files of 0.8 taken up since. */
+    public static List<Path> conformanceCorpora() {
+        return List.of(conformance(), conformance08());
+    }
+
     /** The bytes of a file, by its path under {@code fbl/testdata} with {@code /} between the segments. */
     public static byte[] bytes(String relative) {
         return bytes(root().resolve(relative));

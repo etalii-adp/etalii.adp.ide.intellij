@@ -487,18 +487,34 @@ public final class YamlFamily extends TreeFamily {
         return item;
     }
 
-    /** The key lines of a new item in {@code insert.keys} order, then the skeleton's lines. */
+    /**
+     * The key lines of a new item in {@code insert.keys} order, then the skeleton's lines. A constant is written as
+     * it is: at its place in {@code insert.keys} when they name it, else after the other keys, in the constant's
+     * member order (FBL 0.8 §6.2).
+     */
     private List<String> itemLines(InsertRequest request) {
         Rule rule = request.rule();
         InsertSettings insert = rule.insert();
+        Map<String, Object> constant = insert.constant() == null ? Map.of() : insert.constant();
         List<String> lines = new ArrayList<>();
         for (String key : keyOrder(rule, null)) {
             if (insert.keys().size() > 0 && !insert.keys().contains(key)) {
                 continue;
             }
+            if (constant.containsKey(key)) {
+                if (insert.keys().contains(key)) {
+                    lines.add(key + ": " + scalar(constant.get(key), null, null, 0));
+                }
+                continue;
+            }
             String value = wireValue(request, key);
             if (value != null) {
                 lines.add(key + ": " + value);
+            }
+        }
+        for (Map.Entry<String, Object> member : constant.entrySet()) {
+            if (!insert.keys().contains(member.getKey())) {
+                lines.add(member.getKey() + ": " + scalar(member.getValue(), null, null, 0));
             }
         }
         String skeleton = insert.skeleton();
