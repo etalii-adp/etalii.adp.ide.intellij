@@ -102,6 +102,9 @@ final class BindingChecker {
             if (rule.target() != null) {
                 checkSlot(rule.target(), context, at + "/target", problems);
             }
+            if (rule.insert() != null && rule.insert().constant() != null) {
+                checkConstant(binding, rule, at + "/insert/constant", problems);
+            }
         }
 
         if (binding.plugin() == null) {
@@ -130,6 +133,70 @@ final class BindingChecker {
         if (claims.marker() != null && claims.marker().pattern() != null) {
             checkRegex(claims.marker().pattern(), pointer + "/claims/marker/pattern", problems);
         }
+    }
+
+    /**
+     * FBL 0.8 §14.1 step 6: an insert's constant is given only in the yaml and json families and never beside
+     * {@code emit}, its values are scalars, and none of its keys is one the same rule writes, by a writable attribute
+     * binding, {@code id.from}, {@code source} or {@code target}, since a place has one writer (§3.3). A read-only
+     * binding may read its key.
+     */
+    private static void checkConstant(FblBinding binding, Rule rule, String pointer, List<Problem> problems) {
+        List<Family> families = familiesOf(binding, rule);
+        if (families.isEmpty() || families.stream().anyMatch(f -> f != Family.YAML && f != Family.JSON)) {
+            problems.add(new Problem(pointer, ProblemSeverity.ERROR, "An insert's constant is given only in the yaml and json families (FBL 0.8 6.2)."));
+        }
+        if (rule.insert().emit() != null) {
+            problems.add(new Problem(pointer, ProblemSeverity.ERROR, "An insert has a constant or an emit, not both (FBL 0.8 6.2)."));
+        }
+        for (Map.Entry<String, Object> member : rule.insert().constant().entrySet()) {
+            String at = pointer + "/" + FblDocumentLoader.escape(member.getKey());
+            if (member.getValue() == InsertSettings.NOT_A_SCALAR) {
+                problems.add(new Problem(at, ProblemSeverity.ERROR, "A constant's value is a string, a number, a boolean or null."));
+            }
+            String writer = writerOf(rule, member.getKey());
+            if (writer != null) {
+                problems.add(new Problem(at, ProblemSeverity.ERROR,
+                        "The constant's key '" + member.getKey() + "' is written by the rule's " + writer + " too, and a place has one writer (FBL 0.8 14.1)."));
+            }
+        }
+    }
+
+    /** What of a rule writes the key of its own entry, or null when nothing does. */
+    private static String writerOf(Rule rule, String key) {
+        if (rule.id() != null && writes(rule.id().from(), key)) {
+            return "id.from";
+        }
+        if (writes(rule.source(), key)) {
+            return "source";
+        }
+        if (writes(rule.target(), key)) {
+            return "target";
+        }
+        if (rule.readOnly() != null) {
+            return null;
+        }
+        for (Map.Entry<String, AttributeBinding> attribute : rule.attributes().entrySet()) {
+            if (writes(attribute.getValue(), key) && attribute.getValue().readOnly() == null) {
+                return "attribute '" + attribute.getKey() + "'";
+            }
+        }
+        return null;
+    }
+
+    private static boolean writes(Slot slot, String key) {
+        return slot != null && key.equals(slot.key()) && slot.child() == null;
+    }
+
+    /** The families a rule reads: those of the file rules it names, else the body's, else those of every file rule. */
+    private static List<Family> familiesOf(FblBinding binding, Rule rule) {
+        if (!rule.files().isEmpty()) {
+            return binding.body().files().stream().filter(f -> f.name() != null && rule.files().contains(f.name())).map(FileRule::family).filter(Objects::nonNull).toList();
+        }
+        if (binding.body().family() != null) {
+            return List.of(binding.body().family());
+        }
+        return binding.body().files().stream().map(FileRule::family).filter(Objects::nonNull).toList();
     }
 
     private static int countSlots(Slot s) {

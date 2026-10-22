@@ -60,17 +60,23 @@ class ConformanceFixturesTest {
     /** The number of fixtures copied when this suite was written: fewer means the enumeration broke. */
     private static final int MINIMUM_FIXTURES = 8;
 
-    /** The names of the fixture folders, in ordinal order. */
+    /**
+     * The fixture folders of every copied corpus, by their path under {@code fbl/testdata} with {@code /}
+     * between the segments (the corpus, {@code fixtures}, the fixture), in ordinal order.
+     */
     static List<String> fixtures() {
-        try (Stream<Path> folders = Files.list(Corpus.conformance().resolve("fixtures"))) {
-            return folders.filter(Files::isDirectory)
-                    .filter(folder -> Files.exists(folder.resolve("fixture.json")))
-                    .map(folder -> folder.getFileName().toString())
-                    .sorted(Comparator.naturalOrder())
-                    .toList();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+        List<String> names = new ArrayList<>();
+        for (Path corpus : Corpus.conformanceCorpora()) {
+            try (Stream<Path> folders = Files.list(corpus.resolve("fixtures"))) {
+                folders.filter(Files::isDirectory)
+                        .filter(folder -> Files.exists(folder.resolve("fixture.json")))
+                        .map(folder -> Corpus.root().relativize(folder).toString().replace('\\', '/'))
+                        .forEach(names::add);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
         }
+        return names.stream().sorted(Comparator.naturalOrder()).toList();
     }
 
     @Test
@@ -84,7 +90,7 @@ class ConformanceFixturesTest {
     @MethodSource("fixtures")
     void theFixturePasses(String name) {
         // Arrange.
-        Path folder = Corpus.conformance().resolve("fixtures").resolve(name);
+        Path folder = Corpus.root().resolve(name);
         Path fixturePath = folder.resolve("fixture.json");
         JsonObject root = JsonParser.parseString(new String(Corpus.bytes(fixturePath), UTF_8)).getAsJsonObject();
         FblDocumentLoader.Resolved resolved = FblDocumentLoader.resolveReference(property(root, "binding").getAsString(), fixturePath);
@@ -144,7 +150,7 @@ class ConformanceFixturesTest {
     @MethodSource("fixtures")
     void everyByteOfTheInputBelongsToTheReading(String name) {
         // Arrange.
-        Path folder = Corpus.conformance().resolve("fixtures").resolve(name);
+        Path folder = Corpus.root().resolve(name);
         Path fixturePath = folder.resolve("fixture.json");
         JsonObject root = JsonParser.parseString(new String(Corpus.bytes(fixturePath), UTF_8)).getAsJsonObject();
         String inputName = property(root, "input").getAsString();

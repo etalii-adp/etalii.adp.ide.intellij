@@ -141,6 +141,19 @@ public final class BindingReader {
                 Objects.requireNonNullElse(t.string("quote"), "double"));
     }
 
+    /** An insert's constant (FBL 0.8 §6.2), its members in order, a member that is not a scalar as {@link InsertSettings#NOT_A_SCALAR}. */
+    private static Map<String, Object> constant(JsonValue json) {
+        if (json == null || !json.isObject()) {
+            return null;
+        }
+        Map<String, Object> constant = new LinkedHashMap<>();
+        for (JsonMember member : json.members()) {
+            JsonValue value = member.value();
+            constant.put(member.name(), value.isObject() || value.isArray() ? InsertSettings.NOT_A_SCALAR : value.typed());
+        }
+        return constant;
+    }
+
     private static Rule readRule(JsonValue json, boolean relation) {
         IdBinding id = null;
         JsonValue idJson = json.get("id");
@@ -185,7 +198,7 @@ public final class BindingReader {
                 }
             }
             insert = new InsertSettings(place, before, ins.string("container"), create, strings(ins, "keys"), ins.string("emit"), ins.string("skeleton"),
-                    ins.string("when"));
+                    ins.string("when"), constant(ins.get("constant")));
         }
         RemoveSettings remove = null;
         JsonValue rem = json.get("remove");

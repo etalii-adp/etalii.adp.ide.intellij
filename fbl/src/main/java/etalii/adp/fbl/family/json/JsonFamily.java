@@ -268,6 +268,24 @@ public final class JsonFamily extends TreeFamily {
     private record NewMember(int offset, String text) {
     }
 
+    /**
+     * A new object entry with its members (FBL §6.3): one member on each line, indented as the members of the entry it is
+     * written beside, when that entry is an object written so; else on one line. The layout standalone's library and the
+     * Visual Studio Code one write (standalone spec 025, B-12), which the json fixture of FBL 0.8's insert constant states.
+     */
+    private String newObject(List<String> members, TreeEntry beside) {
+        TreeEntry model = beside != null && beside.value().kind() == ValueKind.MAPPING && !beside.value().entries().isEmpty() ? beside.value().entries().get(0) : null;
+        if (model == null || model.lineSpan() == null || members.isEmpty()) {
+            return "{ " + String.join(", ", members) + " }";
+        }
+        String newline = newlineAt(beside.own().end());
+        StringBuilder text = new StringBuilder("{").append(newline);
+        for (int i = 0; i < members.size(); i++) {
+            text.append(indentation(model.indent())).append(members.get(i)).append(i < members.size() - 1 ? "," + newline : newline);
+        }
+        return text.append(indentation(beside.indent())).append('}').toString();
+    }
+
     /** A new member or item after a container's last entry, with the previous entry's separator (FBL §6.3). */
     private NewMember newMember(TreeValue container, String text) {
         if (container.entries().isEmpty()) {
@@ -303,13 +321,23 @@ public final class JsonFamily extends TreeFamily {
             });
         } else {
             List<String> members = new ArrayList<>();
+            // A constant is written as it is, as its JSON type: at its place in insert.keys when they name it, else
+            // after the other keys, in the constant's member order (FBL 0.8 §6.2).
+            Map<String, Object> constant = insert.constant() == null ? Map.of() : insert.constant();
             for (String key : insert.keys()) {
-                String value = wireValue(request, key);
+                String value = constant.containsKey(key) ? write(constant.get(key), null) : wireValue(request, key);
                 if (value != null) {
                     members.add(quote(key) + ": " + value);
                 }
             }
-            text = "{ " + String.join(", ", members) + " }";
+            for (Map.Entry<String, Object> member : constant.entrySet()) {
+                if (!insert.keys().contains(member.getKey())) {
+                    members.add(quote(member.getKey()) + ": " + write(member.getValue(), null));
+                }
+            }
+            List<TreeEntry> entries = container.value().entries();
+            TreeEntry beside = entries.isEmpty() ? null : "start".equals(insert.place()) ? entries.get(0) : entries.get(entries.size() - 1);
+            text = newObject(members, beside);
         }
         if ("start".equals(insert.place()) && !container.value().entries().isEmpty()) {
             TreeEntry first = container.value().entries().get(0);
