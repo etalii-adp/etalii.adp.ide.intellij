@@ -28,6 +28,8 @@
     ]]></change-notes>
 
     <depends>com.intellij.modules.platform</depends>
+    <!-- .atd tool descriptions need the platform's language server support; without it they open as plain text (spec 035). -->
+    <depends optional="true" config-file="adp-atd.xml">com.intellij.modules.lsp</depends>
 
     <!-- Each part registers its own contributions; an absent part is simply skipped. -->
     <xi:include href="/META-INF/adp-core.xml" xpointer="xpointer(/idea-plugin/*)"><xi:fallback/></xi:include>

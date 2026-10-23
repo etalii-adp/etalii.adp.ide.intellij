@@ -45,6 +45,8 @@ dependencies {
         pluginComposedModule(implementation(project(":freemind")))
         pluginComposedModule(implementation(project(":drawio")))
         pluginComposedModule(implementation(project(":fbl")))
+        // .atd tool descriptions, loaded only in an IDE with the platform's language server support (spec 035).
+        pluginComposedModule(implementation(project(":atd")))
         testFramework(TestFrameworkType.Starter, configurationName = integrationTestImplementation.name)
         pluginVerifier()
     }
@@ -57,6 +59,8 @@ dependencies {
     integrationTestImplementation("org.junit.platform:junit-platform-launcher")
     // The Starter framework's dependency injection, which IdeTestsHome rebinds; the version Starter uses.
     integrationTestImplementation("org.kodein.di:kodein-di-jvm:7.26.1")
+    // The .atd walk talks JSON-RPC to the packed atd-lsp (spec 035, T116); tests only, never shipped.
+    integrationTestImplementation("com.google.code.gson:gson:2.13.1")
     integrationTestRuntimeOnly("junit:junit:4.13.2")
     integrationTestRuntimeOnly("org.jetbrains.teamcity:serviceMessages:2026.3-dsl6")
 }
@@ -103,6 +107,25 @@ intellijPlatform {
 
 tasks.buildPlugin {
     archiveBaseName = "etalii-adp"
+}
+
+// The atd-lsp of each platform the :atd module fetched and checked, in the plug-in's bin/<platform>/ (spec 035, T115).
+val atdLspBinaries: Configuration by configurations.creating {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+}
+val atdWalk: Configuration by configurations.creating {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+}
+dependencies {
+    atdLspBinaries(project(":atd", "atdLspBinaries"))
+    atdWalk(project(":atd", "atdWalk"))
+}
+tasks.prepareSandbox {
+    from(atdLspBinaries) {
+        into(pluginName.map { "$it/bin" })
+    }
 }
 
 tasks.assemble {
@@ -156,6 +179,9 @@ val integrationTestTask = tasks.register<Test>("integrationTest") {
     systemProperty("adp.plugin.zip", tasks.buildPlugin.flatMap { it.archiveFile }.get().asFile.absolutePath)
     systemProperty("adp.repository", rootDir.absolutePath)
     systemProperty("adp.ideTests.home", ideTestsHome.get())
+    // The walk of the atd-lsp release the plug-in packs (spec 035, T116).
+    inputs.files(atdWalk)
+    systemProperty("adp.atd.walk", atdWalk.singleFile.absolutePath)
     shouldRunAfter(tasks.test)
     // A failure's message and causes in the console: on CI that is the only place they can be read without the reports.
     testLogging {

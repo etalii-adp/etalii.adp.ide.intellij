@@ -157,7 +157,7 @@ class OpenMapIntegrationTest {
     }
 
     /** The project the IDE opens on start, once it is open. */
-    private static Project waitForProject(Driver driver) throws InterruptedException {
+    static Project waitForProject(Driver driver) throws InterruptedException {
         long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.MINUTES.toNanos(5);
         while (System.nanoTime() < deadline) {
             List<Project> projects = ProjectManagerKt.getOpenProjects(driver, RdTarget.DEFAULT);
@@ -170,7 +170,7 @@ class OpenMapIntegrationTest {
     }
 
     /** The product as installed at {@code ADP_IDE_HOME_<code>}, when there is one, else as the Starter downloads it. */
-    private static IdeInfo installedOrDownloaded(IdeInfo info) {
+    static IdeInfo installedOrDownloaded(IdeInfo info) {
         String home = System.getenv("ADP_IDE_HOME_" + info.getProductCode());
         if (home == null || home.isBlank()) {
             return info;
@@ -221,7 +221,7 @@ class OpenMapIntegrationTest {
 
     // Starter entry points with Kotlin duration parameters, which Java cannot call by name.
 
-    private static LocalProjectInfo localProject(Path directory) throws ReflectiveOperationException {
+    static LocalProjectInfo localProject(Path directory) throws ReflectiveOperationException {
         for (Constructor<?> constructor : LocalProjectInfo.class.getDeclaredConstructors()) {
             Class<?>[] types = constructor.getParameterTypes();
             if (types.length == 7 && types[5] == int.class && types[6] == DefaultConstructorMarker.class) {
@@ -232,7 +232,7 @@ class OpenMapIntegrationTest {
         throw new NoSuchMethodException("LocalProjectInfo's constructor with defaults");
     }
 
-    private static BackgroundRun runIdeWithDriver(IDETestContext context) throws ReflectiveOperationException {
+    static BackgroundRun runIdeWithDriver(IDETestContext context) throws ReflectiveOperationException {
         Method method = Arrays.stream(RunWithDriverKt.class.getMethods())
                 .filter(m -> m.getName().startsWith("runIdeWithDriver") && m.getName().endsWith("$default")).findFirst()
                 .orElseThrow(() -> new NoSuchMethodException("runIdeWithDriver"));
@@ -251,7 +251,7 @@ class OpenMapIntegrationTest {
      * Closes the IDE. When the test already failed, a failure to close is added to that failure rather than
      * replacing it: an IDE killed at the end of its run reports only the kill, which hides what the test was doing.
      */
-    private static void closeIdeAndWait(BackgroundRun run, Throwable failure) throws ReflectiveOperationException {
+    static void closeIdeAndWait(BackgroundRun run, Throwable failure) throws ReflectiveOperationException {
         Method close = Arrays.stream(BackgroundRun.class.getMethods())
                 .filter(m -> m.getName().startsWith("closeIdeAndWait") && !m.getName().endsWith("$default") && m.getParameterCount() == 2)
                 .findFirst().orElseThrow(() -> new NoSuchMethodException("closeIdeAndWait"));

@@ -25,6 +25,8 @@ Every diagram shares two tool windows on the right:
 - **ADP Toolbox** lists the element and connection types of the selected diagram. Drag an entry onto the canvas, or press Enter on it to add it in the middle.
 - **ADP Properties** shows the properties of the selection and edits them, several items at once where they share a property. Double-click a text on the canvas, or press F2, to edit it in place.
 
+The plug-in also gives `.atd` tool descriptions, written in ATD, the ADP tool language, their findings, completion, navigation, rename and formatting, in every IDE with the platform's language server support; elsewhere they open as plain text ([docs/atd.md](docs/atd.md)).
+
 Both diagrams are built on the diagram framework in `core`. To build a diagram for a format of your own, follow the [diagram guide](docs/diagram-guide.md).
 ## Supported IDEs
 
@@ -62,6 +64,7 @@ The layout:
 | `freemind` | The FreeMind file format: parser, text edits, the mind map, actions. The vendored example maps are in `freemind/testdata/examples/`, each with its licence. |
 | `drawio` | The draw.io diagram: definition, mapping and registration. The example diagrams in `drawio/testdata/examples/` are decompressed draw.io templates (CC-BY-4.0), each with its licence. |
 | `fbl` | A generic implementation of FBL, the Format Binding Language. It imports nothing from the platform and no tool uses it yet (see below). Its test data is in `fbl/testdata/`. |
+| `atd` | `.atd` tool descriptions: the file type and the language server support that runs `atd-lsp`, fetched at build time from the desktop host's release `atd-lsp.lock` names ([docs/atd.md](docs/atd.md)). |
 | `testing` | `ToolDriver` and `DiagramDriver`, the test kit the tool tests use. |
 | `src/integrationTest` | Tests that install the built zip into real IDEs. |
 
