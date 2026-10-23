@@ -1,0 +1,8 @@
+<!-- .atd tool descriptions with the ADP tool language's server (etalii.adp spec 035, T117). Loaded only in an IDE with
+     com.intellij.modules.lsp (plugin.xml); elsewhere an .atd opens as plain text. -->
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="ATD" language="ATD" extensions="atd" implementationClass="etalii.adp.atd.AtdFileType" fieldName="INSTANCE"/>
+        <platform.lsp.integrationProvider implementation="etalii.adp.atd.AtdLspIntegrationProvider"/>
+    </extensions>
+</idea-plugin>

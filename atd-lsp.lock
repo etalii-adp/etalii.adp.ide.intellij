@@ -1,0 +1,9 @@
+# The release of ATD's language server the plug-in ships (etalii.adp spec 035, T115): the desktop host's release, and
+# the SHA-256 of each platform's archive and of the walk, which the :atd module checks before it packs the server and
+# hands the walk to the integration tests.
+release=atd-v0.1.0
+repository=etalii-adp/etalii.adp.ide.desktop
+atd-windows-x64.zip=e34647dd21d64e9c23a6d5f1442e7d9466fd571016725fa587832c5ca96a0257
+atd-macos-arm64.tar.gz=42030b5e2bf20fd829abd66ce23797c24875f004f45a2aaa3b86899f90f707e8
+atd-walk.zip=e913759d02951dbebd37a4dcf1c6e15398f73f705dcd9584a2345e4466ea858b
+atd-linux-x64.tar.gz=03e1e8ad89479fdde6270ff1c3921a1de7aaab7f5b3805a2ab5c40f9b0af22a5
