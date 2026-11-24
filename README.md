@@ -32,7 +32,11 @@ Both diagrams are built on the diagram framework in `core`. To build a diagram f
 
 Every IntelliJ Platform IDE from release 2026.2 (build 262) on. The build verifies the plug-in against IntelliJ IDEA, Rider, WebStorm, PyCharm, CLion, GoLand, PhpStorm and RubyMine. The plug-in makes no network access at runtime.
 
-## Install from disk
+## Install
+
+In the IDE, open **Settings > Plugins**, search the **Marketplace** tab for **ADP: A Different Perspective** and click **Install**. Its page on the [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/etalii.adp) shows what each version brings; the same notes are in [CHANGELOG.md](CHANGELOG.md).
+
+### Install from disk
 
 1. Download `etalii-adp-<version>.zip` from the [Releases page](https://github.com/etalii-adp/etalii.adp.ide.intellij/releases): either the newest versioned release, or the **Development build** pre-release, which is the plug-in from the current `develop` after it passed every check. Keep the zip as it is; do not unzip it.
 2. In the IDE, open **Settings > Plugins**, click the gear icon, choose **Install Plugin from Disk...** and pick the zip.
@@ -102,12 +106,16 @@ The build excludes `out`, `.intellijPlatform` and `.claude/worktrees` from the I
 
 ## Releasing
 
-For maintainers. The version is `pluginVersion` in `gradle.properties`.
+For maintainers. The version is `pluginVersion` in `gradle.properties`. The plug-in's page on the JetBrains Marketplace is its `<description>` in `src/main/resources/META-INF/plugin.xml`, written for someone using the IDE rather than about how the plug-in is built; its "What's New" is the version's section of `CHANGELOG.md`, which the build copies into the plug-in.
 
-1. To release, push the tag `v<that version>` on a commit of `develop`, for example `git tag v0.1.0 <commit>` and `git push origin v0.1.0`.
-2. The Build run for the tag checks that commit like any other and then publishes the release, with the plug-in and notes generated from the pull requests merged since the previous release.
-3. A tag that does not match the version, marks a commit that is not on `develop`, or whose checks fail publishes nothing; the run says why. A published release is never replaced.
-4. Right after a release, raise `pluginVersion` in a pull request, so the development builds carry the next version.
+1. Every pull request that changes what a user sees adds a line to the `Unreleased` section of `CHANGELOG.md`.
+2. Before a release, run `./gradlew patchChangelog` in a pull request: it turns `Unreleased` into `## [<version>] - <date>` and starts a new, empty `Unreleased`. A version is not released without its section.
+3. To release, push the tag `v<that version>` on a commit of `develop`, for example `git tag v0.1.0 <commit>` and `git push origin v0.1.0`.
+4. The Build run for the tag checks that commit like any other and then publishes the release on GitHub, with the version's section of `CHANGELOG.md` and the pull requests merged since the previous release as its notes. Its `marketplace` job then publishes the same version on the JetBrains Marketplace, where JetBrains reviews it before it is shown.
+5. A tag that does not match the version, marks a commit that is not on `develop`, has no section in `CHANGELOG.md`, or whose checks fail publishes nothing; the run says why. A published release is never replaced. When only the Marketplace upload failed, **Re-run failed jobs** repeats it.
+6. Right after a release, raise `pluginVersion` in a pull request, so the development builds carry the next version.
+
+The `marketplace` job needs the repository secret `JETBRAINS_MARKETPLACE_TOKEN`, a token from the [Marketplace's token page](https://plugins.jetbrains.com/author/me/tokens) of an account that may upload the plug-in. Without it the job publishes nothing and says so in its summary. When the secrets `JETBRAINS_CERTIFICATE_CHAIN`, `JETBRAINS_PRIVATE_KEY` and `JETBRAINS_PRIVATE_KEY_PASSWORD` are set, the plug-in is also signed with the vendor's own certificate (see JetBrains' [plugin signing](https://plugins.jetbrains.com/docs/intellij/plugin-signing.html)); without them the Marketplace's own signature is the only one.
 
 ## Check compatibility with FreeMind 1.0.1
 

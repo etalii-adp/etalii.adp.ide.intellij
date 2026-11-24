@@ -1,3 +1,4 @@
+import org.jetbrains.changelog.Changelog
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import java.util.Properties
@@ -6,6 +7,8 @@ plugins {
     id("java")
     id("idea")
     id("org.jetbrains.intellij.platform")
+    // Reads CHANGELOG.md, whose section for this version becomes the plug-in's change notes.
+    id("org.jetbrains.changelog") version "2.4.0"
 }
 
 group = "etalii.adp"
@@ -73,6 +76,23 @@ intellijPlatform {
             sinceBuild = providers.gradleProperty("pluginSinceBuild")
             untilBuild = provider { null }
         }
+        // The "What's New" of the Marketplace page and the IDE's plug-in manager: this version's section of
+        // CHANGELOG.md, or its Unreleased section while the version has none yet.
+        changeNotes = provider {
+            val item = changelog.getOrNull(project.version.toString()) ?: changelog.getUnreleased()
+            changelog.renderItem(item.withHeader(false).withEmptySections(false), Changelog.OutputType.HTML)
+        }
+    }
+    // Signing and publishing to the JetBrains Marketplace, done by the Build workflow's marketplace job on a release
+    // tag. The values come from the repository's secrets; a secret that is not set arrives as an empty string, which
+    // counts as not given, so without the certificate the plug-in is published unsigned (the Marketplace signs it too).
+    signing {
+        certificateChain = providers.environmentVariable("CERTIFICATE_CHAIN").filter { it.isNotBlank() }
+        privateKey = providers.environmentVariable("PRIVATE_KEY").filter { it.isNotBlank() }
+        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD").filter { it.isNotBlank() }
+    }
+    publishing {
+        token = providers.environmentVariable("PUBLISH_TOKEN").filter { it.isNotBlank() }
     }
     pluginVerification {
         ides {
@@ -103,6 +123,12 @@ intellijPlatform {
             }
         }
     }
+}
+
+// CHANGELOG.md's sections may use any group headings, and an empty Unreleased section stays empty.
+// `./gradlew patchChangelog` turns Unreleased into the section of pluginVersion, dated today, before a release.
+changelog {
+    groups.empty()
 }
 
 tasks.buildPlugin {
