@@ -73,6 +73,13 @@ intellijPlatform {
             sinceBuild = providers.gradleProperty("pluginSinceBuild")
             untilBuild = provider { null }
         }
+        // The "What's New" of the Marketplace page and the IDE's plug-in manager: this version's section of
+        // CHANGELOG.md, or its Unreleased section while the version has none yet. Read here rather than through the
+        // org.jetbrains.changelog Gradle plug-in: with that plug-in on the build's classpath the real-IDE tests failed
+        // on each of three runs, and passed without it (pull request #36).
+        changeNotes = providers.fileContents(layout.projectDirectory.file("CHANGELOG.md")).asText.map {
+            changeNotesHtml(it, project.version.toString())
+        }
     }
     // Signing and publishing to the JetBrains Marketplace, done by the Build workflow's marketplace job on a release
     // tag. The values come from the repository's secrets; a secret that is not set arrives as an empty string, which
@@ -115,6 +122,44 @@ intellijPlatform {
         }
     }
 }
+
+/** The section of CHANGELOG.md for [version], or its Unreleased section, as the HTML the plug-in's change notes take. */
+fun changeNotesHtml(changelog: String, version: String): String {
+    val lines = changelog.lines()
+    val start = lines.indexOfFirst { it.startsWith("## [$version]") }
+        .takeIf { it >= 0 } ?: lines.indexOfFirst { it.startsWith("## [Unreleased]") }
+    if (start < 0) return ""
+    val section = lines.drop(start + 1).takeWhile { !it.startsWith("## [") }
+    val html = StringBuilder()
+    var inList = false
+    for (line in section) {
+        val text = line.trim()
+        if (inList && !text.startsWith("- ")) {
+            html.append("</ul>\n")
+            inList = false
+        }
+        when {
+            text.isEmpty() -> {}
+            text.startsWith("### ") -> html.append("<h3>").append(inlineHtml(text.removePrefix("### "))).append("</h3>\n")
+            text.startsWith("- ") -> {
+                if (!inList) {
+                    html.append("<ul>\n")
+                    inList = true
+                }
+                html.append("<li>").append(inlineHtml(text.removePrefix("- "))).append("</li>\n")
+            }
+            else -> html.append("<p>").append(inlineHtml(text)).append("</p>\n")
+        }
+    }
+    if (inList) html.append("</ul>\n")
+    return html.toString()
+}
+
+/** A line of CHANGELOG.md as HTML: escaped, with its **bold** and `code`. */
+fun inlineHtml(text: String): String = text
+    .replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    .replace(Regex("""\*\*(.+?)\*\*"""), "<b>$1</b>")
+    .replace(Regex("`(.+?)`"), "<code>$1</code>")
 
 tasks.buildPlugin {
     archiveBaseName = "etalii-adp"

@@ -80,7 +80,7 @@ jobs:
             refused=1
           fi
           if ! grep -q "^## \[$version\]" CHANGELOG.md; then
-            echo "::error::CHANGELOG.md has no section for $version (## [$version] - <date>); its release notes come from there. Run ./gradlew patchChangelog in a pull request first."
+            echo "::error::CHANGELOG.md has no section for $version (## [$version] - <date>); its release notes come from there. Turn its Unreleased section into that version in a pull request first."
             refused=1
           fi
           exit $refused

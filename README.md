@@ -109,7 +109,7 @@ The build excludes `out`, `.intellijPlatform` and `.claude/worktrees` from the I
 For maintainers. The version is `pluginVersion` in `gradle.properties`. The plug-in's page on the JetBrains Marketplace is its `<description>` in `src/main/resources/META-INF/plugin.xml`, written for someone using the IDE rather than about how the plug-in is built; its "What's New" is the version's section of `CHANGELOG.md`, which the build copies into the plug-in.
 
 1. Every pull request that changes what a user sees adds a line to the `Unreleased` section of `CHANGELOG.md`.
-2. Before a release, run `./gradlew patchChangelog` in a pull request: it turns `Unreleased` into `## [<version>] - <date>` and starts a new, empty `Unreleased`. A version is not released without its section.
+2. Before a release, a pull request turns `Unreleased` into `## [<version>] - <date>` and starts a new, empty `Unreleased`. A version is not released without its section.
 3. To release, push the tag `v<that version>` on a commit of `develop`, for example `git tag v0.1.0 <commit>` and `git push origin v0.1.0`.
 4. The Build run for the tag checks that commit like any other and then publishes the release on GitHub, with the version's section of `CHANGELOG.md` and the pull requests merged since the previous release as its notes. Its `marketplace` job then publishes the same version on the JetBrains Marketplace, where JetBrains reviews it before it is shown.
 5. A tag that does not match the version, marks a commit that is not on `develop`, has no section in `CHANGELOG.md`, or whose checks fail publishes nothing; the run says why. A published release is never replaced. When only the Marketplace upload failed, **Re-run failed jobs** repeats it.
