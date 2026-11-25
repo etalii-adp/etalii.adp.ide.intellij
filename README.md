@@ -1,6 +1,6 @@
 # A Different Perspective (ADP)
 
-[![Build](https://github.com/etalii-adp/etalii.adp.ide.intellij/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/etalii-adp/etalii.adp.ide.intellij/actions/workflows/build.yml?query=branch%3Adevelop)
+[![Build](https://github.com/etalii-adp/etalii.adp.ide.intellij/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/etalii-adp/etalii.adp.ide.intellij/actions/workflows/build.yml?query=branch%3Adevelop) [![JetBrains Marketplace](https://img.shields.io/jetbrains/plugin/v/36445?label=JetBrains%20Marketplace)](https://plugins.jetbrains.com/plugin/36445-adp-a-different-perspective)
 
 ADP is an IntelliJ Platform plug-in that adds specialized tools for text-based files: diagrams, designers and editors (see the [ADP terminology](https://github.com/etalii-adp/etalii.adp/blob/develop/docs/terminology.md)). This plug-in brings two diagrams. Each tool opens in a real editor in the IDE: it is registered for its file type, uses the IDE's own undo and redo, has the usual modified state and save behaviour, and sits next to the IDE's text editor on the same document. The text is always the source of truth: the tool re-reads it after every change, and every visual edit changes only the text it has to.
 
@@ -34,7 +34,7 @@ Every IntelliJ Platform IDE from release 2026.2 (build 262) on. The build verifi
 
 ## Install
 
-In the IDE, open **Settings > Plugins**, search the **Marketplace** tab for **ADP: A Different Perspective** and click **Install**. Its page on the [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/etalii.adp) shows what each version brings; the same notes are in [CHANGELOG.md](CHANGELOG.md).
+In the IDE, open **Settings > Plugins**, search the **Marketplace** tab for **ADP: A Different Perspective** and click **Install**. Its page on the [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/36445-adp-a-different-perspective) shows what each version brings; the same notes are in [CHANGELOG.md](CHANGELOG.md).
 
 ### Install from disk
 
