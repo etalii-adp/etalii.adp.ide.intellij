@@ -9,7 +9,8 @@
 # verifier checks the plug-in against the eight IDEs it declares, downloading each, so it is a job of its own rather
 # than the slowest part of the build job, and a pull request verifies against IntelliJ IDEA and Rider only (CI speed
 # analysis, 2026-10-12). Every job fails the workflow and its badge.
-# On a tag run it first checks the version mark: the tag must be v<pluginVersion> and its commit must be on develop.
+# On a tag run it first checks the version mark: the tag must be v<pluginVersion>, its commit must be on develop, and
+# CHANGELOG.md must have the version's section, which becomes the release notes.
 #
 # Some headless tests draw on a Swing canvas, so this job also runs under xvfb-run.
 #
@@ -32,6 +33,11 @@
 # development-build runs on develop and keeps one "development" pre-release on the Releases page in step with it,
 # moving only forward. release runs on a v<version> tag and publishes that version once; it never replaces a release.
 # Neither can run for a pull request, whose ref is refs/pull/<n>/merge.
+#
+# After release, the marketplace job publishes the same version on the JetBrains Marketplace with the repository's
+# JETBRAINS_MARKETPLACE_TOKEN secret, signed when the JETBRAINS_CERTIFICATE_CHAIN, JETBRAINS_PRIVATE_KEY and
+# JETBRAINS_PRIVATE_KEY_PASSWORD secrets are set. Without the token it publishes nothing and says so: the Marketplace
+# takes a plug-in's very first version only from its vendor's own upload, and the token exists only after that.
 name: Build
 
 on:
@@ -71,6 +77,10 @@ jobs:
           status=$(gh api "repos/$GITHUB_REPOSITORY/compare/$GITHUB_SHA...develop" --jq .status) || status="not found"
           if [ "$status" != "ahead" ] && [ "$status" != "identical" ]; then
             echo "::error::The tag $GITHUB_REF_NAME marks $GITHUB_SHA, which is not on develop ($status), so it is not released."
+            refused=1
+          fi
+          if ! grep -q "^## \[$version\]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no section for $version (## [$version] - <date>); its release notes come from there. Turn its Unreleased section into that version in a pull request first."
             refused=1
           fi
           exit $refused
@@ -238,6 +248,10 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
     steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: CHANGELOG.md
+          sparse-checkout-cone-mode: false
       - name: Take the plug-in the build job made
         uses: actions/download-artifact@v8
         with:
@@ -251,11 +265,45 @@ jobs:
           zip=$(find plugin -type f -name 'etalii-adp-*.zip' | head -n 1)
           [ -n "$zip" ] || { echo "::error::The build job's plug-in was not found among the downloaded artifacts."; exit 1; }
           version=${GITHUB_REF_NAME#v}
-          # The previous version mark, so the generated notes do not start at the development tag.
+          # The version's section of CHANGELOG.md, without its heading, as the release notes; the build job checked it is there.
+          awk -v heading="## [$version]" 'index($0, heading) == 1 { inside = 1; next } /^## \[/ { inside = 0 } inside' CHANGELOG.md > notes.md
+          # The previous version mark, so the generated list of pull requests does not start at the development tag.
           previous=$(gh api "repos/$GH_REPO/tags" --paginate --jq '.[].name' \
             | grep '^v' | grep -vx "$GITHUB_REF_NAME" | sort -V | tail -n 1 || true)
-          gh release create "$GITHUB_REF_NAME" "$zip" --verify-tag --title "$version" --generate-notes \
+          gh release create "$GITHUB_REF_NAME" "$zip" --verify-tag --title "$version" --notes-file notes.md --generate-notes \
             ${previous:+--notes-start-tag "$previous"}
+
+  # Publishes the released version on the JetBrains Marketplace. publishPlugin builds the plug-in again from the tagged
+  # commit, the one every other job checked, signs it when the certificate secrets are set, and uploads it. The
+  # Marketplace refuses a version it already has, so a re-run after a successful upload fails rather than replacing it.
+  marketplace:
+    needs: [release]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: true
+      - name: Publish on the JetBrains Marketplace
+        env:
+          PUBLISH_TOKEN: ${{ secrets.JETBRAINS_MARKETPLACE_TOKEN }}
+          CERTIFICATE_CHAIN: ${{ secrets.JETBRAINS_CERTIFICATE_CHAIN }}
+          PRIVATE_KEY: ${{ secrets.JETBRAINS_PRIVATE_KEY }}
+          PRIVATE_KEY_PASSWORD: ${{ secrets.JETBRAINS_PRIVATE_KEY_PASSWORD }}
+        run: |
+          if [ -z "$PUBLISH_TOKEN" ]; then
+            echo "::notice::JETBRAINS_MARKETPLACE_TOKEN is not set, so $GITHUB_REF_NAME is not published on the JetBrains Marketplace. Upload the release's zip by hand, or set the secret and re-run this job."
+            exit 0
+          fi
+          if [ -z "$CERTIFICATE_CHAIN" ]; then
+            echo "::notice::The signing secrets are not set, so the plug-in is published unsigned; the Marketplace signs it with its own certificate."
+          fi
+          ./gradlew publishPlugin
 
   # Flags a retired use of the ADP vocabulary (etalii.adp spec 002, FR-017). The runner and its list of retired
   # patterns and allowances live in etalii.adp and are read from its develop branch, so every repository is checked

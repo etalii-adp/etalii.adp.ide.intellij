@@ -4,28 +4,69 @@
     <vendor url="https://etalii.net/adp">EtAlii</vendor>
     <idea-version since-build="262"/>
 
+    <!-- The plug-in's page on the JetBrains Marketplace: written for someone using the IDE, without ADP's internals.
+         The change notes are not written here: the build takes them from CHANGELOG.md. -->
     <description><![CDATA[
-    <p><img src="https://etalii.net/adp/favicon.svg" width="96" height="96" alt="The ADP mark: one model seen as text and as a diagram"></p>
-    <p><b>The right view for every task.</b> ADP (A Different Perspective) is a family of specialized
-    tools: diagrams, designers and editors, each tuned for one task where a specialized visualization beats
-    a generic diagram or plain text.</p>
-    <p>Each tool opens in an editor on the file's own text, with the IDE's undo, redo, save and text view,
-    so what it shows stays in plain files that can be reviewed, branched and merged like any other text.
-    This plug-in brings two diagrams, edited with a shared toolbox and property panel:</p>
-    <ul>
-      <li>FreeMind mind maps (<code>.mm</code>)</li>
-      <li>draw.io diagrams (<code>.drawio</code>)</li>
-    </ul>
-    <p>Documentation and the other ADP hosts: <a href="https://etalii.net/adp">etalii.net/adp</a>.
-    Licensed under the Apache License, Version 2.0.</p>
-    ]]></description>
+    <p><b>Visual tools for the files you already keep in your project.</b> ADP (A Different Perspective) opens a
+    FreeMind mind map or a draw.io diagram as a picture you can work in, right inside your IDE, and writes every
+    change straight back to the file. Each tool is tuned for one kind of document rather than being a general drawing
+    canvas, so it keeps everything it does not show exactly as it was.</p>
 
-    <change-notes><![CDATA[
-    <p>ADP now uses one vocabulary: its diagrams, designers and editors are together called <b>tools</b>, and the settings page under Settings &gt; Tools &gt; ADP lists them as Tools.
-    Your ADP settings are kept: settings stored by an earlier version are read and stored again under the new names.
-    The mind map's editor id changed from <code>etalii.adp.freemind.editor</code> to <code>etalii.adp.freemind</code>, so a mind map that was open when the IDE closed may reopen once in the text view,
-    and the mind map's split layout (text, both, or the map alone) starts again from its default. Choose the mind map again and the IDE remembers it as before.</p>
-    ]]></change-notes>
+    <h2>Highlights</h2>
+    <ul>
+      <li><b>Your files stay yours.</b> Each tool reads and writes the plain file, so it diffs cleanly, lives in
+      version control and can be edited by hand, by a colleague in another tool or by an AI assistant at the same time.</li>
+      <li><b>Only what you changed is changed.</b> An edit rewrites just the part of the file it concerns. A file saved
+      without edits stays byte for byte the same.</li>
+      <li><b>Feels like the IDE.</b> Every change is one named step of <b>Edit | Undo</b>, shared with the text editor;
+      the tab shows when the file is modified, and saving works as for any other file.</li>
+      <li><b>Text and picture side by side.</b> The tool and the IDE's text editor work on the same document: type in
+      one and the other follows.</li>
+      <li><b>Works offline.</b> The plug-in makes no network calls and needs no account and nothing else installed.</li>
+    </ul>
+
+    <h2>Mind maps (.mm)</h2>
+    <p>FreeMind mind maps open as a map drawn around its root, with branches on their own side, folding, arrow links,
+    icons, colours, fonts, links and notes.</p>
+    <ul>
+      <li>Add, rename, delete, move and drag nodes, and fold branches, from the keyboard or the context menu.</li>
+      <li>The <b>Structure</b> tool window lists the node tree, for quick navigation in large maps.</li>
+      <li><b>File | New | FreeMind Mind Map</b> starts a new map.</li>
+      <li>Other files ending in <code>.mm</code>, such as Objective-C++ sources, keep opening as they always did.</li>
+    </ul>
+
+    <h2>draw.io diagrams (.drawio)</h2>
+    <p>draw.io diagrams open with their shapes, dashed, curved and orthogonal connections, arrowheads, labels and
+    swimlanes.</p>
+    <ul>
+      <li>Add shapes from the toolbox, connect them, and move, resize and delete them.</li>
+      <li>Change fill colours, line styles and labels for one shape or several at once.</li>
+      <li>What the diagram does not show, such as other pages, groups and unfamiliar shapes, is kept as it is.</li>
+      <li>A compressed diagram opens as text, with a note on how to save it uncompressed from draw.io.</li>
+    </ul>
+
+    <h2>Getting started</h2>
+    <ol>
+      <li>Open a <code>.mm</code> or <code>.drawio</code> file, or create a mind map with
+      <b>File | New | FreeMind Mind Map</b>.</li>
+      <li>Use the <b>ADP Toolbox</b> tool window on the right to add elements: drag an entry onto the canvas, or press
+      Enter to add it in the middle.</li>
+      <li>Select something and edit it in the <b>ADP Properties</b> tool window, or double-click a text (or press F2)
+      to edit it in place.</li>
+      <li><b>Settings | Tools | ADP</b> lists the tools and the files each one opens, and holds the canvas options,
+      such as the opening zoom.</li>
+    </ol>
+
+    <h2>Building your own tools</h2>
+    <p>Every ADP tool is described in a tool description. Files with the <code>.atd</code> extension get live
+    problem checking, completion, navigation, rename and formatting in every IDE with language server support.</p>
+
+    <h2>More</h2>
+    <p>ADP is also available for Visual Studio Code and as an application of its own. Read more at
+    <a href="https://etalii.net/adp">etalii.net/adp</a>, and send questions, ideas and bug reports to the
+    <a href="https://github.com/etalii-adp/etalii.adp.ide.intellij/issues">issue tracker</a>.
+    Free and open source under the Apache License 2.0.</p>
+    ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
     <!-- .atd tool descriptions need the platform's language server support; without it they open as plain text (spec 035). -->
