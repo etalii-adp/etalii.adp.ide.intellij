@@ -34,7 +34,7 @@ Every IntelliJ Platform IDE from release 2026.2 (build 262) on. The build verifi
 
 ## Install
 
-In the IDE, open **Settings > Plugins**, search the **Marketplace** tab for **ADP: A Different Perspective** and click **Install**. Its page on the [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/etalii.adp) shows what each version brings; the same notes are in [CHANGELOG.md](CHANGELOG.md).
+In the IDE, open **Settings > Plugins**, search the **Marketplace** tab for **ADP: A Different Perspective** and click **Install**. Its page on the [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/36445-adp-a-different-perspective) shows what each version brings; the same notes are in [CHANGELOG.md](CHANGELOG.md).
 
 ### Install from disk
 
