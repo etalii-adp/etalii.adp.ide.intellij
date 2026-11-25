@@ -5,6 +5,7 @@
     <idea-version since-build="262"/>
 
     <!-- The plug-in's page on the JetBrains Marketplace: written for someone using the IDE, without ADP's internals.
+         Its screenshots are docs/screenshots/ on develop, so retaking one updates the page too.
          The change notes are not written here: the build takes them from CHANGELOG.md. -->
     <description><![CDATA[
     <p><b>Visual tools for the files you already keep in your project.</b> ADP (A Different Perspective) opens a
@@ -26,6 +27,7 @@
     </ul>
 
     <h2>Mind maps (.mm)</h2>
+    <p><img src="https://raw.githubusercontent.com/etalii-adp/etalii.adp.ide.intellij/develop/docs/screenshots/mindmap.png" width="800" alt="A FreeMind mind map open in IntelliJ IDEA"></p>
     <p>FreeMind mind maps open as a map drawn around its root, with branches on their own side, folding, arrow links,
     icons, colours, fonts, links and notes.</p>
     <ul>
@@ -36,6 +38,7 @@
     </ul>
 
     <h2>draw.io diagrams (.drawio)</h2>
+    <p><img src="https://raw.githubusercontent.com/etalii-adp/etalii.adp.ide.intellij/develop/docs/screenshots/drawio-activity.png" width="800" alt="A draw.io activity diagram in IntelliJ IDEA, with the ADP Toolbox on the right"></p>
     <p>draw.io diagrams open with their shapes, dashed, curved and orthogonal connections, arrowheads, labels and
     swimlanes.</p>
     <ul>
@@ -44,6 +47,7 @@
       <li>What the diagram does not show, such as other pages, groups and unfamiliar shapes, is kept as it is.</li>
       <li>A compressed diagram opens as text, with a note on how to save it uncompressed from draw.io.</li>
     </ul>
+    <p><img src="https://raw.githubusercontent.com/etalii-adp/etalii.adp.ide.intellij/develop/docs/screenshots/drawio-cross-functional.png" width="800" alt="A draw.io cross-functional flowchart with six lanes in IntelliJ IDEA"></p>
 
     <h2>Getting started</h2>
     <ol>
